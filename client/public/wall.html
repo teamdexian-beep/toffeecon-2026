@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToffeeCon 2026 · Found in Translation (100-Phone Master Wall)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-wall: #06040c;
+            --panel: #110d22;
+            --border: #291e4b;
+            --orange: #FF6B00;
+            --purple: #9333EA;
+            --cyan: #00F0FF;
+            --text-main: #F3F4F6;
+            --text-dim: #8E88A8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg-wall); color: var(--text-main); min-height: 100vh; padding: 24px 32px; overflow-x: hidden; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            margin-bottom: 24px;
+        }
+
+        .title-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .wall-tag {
+            background: linear-gradient(135deg, var(--orange), var(--purple));
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .wall-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+        }
+
+        .wall-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-trigger {
+            background: linear-gradient(135deg, var(--orange), var(--purple));
+            color: #fff;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(255, 107, 0, 0.4);
+            transition: transform 0.15s ease;
+        }
+
+        .btn-trigger:hover {
+            transform: scale(1.02);
+        }
+
+        .status-pill {
+            background: rgba(0, 240, 255, 0.08);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--cyan);
+        }
+
+        /* 10x10 Floating Matrix Frame */
+        .matrix-frame-container {
+            position: relative;
+            background: #000;
+            border: 4px solid #20173d;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9), 0 0 50px rgba(147, 51, 234, 0.15);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .phone-matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 6px;
+            aspect-ratio: 16 / 9;
+            width: 100%;
+        }
+
+        .phone-slot {
+            background: #100b21;
+            border: 1px solid #2f2154;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            padding: 4px;
+        }
+
+        .phone-slot:hover {
+            border-color: var(--cyan);
+            transform: scale(1.04);
+            z-index: 10;
+        }
+
+        .slot-index {
+            position: absolute;
+            top: 3px;
+            left: 5px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: #5d5577;
+        }
+
+        .slot-text {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            color: #c0b7de;
+            text-align: center;
+            font-weight: 600;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Synchronized Logo Overlay across the full 10x10 grid */
+        .big-canvas-overlay {
+            position: absolute;
+            inset: 24px;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.92) 0%, rgba(255, 107, 0, 0.95) 100%);
+            border-radius: 12px;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .big-canvas-overlay.active {
+            opacity: 1;
+        }
+
+        .unified-logo {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(3.5rem, 8vw, 7rem);
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: 10px;
+            text-shadow: 0 0 40px rgba(0,0,0,0.6);
+        }
+
+        .unified-sub {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.4rem;
+            letter-spacing: 4px;
+            color: #00F0FF;
+            margin-top: 12px;
+        }
+
+        /* Node Inspector Modal */
+        .inspector-panel {
+            margin-top: 24px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="title-group">
+            <img src="/assets/toffeecon-logo.png" alt="ToffeeCon" style="height:36px; filter:drop-shadow(0 0 14px rgba(184,0,136,0.6));">
+            <div class="wall-tag">10x10 MATRIX</div>
+            <div>
+                <h1 class="wall-title">FOUND IN TRANSLATION</h1>
+                <p style="color:var(--text-dim); font-size:0.85rem;">100-Handset Synchronized Video Slicing Engine (Slide 45)</p>
+            </div>
+        </div>
+
+        <div class="wall-controls">
+            <div class="status-pill" id="cycleStatus">NEXT BROADCAST: 60s</div>
+            <button class="btn-trigger" onclick="triggerWallSync()">Trigger 60s Rebirth Sync ⚡</button>
+            <a href="/hub" style="color:var(--cyan); text-decoration:none; font-family:'Space Mono'; font-size:0.85rem; margin-left:8px;">Hub ↗</a>
+        </div>
+    </header>
+
+    <div class="matrix-frame-container">
+        <!-- 10x10 Phone Slot Grid -->
+        <div class="phone-matrix-grid" id="matrixGrid"></div>
+
+        <!-- Master Sliced Logo Morph Overlay -->
+        <div class="big-canvas-overlay" id="bigOverlay">
+            <img src="/assets/toffeecon-hero-emblem.png" alt="ToffeeCon" style="max-width: 55%; height: auto; filter: drop-shadow(0 0 50px rgba(255,255,255,0.95)) drop-shadow(0 0 80px rgba(230,0,126,0.9)); margin-bottom: 16px;">
+            <div class="unified-sub">FUTURE OF SCREENING · 2026</div>
+        </div>
+    </div>
+
+    <!-- Live Node Diagnostic Bar -->
+    <div class="inspector-panel">
+        <div>
+            <span style="font-family:'Space Mono'; font-size:0.8rem; color:var(--text-dim);">INSPECTING PHYSICAL NODE:</span>
+            <h3 style="font-family:'Syne'; font-size:1.2rem; color:var(--cyan);" id="inspectNodeTitle">Click any phone in the grid to inspect</h3>
+            <p style="font-size:0.85rem; color:var(--text-dim);" id="inspectNodeSub">Each handset slices 1/100th of the master canvas.</p>
+        </div>
+        <div style="display:flex; gap:12px; align-items:center;">
+            <button onclick="copyAllPhoneUrls()" style="background:rgba(0, 240, 255, 0.1); border:1px solid var(--cyan); color:var(--cyan); padding:10px 16px; border-radius:8px; font-family:'Space Mono'; font-size:0.85rem; cursor:pointer;" id="btnCopyUrls">
+                📋 Copy 100 Phone URLs
+            </button>
+            <a id="inspectLink" href="/wall/phone?id=45" target="_blank" style="background:rgba(255,255,255,0.08); border:1px solid var(--border); color:#fff; padding:10px 20px; border-radius:8px; text-decoration:none; font-family:'Space Mono'; font-size:0.85rem;">
+                Open Physical Client (Node #45) ↗
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const copyOptions = [
+            'খেলা হবে (Standard Bangla)',
+            'আইয়্যুন চা খাই (Chittagonian Dialect)',
+            'কিতা খবর ভাই (Sylheti Dialect)',
+            'অনলাইন টিভি (Toffee Live)',
+            'ম্যাচ শুরু (Ultra HD)',
+            'বিয়ে বাড়ি (Bengali Drama)',
+            'গরম খবর (Live Satellite)',
+            'হেব্বি খেলা (Sports 60fps)',
+            'চাটগাঁইয়া সুর (Regional Beats)',
+            'সিলেটি নাটক (Original Drama)'
+        ];
+
+        const grid = document.getElementById('matrixGrid');
+        for (let i = 0; i < 100; i++) {
+            const row = Math.floor(i / 10);
+            const col = i % 10;
+            const slot = document.createElement('div');
+            slot.className = 'phone-slot';
+            slot.id = 'slot-' + i;
+            slot.innerHTML = `
+                <span class="slot-index">#${String(i).padStart(2, '0')}</span>
+                <span class="slot-text">${copyOptions[i % copyOptions.length]}</span>
+            `;
+            slot.onclick = () => inspectSlot(i, row, col);
+            grid.appendChild(slot);
+        }
+
+        function inspectSlot(id, row, col) {
+            document.getElementById('inspectNodeTitle').innerText = `NODE #${String(id).padStart(2, '0')} · GRID [ROW ${row}, COL ${col}]`;
+            document.getElementById('inspectNodeSub').innerText = `Renders Canvas Sub-Rectangle (${col * 10}% X, ${row * 10}% Y, 10% W, 10% H)`;
+            document.getElementById('inspectLink').href = `/wall/phone?id=${id}`;
+            document.getElementById('inspectLink').innerText = `Open Physical Client (Node #${id}) ↗`;
+        }
+
+        function copyAllPhoneUrls() {
+            const host = window.location.host;
+            const protocol = window.location.protocol;
+            let urls = [];
+            for (let i = 0; i < 100; i++) {
+                urls.push(`Node #${String(i).padStart(2, '0')}: ${protocol}//${host}/wall/phone?id=${i}`);
+            }
+            navigator.clipboard.writeText(urls.join('\n')).then(() => {
+                const btn = document.getElementById('btnCopyUrls');
+                btn.innerText = '✓ 100 URLs Copied to Clipboard!';
+                setTimeout(() => {
+                    btn.innerText = '📋 Copy 100 Phone URLs';
+                }, 3000);
+            });
+        }
+
+        // Cycle Countdown Timer
+        let secondsLeft = 60;
+        setInterval(() => {
+            secondsLeft--;
+            if (secondsLeft <= 0) {
+                secondsLeft = 60;
+            }
+            document.getElementById('cycleStatus').innerText = `NEXT BROADCAST: ${secondsLeft}s`;
+        }, 1000);
+
+        // Trigger Sync Broadcast
+        async function triggerWallSync() {
+            try {
+                await fetch('/api/wall/trigger', { method: 'POST' });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        // WebSocket Connection for Master Wall Visualizer
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${protocol}//${window.location.host}`);
+
+        const overlay = document.getElementById('bigOverlay');
+        ws.onmessage = (event) => {
+            const msg = JSON.parse(event.data);
+            if (msg.type === 'WALL_SYNC_TRIGGER') {
+                if (msg.data.mode === 'synced_logo') {
+                    overlay.classList.add('active');
+                    for (let i = 0; i < 100; i++) {
+                        document.getElementById('slot-' + i).style.borderColor = '#FF6B00';
+                    }
+                } else {
+                    overlay.classList.remove('active');
+                    for (let i = 0; i < 100; i++) {
+                        document.getElementById('slot-' + i).style.borderColor = '#2f2154';
+                    }
+                }
+            }
+        };
+    </script>
+</body>
+</html>

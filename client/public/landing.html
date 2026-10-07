@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToffeeCon 2026 · The Future of Screening</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/assets/toffeecon-logo.png">
+    <style>
+        :root {
+            --bg-deep: #06040b;
+            --bg-card: rgba(18, 14, 32, 0.75);
+            --border-purple: rgba(168, 85, 247, 0.28);
+            --toffee-orange: #FF6B00;
+            --toffee-purple: #7913C7;
+            --toffee-magenta: #E6007E;
+            --toffee-gradient: linear-gradient(135deg, #7913C7 0%, #B80088 50%, #E6007E 100%);
+            --neon-cyan: #00F0FF;
+            --neon-pink: #FF0077;
+            --text-main: #F4F4F8;
+            --text-dim: #9D98B3;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 15%, rgba(147, 51, 234, 0.22) 0%, transparent 45%),
+                radial-gradient(circle at 90% 75%, rgba(255, 107, 0, 0.16) 0%, transparent 45%);
+            min-height: 100vh;
+        }
+
+        /* Scanline Overlay */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(18, 16, 38, 0) 50%, rgba(0, 0, 0, 0.22) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            opacity: 0.6;
+            z-index: 999;
+        }
+
+        /* Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 48px;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-purple);
+            background: rgba(6, 4, 11, 0.7);
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand-logo-img {
+            height: 38px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0 16px rgba(184, 0, 136, 0.45));
+            transition: transform 0.25s ease, filter 0.25s ease;
+        }
+
+        .brand-logo:hover .brand-logo-img {
+            transform: scale(1.04);
+            filter: drop-shadow(0 0 24px rgba(230, 0, 126, 0.7));
+        }
+
+        .logo-tag {
+            background: var(--toffee-gradient);
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+        }
+
+        .btn-rsvp {
+            background: linear-gradient(135deg, var(--toffee-orange), var(--toffee-purple));
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(255, 107, 0, 0.35);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-rsvp:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 107, 0, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-purple);
+            color: var(--neon-cyan);
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Space Mono', monospace;
+            transition: background 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 240, 255, 0.1);
+        }
+
+        @keyframes emblemFloat {
+            0%, 100% {
+                transform: translateY(0px) scale(1);
+                filter: drop-shadow(0 0 35px rgba(184, 0, 136, 0.7)) drop-shadow(0 15px 50px rgba(0, 0, 0, 0.9));
+            }
+            50% {
+                transform: translateY(-10px) scale(1.02);
+                filter: drop-shadow(0 0 55px rgba(230, 0, 126, 0.9)) drop-shadow(0 25px 60px rgba(0, 0, 0, 0.95));
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 80px 24px 60px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hero-badge {
+            background: rgba(147, 51, 234, 0.15);
+            border: 1px solid var(--toffee-purple);
+            color: #D8B4FE;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            margin-bottom: 28px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hero-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.8rem, 6vw, 5.2rem);
+            font-weight: 800;
+            line-height: 1.08;
+            letter-spacing: -1.5px;
+            margin-bottom: 24px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--toffee-orange) 0%, #d946ef 50%, var(--toffee-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            font-size: clamp(1.05rem, 2vw, 1.35rem);
+            color: var(--text-dim);
+            max-width: 820px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        /* Countdown Timer */
+        .countdown-box {
+            background: rgba(14, 10, 26, 0.8);
+            border: 1px solid var(--border-purple);
+            border-radius: 16px;
+            padding: 24px 36px;
+            margin-bottom: 48px;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .countdown-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .countdown-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 15px rgba(255, 107, 0, 0.6);
+            line-height: 1;
+        }
+
+        .countdown-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--neon-cyan);
+            letter-spacing: 2px;
+            margin-top: 6px;
+        }
+
+        .countdown-divider {
+            font-family: 'Space Mono', monospace;
+            font-size: 2rem;
+            color: var(--toffee-purple);
+            opacity: 0.7;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Stats Strip */
+        .stats-strip {
+            max-width: 1200px;
+            margin: 40px auto 100px;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-purple);
+            border-radius: 14px;
+            padding: 28px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--toffee-orange), var(--toffee-purple));
+        }
+
+        .stat-number {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.6rem;
+            font-weight: 800;
+            color: var(--toffee-orange);
+            margin-bottom: 6px;
+        }
+
+        .stat-name {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+
+        /* Agenda & Keynote Speakers */
+        .section {
+            max-width: 1200px;
+            margin: 0 auto 100px;
+            padding: 0 24px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-kicker {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--toffee-purple);
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.6rem;
+            font-weight: 800;
+        }
+
+        .keynote-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
+        .speaker-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-purple);
+            border-radius: 16px;
+            padding: 32px;
+            position: relative;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .speaker-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--toffee-orange);
+        }
+
+        .speaker-time {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--neon-cyan);
+            margin-bottom: 12px;
+        }
+
+        .speaker-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .speaker-role {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--toffee-orange);
+            margin-bottom: 16px;
+        }
+
+        .speaker-topic {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Experiential Floor Grid */
+        .booths-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 28px;
+        }
+
+        .booth-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-purple);
+            border-radius: 16px;
+            padding: 36px;
+            position: relative;
+        }
+
+        .booth-badge {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--neon-cyan);
+            background: rgba(0, 240, 255, 0.08);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+
+        .booth-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .booth-desc {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(6, 4, 11, 0.85);
+            backdrop-filter: blur(16px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #110d22;
+            border: 1px solid var(--toffee-purple);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 540px;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 0 60px rgba(147, 51, 234, 0.35);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            background: #191433;
+            border: 1px solid var(--border-purple);
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: var(--toffee-orange);
+        }
+
+        /* Ticket Result View */
+        .ticket-box {
+            background: #181330;
+            border: 2px dashed var(--toffee-orange);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            display: none;
+            margin-top: 20px;
+        }
+
+        .ticket-id {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.5rem;
+            color: var(--neon-cyan);
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-purple);
+            padding: 48px 24px;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 900px) {
+            .stats-strip, .keynote-grid, .booths-grid {
+                grid-template-columns: 1fr;
+            }
+            .countdown-box {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 16px;
+            }
+            .countdown-divider {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="/" class="brand-logo">
+            <img src="/assets/toffeecon-logo.png" alt="ToffeeCon 2026" class="brand-logo-img">
+            <span class="logo-tag">SUMMIT 2026</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="/portal" style="color: #FF0077; font-weight: 700;">The Portal 🌀</a></li>
+            <li><a href="#about">The Shift</a></li>
+            <li><a href="#agenda">Keynotes</a></li>
+            <li><a href="#experiences">Experiential Zones</a></li>
+            <li><a href="/invite" style="color: var(--neon-cyan);">Greetings.exe</a></li>
+        </ul>
+        <button class="btn-rsvp" onclick="openRSVP()">Request VIP Pass</button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">
+            <span>●</span> NOVEMBER 2026 · DHAKA, BANGLADESH
+        </div>
+
+        <!-- 3D Official ToffeeCon "Screen of Tomorrow" Hero Emblem -->
+        <div class="hero-emblem-container" style="margin-bottom: 28px; position: relative;">
+            <img src="/assets/toffeecon-hero-emblem.png" alt="ToffeeCon - Screen of Tomorrow" class="hero-emblem-img" style="max-width: clamp(320px, 68vw, 680px); height: auto; filter: drop-shadow(0 0 40px rgba(184, 0, 136, 0.75)) drop-shadow(0 15px 50px rgba(0, 0, 0, 0.9)); animation: emblemFloat 6s ease-in-out infinite;">
+        </div>
+
+        <p class="hero-desc" style="margin-top: 10px;">
+            7 Years of Screenovation. Witness Bangladesh's premier streaming platform evolve into a global technology powerhouse where advertisers, creators, and media buyers experience tomorrow's screening ecosystem.
+        </p>
+
+        <!-- Live Retro Countdown Clock -->
+        <div class="countdown-box">
+            <div class="countdown-unit">
+                <span class="countdown-num" id="days">14</span>
+                <span class="countdown-label">DAYS</span>
+            </div>
+            <div class="countdown-divider">:</div>
+            <div class="countdown-unit">
+                <span class="countdown-num" id="hours">08</span>
+                <span class="countdown-label">HOURS</span>
+            </div>
+            <div class="countdown-divider">:</div>
+            <div class="countdown-unit">
+                <span class="countdown-num" id="mins">42</span>
+                <span class="countdown-label">MINUTES</span>
+            </div>
+            <div class="countdown-divider">:</div>
+            <div class="countdown-unit">
+                <span class="countdown-num" id="secs">19</span>
+                <span class="countdown-label">SECONDS</span>
+            </div>
+        </div>
+        <div style="font-family:'Space Mono', monospace; font-size:0.9rem; color:var(--neon-cyan); letter-spacing:1px; margin-top:-14px; margin-bottom:28px;">
+            🗓️ 28 NOVEMBER 2026 · 18:00 BST · DHAKA, BANGLADESH
+        </div>
+
+        <div class="hero-actions">
+            <a href="/portal" class="btn-secondary" style="padding: 14px 28px; font-size: 1rem; border-color: #FF0077; color: #fff; background: rgba(255, 0, 119, 0.2); box-shadow: 0 0 25px rgba(255, 0, 119, 0.5);">
+                Step Inside Screen Portal (3D) 🌀
+            </a>
+            <button class="btn-rsvp" style="padding: 14px 32px; font-size: 1rem;" onclick="openRSVP()">
+                Register For VIP Access ↗
+            </button>
+            <a href="/invite" class="btn-secondary" style="padding: 14px 28px; font-size: 1rem;">
+                Launch Greetings.exe (3D) ⚡
+            </a>
+        </div>
+    </section>
+
+    <!-- Stats Proof -->
+    <div class="stats-strip" id="about">
+        <div class="stat-card">
+            <div class="stat-number">100M+</div>
+            <div class="stat-name">LIFETIME USERS</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">8</div>
+            <div class="stat-name">WORLD CUP BROADCASTS</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">70+</div>
+            <div class="stat-name">LIVE SATELLITE CHANNELS</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">#1</div>
+            <div class="stat-name">GOOGLE PLAY ENTERTAINMENT</div>
+        </div>
+    </div>
+
+    <!-- Keynote Agenda -->
+    <section class="section" id="agenda">
+        <div class="section-header">
+            <div class="section-kicker">STAGE OF TOMORROW</div>
+            <h2 class="section-title">The Keynote Speakers</h2>
+        </div>
+
+        <div class="keynote-grid">
+            <div class="speaker-card">
+                <div class="speaker-time">7:04 PM · KEYNOTE 1</div>
+                <div class="speaker-name">Taimur Rahman</div>
+                <div class="speaker-role">CCRO, BANGLALINK</div>
+                <div class="speaker-topic">
+                    <b>"Welcome & The 7-Year Journey":</b> How Toffee redefined how millions of Bangladeshis gather around fragmented screens.
+                </div>
+            </div>
+
+            <div class="speaker-card">
+                <div class="speaker-time">7:39 PM · KEYNOTE 2</div>
+                <div class="speaker-name">Modasser Ahmed</div>
+                <div class="speaker-role">DY. DIRECTOR, TOFFEE</div>
+                <div class="speaker-topic">
+                    <b>"Platform & Technology":</b> Proving high-throughput infrastructure, concurrent live streaming, and self-serve ad tech at national scale.
+                </div>
+            </div>
+
+            <div class="speaker-card">
+                <div class="speaker-time">8:11 PM · KEYNOTE 3</div>
+                <div class="speaker-name">Johan Buse</div>
+                <div class="speaker-role">CHIEF EXECUTIVE OFFICER</div>
+                <div class="speaker-topic">
+                    <b>"The Future Vision":</b> Unveiling the 2033 roadmap, global content partnerships, and the live crowd participation finale (<a href="/vote" style="color:var(--neon-cyan); text-decoration:none;">Option 1: Sonic Dilemma</a> · <a href="/marathon" style="color:var(--neon-cyan); text-decoration:none;">Option 2: Memory Marathon</a> · <a href="/dashboard" style="color:var(--neon-cyan); text-decoration:none;">Option 3: Personal Dashboard</a> · <a href="/capsule" style="color:var(--neon-cyan); text-decoration:none;">Option 4: ToffeeCon Wrapped</a>).
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experiential Zones -->
+    <section class="section" id="experiences">
+        <div class="section-header">
+            <div class="section-kicker">IN-VENUE INSTALLATIONS</div>
+            <h2 class="section-title">Step Inside The Technology</h2>
+        </div>
+
+        <div class="booths-grid">
+            <div class="booth-card" style="border-color: var(--neon-cyan); background: radial-gradient(circle at top right, rgba(0,240,255,0.08), var(--bg-card));">
+                <span class="booth-badge" style="color:var(--toffee-orange); border-color:rgba(255,107,0,0.3); background:rgba(255,107,0,0.08);">SUMMIT ENTRANCE ARCH</span>
+                <h3 class="booth-title">The Portal to a New Era</h3>
+                <p class="booth-desc">
+                    A panoramic tunnel of immersive curved screens simulating a living browsing catalog. As you walk through, screens evolve from grainy 1980s CRT static into the 4K neon rebirth of modern screening.
+                </p>
+                <div style="margin-top: 20px;">
+                    <a href="/portal" style="color: var(--neon-cyan); font-family: 'Space Mono', monospace; font-size: 0.85rem; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+                        <span>Walk Through The Portal 3D</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="booth-card">
+                <span class="booth-badge">10x10 HANDSET GRID</span>
+                <h3 class="booth-title">Found In Translation</h3>
+                <p class="booth-desc">
+                    A synchronized matrix of 100 live mobile devices displaying copy in Bangla, Chittagonian, Sylheti, and English that periodically morphs into one giant animated Toffee mark.
+                </p>
+            </div>
+
+            <div class="booth-card">
+                <span class="booth-badge">ADVERTISER FLIGHT DECK</span>
+                <h3 class="booth-title">Mission Control</h3>
+                <p class="booth-desc">
+                    A tactile retro-futuristic arcade console where media buyers toggle real-time ad formats, simulated CPMs, and receive instant printed campaign proposals.
+                </p>
+                <div style="margin-top: 14px;">
+                    <a href="/booth/mission-control" style="color:#FF10F0; font-family:'Space Mono'; font-size:0.8rem; text-decoration:none; font-weight:700;">🚀 Step Into Flight Deck Console →</a>
+                </div>
+            </div>
+
+            <div class="booth-card">
+                <span class="booth-badge">AI VOICE STUDIO</span>
+                <h3 class="booth-title">The Dub Booth</h3>
+                <p class="booth-desc">
+                    Step inside a retro purple neon telephone box, record dialogue into a brass vintage handset, and let on-premise AI models instantly dub your voice into 5 regional dialects with instant 9:16 social reel delivery.
+                </p>
+                <div style="margin-top: 14px;">
+                    <a href="/booth/dub" style="color:#EAB308; font-family:'Space Mono'; font-size:0.8rem; text-decoration:none; font-weight:700;">🎙️ Enter Telephone Dub Box →</a>
+                </div>
+            </div>
+
+            <div class="booth-card">
+                <span class="booth-badge">GENAI PHOTOBOOTH</span>
+                <h3 class="booth-title">In Another Universe</h3>
+                <p class="booth-desc">
+                    Rapid sub-4-second diffusion model capturing your portrait and transporting you into a retro-futuristic broadcast universe with instant social-ready keepsakes.
+                </p>
+                <div style="margin-top: 14px; display:flex; gap:12px; flex-wrap:wrap;">
+                    <a href="/booth/universe" style="color:var(--neon-cyan); font-family:'Space Mono'; font-size:0.8rem; text-decoration:none;">📸 Camera Kiosk →</a>
+                    <a href="/booth/universe-wall" style="color:var(--toffee-orange); font-family:'Space Mono'; font-size:0.8rem; text-decoration:none;">🎬 6-Screen Wall →</a>
+                </div>
+            </div>
+
+            <div class="booth-card">
+                <span class="booth-badge" style="color:#A855F7; border-color:rgba(168,85,247,0.3);">ALGORITHM SHOWDOWN</span>
+                <h3 class="booth-title">Who Knows You Better?</h3>
+                <p class="booth-desc">
+                    A retro-futuristic curved TV console pitting Toffee’s machine learning recommendation algorithm against your best friend’s guesses to prove neural discovery capability.
+                </p>
+                <div style="margin-top: 14px;">
+                    <a href="/booth/taste-duel" style="color:#A855F7; font-family:'Space Mono'; font-size:0.8rem; text-decoration:none;">📺 Launch Taste Duel Showdown →</a>
+                </div>
+            </div>
+
+            <div class="booth-card">
+                <span class="booth-badge" style="color:#00F0FF; border-color:rgba(0,240,255,0.3);">TRIPLE SCREEN SYNC</span>
+                <h3 class="booth-title">Screen Migration Relay</h3>
+                <p class="booth-desc">
+                    A larger-than-life phone, laptop, and curved master TV screen. Pre-keynote selfies flow across devices; during keynotes, live Toffee metrics migrate continuously across screens.
+                </p>
+                <div style="margin-top: 14px;">
+                    <a href="/booth/screen-relay" style="color:#00F0FF; font-family:'Space Mono'; font-size:0.8rem; text-decoration:none; font-weight:700;">📱 Launch Screen Relay →</a>
+                </div>
+            </div>
+
+            <div class="booth-card">
+                <span class="booth-badge" style="color:#10B981; border-color:rgba(168,85,247,0.3);">SATELLITE & HALL OF FAME</span>
+                <h3 class="booth-title">The Space Window</h3>
+                <p class="booth-desc">
+                    Ceiling LED window into deep space with orbiting Bangabandhu satellite, paired with a massive floor-to-ceiling Toffee Hall of Fame showcasing 100+ live satellite channels with laser uplinks.
+                </p>
+                <div style="margin-top: 14px;">
+                    <a href="/booth/space-window" style="color:#10B981; font-family:'Space Mono'; font-size:0.8rem; text-decoration:none; font-weight:700;">🛰️ Open Space Window →</a>
+                </div>
+            </div>
+
+            <div class="booth-card">
+                <span class="booth-badge" style="color:#F59E0B; border-color:rgba(245,158,11,0.3);">AMBER CRT STUDIO</span>
+                <h3 class="booth-title">Capsule 2033 Booth</h3>
+                <p class="booth-desc">
+                    Acoustic recording cabin where VIPs and influencers record futuristic predictions for 2033, generating instant 9:16 shorts and transmitting data directly to the stage Time Capsule deck.
+                </p>
+                <div style="margin-top: 14px;">
+                    <a href="/booth/capsule-booth" style="color:#F59E0B; font-family:'Space Mono'; font-size:0.8rem; text-decoration:none; font-weight:700;">📼 Record 2033 Message →</a>
+                </div>
+            </div>
+
+            <div class="booth-card">
+                <span class="booth-badge" style="color:#D946EF; border-color:rgba(217,70,239,0.3);">FRINGE ACTIVATIONS</span>
+                <h3 class="booth-title">Interactive Fringe Hub</h3>
+                <p class="booth-desc">
+                    Four high-touch attendee micro-experiences: Vintage CRT TV stack, Film Box instant thermal receipt camera, custom Toffee tote bag designer, and 3D gesture runner game.
+                </p>
+                <div style="margin-top: 14px;">
+                    <a href="/booth/fringe" style="color:#D946EF; font-family:'Space Mono'; font-size:0.8rem; text-decoration:none; font-weight:700;">🕹️ Step Into Fringe Hub →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 ToffeeCon · Banglalink Digital Communications Ltd. · All Rights Reserved.</p>
+        <p style="margin-top: 8px; font-family:'Space Mono', monospace; font-size:0.75rem; color:#A855F7;">
+            POWERED BY THE TOFFEECON EVENT OPERATING SYSTEM (EOS)
+        </p>
+        <div style="margin-top: 14px;">
+            <button onclick="retrieveStoredPass()" style="background:transparent; border:1px solid rgba(168,85,247,0.4); color:var(--neon-cyan); padding:6px 16px; border-radius:20px; font-family:'Space Mono'; font-size:0.75rem; cursor:pointer;">
+                🎟️ View / Retrieve My Saved Pass
+            </button>
+        </div>
+    </footer>
+
+    <!-- RSVP Modal -->
+    <div class="modal-overlay" id="rsvpModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeRSVP()">✕</button>
+            
+            <div id="rsvpFormContainer">
+                <div style="font-family:'Space Mono', monospace; font-size:0.8rem; color:var(--toffee-orange); margin-bottom:8px;">VIP ACCREDITATION</div>
+                <h2 style="font-family:'Syne', sans-serif; font-size:1.8rem; margin-bottom:20px;">Request Summit Pass</h2>
+                
+                <form id="rsvpForm" onsubmit="submitRSVP(event)">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" id="guestName" class="form-input" required placeholder="e.g. Tanvir Hasan">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Company / Agency</label>
+                        <input type="text" id="guestCompany" class="form-input" required placeholder="e.g. GroupM / Media Agency">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Corporate Email</label>
+                        <input type="email" id="guestEmail" class="form-input" required placeholder="e.g. tanvir@agency.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Industry Classification</label>
+                        <select id="guestRole" class="form-select">
+                            <option value="Advertiser / Media Buyer">Advertiser / Media Buyer</option>
+                            <option value="Content Partner / Studio">Content Partner / Studio</option>
+                            <option value="MarTech / Infra Partner">MarTech / Infra Partner</option>
+                            <option value="Journalist / Press">Journalist / Press</option>
+                            <option value="Content Creator / Influencer">Content Creator / Influencer</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-rsvp" style="width: 100%; justify-content: center; padding: 14px; font-size: 1rem;">
+                        Generate Digital Smart Pass ⚡
+                    </button>
+                </form>
+            </div>
+
+            <!-- Generated Ticket View -->
+            <div class="ticket-box" id="ticketResult">
+                <div style="display:flex; justify-content:center; margin-bottom:12px;">
+                    <img src="/assets/toffeecon-logo.png" alt="ToffeeCon" style="height:26px; filter:drop-shadow(0 0 10px rgba(184,0,136,0.5));">
+                </div>
+                <div style="font-family:'Space Mono', monospace; font-size:0.75rem; color:#10B981; margin-bottom:6px;">PASS CONFIRMED · ACCREDITED</div>
+                <div class="ticket-id" id="ticketId">TCON-0000</div>
+                <h3 id="ticketName" style="font-family:'Syne', sans-serif; font-size:1.3rem; margin-bottom:4px;">Guest Name</h3>
+                <p id="ticketDetails" style="color:var(--text-dim); font-size:0.85rem; margin-bottom:16px;">Advertiser · Mindshare</p>
+
+                <!-- Stylized QR Code Simulation -->
+                <div style="background:#fff; padding:16px; border-radius:8px; display:inline-block; margin-bottom:16px;">
+                    <img id="qrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TOFFEECON-PASS" width="140" height="140" alt="Ticket QR">
+                </div>
+
+                <p style="font-size:0.8rem; color:var(--text-dim); margin-bottom:16px;">
+                    Present this dynamic QR at the Speed-Gate on show day for automatic badge printing.
+                </p>
+                <button class="btn-secondary" onclick="closeRSVP()" style="width:100%; justify-content:center;">Done & Save Pass</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fixed Summit Target Date: 28 November 2026 at 18:00 BST (Dhaka UTC+6)
+        const targetDate = new Date('2026-11-28T18:00:00+06:00');
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate.getTime() - now;
+
+            if (distance <= 0) {
+                document.getElementById('days').innerText = '00';
+                document.getElementById('hours').innerText = '00';
+                document.getElementById('mins').innerText = '00';
+                document.getElementById('secs').innerText = '00';
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = String(days).padStart(2, '0');
+            document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+            document.getElementById('mins').innerText = String(mins).padStart(2, '0');
+            document.getElementById('secs').innerText = String(secs).padStart(2, '0');
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Modal Controls
+        function openRSVP() {
+            document.getElementById('rsvpModal').classList.add('open');
+        }
+
+        function closeRSVP() {
+            document.getElementById('rsvpModal').classList.remove('open');
+            setTimeout(() => {
+                document.getElementById('rsvpFormContainer').style.display = 'block';
+                document.getElementById('ticketResult').style.display = 'none';
+            }, 300);
+        }
+
+        function displayTicketView(ticket) {
+            document.getElementById('rsvpFormContainer').style.display = 'none';
+            document.getElementById('ticketResult').style.display = 'block';
+            document.getElementById('ticketId').innerText = ticket.id;
+            document.getElementById('ticketName').innerText = ticket.name;
+            document.getElementById('ticketDetails').innerText = `${ticket.role} · ${ticket.company}`;
+            // Clean QR with only ticket.id for fast scanning at speed-gate
+            document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(ticket.id)}`;
+        }
+
+        function retrieveStoredPass() {
+            const saved = localStorage.getItem('tcon_saved_ticket');
+            if (saved) {
+                try {
+                    const ticket = JSON.parse(saved);
+                    openRSVP();
+                    displayTicketView(ticket);
+                    return;
+                } catch(e) {}
+            }
+            openRSVP();
+        }
+
+        // Handle RSVP Form Submission
+        async function submitRSVP(e) {
+            e.preventDefault();
+            const submitBtn = document.querySelector('#rsvpForm button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+
+            const name = document.getElementById('guestName').value;
+            const company = document.getElementById('guestCompany').value;
+            const email = document.getElementById('guestEmail').value;
+            const role = document.getElementById('guestRole').value;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '⚡ Generating Pass...';
+
+            try {
+                const res = await fetch('/api/rsvp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, company, email, role })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    localStorage.setItem('tcon_saved_ticket', JSON.stringify(data.ticket));
+                    displayTicketView(data.ticket);
+                } else {
+                    alert('Accreditation failed: ' + (data.error || 'Please verify form fields'));
+                }
+            } catch (err) {
+                alert('Connection error. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        }
+    </script>
+</body>
+</html>

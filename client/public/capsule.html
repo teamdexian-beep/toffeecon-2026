@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Capsule 2033 · Future Predictions Kiosk · ToffeeCon 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #070312;
+            --amber: #F59E0B;
+            --orange: #FF6B00;
+            --purple: #A855F7;
+            --pink: #EC4899;
+            --cyan: #00F0FF;
+            --emerald: #10B981;
+            --text-main: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 15%, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        header {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: #FCD34D;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+        }
+
+        .brand-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.85rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #FFF 20%, #FCD34D 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-subtitle {
+            font-size: 0.88rem;
+            color: #94A3B8;
+            margin-top: 4px;
+            line-height: 1.5;
+        }
+
+        /* Nixie Preview Pod */
+        .nixie-mini-bar {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 16px 0 24px 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .nixie-tube-mini {
+            width: 52px;
+            height: 72px;
+            background: #080410;
+            border: 2px solid rgba(245, 158, 11, 0.4);
+            border-radius: 26px 26px 8px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 15px rgba(245, 158, 11, 0.3), 0 0 20px rgba(245, 158, 11, 0.2);
+        }
+
+        .nixie-digit-mini {
+            font-family: 'Space Mono', monospace;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #FFB020;
+            text-shadow: 0 0 8px #FF9000, 0 0 20px #FF3B00;
+            line-height: 1;
+        }
+
+        /* Form Card */
+        .form-card {
+            position: relative;
+            z-index: 10;
+            background: rgba(14, 8, 30, 0.88);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 480px;
+            width: 100%;
+            margin: 0 auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: #FCD34D;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            background: #080312;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #FFFFFF;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            border-color: #F59E0B;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            border: none;
+            color: #000;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            padding: 14px;
+            border-radius: 14px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
+            transition: all 0.2s;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        /* Certificate Modal */
+        .cert-card {
+            display: none;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(147, 51, 234, 0.15) 100%);
+            border: 1.5px solid #F59E0B;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 18px;
+            text-align: center;
+            animation: slideUp 0.35s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .cert-seal {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #F59E0B;
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin: 0 auto 10px auto;
+            box-shadow: 0 0 25px #F59E0B;
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            margin-top: 24px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: #64748B;
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-glow"></div>
+
+    <header>
+        <div class="brand-badge">
+            <span>●</span> TIME CAPSULE 2033 · FUTURE PREDICTIONS
+        </div>
+        <h1 class="brand-title">ToffeeCon Wrapped</h1>
+        <p class="brand-subtitle">
+            What will entertainment & streaming look like in 2033?<br>Your prediction will be burned into the stage VHS cassette.
+        </p>
+
+        <!-- Mini Nixie Tubes Tube Representation -->
+        <div class="nixie-mini-bar">
+            <div class="nixie-tube-mini"><span class="nixie-digit-mini">2</span></div>
+            <div class="nixie-tube-mini"><span class="nixie-digit-mini">0</span></div>
+            <div class="nixie-tube-mini"><span class="nixie-digit-mini">3</span></div>
+            <div class="nixie-tube-mini"><span class="nixie-digit-mini">3</span></div>
+        </div>
+    </header>
+
+    <div class="form-card">
+        <form id="predictionForm" onsubmit="submitPrediction(event)">
+            <div class="form-group">
+                <label class="form-label">YOUR FULL NAME</label>
+                <input type="text" id="predAuthor" class="form-input" placeholder="e.g. Farhan Chowdhury" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">COMPANY / AGENCY</label>
+                <input type="text" id="predCompany" class="form-input" placeholder="e.g. MediaCom Bangladesh" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">YOUR 2033 STREAMING PREDICTION</label>
+                <textarea id="predText" class="form-textarea" placeholder="e.g. In 2033, viewers will feel physical stadium crowd vibrations through smart haptics while streaming FIFA live on Toffee..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit" id="btnSubmit">
+                📼 SEAL PREDICTION INTO 2033 VAULT
+            </button>
+        </form>
+
+        <div class="cert-card" id="certCard">
+            <div class="cert-seal">★</div>
+            <div style="font-family:'Space Mono'; font-size:0.75rem; color:#FCD34D; letter-spacing:2px; margin-bottom:4px;">
+                CAPSULE 2033 VERIFIED KEEPSAKE
+            </div>
+            <h3 style="font-family:'Syne'; font-size:1.4rem; font-weight:800; margin-bottom:8px;" id="certAuthorName">
+                Farhan Chowdhury
+            </h3>
+            <p style="font-size:0.85rem; color:#E2E8F0; line-height:1.4; margin-bottom:12px;" id="certTextPreview">
+                "Your prediction is successfully recorded into Toffee's 2033 Master Vault."
+            </p>
+            <div style="font-family:'Space Mono'; font-size:0.7rem; color:#10B981; border:1px dashed #10B981; padding:6px; border-radius:8px;">
+                STATUS: ENCRYPTED FOR BROADCAST UNVEILING IN 2033
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div>TOFFEECON 2026 EVENT OPERATING SYSTEM</div>
+        <div style="margin-top:4px; color:#F59E0B;">"See you in 7 years."</div>
+    </footer>
+
+    <script>
+        async function submitPrediction(e) {
+            e.preventDefault();
+            const author = document.getElementById('predAuthor').value;
+            const company = document.getElementById('predCompany').value;
+            const text = document.getElementById('predText').value;
+            const btn = document.getElementById('btnSubmit');
+
+            btn.disabled = true;
+            btn.textContent = 'BURNING TO CASSETTE...';
+
+            try {
+                const res = await fetch('/api/capsule/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ author, company, text })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('certAuthorName').textContent = author;
+                    document.getElementById('certTextPreview').textContent = `"${text}"`;
+                    document.getElementById('certCard').style.display = 'block';
+                    btn.textContent = '✓ ARCHIVED INTO CAPSULE 2033';
+                    btn.style.background = '#10B981';
+                    btn.style.color = '#fff';
+                }
+            } catch (err) {
+                btn.disabled = false;
+                btn.textContent = 'RE-ATTEMPT SUBMISSION';
+            }
+        }
+    </script>
+</body>
+</html>

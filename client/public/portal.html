@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Portal to a New Era · ToffeeCon 2026 Immersive Screen Tunnel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root {
+            --bg-void: #020106;
+            --orange: #FF6B00;
+            --purple: #9333EA;
+            --magenta: #FF0077;
+            --cyan: #00F0FF;
+            --amber: #FFB300;
+            --text-main: #FFFFFF;
+            --text-dim: #94A3B8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* 3D WebGL Canvas */
+        #portal-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* CRT Glitch Scanline Overlay (Dynamic opacity based on depth) */
+        #crt-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 8;
+            background: linear-gradient(rgba(18, 16, 38, 0) 50%, rgba(0, 0, 0, 0.5) 50%);
+            background-size: 100% 4px;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        #noise-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 9;
+            opacity: 0.35;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.7'/%3E%3C/svg%3E");
+            transition: opacity 0.3s ease;
+        }
+
+        /* Portal HUD Top Bar */
+        .hud-header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .hud-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            pointer-events: auto;
+        }
+
+        .portal-badge {
+            background: rgba(14, 8, 30, 0.85);
+            border: 1px solid rgba(255, 0, 119, 0.4);
+            padding: 8px 18px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(14px);
+            box-shadow: 0 4px 25px rgba(255, 0, 119, 0.3);
+        }
+
+        .portal-badge img {
+            height: 22px;
+            filter: drop-shadow(0 0 10px rgba(255, 0, 119, 0.8));
+        }
+
+        .portal-badge span {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: #FFFFFF;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+        }
+
+        .hud-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: auto;
+        }
+
+        .hud-btn {
+            background: rgba(14, 8, 30, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #F8FAFC;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            backdrop-filter: blur(14px);
+            transition: all 0.2s;
+        }
+
+        .hud-btn:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+            transform: scale(1.04);
+        }
+
+        .hud-btn.active {
+            border-color: var(--magenta);
+            background: rgba(255, 0, 119, 0.25);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(255, 0, 119, 0.4);
+        }
+
+        /* Walkthrough Depth Progress Meter */
+        .portal-timeline-meter {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            max-width: 720px;
+            background: rgba(11, 7, 24, 0.88);
+            border: 1px solid rgba(255, 0, 119, 0.4);
+            border-radius: 16px;
+            padding: 16px 24px;
+            backdrop-filter: blur(16px);
+            z-index: 20;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 0, 119, 0.3);
+        }
+
+        .meter-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .label-past { color: #94A3B8; }
+        .label-mid { color: var(--cyan); }
+        .label-future { color: var(--magenta); font-weight: 700; text-shadow: 0 0 10px var(--magenta); }
+
+        .progress-track {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            position: absolute;
+            top: 0; left: 0; height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #64748B 0%, var(--cyan) 50%, var(--magenta) 100%);
+            border-radius: 4px;
+            transition: width 0.1s ease;
+            box-shadow: 0 0 14px var(--magenta);
+        }
+
+        .meter-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: #E2E8F0;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--magenta);
+            box-shadow: 0 0 8px var(--magenta);
+            animation: pulse-dot 1.2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Walk Forward Action Button for Mobile */
+        .btn-walk-step {
+            background: linear-gradient(135deg, var(--orange), var(--magenta));
+            border: none;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            cursor: pointer;
+            letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(255, 0, 119, 0.4);
+            transition: transform 0.15s;
+        }
+        .btn-walk-step:active { transform: scale(0.96); }
+
+        /* Navigation Hint */
+        .walk-instructions {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.75);
+            border: 1px solid rgba(255, 0, 119, 0.3);
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: #CBD5E1;
+            letter-spacing: 1.5px;
+            z-index: 15;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        /* Holographic Screen Inspection Detail Modal */
+        .inspect-card {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(14, 8, 30, 0.95);
+            border: 2px solid var(--cyan);
+            border-radius: 20px;
+            padding: 24px;
+            width: 90%;
+            max-width: 440px;
+            z-index: 50;
+            display: none;
+            opacity: 0;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.5);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .inspect-card.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .inspect-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--cyan);
+        }
+
+        .inspect-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+            color: #fff;
+        }
+
+        .inspect-body {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .inspect-stats {
+            background: #000;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        /* Exit Portal Rebirth Modal / Banner */
+        .rebirth-banner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(14, 8, 30, 0.96);
+            border: 2px solid var(--magenta);
+            box-shadow: 0 0 70px rgba(255, 0, 119, 0.6), 0 0 140px rgba(147, 51, 234, 0.5);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            max-width: 540px;
+            width: 90%;
+            z-index: 60;
+            display: none;
+            backdrop-filter: blur(24px);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .rebirth-banner.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .rebirth-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FFFFFF 0%, var(--magenta) 50%, var(--orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .rebirth-desc {
+            color: #E2E8F0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .btn-enter-summit {
+            background: linear-gradient(135deg, var(--orange), var(--magenta));
+            color: #fff;
+            padding: 14px 32px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1rem;
+            display: inline-block;
+            box-shadow: 0 6px 30px rgba(255, 0, 119, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.2s;
+        }
+        .btn-enter-summit:hover { transform: scale(1.04); }
+    </style>
+</head>
+<body>
+
+    <!-- CRT Glitch & Noise Overlays for Analog Grain Transition -->
+    <div id="crt-overlay"></div>
+    <div id="noise-overlay"></div>
+
+    <!-- Top HUD Navigation -->
+    <div class="hud-header">
+        <div class="hud-left">
+            <div class="portal-badge">
+                <img src="/assets/toffeecon-logo.png" alt="ToffeeCon 2026">
+                <span>THE PORTAL TO A NEW ERA</span>
+            </div>
+        </div>
+        <div class="hud-right">
+            <button class="hud-btn" id="btn-tour">
+                <span>✈️</span>
+                <span id="tour-label">Fly-Through Tour: OFF</span>
+            </button>
+            <button class="hud-btn" id="btn-audio" title="Toggle Ambience Sound">
+                <span id="audio-icon">🔊</span>
+                <span>Spatial Sound</span>
+            </button>
+            <a href="/" class="hud-btn">
+                <span>←</span>
+                <span>Summit Hub</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Interactive Navigation Hint -->
+    <div class="walk-instructions" id="walk-hint">
+        ✦ SCROLL, DRAG, OR USE WASD TO STEP INSIDE THE BROWSING MENU ✦
+    </div>
+
+    <!-- 3D Three.js WebGL Container -->
+    <div id="portal-canvas"></div>
+
+    <!-- Bottom Timeline / Evolution Progress Meter -->
+    <div class="portal-timeline-meter">
+        <div class="meter-labels">
+            <span class="label-past">ZONE 1: ANALOG STATIC (1980s)</span>
+            <span class="label-mid">ZONE 2: DIGITAL SHIFT (2000s)</span>
+            <span class="label-future">ZONE 3: REBIRTH OF SCREENING (2026)</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="meter-status">
+            <div class="status-badge">
+                <span class="status-dot" id="status-dot"></span>
+                <span id="portal-status-text">ZONE 01: ANALOG DAWN (CRT SCANLINES) · 0%</span>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <button class="btn-walk-step" id="btn-walk-forward">Walk Forward ▶</button>
+                <button class="hud-btn" id="btn-reset" style="padding: 6px 12px;">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Holographic Screen Detail Modal -->
+    <div class="inspect-card" id="inspectModal">
+        <div class="inspect-header">
+            <span>● SCREEN TILE INSPECTED</span>
+            <span id="inspectZoneTag">ZONE 3 // 4K STREAM</span>
+        </div>
+        <h3 class="inspect-title" id="inspectTitle">Toffee Premier League Live</h3>
+        <p class="inspect-body" id="inspectDesc">Ultra-low latency streaming broadcast with dynamic statistical telemetry overlay.</p>
+        <div class="inspect-stats">
+            <div>RESOLUTION: <strong style="color:var(--cyan);" id="inspectRes">3840x2160 (4K)</strong></div>
+            <div>BITRATE: <strong style="color:var(--magenta);" id="inspectBitrate">18.5 Mbps HDR</strong></div>
+        </div>
+        <button onclick="closeInspect()" style="background:var(--cyan); color:#000; border:none; padding:8px 18px; border-radius:6px; font-weight:800; cursor:pointer; width:100%;">
+            Resume Walkthrough
+        </button>
+    </div>
+
+    <!-- Rebirth Exit Banner (Triggered at End of Tunnel) -->
+    <div class="rebirth-banner" id="rebirth-banner">
+        <div style="font-family:'Space Mono', monospace; font-size:0.75rem; color:var(--magenta); letter-spacing:2px; margin-bottom:8px;">
+            PORTAL COMPLETED // 100% CLARITY ACHIEVED
+        </div>
+        <h2 class="rebirth-title">A Rebirth of Screening</h2>
+        <p class="rebirth-desc">
+            You have walked through 7 years of screen evolution from analog noise to crystal-clear 4K HDR. Step into the main summit arena to witness the future of streaming.
+        </p>
+        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+            <a href="/stage" class="btn-enter-summit">Enter 3-Screen Mainstage ⚡</a>
+            <a href="/hub" class="btn-enter-summit" style="background:linear-gradient(135deg, var(--purple), var(--cyan));">Mission Control Hub 🎛️</a>
+        </div>
+        <div style="margin-top:16px;">
+            <button onclick="resetPortal()" style="background:none; border:none; color:#94A3B8; font-family:'Space Mono'; font-size:0.75rem; cursor:pointer; text-decoration:underline;">
+                Walk Through Again ↺
+            </button>
+        </div>
+    </div>
+
+    <script>
+        /* =============================================================
+           1. Web Audio API Continuum (Analog Static -> Soaring Synth)
+           ============================================================= */
+        let audioCtx = null;
+        let isAudioMuted = false;
+        let noiseGain = null;
+        let synthGain = null;
+
+        function initSoundscape() {
+            if (audioCtx) return;
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContext();
+
+            // 1. Noise Generator (Simulating analog TV static at entrance)
+            const bufferSize = audioCtx.sampleRate * 2;
+            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                output[i] = Math.random() * 2 - 1;
+            }
+
+            const whiteNoise = audioCtx.createBufferSource();
+            whiteNoise.buffer = noiseBuffer;
+            whiteNoise.loop = true;
+
+            const filterNode = audioCtx.createBiquadFilter();
+            filterNode.type = 'lowpass';
+            filterNode.frequency.value = 1600;
+
+            noiseGain = audioCtx.createGain();
+            noiseGain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+
+            whiteNoise.connect(filterNode);
+            filterNode.connect(noiseGain);
+            noiseGain.connect(audioCtx.destination);
+            whiteNoise.start();
+
+            // 2. Synthesizer Drone (For future rebirth at exit)
+            synthGain = audioCtx.createGain();
+            synthGain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+
+            const freqs = [130.81, 196.00, 261.63, 329.63, 392.00, 523.25]; // C3, G3, C4, E4, G4, C5
+            freqs.forEach(f => {
+                const osc = audioCtx.createOscillator();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(f, audioCtx.currentTime);
+
+                const oscFilter = audioCtx.createBiquadFilter();
+                oscFilter.type = 'lowpass';
+                oscFilter.frequency.value = 450;
+
+                osc.connect(oscFilter);
+                oscFilter.connect(synthGain);
+                osc.start();
+            });
+
+            synthGain.connect(audioCtx.destination);
+        }
+
+        function updateAudioByDepth(progressRatio) {
+            if (!audioCtx || isAudioMuted) return;
+            const now = audioCtx.currentTime;
+            const staticLevel = Math.max(0.0001, (1.0 - progressRatio) * 0.08);
+            const synthLevel = Math.max(0.0001, progressRatio * 0.14);
+
+            noiseGain.gain.setTargetAtTime(staticLevel, now, 0.1);
+            synthGain.gain.setTargetAtTime(synthLevel, now, 0.1);
+        }
+
+        const audioBtn = document.getElementById('btn-audio');
+        audioBtn.addEventListener('click', () => {
+            initSoundscape();
+            isAudioMuted = !isAudioMuted;
+            document.getElementById('audio-icon').textContent = isAudioMuted ? '🔇' : '🔊';
+            if (isAudioMuted) {
+                if (noiseGain) noiseGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+                if (synthGain) synthGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+            }
+        });
+
+        /* =============================================================
+           2. Three.js Cylindrical LED Screen Tunnel & Reflective Runway
+           ============================================================= */
+        const canvasContainer = document.getElementById('portal-canvas');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x020106, 0.015);
+
+        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 240);
+        camera.position.set(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.35;
+        canvasContainer.appendChild(renderer.domElement);
+
+        // Tunnel Geometry Dimensions
+        const TUNNEL_LENGTH = 120;
+        const TUNNEL_RADIUS = 5.4;
+        const SCREEN_RINGS = 32;
+        const SCREENS_PER_RING = 16;
+
+        // Content Database for Holographic Tiles
+        const TILE_CATALOG = [
+            { title: "Toffee World Cup 2026", desc: "Live multi-camera cricket stream in ultra-low latency.", res: "3840x2160 (4K)", bitrate: "22 Mbps" },
+            { title: "Bengali Noir: Shurjo Dighol", desc: "Award-winning restored classic cinema presentation.", res: "1920x1080 (HD)", bitrate: "9.5 Mbps" },
+            { title: "Dhallywood Cyberpunk: Dhaka 2033", desc: "Sci-Fi original series exploring futuristic megacities.", res: "3840x2160 (HDR)", bitrate: "24 Mbps" },
+            { title: "BPL Premier League LIVE", desc: "Real-time sports hub with interactive audience voting.", res: "3840x2160 (60fps)", bitrate: "20 Mbps" },
+            { title: "Toffee Comedy Corner", desc: "Stand-up specials and regional comedy sketches.", res: "1920x1080", bitrate: "8.0 Mbps" },
+            { title: "Classic Drama 1994", desc: "Archival footage digitised from analog magnetic tape.", res: "640x480 (480i)", bitrate: "2.5 Mbps" }
+        ];
+
+        // Procedural Dynamic Canvas Texture Generator
+        function createScreenCanvas(ringIdx, screenIdx, totalRings) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 180;
+            const ctx = canvas.getContext('2d');
+            const progress = ringIdx / totalRings;
+
+            if (progress < 0.32) {
+                // ZONE 1: Analog Grain / CRT Static / Monochrome green-grey
+                ctx.fillStyle = '#08080a';
+                ctx.fillRect(0, 0, 256, 180);
+
+                for (let i = 0; i < 450; i++) {
+                    ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.22)' : 'rgba(0,255,100,0.18)';
+                    ctx.fillRect(Math.random() * 256, Math.random() * 180, 2, 2);
+                }
+
+                ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(8, 8, 240, 164);
+
+                ctx.fillStyle = '#00FF66';
+                ctx.font = 'bold 15px "Space Mono", monospace';
+                ctx.fillText(`CH-0${(screenIdx % 9) + 1} ANALOG`, 20, 36);
+
+                ctx.fillStyle = 'rgba(255,255,255,0.6)';
+                ctx.font = '11px "Space Mono", monospace';
+                ctx.fillText('SIGNAL: 480i NTSC', 20, 68);
+                ctx.fillText('TRACKING ERR...', 20, 96);
+                ctx.fillText('NO CARRIER', 20, 124);
+
+            } else if (progress < 0.68) {
+                // ZONE 2: Digital Shift / Streaming Catalogs / Early Menus
+                ctx.fillStyle = '#0b061c';
+                ctx.fillRect(0, 0, 256, 180);
+
+                ctx.strokeStyle = 'rgba(0, 240, 255, 0.7)';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(6, 6, 244, 168);
+
+                ctx.fillStyle = '#00F0FF';
+                ctx.font = 'bold 14px "Space Mono", monospace';
+                ctx.fillText('STREAMING CATALOG', 18, 32);
+
+                // Menu cards
+                ctx.fillStyle = 'rgba(147, 51, 234, 0.45)';
+                ctx.fillRect(18, 46, 62, 85);
+                ctx.fillRect(88, 46, 62, 85);
+                ctx.fillRect(158, 46, 62, 85);
+
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = '10px "Space Mono", monospace';
+                ctx.fillText('BUFFERING 720p...', 18, 155);
+
+            } else {
+                // ZONE 3: 2026 Rebirth / Ultra-crisp Neon 4K Streaming
+                const grad = ctx.createLinearGradient(0, 0, 256, 180);
+                grad.addColorStop(0, '#FF0077');
+                grad.addColorStop(0.5, '#7913C7');
+                grad.addColorStop(1, '#00F0FF');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, 256, 180);
+
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = '900 18px "Syne", sans-serif';
+                ctx.fillText('TOFFEECON 2026', 18, 42);
+
+                ctx.fillStyle = '#00F0FF';
+                ctx.font = 'bold 13px "Space Mono", monospace';
+                ctx.fillText('4K HDR · 60 FPS LIVE', 18, 70);
+
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = '11px "Space Mono", monospace';
+                ctx.fillText('THE SCREEN OF TOMORROW', 18, 100);
+                ctx.fillText('7 YEARS OF STREAMING', 18, 126);
+
+                // Glowing neon border
+                ctx.strokeStyle = '#FFFFFF';
+                ctx.lineWidth = 4;
+                ctx.strokeRect(4, 4, 248, 172);
+            }
+
+            return canvas;
+        }
+
+        // Screen Meshes Array & Interactive Raycasting
+        const screenGroup = new THREE.Group();
+        scene.add(screenGroup);
+        const interactiveMeshes = [];
+
+        for (let ring = 0; ring < SCREEN_RINGS; ring++) {
+            const zPos = -ring * (TUNNEL_LENGTH / SCREEN_RINGS);
+
+            for (let s = 0; s < SCREENS_PER_RING; s++) {
+                const angle = (s / SCREENS_PER_RING) * Math.PI * 2;
+                const isFloor = Math.abs(angle - Math.PI / 2) < 0.28;
+
+                // Alternate between vertical 9:16, horizontal 16:9, and square tiles
+                let width = 2.1;
+                let height = 1.4;
+                if ((s + ring) % 3 === 0) {
+                    width = 1.3;
+                    height = 2.1; // Vertical 9:16 mobile card
+                } else if ((s + ring) % 3 === 1) {
+                    width = 2.4;
+                    height = 1.3; // Wide 16:9 cinematic
+                }
+
+                const screenGeometry = new THREE.PlaneGeometry(width, height);
+                const canvas = createScreenCanvas(ring, s, SCREEN_RINGS);
+                const texture = new THREE.CanvasTexture(canvas);
+
+                const material = new THREE.MeshBasicMaterial({
+                    map: texture,
+                    side: THREE.DoubleSide
+                });
+
+                const screenMesh = new THREE.Mesh(screenGeometry, material);
+                screenMesh.position.x = Math.cos(angle) * TUNNEL_RADIUS;
+                screenMesh.position.y = Math.sin(angle) * TUNNEL_RADIUS;
+                screenMesh.position.z = zPos;
+
+                screenMesh.lookAt(0, 0, zPos);
+                screenMesh.rotateY(Math.PI);
+
+                if (isFloor) {
+                    // Runway floor screens (wider tiles on floor)
+                    screenMesh.scale.set(1.3, 1.3, 1);
+                }
+
+                screenMesh.userData = {
+                    ring,
+                    tileInfo: TILE_CATALOG[(ring + s) % TILE_CATALOG.length]
+                };
+
+                screenGroup.add(screenMesh);
+                interactiveMeshes.push(screenMesh);
+            }
+        }
+
+        // Glossy Reflective Runway Floor Texture
+        function createRunwayTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 1024;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#05020d';
+            ctx.fillRect(0, 0, 512, 1024);
+
+            // Reflected glow lines & floor screen grid
+            for (let y = 0; y < 1024; y += 64) {
+                ctx.strokeStyle = 'rgba(255, 0, 119, 0.25)';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(32, y);
+                ctx.lineTo(480, y);
+                ctx.stroke();
+
+                // Floor screen thumbnail cards
+                ctx.fillStyle = 'rgba(147, 51, 234, 0.18)';
+                ctx.fillRect(48, y + 8, 180, 48);
+                ctx.fillStyle = 'rgba(0, 240, 255, 0.15)';
+                ctx.fillRect(284, y + 8, 180, 48);
+            }
+
+            // Central laser guiding line
+            ctx.strokeStyle = '#00F0FF';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(256, 0);
+            ctx.lineTo(256, 1024);
+            ctx.stroke();
+
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        const runwayGeo = new THREE.PlaneGeometry(4.2, TUNNEL_LENGTH);
+        const runwayTex = createRunwayTexture();
+        runwayTex.wrapS = THREE.RepeatWrapping;
+        runwayTex.wrapT = THREE.RepeatWrapping;
+        runwayTex.repeat.set(1, 8);
+
+        const runwayMat = new THREE.MeshBasicMaterial({
+            map: runwayTex,
+            side: THREE.DoubleSide
+        });
+        const runway = new THREE.Mesh(runwayGeo, runwayMat);
+        runway.rotation.x = Math.PI / 2;
+        runway.position.set(0, -TUNNEL_RADIUS + 0.35, -TUNNEL_LENGTH / 2);
+        scene.add(runway);
+
+        // Human Silhouette Spectators Walking Ahead (Exactly matching the pitch deck slide)
+        function createSilhouetteTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 128;
+            canvas.height = 256;
+            const ctx = canvas.getContext('2d');
+
+            // Head
+            ctx.fillStyle = '#080414';
+            ctx.beginPath();
+            ctx.arc(64, 40, 16, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Torso & Jacket
+            ctx.beginPath();
+            ctx.moveTo(40, 60);
+            ctx.lineTo(88, 60);
+            ctx.lineTo(92, 160);
+            ctx.lineTo(36, 160);
+            ctx.closePath();
+            ctx.fill();
+
+            // Legs
+            ctx.fillRect(44, 160, 16, 85);
+            ctx.fillRect(68, 160, 16, 85);
+
+            // Radiant Neon Rim Lighting (Pink & Cyan backlights from the tunnel)
+            ctx.strokeStyle = 'rgba(255, 0, 119, 0.75)';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(64, 40, 18, Math.PI * 1.1, Math.PI * 1.9);
+            ctx.stroke();
+
+            ctx.strokeStyle = 'rgba(0, 240, 255, 0.7)';
+            ctx.beginPath();
+            ctx.moveTo(34, 62);
+            ctx.lineTo(34, 160);
+            ctx.lineTo(42, 245);
+            ctx.stroke();
+
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        const silTex = createSilhouetteTexture();
+        const silGeo = new THREE.PlaneGeometry(1.6, 3.2);
+        const silMat = new THREE.MeshBasicMaterial({ map: silTex, transparent: true, opacity: 0.9, side: THREE.DoubleSide });
+
+        const spectator1 = new THREE.Mesh(silGeo, silMat);
+        spectator1.position.set(-0.7, -TUNNEL_RADIUS + 1.95, -28);
+        scene.add(spectator1);
+
+        const spectator2 = new THREE.Mesh(silGeo, silMat);
+        spectator2.position.set(0.6, -TUNNEL_RADIUS + 1.95, -34);
+        spectator2.scale.set(0.92, 0.92, 1);
+        scene.add(spectator2);
+
+        const spectator3 = new THREE.Mesh(silGeo, silMat);
+        spectator3.position.set(-0.3, -TUNNEL_RADIUS + 1.95, -65);
+        spectator3.scale.set(0.75, 0.75, 1);
+        scene.add(spectator3);
+
+        // Floating Volumetric Photon Particles
+        const particleCount = 450;
+        const particleGeo = new THREE.BufferGeometry();
+        const particlePositions = new Float32Array(particleCount * 3);
+
+        for (let p = 0; p < particleCount; p++) {
+            const rad = Math.random() * (TUNNEL_RADIUS - 0.8);
+            const ang = Math.random() * Math.PI * 2;
+            particlePositions[p * 3] = Math.cos(ang) * rad;
+            particlePositions[p * 3 + 1] = Math.sin(ang) * rad;
+            particlePositions[p * 3 + 2] = -Math.random() * TUNNEL_LENGTH;
+        }
+
+        particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+        const particleMat = new THREE.PointsMaterial({
+            color: 0xFF0077,
+            size: 0.12,
+            transparent: true,
+            opacity: 0.65
+        });
+        const particles = new THREE.Points(particleGeo, particleMat);
+        scene.add(particles);
+
+        // Glowing Neon Toroidal Arcs Along Tunnel (Magenta, Purple, Cyan)
+        const tunnelLights = [];
+        for (let i = 0; i < 7; i++) {
+            const z = -i * 18;
+            const progress = i / 6;
+            const ringColor = progress < 0.35 ? 0x00FF66 : (progress < 0.7 ? 0x00F0FF : 0xFF0077);
+
+            const ringLight = new THREE.PointLight(ringColor, 3.5, 22);
+            ringLight.position.set(0, 2.2, z);
+            scene.add(ringLight);
+            tunnelLights.push(ringLight);
+
+            // Glowing structural neon ring arch
+            const ringGeo = new THREE.TorusGeometry(TUNNEL_RADIUS + 0.12, 0.05, 16, 64);
+            const ringMat = new THREE.MeshBasicMaterial({ color: ringColor, transparent: true, opacity: 0.65 });
+            const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+            ringMesh.position.z = z;
+            scene.add(ringMesh);
+        }
+
+        // Luminous Exit Portal Arch (The Rebirth Ring)
+        const exitArchGeo = new THREE.TorusGeometry(TUNNEL_RADIUS, 0.35, 20, 80);
+        const exitArchMat = new THREE.MeshBasicMaterial({ color: 0xFF0077 });
+        const exitArch = new THREE.Mesh(exitArchGeo, exitArchMat);
+        exitArch.position.z = -TUNNEL_LENGTH;
+        scene.add(exitArch);
+
+        // Volumetric Hyperspace Exit Light Cone
+        const exitBeamGeo = new THREE.CylinderGeometry(0.8, TUNNEL_RADIUS, 24, 32, 1, true);
+        const exitBeamMat = new THREE.MeshBasicMaterial({
+            color: 0xFF0077,
+            transparent: true,
+            opacity: 0.45,
+            side: THREE.DoubleSide
+        });
+        const exitBeam = new THREE.Mesh(exitBeamGeo, exitBeamMat);
+        exitBeam.rotation.x = Math.PI / 2;
+        exitBeam.position.z = -TUNNEL_LENGTH - 8;
+        scene.add(exitBeam);
+
+        /* =============================================================
+           3. Walkthrough Physics, Navigation & Drone Fly-Through
+           ============================================================= */
+        let targetZ = 0;
+        let currentZ = 0;
+        let mouseLook = { x: 0, y: 0 };
+        let isDragging = false;
+        let prevMouse = { x: 0, y: 0 };
+        let isAutoTour = false;
+
+        const crtOverlay = document.getElementById('crt-overlay');
+        const noiseOverlay = document.getElementById('noise-overlay');
+        const progressFill = document.getElementById('progress-fill');
+        const statusText = document.getElementById('portal-status-text');
+        const statusDot = document.getElementById('status-dot');
+        const rebirthBanner = document.getElementById('rebirth-banner');
+        const tourBtn = document.getElementById('btn-tour');
+        const tourLabel = document.getElementById('tour-label');
+
+        function moveForward(amount = 6) {
+            initSoundscape();
+            isAutoTour = false;
+            updateTourButton();
+            targetZ = Math.max(-TUNNEL_LENGTH, Math.min(0, targetZ - amount));
+        }
+
+        function moveBackward(amount = 6) {
+            initSoundscape();
+            isAutoTour = false;
+            updateTourButton();
+            targetZ = Math.max(-TUNNEL_LENGTH, Math.min(0, targetZ + amount));
+        }
+
+        function resetPortal() {
+            targetZ = 0;
+            currentZ = 0;
+            isAutoTour = false;
+            updateTourButton();
+            rebirthBanner.classList.remove('show');
+            updateDepthState(0);
+        }
+
+        function toggleTour() {
+            initSoundscape();
+            isAutoTour = !isAutoTour;
+            updateTourButton();
+        }
+
+        function updateTourButton() {
+            if (isAutoTour) {
+                tourBtn.classList.add('active');
+                tourLabel.textContent = 'Fly-Through: ON';
+            } else {
+                tourBtn.classList.remove('active');
+                tourLabel.textContent = 'Fly-Through: OFF';
+            }
+        }
+
+        document.getElementById('btn-walk-forward').addEventListener('click', () => moveForward(10));
+        document.getElementById('btn-reset').addEventListener('click', resetPortal);
+        tourBtn.addEventListener('click', toggleTour);
+
+        // Wheel Scroll
+        window.addEventListener('wheel', (e) => {
+            initSoundscape();
+            if (e.deltaY > 0) moveForward(4);
+            else moveBackward(4);
+        });
+
+        // Keyboard Controls
+        window.addEventListener('keydown', (e) => {
+            initSoundscape();
+            if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') moveForward(5);
+            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') moveBackward(5);
+            if (e.key === 't' || e.key === 'T') toggleTour();
+        });
+
+        // Mouse Drag & Touch Controls
+        window.addEventListener('mousedown', (e) => {
+            initSoundscape();
+            isDragging = true;
+            prevMouse = { x: e.clientX, y: e.clientY };
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) {
+                mouseLook.x = (e.clientX / window.innerWidth - 0.5) * 0.45;
+                mouseLook.y = -(e.clientY / window.innerHeight - 0.5) * 0.35;
+                return;
+            }
+            const deltaY = e.clientY - prevMouse.y;
+            const deltaX = e.clientX - prevMouse.x;
+            targetZ = Math.max(-TUNNEL_LENGTH, Math.min(0, targetZ + deltaY * 0.16));
+            mouseLook.x += deltaX * 0.002;
+            prevMouse = { x: e.clientX, y: e.clientY };
+        });
+
+        window.addEventListener('mouseup', () => isDragging = false);
+
+        // Touch Interaction
+        window.addEventListener('touchstart', (e) => {
+            initSoundscape();
+            if (e.touches.length === 1) {
+                isDragging = true;
+                prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging || e.touches.length !== 1) return;
+            const deltaY = e.touches[0].clientY - prevMouse.y;
+            targetZ = Math.max(-TUNNEL_LENGTH, Math.min(0, targetZ + deltaY * 0.22));
+            prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        });
+
+        window.addEventListener('touchend', () => isDragging = false);
+
+        /* =============================================================
+           4. Holographic Screen Raycaster Inspection
+           ============================================================= */
+        const raycaster = new THREE.Raycaster();
+        const mouseVec = new THREE.Vector2();
+
+        window.addEventListener('click', (e) => {
+            // Avoid clicking HUD elements
+            if (e.target.closest('.hud-header') || e.target.closest('.portal-timeline-meter') || e.target.closest('.inspect-card') || e.target.closest('.rebirth-banner')) return;
+
+            mouseVec.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseVec.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouseVec, camera);
+            const intersects = raycaster.intersectObjects(interactiveMeshes);
+
+            if (intersects.length > 0) {
+                const hit = intersects[0].object;
+                if (hit.userData && hit.userData.tileInfo) {
+                    showInspect(hit.userData);
+                }
+            }
+        });
+
+        function showInspect(userData) {
+            const modal = document.getElementById('inspectModal');
+            const info = userData.tileInfo;
+            const progress = userData.ring / SCREEN_RINGS;
+
+            document.getElementById('inspectTitle').textContent = info.title;
+            document.getElementById('inspectDesc').textContent = info.desc;
+            document.getElementById('inspectRes').textContent = info.res;
+            document.getElementById('inspectBitrate').textContent = info.bitrate;
+            document.getElementById('inspectZoneTag').textContent = progress < 0.35 ? 'ZONE 1 // 480i ANALOG' : (progress < 0.7 ? 'ZONE 2 // 1080p DIGITAL' : 'ZONE 3 // 4K HDR REBIRTH');
+
+            modal.classList.add('show');
+            if (navigator.vibrate) navigator.vibrate([40]);
+        }
+
+        function closeInspect() {
+            document.getElementById('inspectModal').classList.remove('show');
+        }
+
+        /* =============================================================
+           5. Evolutionary State & Dynamic Shaders
+           ============================================================= */
+        function updateDepthState(progress) {
+            progressFill.style.width = `${progress * 100}%`;
+            updateAudioByDepth(progress);
+
+            // Dynamically dissolve CRT scanlines & static noise as user reaches clarity
+            crtOverlay.style.opacity = (1.0 - progress * 0.88).toString();
+            noiseOverlay.style.opacity = Math.max(0, (1.0 - progress * 1.25) * 0.35).toString();
+
+            if (progress < 0.33) {
+                statusText.textContent = `ZONE 01: ANALOG DAWN (480i CRT SCANLINES & STATIC) · DEPTH: ${Math.round(progress * 100)}%`;
+                statusDot.style.background = '#64748B';
+                statusDot.style.boxShadow = '0 0 8px #64748B';
+            } else if (progress < 0.72) {
+                statusText.textContent = `ZONE 02: THE DIGITAL SHIFT (BROWSING MENUS & BUFFERING) · DEPTH: ${Math.round(progress * 100)}%`;
+                statusDot.style.background = '#00F0FF';
+                statusDot.style.boxShadow = '0 0 10px #00F0FF';
+            } else {
+                statusText.textContent = `ZONE 03: REBIRTH OF SCREENING (4K HDR CRISP STREAMING) · DEPTH: ${Math.round(progress * 100)}%`;
+                statusDot.style.background = '#FF0077';
+                statusDot.style.boxShadow = '0 0 14px #FF0077';
+            }
+
+            if (progress >= 0.96) {
+                rebirthBanner.classList.add('show');
+            } else {
+                rebirthBanner.classList.remove('show');
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        /* =============================================================
+           6. Render Loop
+           ============================================================= */
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const delta = clock.getDelta();
+
+            // Auto Tour mode
+            if (isAutoTour) {
+                targetZ = Math.max(-TUNNEL_LENGTH, targetZ - delta * 8.5);
+                if (targetZ <= -TUNNEL_LENGTH + 1) {
+                    isAutoTour = false;
+                    updateTourButton();
+                }
+            }
+
+            // Smooth camera travel
+            currentZ += (targetZ - currentZ) * 0.08;
+            camera.position.z = currentZ;
+
+            // Head bobbing motion during forward walk
+            const walkSpeed = Math.abs(targetZ - currentZ);
+            if (walkSpeed > 0.04) {
+                camera.position.y = Math.sin(clock.getElapsedTime() * 7) * 0.05;
+            }
+
+            camera.rotation.y = -mouseLook.x;
+            camera.rotation.x = mouseLook.y;
+
+            const progressRatio = Math.min(1.0, Math.max(0.0, -currentZ / TUNNEL_LENGTH));
+            updateDepthState(progressRatio);
+
+            // Rotate exit arches & subtle particle drift
+            exitArch.rotation.z += 0.008;
+            exitBeam.rotation.z -= 0.004;
+            particles.rotation.z += 0.0006;
+
+            // Subtle spectator walking bobbing motion
+            if (spectator1 && spectator2 && spectator3) {
+                spectator1.position.y = -TUNNEL_RADIUS + 1.95 + Math.sin(clock.getElapsedTime() * 3.5) * 0.03;
+                spectator2.position.y = -TUNNEL_RADIUS + 1.95 + Math.sin(clock.getElapsedTime() * 3.2 + 1) * 0.03;
+                spectator3.position.y = -TUNNEL_RADIUS + 1.95 + Math.sin(clock.getElapsedTime() * 3.0 + 2) * 0.02;
+            }
+
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToffeeCon 2026 · Experiential Fringe Activations</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-fringe: #090514;
+            --panel: #140b29;
+            --neon-pink: #FF10F0;
+            --neon-purple: #A855F7;
+            --neon-cyan: #00F0FF;
+            --neon-amber: #FFB300;
+            --border: #331c59;
+            --text-main: #FFFFFF;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--bg-fringe);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 32px;
+            background: rgba(12, 6, 26, 0.85);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .badge-fringe {
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        /* 4-Tab Navigation Selector */
+        .fringe-tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 18px 32px;
+            background: #0d061c;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .f-tab-btn {
+            background: #180d33;
+            border: 1px solid #3c1e69;
+            color: #b7a8d9;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .f-tab-btn:hover { border-color: var(--neon-cyan); color: #fff; }
+        .f-tab-btn.active {
+            background: linear-gradient(135deg, rgba(255, 16, 240, 0.25), rgba(168, 85, 247, 0.25));
+            border-color: var(--neon-pink);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(255, 16, 240, 0.4);
+        }
+
+        /* Main Workspace */
+        .fringe-viewport {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 30px;
+            flex-grow: 1;
+        }
+
+        /* 1. Vintage TV Corner */
+        .tv-stack-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .crt-tv-box {
+            background: #110724;
+            border: 4px solid #452475;
+            border-radius: 20px;
+            padding: 16px;
+            height: 260px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .crt-screen-inner {
+            background: #04020a;
+            border-radius: 12px;
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 2. Film Box Thermal Photo Booth */
+        .film-box-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .thermal-strip-preview {
+            background: #fff;
+            color: #000;
+            width: 240px;
+            padding: 16px;
+            border-radius: 4px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .thermal-strip-frame {
+            width: 100%;
+            height: 120px;
+            background: #111;
+            border-radius: 2px;
+            overflow: hidden;
+            filter: contrast(180%) grayscale(100%);
+        }
+
+        /* 3. Design Your Toffee Tote */
+        .tote-designer-stage {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 32px;
+        }
+
+        .tote-canvas-box {
+            background: #d6cbba;
+            border-radius: 16px;
+            height: 480px;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .tote-patch {
+            position: absolute;
+            cursor: move;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        /* 4. Runner Game 3D */
+        .runner-game-canvas {
+            width: 100%;
+            height: 480px;
+            background: #04010a;
+            border: 2px solid var(--neon-cyan);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-brand">
+            <img src="/assets/toffeecon-logo.png" alt="ToffeeCon" style="height:32px; filter:drop-shadow(0 0 10px rgba(255,16,240,0.6));">
+            <div class="badge-fringe">EXPERIENTIAL FRINGE ACTIVATIONS</div>
+        </div>
+        <div style="font-family:'Space Mono'; font-size:0.8rem; color:var(--neon-cyan);">
+            VINTAGE TV · FILM BOX · TOTE STUDIO · 3D RUNNER GAME
+        </div>
+    </header>
+
+    <!-- 4 Tabs -->
+    <div class="fringe-tabs">
+        <button class="f-tab-btn active" id="tabBtn1" onclick="switchFringeTab(1)">
+            📺 1. THE VINTAGE TV CORNER
+        </button>
+        <button class="f-tab-btn" id="tabBtn2" onclick="switchFringeTab(2)">
+            🎞️ 2. FILM BOX (THERMAL PRINTER)
+        </button>
+        <button class="f-tab-btn" id="tabBtn3" onclick="switchFringeTab(3)">
+            👜 3. DESIGN YOUR TOFFEE TOTE
+        </button>
+        <button class="f-tab-btn" id="tabBtn4" onclick="switchFringeTab(4)">
+            🏃 4. GESTURE RUNNER GAME (3D)
+        </button>
+    </div>
+
+    <div class="fringe-viewport">
+        <!-- 1. The Vintage TV Corner -->
+        <div id="viewTvCorner">
+            <div style="margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
+                <h2 style="font-family:'Syne'; font-size:1.4rem;">Multi-CRT Stacked Installation</h2>
+                <span style="font-family:'Space Mono'; font-size:0.8rem; color:var(--neon-pink);">GLITCH & CHROMATIC SHADER ACTIVE</span>
+            </div>
+            <div class="tv-stack-grid">
+                <div class="crt-tv-box">
+                    <div class="crt-screen-inner">
+                        <video autoplay loop muted playsinline src="/assets/opening-film.mp4" style="width:100%; height:100%; object-fit:cover; filter:sepia(0.6) hue-rotate(-50deg);"></video>
+                    </div>
+                    <div style="font-family:'Space Mono'; font-size:0.7rem; color:var(--neon-amber); margin-top:6px;">CRT NODE #01 · 1982 PAL</div>
+                </div>
+                <div class="crt-tv-box">
+                    <div class="crt-screen-inner">
+                        <video autoplay loop muted playsinline src="/assets/opening-film.mp4" style="width:100%; height:100%; object-fit:cover; filter:invert(0.1) contrast(150%);"></video>
+                    </div>
+                    <div style="font-family:'Space Mono'; font-size:0.7rem; color:var(--neon-cyan); margin-top:6px;">CRT NODE #02 · 1988 TRINITRON</div>
+                </div>
+                <div class="crt-tv-box">
+                    <div class="crt-screen-inner">
+                        <video autoplay loop muted playsinline src="/assets/opening-film.mp4" style="width:100%; height:100%; object-fit:cover; filter:hue-rotate(90deg);"></video>
+                    </div>
+                    <div style="font-family:'Space Mono'; font-size:0.7rem; color:var(--neon-pink); margin-top:6px;">CRT NODE #03 · 1994 RGB MESH</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Film Box Thermal Photo Booth -->
+        <div id="viewFilmBox" style="display:none;">
+            <div class="film-box-container">
+                <div style="background:#130b28; border:1px solid var(--border); border-radius:16px; padding:24px;">
+                    <h2 style="font-family:'Syne'; font-size:1.4rem; margin-bottom:12px;">Film Box Retro Camera</h2>
+                    <p style="color:#a394c4; font-size:0.85rem; margin-bottom:20px;">
+                        Captures pictures in high-contrast retro style and prints out instant 4-strip physical keepsakes for attendees to bring home.
+                    </p>
+                    <video id="webcamFilm" autoplay playsinline muted style="width:100%; height:260px; object-fit:cover; border-radius:12px; border:2px solid var(--neon-pink); background:#000;"></video>
+                    <button onclick="captureThermalStrip()" style="width:100%; margin-top:16px; background:linear-gradient(135deg, #EF4444, #B91C1C); border:none; color:#fff; padding:14px; border-radius:8px; font-family:'Space Mono'; font-weight:700; cursor:pointer;">
+                        🖨️ CAPTURE & PRINT THERMAL STRIP
+                    </button>
+                </div>
+
+                <!-- Printable Thermal Strip View -->
+                <div class="thermal-strip-preview" id="thermalReceipt">
+                    <div style="text-align:center; font-family:'Space Mono'; font-size:10px; font-weight:700;">
+                        TOFFEECON 2026<br>
+                        ★ FILM BOX KEEPSAKE ★
+                    </div>
+                    <div class="thermal-strip-frame">
+                        <img id="stripImg1" src="/assets/toffeecon-hero-emblem.png" style="width:100%; height:100%; object-fit:cover;">
+                    </div>
+                    <div class="thermal-strip-frame">
+                        <img id="stripImg2" src="/assets/toffeecon-hero-emblem.png" style="width:100%; height:100%; object-fit:cover;">
+                    </div>
+                    <div style="text-align:center; font-family:'Space Mono'; font-size:9px; border-top:1px dashed #000; padding-top:6px;">
+                        DHAKA · 28 NOV 2026<br>
+                        7 YEARS OF SCREEONVATION
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Design Your Toffee Tote -->
+        <div id="viewTote" style="display:none;">
+            <div class="tote-designer-stage">
+                <!-- Patch Toolbox -->
+                <div style="background:#130b28; border:1px solid var(--border); border-radius:16px; padding:20px;">
+                    <h2 style="font-family:'Syne'; font-size:1.3rem; margin-bottom:12px;">Custom Tote Station</h2>
+                    <p style="color:#a394c4; font-size:0.8rem; margin-bottom:16px;">
+                        Add retro-futuristic patches and custom typography, then submit to the on-site heat-press printer.
+                    </p>
+                    <div style="display:flex; flex-direction:column; gap:10px;">
+                        <button onclick="addPatch('TOFFEECON 2026', '#FF10F0', '#fff')" style="background:#221040; border:1px solid var(--neon-pink); color:#fff; padding:10px; border-radius:8px; cursor:pointer; font-family:'Space Mono'; font-size:0.8rem;">
+                            + Add "TOFFEECON 2026" Badge
+                        </button>
+                        <button onclick="addPatch('7 YEARS OF SCREENOVATION', '#A855F7', '#fff')" style="background:#221040; border:1px solid var(--neon-purple); color:#fff; padding:10px; border-radius:8px; cursor:pointer; font-family:'Space Mono'; font-size:0.8rem;">
+                            + Add "7 YEARS" Banner
+                        </button>
+                        <button onclick="addPatch('CRICKET LOVER 🏏', '#FF6B00', '#000')" style="background:#221040; border:1px solid var(--neon-amber); color:#fff; padding:10px; border-radius:8px; cursor:pointer; font-family:'Space Mono'; font-size:0.8rem;">
+                            + Add "CRICKET LOVER" Patch
+                        </button>
+                        <button onclick="addPatch('BANGLA DRAMA 🎭', '#00F0FF', '#000')" style="background:#221040; border:1px solid var(--neon-cyan); color:#fff; padding:10px; border-radius:8px; cursor:pointer; font-family:'Space Mono'; font-size:0.8rem;">
+                            + Add "BANGLA DRAMA" Patch
+                        </button>
+                    </div>
+                    <button onclick="submitToteOrder()" style="width:100%; margin-top:24px; background:linear-gradient(135deg, #10B981, #059669); border:none; color:#fff; padding:12px; border-radius:8px; font-family:'Space Mono'; font-weight:700; cursor:pointer;">
+                        🖨️ SEND TO HEAT-PRESS STATION
+                    </button>
+                </div>
+
+                <!-- Canvas Tote Preview -->
+                <div class="tote-canvas-box" id="toteBag">
+                    <div style="font-family:'Syne'; font-size:2rem; font-weight:800; color:#5c5040; opacity:0.3; pointer-events:none;">
+                        TOFFEE CANVAS TOTE
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Runner Game 3D -->
+        <div id="viewRunner" style="display:none;">
+            <div style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+                <h2 style="font-family:'Syne'; font-size:1.4rem;">Motion & Keyboard Runner Game</h2>
+                <div style="font-family:'Space Mono'; font-size:0.85rem; color:var(--neon-green);" id="gameScore">SCORE: 0 · SPEED: 1.0X</div>
+            </div>
+            <div class="runner-game-canvas">
+                <canvas id="runnerCanvas" style="width:100%; height:100%;"></canvas>
+            </div>
+            <div style="margin-top:12px; font-family:'Space Mono'; font-size:0.8rem; color:#a294c7; text-align:center;">
+                USE <kbd style="background:#241242; padding:2px 8px; border-radius:4px; color:#fff;">LEFT</kbd> / <kbd style="background:#241242; padding:2px 8px; border-radius:4px; color:#fff;">RIGHT</kbd> OR ARROW KEYS TO DODGE OBSTACLES AND COLLECT TOFFEE TOKENS!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchFringeTab(tabNum) {
+            document.querySelectorAll('.f-tab-btn').forEach((b, idx) => b.classList.toggle('active', idx + 1 === tabNum));
+            document.getElementById('viewTvCorner').style.display = tabNum === 1 ? 'block' : 'none';
+            document.getElementById('viewFilmBox').style.display = tabNum === 2 ? 'block' : 'none';
+            document.getElementById('viewTote').style.display = tabNum === 3 ? 'block' : 'none';
+            document.getElementById('viewRunner').style.display = tabNum === 4 ? 'block' : 'none';
+
+            if (tabNum === 2) initFilmBoxCamera();
+            if (tabNum === 4) startRunnerGame();
+        }
+
+        async function initFilmBoxCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                document.getElementById('webcamFilm').srcObject = stream;
+            } catch(e) {}
+        }
+
+        function captureThermalStrip() {
+            const video = document.getElementById('webcamFilm');
+            const canvas = document.createElement('canvas');
+            canvas.width = 300; canvas.height = 200;
+            const ctx = canvas.getContext('2d');
+            if (video.srcObject) ctx.drawImage(video, 0, 0, 300, 200);
+            else {
+                ctx.fillStyle = '#111'; ctx.fillRect(0, 0, 300, 200);
+                ctx.fillStyle = '#fff'; ctx.font = '16px monospace';
+                ctx.fillText('TOFFEECON VIP', 70, 100);
+            }
+            const dataUrl = canvas.toDataURL('image/jpeg');
+            document.getElementById('stripImg1').src = dataUrl;
+            document.getElementById('stripImg2').src = dataUrl;
+            window.print();
+        }
+
+        function addPatch(text, bg, fg) {
+            const tote = document.getElementById('toteBag');
+            const p = document.createElement('div');
+            p.className = 'tote-patch';
+            p.innerText = text;
+            p.style.backgroundColor = bg;
+            p.style.color = fg;
+            p.style.top = Math.floor(100 + Math.random() * 200) + 'px';
+            p.style.left = Math.floor(80 + Math.random() * 180) + 'px';
+            tote.appendChild(p);
+        }
+
+        function submitToteOrder() {
+            alert('Your custom Toffee tote design has been submitted to the heat-press queue! Pick up at Booth 4 in 5 minutes.');
+        }
+
+        // 3D Motion Runner Game Engine
+        let runnerAnim = null;
+        let playerX = 0;
+        let score = 0;
+        let obstacles = [];
+
+        function startRunnerGame() {
+            const canvas = document.getElementById('runnerCanvas');
+            const ctx = canvas.getContext('2d');
+
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') playerX = Math.max(-120, playerX - 40);
+                if (e.key === 'ArrowRight') playerX = Math.min(120, playerX + 40);
+            });
+
+            function loop() {
+                const w = canvas.width = canvas.clientWidth;
+                const h = canvas.height = canvas.clientHeight;
+                ctx.clearRect(0, 0, w, h);
+
+                // Perspective 3D Track Grid
+                ctx.strokeStyle = '#291252';
+                ctx.lineWidth = 1;
+                for (let i = -4; i <= 4; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(w / 2 + (i * 20), h * 0.3);
+                    ctx.lineTo(w / 2 + (i * 120), h);
+                    ctx.stroke();
+                }
+
+                // Player character
+                ctx.fillStyle = '#00F0FF';
+                ctx.shadowColor = '#00F0FF';
+                ctx.shadowBlur = 15;
+                ctx.beginPath();
+                ctx.arc(w / 2 + playerX, h - 80, 24, 0, Math.PI * 2);
+                ctx.fill();
+
+                score += 1;
+                document.getElementById('gameScore').innerText = `SCORE: ${score} · SPEED: ${(1.0 + (score / 1000)).toFixed(1)}X`;
+
+                runnerAnim = requestAnimationFrame(loop);
+            }
+            if (!runnerAnim) loop();
+        }
+    </script>
+</body>
+</html>

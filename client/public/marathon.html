@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Memory Marathon · Rapid-Fire Crowd Trivia Race · ToffeeCon 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #070312;
+            --purple: #9333EA;
+            --magenta: #B80088;
+            --pink: #EC4899;
+            --cyan: #00F0FF;
+            --orange: #FF6B00;
+            --text-main: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 16px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Cyber Glow */
+        .ambient-glow {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 10%, rgba(184, 0, 136, 0.25) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        header {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(147, 51, 234, 0.15);
+            border: 1px solid rgba(147, 51, 234, 0.4);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: #E2E8F0;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #FFF, var(--pink), var(--orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Player Dot Status Header */
+        .player-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 10px 16px;
+            margin-top: 10px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+        }
+
+        .player-dot-preview {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--pink);
+            box-shadow: 0 0 12px var(--pink);
+            display: inline-block;
+            animation: pulse-dot 1.2s infinite;
+        }
+        @keyframes pulse-dot { 0%, 100% { transform: scale(0.9); } 50% { transform: scale(1.3); } }
+
+        /* Rapid-Fire Question Box */
+        .question-card {
+            position: relative;
+            z-index: 10;
+            background: rgba(18, 12, 34, 0.95);
+            border: 2px solid rgba(184, 0, 136, 0.5);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(184, 0, 136, 0.2);
+            margin: 12px 0;
+            text-align: center;
+        }
+
+        .q-kicker {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--cyan);
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .q-text {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            line-height: 1.35;
+            color: #FFFFFF;
+            min-height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timer-strip {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 14px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+        }
+
+        .timer-num {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--orange);
+            text-shadow: 0 0 10px rgba(255, 107, 0, 0.6);
+        }
+
+        /* 4-Choice Touch Grid */
+        .options-grid {
+            position: relative;
+            z-index: 10;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin: 10px 0;
+            flex-grow: 1;
+        }
+
+        .btn-choice {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(147, 51, 234, 0.15));
+            border: 2px solid rgba(147, 51, 234, 0.4);
+            border-radius: 14px;
+            color: #FFFFFF;
+            padding: 16px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-choice:active {
+            transform: scale(0.97);
+        }
+
+        .btn-choice.selected {
+            background: linear-gradient(135deg, var(--orange), var(--magenta));
+            border-color: #FFFFFF;
+            box-shadow: 0 0 25px rgba(255, 107, 0, 0.6);
+        }
+
+        .btn-choice.correct {
+            background: #10B981 !important;
+            border-color: #fff !important;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.7) !important;
+        }
+
+        .btn-choice.wrong {
+            background: #EF4444 !important;
+            border-color: #fff !important;
+            opacity: 0.6;
+        }
+
+        /* Race Progress Track (Climbing toward finish line) */
+        .dot-climb-tracker {
+            position: relative;
+            z-index: 10;
+            background: rgba(14, 8, 30, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-top: 10px;
+        }
+
+        .track-labels {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: #94A3B8;
+            margin-bottom: 6px;
+        }
+
+        .track-runway {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .track-fill {
+            position: absolute;
+            top: 0; left: 0; height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--pink), var(--orange));
+            border-radius: 6px;
+            transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 0 10px var(--pink);
+        }
+
+        /* Surge Feedback Toast */
+        .surge-feedback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(14, 8, 30, 0.96);
+            border: 2px solid var(--pink);
+            box-shadow: 0 0 40px var(--pink);
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            z-index: 100;
+            display: none;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .surge-feedback.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Registration Name Modal */
+        .name-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(3, 1, 7, 0.95);
+            backdrop-filter: blur(16px);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            text-align: center;
+        }
+        .name-modal.hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+
+    <!-- Registration Screen (First Time) -->
+    <div class="name-modal" id="nameModal">
+        <img src="/assets/toffeecon-logo.png" alt="ToffeeCon" style="height:32px; margin-bottom:16px; filter:drop-shadow(0 0 12px var(--magenta));">
+        <h2 style="font-family:'Syne'; font-size:1.8rem; margin-bottom:8px;">Join Memory Marathon</h2>
+        <p style="color:#94A3B8; font-size:0.85rem; max-width:300px; margin-bottom:20px;">
+            Key points from the keynote become rapid-fire questions. Answer fast to surge your dot up the 40ft stage screen!
+        </p>
+
+        <input type="text" id="playerNameInput" placeholder="Enter Your Racer Name (e.g. Sarah_M)" 
+               style="width:100%; max-width:280px; padding:12px 16px; border-radius:10px; border:1px solid var(--purple); background:#120d24; color:#fff; font-family:'Space Mono'; font-size:0.9rem; margin-bottom:14px; text-align:center;">
+
+        <button onclick="joinRace()" style="background:linear-gradient(135deg, var(--orange), var(--magenta)); color:#fff; border:none; padding:14px 32px; border-radius:10px; font-weight:800; font-size:1rem; cursor:pointer; box-shadow:0 0 25px rgba(255,107,0,0.5);">
+            ⚡ Spawn My Dot on Stage Screen
+        </button>
+    </div>
+
+    <!-- Top Header -->
+    <header>
+        <div class="brand-badge">
+            <span class="player-dot-preview"></span>
+            <span>TOFFEECON 2026 · ARENA RACE</span>
+        </div>
+        <h1 class="title">MEMORY MARATHON</h1>
+
+        <div class="player-bar">
+            <div>RACER: <b id="displayPlayerName" style="color:var(--pink);">Player_1</b></div>
+            <div>SCORE: <b id="displayScore" style="color:var(--cyan);">0 PTS</b></div>
+        </div>
+    </header>
+
+    <!-- Rapid-Fire Question Box -->
+    <div class="question-card">
+        <div class="q-kicker" id="qKicker">QUESTION 01 OF 05 · RAPID FIRE</div>
+        <div class="q-text" id="qText">Waiting for race director to start...</div>
+
+        <div class="timer-strip">
+            <span style="color:#94A3B8;">TIME REMAINING</span>
+            <span class="timer-num" id="timerNum">10s</span>
+        </div>
+    </div>
+
+    <!-- 4-Choice Touch Buttons -->
+    <div class="options-grid" id="optionsGrid">
+        <button class="btn-choice" onclick="selectAnswer(0)"><span style="color:var(--cyan);">[A]</span> <span id="opt0">Loading...</span></button>
+        <button class="btn-choice" onclick="selectAnswer(1)"><span style="color:var(--cyan);">[B]</span> <span id="opt1">Loading...</span></button>
+        <button class="btn-choice" onclick="selectAnswer(2)"><span style="color:var(--cyan);">[C]</span> <span id="opt2">Loading...</span></button>
+        <button class="btn-choice" onclick="selectAnswer(3)"><span style="color:var(--cyan);">[D]</span> <span id="opt3">Loading...</span></button>
+    </div>
+
+    <!-- Live Dot Climb Runway -->
+    <div class="dot-climb-tracker">
+        <div class="track-labels">
+            <span>START BASELINE</span>
+            <span style="color:var(--orange);">FINISH LINE 🏁</span>
+        </div>
+        <div class="track-runway">
+            <div class="track-fill" id="trackFill"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-top:6px; font-family:'Space Mono'; font-size:0.68rem; color:#94A3B8;">
+            <span>YOUR 40FT STAGE DOT POSITION</span>
+            <span id="climbPct" style="color:var(--pink);">0% CLIMBED</span>
+        </div>
+    </div>
+
+    <!-- Surge Feedback Toast -->
+    <div class="surge-feedback" id="surgeFeedback">
+        <div style="font-family:'Space Mono'; font-size:0.75rem; color:var(--cyan); letter-spacing:2px; margin-bottom:4px;">
+            RAPID-FIRE BURST!
+        </div>
+        <h2 id="surgeTitle" style="font-family:'Syne'; font-size:1.8rem; margin-bottom:6px;">+850 PTS</h2>
+        <p id="surgeMsg" style="color:#E2E8F0; font-size:0.85rem;">Your dot surged ahead on the 40ft stage LED!</p>
+    <!-- Winner Announcement Cyberpunk Modal -->
+    <div class="name-modal hidden" id="winnerModal" style="background:rgba(3,1,7,0.95); z-index:250;">
+        <div style="font-family:'Space Mono'; font-size:0.8rem; color:var(--orange); letter-spacing:3px; margin-bottom:8px;">★ RACE CONCLUDED ★</div>
+        <h2 id="winnerModalTitle" style="font-family:'Syne'; font-size:2.2rem; color:#fff; margin-bottom:10px;">WINNER REVEALED!</h2>
+        <div id="winnerModalBody" style="font-size:1.1rem; color:var(--cyan); font-family:'Space Mono'; margin-bottom:24px; padding:12px 20px; background:#120d24; border-radius:10px; border:1px solid var(--purple);">
+            Loading...
+        </div>
+        <button onclick="document.getElementById('winnerModal').classList.add('hidden')" style="background:linear-gradient(135deg, var(--orange), var(--magenta)); color:#fff; border:none; padding:12px 28px; border-radius:8px; font-weight:800; cursor:pointer;">
+            Close & View Leaderboard
+        </button>
+    </div>
+
+    <script>
+        let myPlayerId = localStorage.getItem('tcon_racer_id') || `p_${Math.floor(1000 + Math.random() * 9000)}`;
+        let myPlayerName = localStorage.getItem('tcon_racer_name') || '';
+        let currentQuestion = null;
+        let selectedIndex = null;
+        let hasAnsweredCurrent = false;
+
+        if (myPlayerName) {
+            document.getElementById('nameModal').classList.add('hidden');
+            document.getElementById('displayPlayerName').textContent = myPlayerName;
+        }
+
+        function joinRace() {
+            const input = document.getElementById('playerNameInput').value.trim();
+            if (!input) return alert('Please enter a racer name');
+            myPlayerName = input;
+            localStorage.setItem('tcon_racer_id', myPlayerId);
+            localStorage.setItem('tcon_racer_name', myPlayerName);
+            document.getElementById('displayPlayerName').textContent = myPlayerName;
+            document.getElementById('nameModal').classList.add('hidden');
+        }
+
+        /* WebSocket Stage Sync */
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${protocol}//${window.location.host}`);
+
+        ws.onmessage = (event) => {
+            try {
+                const msg = JSON.parse(event.data);
+                if (msg.type === 'INIT_STATE') {
+                    if (msg.data.marathonRace) updateRaceState(msg.data.marathonRace);
+                } else if (msg.type === 'MARATHON_UPDATE') {
+                    updateRaceState(msg.data);
+                }
+            } catch (e) {
+                console.error('WS Error:', e);
+            }
+        };
+
+        function updateRaceState(race) {
+            if (!race) return;
+
+            const q = race.questions[race.currentQuestionIndex];
+            currentQuestion = q;
+
+            document.getElementById('qKicker').textContent = 
+                `QUESTION 0${race.currentQuestionIndex + 1} OF 0${race.questions.length} · RAPID FIRE`;
+            document.getElementById('qText').textContent = q.q;
+
+            // Populate buttons
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`opt${i}`).textContent = q.options[i].substring(3);
+                const btn = document.querySelectorAll('.btn-choice')[i];
+                btn.className = 'btn-choice';
+            }
+
+            hasAnsweredCurrent = false;
+            selectedIndex = null;
+
+            // Find my racer progress
+            const me = race.racers.find(r => r.id === myPlayerId || r.name === myPlayerName);
+            if (me) {
+                document.getElementById('displayScore').textContent = `${me.score} PTS`;
+                const pct = Math.round(me.progress * 100);
+                document.getElementById('trackFill').style.width = `${pct}%`;
+                document.getElementById('climbPct').textContent = `${pct}% CLIMBED`;
+            }
+
+            // Winner notice
+            if (race.status === 'finished' && race.winner) {
+                const wModal = document.getElementById('winnerModal');
+                document.getElementById('winnerModalBody').innerHTML = `👑 <strong>${race.winner.name}</strong><br><span style="font-size:0.85rem; color:#A855F7;">Top Score: ${race.winner.score} PTS</span>`;
+                wModal.classList.remove('hidden');
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 250]);
+            }
+        }
+
+        async function selectAnswer(index) {
+            if (hasAnsweredCurrent) return;
+            hasAnsweredCurrent = true;
+            selectedIndex = index;
+
+            const buttons = document.querySelectorAll('.btn-choice');
+            buttons[index].classList.add('selected');
+
+            try {
+                const res = await fetch('/api/marathon/answer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        playerId: myPlayerId,
+                        playerName: myPlayerName,
+                        answerIndex: index
+                    })
+                });
+                const data = await res.json();
+
+                if (data.isCorrect) {
+                    buttons[index].classList.add('correct');
+                    showSurgeFeedback(`+${data.speedPoints} PTS!`, "CORRECT! Your dot just surged forward on the stage!");
+                } else {
+                    buttons[index].classList.add('wrong');
+                    showSurgeFeedback("INCORRECT", "No points this round. Get ready for the next question!");
+                }
+
+                if (data.totalScore !== undefined) {
+                    document.getElementById('displayScore').textContent = `${data.totalScore} PTS`;
+                }
+                if (data.progress !== undefined) {
+                    const pct = Math.round(data.progress * 100);
+                    document.getElementById('trackFill').style.width = `${pct}%`;
+                    document.getElementById('climbPct').textContent = `${pct}% CLIMBED`;
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function showSurgeFeedback(title, msg) {
+            const toast = document.getElementById('surgeFeedback');
+            document.getElementById('surgeTitle').textContent = title;
+            document.getElementById('surgeMsg').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+    </script>
+</body>
+</html>

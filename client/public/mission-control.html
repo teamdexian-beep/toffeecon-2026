@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToffeeCon 2026 · Mission Control (Live Advertiser Flight Deck)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-cockpit: #080511;
+            --panel-hull: #0e091e;
+            --panel-inner: #150f2e;
+            --crt-bg: #0d0920;
+            --crt-glow: rgba(168, 85, 247, 0.4);
+            --border-metal: #2d224d;
+            --border-highlight: #47367b;
+            --neon-pink: #FF10F0;
+            --neon-purple: #A855F7;
+            --neon-cyan: #00F0FF;
+            --neon-amber: #FFB300;
+            --neon-green: #00FF88;
+            --metal-switch: #5b5375;
+            --metal-switch-on: #FF10F0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body {
+            background: var(--bg-cockpit);
+            color: #E2E8F0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(ellipse at 50% 10%, rgba(168, 85, 247, 0.15) 0%, transparent 60%),
+                radial-gradient(circle at 10% 90%, rgba(255, 16, 240, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(0, 240, 255, 0.08) 0%, transparent 40%);
+        }
+
+        /* Scanline Overlay for CRT Cockpit Vibe */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15) 0px,
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            z-index: 999;
+        }
+
+        /* Top Split-Flap Announcement Board */
+        .split-flap-bar {
+            background: #05030a;
+            border-bottom: 2px solid var(--border-metal);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+        }
+
+        .split-flap-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .split-flap-readout {
+            display: flex;
+            gap: 4px;
+            font-family: 'Share Tech Mono', monospace;
+            background: #000;
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: 1px solid #332356;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.9);
+        }
+
+        .flap-char {
+            display: inline-block;
+            min-width: 14px;
+            text-align: center;
+            color: var(--neon-amber);
+            font-size: 0.95rem;
+            font-weight: 700;
+            background: #110d22;
+            border-radius: 2px;
+            border: 1px solid #23193c;
+            padding: 2px 4px;
+            text-shadow: 0 0 6px rgba(255, 179, 0, 0.6);
+            transition: transform 0.15s ease-out;
+        }
+
+        .hud-status-led {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--neon-green);
+        }
+
+        .led-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--neon-green);
+            box-shadow: 0 0 10px var(--neon-green);
+            animation: pulse-green 1.5s infinite;
+        }
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        /* Main Console Frame (Matched to Slide Photo) */
+        .cockpit-stage {
+            flex-grow: 1;
+            padding: 24px;
+            max-width: 1540px;
+            margin: 0 auto;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1.35fr 1fr;
+            gap: 24px;
+        }
+
+        /* Left/Center Main CRT Cockpit Display */
+        .cockpit-crt-frame {
+            background: var(--panel-hull);
+            border: 3px solid var(--border-metal);
+            border-radius: 20px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.9),
+                inset 0 0 40px rgba(168, 85, 247, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .crt-bezel {
+            background: var(--crt-bg);
+            border: 2px solid #3c2a68;
+            border-radius: 14px;
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.9);
+        }
+
+        .crt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(168, 85, 247, 0.3);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+
+        .crt-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--neon-pink);
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 0 10px rgba(255, 16, 240, 0.6);
+        }
+
+        /* 3 Dashboard Navigation Tabs / Buttons */
+        .nav-deck-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .cockpit-btn {
+            background: #181236;
+            border: 1px solid #3d2c6c;
+            color: #B5A8D8;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 10px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+
+        .cockpit-btn:hover {
+            border-color: var(--neon-purple);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .cockpit-btn.active {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(255, 16, 240, 0.25));
+            border-color: var(--neon-pink);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(255, 16, 240, 0.4);
+        }
+
+        /* Metric Tiles on CRT */
+        .campaign-overview-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .metric-cell {
+            background: rgba(22, 16, 48, 0.8);
+            border: 1px solid #372861;
+            border-radius: 8px;
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        .metric-lbl {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            color: #8c7fb4;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .metric-val {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            margin-top: 4px;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        /* Center Visual Canvas / Placement Preview Container */
+        .crt-visual-window {
+            flex-grow: 1;
+            background: #090616;
+            border: 1px solid #2f2152;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 280px;
+        }
+
+        /* Screen 1: Live Ad Placement Simulator */
+        .placement-preview-box {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #000;
+        }
+
+        .mock-stream-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.85;
+        }
+
+        /* Live Ad Placement Overlays */
+        .ad-overlay-masthead {
+            position: absolute;
+            top: 10px; left: 14px; right: 14px;
+            background: linear-gradient(90deg, rgba(255, 16, 240, 0.95), rgba(168, 85, 247, 0.95));
+            border: 2px solid #fff;
+            border-radius: 8px;
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            box-shadow: 0 0 25px rgba(255, 16, 240, 0.8);
+            animation: pulse-border 2s infinite;
+            transition: all 0.3s ease;
+        }
+
+        .ad-overlay-lband {
+            position: absolute;
+            bottom: 12px; left: 12px;
+            width: 280px;
+            background: rgba(14, 9, 30, 0.95);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        .ad-overlay-midroll {
+            position: absolute;
+            inset: 0;
+            background: rgba(8, 5, 17, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { border-color: #fff; }
+            50% { border-color: var(--neon-cyan); }
+        }
+
+        /* Screen 2: Real-time Charts / Wave Graph */
+        .chart-window {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: 100%;
+        }
+
+        canvas#waveCanvas {
+            width: 100%;
+            height: 140px;
+            background: #060410;
+            border-radius: 6px;
+            border: 1px solid #23183f;
+        }
+
+        /* Right Side: Tactile Flight Deck Hardware Controls */
+        .hardware-cockpit-panel {
+            background: var(--panel-hull);
+            border: 3px solid var(--border-metal);
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel-section-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--neon-pink);
+            letter-spacing: 1.5px;
+            border-bottom: 1px solid #372861;
+            padding-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Aerospace Industrial Switch Group */
+        .toggle-switches-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .aero-toggle-box {
+            background: #150f2e;
+            border: 2px solid #34265a;
+            border-radius: 12px;
+            padding: 14px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .aero-toggle-box:hover {
+            border-color: var(--border-highlight);
+        }
+
+        .aero-toggle-box.engaged {
+            border-color: var(--neon-pink);
+            background: rgba(255, 16, 240, 0.08);
+            box-shadow: inset 0 0 15px rgba(255, 16, 240, 0.2);
+        }
+
+        .switch-indicator-led {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #392a54;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+
+        .aero-toggle-box.engaged .switch-indicator-led {
+            background: var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        .metal-lever-housing {
+            width: 32px;
+            height: 52px;
+            background: #090616;
+            border-radius: 6px;
+            border: 2px solid #4a3875;
+            position: relative;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .metal-lever-handle {
+            width: 14px;
+            height: 26px;
+            background: linear-gradient(180deg, #998bbd, #584c78);
+            border-radius: 4px;
+            position: absolute;
+            bottom: 4px;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.6);
+        }
+
+        .aero-toggle-box.engaged .metal-lever-handle {
+            bottom: 22px;
+            background: linear-gradient(180deg, #FF10F0, #A855F7);
+            box-shadow: 0 0 12px var(--neon-pink);
+        }
+
+        .switch-label-sub {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            color: #9284ba;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .switch-state-text {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.72rem;
+            color: #635687;
+            margin-top: 4px;
+        }
+        .aero-toggle-box.engaged .switch-state-text {
+            color: var(--neon-cyan);
+            font-weight: 700;
+        }
+
+        /* Rotary / Needle Analog Gauge Cluster */
+        .gauges-cluster {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .analog-dial-box {
+            background: #140e2b;
+            border: 1px solid #33235b;
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .dial-face {
+            width: 74px;
+            height: 74px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #0e0921 50%, #201540 100%);
+            border: 2px solid #4a367c;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 12px rgba(0,0,0,0.9);
+        }
+
+        .dial-needle {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            width: 3px;
+            height: 28px;
+            background: var(--neon-pink);
+            transform-origin: bottom center;
+            transform: rotate(-45deg);
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 2px 2px 0 0;
+            box-shadow: 0 0 6px var(--neon-pink);
+        }
+
+        .dial-pivot {
+            width: 10px; height: 10px;
+            background: #ffffff;
+            border-radius: 50%;
+            z-index: 2;
+            box-shadow: 0 0 4px #000;
+        }
+
+        .dial-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            color: #9d8ec4;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .dial-val-readout {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.95rem;
+            color: var(--neon-cyan);
+            font-weight: 700;
+        }
+
+        /* Budget Throttle Quadrant / Slider */
+        .throttle-quadrant {
+            background: #140e2c;
+            border: 1px solid #33235b;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .throttle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .throttle-val {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.6rem;
+            color: var(--neon-amber);
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 179, 0, 0.5);
+        }
+
+        .slider-lever {
+            width: 100%;
+            height: 12px;
+            background: #090616;
+            border: 1px solid #4a3777;
+            border-radius: 6px;
+            outline: none;
+            accent-color: var(--neon-pink);
+            cursor: pointer;
+        }
+
+        /* Action Row & 1-Page Report Generation */
+        .action-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .advertiser-input {
+            flex-grow: 1;
+            background: #0c081e;
+            border: 1px solid #372861;
+            border-radius: 8px;
+            padding: 12px 14px;
+            color: #fff;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            outline: none;
+        }
+        .advertiser-input:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+        }
+
+        .btn-print-report {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            transition: all 0.2s;
+        }
+        .btn-print-report:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+        }
+
+        /* Printable One-Page Transparency Guarantee Sheet (A4 / Thermal Format) */
+        #printSheet {
+            display: none;
+        }
+
+        @media print {
+            body * { visibility: hidden !important; }
+            #printSheet, #printSheet * { visibility: visible !important; }
+            #printSheet {
+                display: block !important;
+                position: absolute !important;
+                top: 0 !important; left: 0 !important;
+                width: 100% !important;
+                background: #ffffff !important;
+                color: #111827 !important;
+                padding: 40px !important;
+                font-family: 'Plus Jakarta Sans', sans-serif !important;
+            }
+            .scanlines { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+
+    <!-- Top Electromechanical Split-Flap Announcement Board -->
+    <div class="split-flap-bar">
+        <div class="split-flap-title">
+            <img src="/assets/toffeecon-logo.png" alt="ToffeeCon" style="height:32px; filter:drop-shadow(0 0 10px rgba(255,16,240,0.6));">
+            <div class="split-flap-readout" id="splitFlapDisplay">
+                <!-- Dynamically populated character flaps -->
+            </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:24px;">
+            <div class="hud-status-led">
+                <div class="led-dot"></div>
+                <span>CONSOLE READY · FLIGHT DECK ENGAGED</span>
+            </div>
+            <div style="font-family:'Space Mono'; font-size:0.75rem; color:#8e82b3;">
+                PRESS <kbd style="background:#20163f; padding:2px 6px; border-radius:3px; color:#fff;">1</kbd> <kbd style="background:#20163f; padding:2px 6px; border-radius:3px; color:#fff;">2</kbd> <kbd style="background:#20163f; padding:2px 6px; border-radius:3px; color:#fff;">3</kbd> / <kbd style="background:#20163f; padding:2px 6px; border-radius:3px; color:#fff;">SPACE</kbd> / <kbd style="background:#20163f; padding:2px 6px; border-radius:3px; color:#fff;">P</kbd>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cockpit Flight Deck Body -->
+    <div class="cockpit-stage">
+        <!-- Main CRT Monitor (Cockpit Master Screen) -->
+        <div class="cockpit-crt-frame">
+            <div class="crt-bezel">
+                <div class="crt-header">
+                    <div class="crt-title">
+                        <span>● LIVE ADVERTISER DASHBOARD</span>
+                    </div>
+                    <div style="font-family:'Share Tech Mono'; font-size:0.85rem; color:var(--neon-green);">
+                        FEED LATENCY: 22ms · SERVER SYNC: ACTIVE
+                    </div>
+                </div>
+
+                <!-- 3 Buttons to Explore Dashboard (Per Slide Instructions) -->
+                <div class="nav-deck-buttons">
+                    <button class="cockpit-btn active" id="btnExplore1" onclick="switchDashboardTab(1)">
+                        <span>[01]</span> LIVE PLACEMENTS & INVENTORY
+                    </button>
+                    <button class="cockpit-btn" id="btnExplore2" onclick="switchDashboardTab(2)">
+                        <span>[02]</span> AUDIENCE TARGETING MATRIX
+                    </button>
+                    <button class="cockpit-btn" id="btnExplore3" onclick="switchDashboardTab(3)">
+                        <span>[03]</span> REAL-TIME BID & SPLIT-FLAP
+                    </button>
+                </div>
+
+                <!-- Metric Gauges Overview Row (From Slide Photo) -->
+                <div class="campaign-overview-grid">
+                    <div class="metric-cell">
+                        <div class="metric-lbl">Active Campaigns</div>
+                        <div class="metric-val" id="metricActiveCampaigns">14</div>
+                    </div>
+                    <div class="metric-cell">
+                        <div class="metric-lbl">Total Spend</div>
+                        <div class="metric-val" id="metricSpend" style="color:var(--neon-amber);">৳ 1.25M</div>
+                    </div>
+                    <div class="metric-cell">
+                        <div class="metric-lbl">Impressions Delivered</div>
+                        <div class="metric-val" id="metricImpressions" style="color:var(--neon-pink);">8.92M</div>
+                    </div>
+                    <div class="metric-cell">
+                        <div class="metric-lbl">Verified Conversions</div>
+                        <div class="metric-val" id="metricConversions" style="color:var(--neon-green);">1,420</div>
+                    </div>
+                </div>
+
+                <!-- Center Interactive Viewport -->
+                <div class="crt-visual-window" id="crtViewport">
+                    <!-- Tab 1: Live Ad Placements On Screen Display -->
+                    <div class="placement-preview-box" id="tabViewPlacements">
+                        <video class="mock-stream-video" autoplay loop muted playsinline src="/assets/opening-film.mp4"></video>
+                        
+                        <!-- Masthead Overlay -->
+                        <div class="ad-overlay-masthead" id="overlayMasthead">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div style="background:#fff; color:#000; padding:2px 8px; border-radius:4px; font-weight:800; font-size:0.75rem;">AD</div>
+                                <div>
+                                    <div style="font-weight:800; font-size:0.85rem;" id="mastheadBrandName">SAMSUNG GALAXY S26 ULTRA</div>
+                                    <div style="font-size:0.7rem; opacity:0.9;">100% Share of Voice · 100M+ Lifetime App Launchers</div>
+                                </div>
+                            </div>
+                            <div style="font-family:'Space Mono'; font-size:0.75rem; background:rgba(0,0,0,0.3); padding:4px 8px; border-radius:4px;">
+                                HOMEPAGE MASTHEAD
+                            </div>
+                        </div>
+
+                        <!-- Live Sports L-Band Overlay -->
+                        <div class="ad-overlay-lband" id="overlayLBand">
+                            <div style="font-family:'Space Mono'; font-size:0.65rem; color:var(--neon-cyan); margin-bottom:4px; display:flex; justify-content:space-between;">
+                                <span>LIVE SPORTS L-BAND</span>
+                                <span>CRICKET WC</span>
+                            </div>
+                            <div style="font-size:0.85rem; font-weight:800; color:#fff;" id="lbandBrandName">GRAMEENPHONE 5G SUPER-PASS</div>
+                            <div style="font-size:0.7rem; color:#9db2e8; margin-top:2px;">Dynamic Non-Intrusive Banner during live gameplay</div>
+                        </div>
+
+                        <!-- In-Stream Mid-Roll Overlay -->
+                        <div class="ad-overlay-midroll" id="overlayMidroll" style="display:none;">
+                            <div style="font-family:'Space Mono'; font-size:0.75rem; color:var(--neon-amber); margin-bottom:8px;">
+                                CONTEXTUAL IN-STREAM MID-ROLL IN PROGRESS (0:15)
+                            </div>
+                            <h2 style="font-family:'Syne'; font-size:1.8rem; color:#fff; text-shadow:0 0 20px var(--neon-pink);" id="midrollBrandName">
+                                COCA-COLA ZERO SUGAR
+                            </h2>
+                            <p style="font-size:0.85rem; color:#9fa4c4; margin-top:8px;">Targeting: Urban Youth · Drama & Sports Stream Audience</p>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Audience Targeting Matrix -->
+                    <div class="chart-window" id="tabViewTargeting" style="display:none;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-family:'Space Mono'; font-size:0.8rem; color:var(--neon-cyan);">LIVE AUDIENCE RETARGETING VECTOR</span>
+                            <span style="font-family:'Share Tech Mono'; font-size:0.8rem; color:#fff;" id="targetingMatchScore">98.4% AFFINITY MATCH</span>
+                        </div>
+                        <canvas id="targetingCanvas" height="150" style="background:#05030e; border:1px solid #23193e; border-radius:8px;"></canvas>
+                        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-top:auto;">
+                            <div style="background:#130d29; border:1px solid #2a1f4a; padding:8px 12px; border-radius:6px;">
+                                <div style="font-size:0.65rem; color:#78699e; font-family:'Space Mono';">GEO SEGMENTATION</div>
+                                <div style="font-size:0.85rem; font-weight:700; color:#fff;" id="geoStatusTxt">Dhaka & Chittagong (Active)</div>
+                            </div>
+                            <div style="background:#130d29; border:1px solid #2a1f4a; padding:8px 12px; border-radius:6px;">
+                                <div style="font-size:0.65rem; color:#78699e; font-family:'Space Mono';">DEMO COHORT</div>
+                                <div style="font-size:0.85rem; font-weight:700; color:#fff;" id="demoStatusTxt">18-34 Tech & Sports Buffs</div>
+                            </div>
+                            <div style="background:#130d29; border:1px solid #2a1f4a; padding:8px 12px; border-radius:6px;">
+                                <div style="font-size:0.65rem; color:#78699e; font-family:'Space Mono';">BEHAVIORAL AI</div>
+                                <div style="font-size:0.85rem; font-weight:700; color:#fff;" id="behaveStatusTxt">High Intent Streamers</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Real-Time Bid & Wave Graph -->
+                    <div class="chart-window" id="tabViewBidEngine" style="display:none;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-family:'Space Mono'; font-size:0.8rem; color:var(--neon-pink);">PROGRAMMATIC RTB BID CLEARING OSCILLATOR</span>
+                            <span style="font-family:'Share Tech Mono'; font-size:0.8rem; color:var(--neon-green);" id="bidStatusRate">AVG WIN RATE: 94.2%</span>
+                        </div>
+                        <canvas id="waveCanvas"></canvas>
+                        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-top:auto;">
+                            <div style="background:#130d29; border:1px solid #2a1f4a; padding:8px 12px; border-radius:6px;">
+                                <div style="font-size:0.65rem; color:#78699e; font-family:'Space Mono';">FLOOR eCPM</div>
+                                <div style="font-size:0.95rem; font-family:'Share Tech Mono'; color:var(--neon-amber);" id="ecpmFloor">৳ 140 / 1K Imp</div>
+                            </div>
+                            <div style="background:#130d29; border:1px solid #2a1f4a; padding:8px 12px; border-radius:6px;">
+                                <div style="font-size:0.65rem; color:#78699e; font-family:'Space Mono';">PACING ALGORITHM</div>
+                                <div style="font-size:0.95rem; font-family:'Share Tech Mono'; color:var(--neon-cyan);">UNIFORM SMOOTHED</div>
+                            </div>
+                            <div style="background:#130d29; border:1px solid #2a1f4a; padding:8px 12px; border-radius:6px;">
+                                <div style="font-size:0.65rem; color:#78699e; font-family:'Space Mono';">VIEWABILITY GUARANTEE</div>
+                                <div style="font-size:0.95rem; font-family:'Share Tech Mono'; color:var(--neon-green);">99.2% MRC ACCREDITED</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Flight Deck Tactile Switch & Throttle Panel (From Photo) -->
+        <div class="hardware-cockpit-panel">
+            <div>
+                <div class="panel-section-title">
+                    <span>TACTILE AD PLACEMENT TOGGLES</span>
+                    <span style="color:#7e6fa8;">STEP 2: FLIP TO REVEAL</span>
+                </div>
+                <!-- 3 Industrial Placement Flips -->
+                <div class="toggle-switches-grid" style="margin-top:12px;">
+                    <div class="aero-toggle-box engaged" id="swMasthead" onclick="togglePlacement('masthead')">
+                        <div class="switch-indicator-led"></div>
+                        <div class="metal-lever-housing"><div class="metal-lever-handle"></div></div>
+                        <div class="switch-label-sub">MASTHEAD TAKEOVER</div>
+                        <div class="switch-state-text">ENGAGED</div>
+                    </div>
+                    <div class="aero-toggle-box engaged" id="swLBand" onclick="togglePlacement('lband')">
+                        <div class="switch-indicator-led"></div>
+                        <div class="metal-lever-housing"><div class="metal-lever-handle"></div></div>
+                        <div class="switch-label-sub">SPORTS L-BAND</div>
+                        <div class="switch-state-text">ENGAGED</div>
+                    </div>
+                    <div class="aero-toggle-box" id="swMidroll" onclick="togglePlacement('midroll')">
+                        <div class="switch-indicator-led"></div>
+                        <div class="metal-lever-housing"><div class="metal-lever-handle"></div></div>
+                        <div class="switch-label-sub">MID-ROLL VIDEO</div>
+                        <div class="switch-state-text">OFF</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audience Targeting Hardware Switches (From Photo: GEO, DEMO, BEHAVIOR) -->
+            <div>
+                <div class="panel-section-title">
+                    <span>TARGETING ENGINE CALIBRATION</span>
+                    <span style="color:#7e6fa8;">GEO / DEMO / BEHAVIOR</span>
+                </div>
+                <div class="toggle-switches-grid" style="margin-top:12px;">
+                    <div class="aero-toggle-box engaged" id="swGeo" onclick="toggleTargeting('geo')">
+                        <div class="switch-indicator-led"></div>
+                        <div class="metal-lever-housing"><div class="metal-lever-handle"></div></div>
+                        <div class="switch-label-sub">GEO ACCURACY</div>
+                        <div class="switch-state-text">DHAKA + CTG</div>
+                    </div>
+                    <div class="aero-toggle-box engaged" id="swDemo" onclick="toggleTargeting('demo')">
+                        <div class="switch-indicator-led"></div>
+                        <div class="metal-lever-housing"><div class="metal-lever-handle"></div></div>
+                        <div class="switch-label-sub">DEMO COHORT</div>
+                        <div class="switch-state-text">18-34 AGED</div>
+                    </div>
+                    <div class="aero-toggle-box engaged" id="swBehavior" onclick="toggleTargeting('behavior')">
+                        <div class="switch-indicator-led"></div>
+                        <div class="metal-lever-housing"><div class="metal-lever-handle"></div></div>
+                        <div class="switch-label-sub">BEHAVIORAL AI</div>
+                        <div class="switch-state-text">STREAM LOVERS</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analog Needle Gauge Cluster (CTR, CONVERSION, CPM) -->
+            <div>
+                <div class="panel-section-title">
+                    <span>REAL-TIME COCKPIT TELEMETRY</span>
+                    <span style="color:#7e6fa8;">ANALOG SENSORS</span>
+                </div>
+                <div class="gauges-cluster" style="margin-top:12px;">
+                    <div class="analog-dial-box">
+                        <div class="dial-face">
+                            <div class="dial-needle" id="needleCtr"></div>
+                            <div class="dial-pivot"></div>
+                        </div>
+                        <div class="dial-title">CTR (CLICK RATE)</div>
+                        <div class="dial-val-readout" id="valCtr">2.84%</div>
+                    </div>
+                    <div class="analog-dial-box">
+                        <div class="dial-face">
+                            <div class="dial-needle" id="needleConv"></div>
+                            <div class="dial-pivot"></div>
+                        </div>
+                        <div class="dial-title">CONV. RATE</div>
+                        <div class="dial-val-readout" id="valConv">4.18%</div>
+                    </div>
+                    <div class="analog-dial-box">
+                        <div class="dial-face">
+                            <div class="dial-needle" id="needleCpm"></div>
+                            <div class="dial-pivot"></div>
+                        </div>
+                        <div class="dial-title">EFFECTIVE CPM</div>
+                        <div class="dial-val-readout" id="valCpm">৳ 140</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campaign Budget Throttle Slider Lever -->
+            <div class="throttle-quadrant">
+                <div class="throttle-header">
+                    <div>
+                        <div class="switch-label-sub" style="text-align:left;">DAILY CAMPAIGN BUDGET THROTTLE</div>
+                        <div style="font-size:0.7rem; color:#786ba1;">SLIDE TO ADJUST REAL-TIME PROPOSAL</div>
+                    </div>
+                    <div class="throttle-val" id="throttleDisplay">৳ 1,000,000</div>
+                </div>
+                <input type="range" class="slider-lever" id="budgetThrottle" min="200000" max="5000000" step="100000" value="1000000" oninput="onBudgetChange(this.value)">
+            </div>
+
+            <!-- Instant 1-Page Report Printer Row (Step 4 of Slide) -->
+            <div>
+                <div class="panel-section-title" style="margin-bottom:10px;">
+                    <span>STEP 4: INSTANT TRANSPARENCY REPORT</span>
+                    <span style="color:var(--neon-green);">1-PAGE GUARANTEE</span>
+                </div>
+                <div class="action-row">
+                    <input type="text" id="agencyInput" class="advertiser-input" value="Mindshare / Unilever" placeholder="Brand / Agency Partner Name">
+                    <button class="btn-print-report" onclick="triggerInstantReport()">
+                        <span>🖨️</span> PRINT 1-PAGE REPORT
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Printable One-Page Transparency Guarantee Sheet -->
+    <div id="printSheet">
+        <div style="border-bottom: 3px solid #7913C7; padding-bottom: 16px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <h1 style="font-family:'Syne', sans-serif; font-size:24px; color:#7913C7; margin:0;">TOFFEE ADVERTISING MISSION CONTROL</h1>
+                <p style="font-size:12px; color:#6b7280; margin:4px 0 0 0;">OFFICIAL SELF-SERVE MEDIA COMMITMENT & TRANSPARENCY SPECIFICATION</p>
+            </div>
+            <div style="text-align:right; font-family:'Space Mono', monospace; font-size:11px;">
+                <b id="pDocNum">REF: TFC-2026-MC-4819</b><br>
+                <span>DATE: OCTOBER 2026</span><br>
+                <span style="color:#059669; font-weight:700;">STATUS: GUARANTEED INVENTORY</span>
+            </div>
+        </div>
+
+        <div style="margin:24px 0; padding:16px; background:#f9fafb; border-radius:8px; border-left:4px solid #FF10F0;">
+            <div style="font-size:12px; color:#6b7280; font-family:'Space Mono', monospace;">RESERVED FOR PARTNER</div>
+            <div style="font-size:18px; font-weight:800; color:#111827;" id="pAgencyName">Mindshare / Unilever</div>
+            <div style="font-size:12px; color:#4b5563; margin-top:4px;">Verified ToffeeCon 2026 Flight Deck Session · Bangladesh Digital Video Ecosystem</div>
+        </div>
+
+        <table style="width:100%; border-collapse:collapse; margin:20px 0; font-size:13px;">
+            <thead>
+                <tr style="background:#f3f4f6; text-align:left; font-family:'Space Mono', monospace; font-size:11px;">
+                    <th style="padding:10px; border-bottom:2px solid #e5e7eb;">SELECTED PLACEMENT FORMAT</th>
+                    <th style="padding:10px; border-bottom:2px solid #e5e7eb;">TARGETING MATRIX</th>
+                    <th style="padding:10px; border-bottom:2px solid #e5e7eb;">GUARANTEED IMPRESSIONS</th>
+                    <th style="padding:10px; border-bottom:2px solid #e5e7eb;">EFFECTIVE CPM</th>
+                    <th style="padding:10px; border-bottom:2px solid #e5e7eb; text-align:right;">ALLOCATION</th>
+                </tr>
+            </thead>
+            <tbody id="pTableBody">
+                <!-- Dynamically generated rows -->
+            </tbody>
+        </table>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#f9fafb; padding:18px; border-radius:8px; margin-top:20px;">
+            <div>
+                <div style="font-size:12px; font-weight:700; color:#111827;">TRANSPARENCY COMPLIANCE</div>
+                <div style="font-size:11px; color:#6b7280;">• MRC Accredited 99.2% Viewability Guarantee</div>
+                <div style="font-size:11px; color:#6b7280;">• Direct 1st-Party Telco Verified Device Fingerprinting</div>
+                <div style="font-size:11px; color:#6b7280;">• Zero Bot Fraud Protocol Verified by Moat / IAS</div>
+            </div>
+            <div style="text-align:right;">
+                <div style="font-family:'Space Mono', monospace; font-size:11px; color:#6b7280;">COMMITTED BUDGET</div>
+                <div style="font-size:24px; font-weight:800; color:#7913C7;" id="pTotalBudget">৳ 1,000,000</div>
+            </div>
+        </div>
+
+        <div style="margin-top:40px; border-top:1px dashed #d1d5db; padding-top:20px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:16px;">
+                <div style="width:60px; height:60px; border:2px solid #111; display:flex; align-items:center; justify-content:center; font-family:'Space Mono', monospace; font-size:9px; text-align:center;">
+                    [QR SEAL]<br>VERIFIED
+                </div>
+                <div style="font-size:11px; color:#6b7280;">
+                    Digitally signed by Toffee Ad-Operations Mission Control Engine.<br>
+                    Valid for activation within Q4 2026 – Q1 2027.
+                </div>
+            </div>
+            <div style="text-align:right; font-family:'Space Mono', monospace; font-size:11px;">
+                AUTHORIZED SIGNATURE: <b style="color:#7913C7;">TOFFEE AD NETWORK</b>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Web Audio Synthesizer for tactile aerospace relay switches and split-flap mechanical chatter
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playRelayClickSound(isEngaged) {
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = isEngaged ? 'sawtooth' : 'sine';
+                osc.frequency.setValueAtTime(isEngaged ? 320 : 180, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.06);
+
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.06);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.06);
+            } catch(e) {}
+        }
+
+        function playSplitFlapMechanicalSound() {
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                for (let i = 0; i < 4; i++) {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(800 + Math.random() * 400, now + (i * 0.03));
+                    gain.gain.setValueAtTime(0.08, now + (i * 0.03));
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + (i * 0.03) + 0.02);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + (i * 0.03));
+                    osc.stop(now + (i * 0.03) + 0.02);
+                }
+            } catch(e) {}
+        }
+
+        // Split-Flap Readout Animation Engine
+        const flapMessages = [
+            "TOFFEECON 2026 // LIVE INVENTORY: 100M+ CONNECTED SCREENS",
+            "CRICKET WC FINAL // 100% MASTHEAD SOV BOOKED IN 3 SECONDS",
+            "BANGLADESH DIGITAL OTT // 70+ TV CHANNELS · 22MS AD LATENCY",
+            "MISSION CONTROL // REAL-TIME TRANSPARENCY GUARANTEED DAY 01"
+        ];
+        let currentFlapIndex = 0;
+
+        function renderSplitFlapText(text) {
+            const container = document.getElementById('splitFlapDisplay');
+            container.innerHTML = '';
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const span = document.createElement('span');
+                span.className = 'flap-char';
+                span.innerText = char === ' ' ? '\u00A0' : char;
+                container.appendChild(span);
+            }
+        }
+
+        function rotateSplitFlap() {
+            currentFlapIndex = (currentFlapIndex + 1) % flapMessages.length;
+            const targetText = flapMessages[currentFlapIndex];
+            playSplitFlapMechanicalSound();
+            renderSplitFlapText(targetText);
+        }
+        renderSplitFlapText(flapMessages[0]);
+        setInterval(rotateSplitFlap, 12000);
+
+        // State Machine
+        const state = {
+            activeTab: 1,
+            budget: 1000000,
+            placements: {
+                masthead: true,
+                lband: true,
+                midroll: false
+            },
+            targeting: {
+                geo: true,
+                demo: true,
+                behavior: true
+            }
+        };
+
+        // Tab Switching [01], [02], [03]
+        function switchDashboardTab(tabNum) {
+            state.activeTab = tabNum;
+            playRelayClickSound(true);
+
+            document.querySelectorAll('.cockpit-btn').forEach((btn, idx) => {
+                btn.classList.toggle('active', idx + 1 === tabNum);
+            });
+
+            document.getElementById('tabViewPlacements').style.display = tabNum === 1 ? 'flex' : 'none';
+            document.getElementById('tabViewTargeting').style.display = tabNum === 2 ? 'flex' : 'none';
+            document.getElementById('tabViewBidEngine').style.display = tabNum === 3 ? 'flex' : 'none';
+
+            if (tabNum === 2) drawTargetingCanvas();
+            if (tabNum === 3) startWaveOscillator();
+        }
+
+        // Tactile Placement Toggles (Step 2 of Slide)
+        function togglePlacement(format) {
+            state.placements[format] = !state.placements[format];
+            const isEngaged = state.placements[format];
+            playRelayClickSound(isEngaged);
+
+            const el = document.getElementById(format === 'masthead' ? 'swMasthead' : format === 'lband' ? 'swLBand' : 'swMidroll');
+            el.classList.toggle('engaged', isEngaged);
+            el.querySelector('.switch-state-text').innerText = isEngaged ? 'ENGAGED' : 'OFF';
+
+            // Update on-screen overlay display
+            if (format === 'masthead') {
+                const overlay = document.getElementById('overlayMasthead');
+                overlay.style.display = isEngaged ? 'flex' : 'none';
+            } else if (format === 'lband') {
+                const overlay = document.getElementById('overlayLBand');
+                overlay.style.display = isEngaged ? 'block' : 'none';
+            } else if (format === 'midroll') {
+                const overlay = document.getElementById('overlayMidroll');
+                overlay.style.display = isEngaged ? 'flex' : 'none';
+            }
+
+            recomputeCockpitMetrics();
+        }
+
+        // Targeting Calibration Toggles
+        function toggleTargeting(type) {
+            state.targeting[type] = !state.targeting[type];
+            const isEngaged = state.targeting[type];
+            playRelayClickSound(isEngaged);
+
+            const el = document.getElementById(type === 'geo' ? 'swGeo' : type === 'demo' ? 'swDemo' : 'swBehavior');
+            el.classList.toggle('engaged', isEngaged);
+            
+            if (type === 'geo') {
+                el.querySelector('.switch-state-text').innerText = isEngaged ? 'DHAKA + CTG' : 'ALL BD';
+                document.getElementById('geoStatusTxt').innerText = isEngaged ? 'Dhaka & Chittagong (Active)' : 'Nationwide Open';
+            } else if (type === 'demo') {
+                el.querySelector('.switch-state-text').innerText = isEngaged ? '18-34 AGED' : 'BROAD DEMO';
+                document.getElementById('demoStatusTxt').innerText = isEngaged ? '18-34 Tech & Sports Buffs' : 'All Demographics';
+            } else if (type === 'behavior') {
+                el.querySelector('.switch-state-text').innerText = isEngaged ? 'STREAM LOVERS' : 'STANDARD';
+                document.getElementById('behaveStatusTxt').innerText = isEngaged ? 'High Intent Streamers' : 'Broad Video Viewers';
+            }
+
+            recomputeCockpitMetrics();
+            if (state.activeTab === 2) drawTargetingCanvas();
+        }
+
+        // Throttle Quadrant Slider
+        function onBudgetChange(val) {
+            state.budget = parseInt(val, 10);
+            document.getElementById('throttleDisplay').innerText = '৳ ' + (state.budget).toLocaleString();
+            recomputeCockpitMetrics();
+        }
+
+        // Recompute CRT Telemetry & Gauges
+        function recomputeCockpitMetrics() {
+            // Count active placements
+            let activeCount = 0;
+            if (state.placements.masthead) activeCount++;
+            if (state.placements.lband) activeCount++;
+            if (state.placements.midroll) activeCount++;
+            if (activeCount === 0) activeCount = 1;
+
+            // Targeting multiplier
+            let targetMultiplier = 1.0;
+            if (state.targeting.geo) targetMultiplier += 0.25;
+            if (state.targeting.demo) targetMultiplier += 0.35;
+            if (state.targeting.behavior) targetMultiplier += 0.40;
+
+            const cpmBase = 140 * targetMultiplier;
+            const impressions = Math.round((state.budget / cpmBase) * 1000);
+            const conversions = Math.round(impressions * 0.0016 * targetMultiplier);
+
+            document.getElementById('metricSpend').innerText = '৳ ' + (state.budget / 1000000).toFixed(2) + 'M';
+            document.getElementById('metricImpressions').innerText = (impressions / 1000000).toFixed(2) + 'M';
+            document.getElementById('metricConversions').innerText = conversions.toLocaleString();
+
+            // Analog Needle Rotation & Gauges
+            const ctrVal = (1.85 + (targetMultiplier * 0.8)).toFixed(2);
+            const convVal = (2.2 + (targetMultiplier * 1.5)).toFixed(2);
+            const cpmVal = Math.round(cpmBase);
+
+            document.getElementById('valCtr').innerText = ctrVal + '%';
+            document.getElementById('valConv').innerText = convVal + '%';
+            document.getElementById('valCpm').innerText = '৳ ' + cpmVal;
+
+            // Needle angles (-60deg to +60deg)
+            const degCtr = Math.min(65, Math.max(-65, (parseFloat(ctrVal) - 2.5) * 40));
+            const degConv = Math.min(65, Math.max(-65, (parseFloat(convVal) - 3.5) * 30));
+            const degCpm = Math.min(65, Math.max(-65, ((cpmVal - 140) / 100) * 60));
+
+            document.getElementById('needleCtr').style.transform = `rotate(${degCtr}deg)`;
+            document.getElementById('needleConv').style.transform = `rotate(${degConv}deg)`;
+            document.getElementById('needleCpm').style.transform = `rotate(${degCpm}deg)`;
+
+            const matchScore = (85 + (targetMultiplier * 6.5)).toFixed(1);
+            document.getElementById('targetingMatchScore').innerText = Math.min(99.6, matchScore) + '% AFFINITY MATCH';
+        }
+
+        // Radar / Targeting Canvas Visualizer
+        function drawTargetingCanvas() {
+            const canvas = document.getElementById('targetingCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width = canvas.clientWidth;
+            const h = canvas.height = canvas.clientHeight;
+            ctx.clearRect(0, 0, w, h);
+
+            const centerX = w / 2;
+            const centerY = h / 2;
+            const maxRadius = Math.min(centerX, centerY) - 16;
+
+            // Concentric Radar Rings
+            ctx.strokeStyle = '#2b1f4c';
+            ctx.lineWidth = 1;
+            for (let r = 1; r <= 3; r++) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, (maxRadius / 3) * r, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            // Radar Crosshairs
+            ctx.beginPath();
+            ctx.moveTo(centerX - maxRadius, centerY); ctx.lineTo(centerX + maxRadius, centerY);
+            ctx.moveTo(centerX, centerY - maxRadius); ctx.lineTo(centerX, centerY + maxRadius);
+            ctx.stroke();
+
+            // Polygon Cluster based on Targeting State
+            const points = [
+                { angle: 0, scale: state.targeting.geo ? 0.85 : 0.4 },
+                { angle: Math.PI * 0.4, scale: state.targeting.demo ? 0.92 : 0.35 },
+                { angle: Math.PI * 0.8, scale: state.targeting.behavior ? 0.88 : 0.45 },
+                { angle: Math.PI * 1.2, scale: 0.75 },
+                { angle: Math.PI * 1.6, scale: 0.82 }
+            ];
+
+            ctx.fillStyle = 'rgba(0, 240, 255, 0.2)';
+            ctx.strokeStyle = '#00F0FF';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            points.forEach((p, idx) => {
+                const x = centerX + Math.cos(p.angle) * maxRadius * p.scale;
+                const y = centerY + Math.sin(p.angle) * maxRadius * p.scale;
+                if (idx === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        // Wave Oscillator Canvas
+        let waveAnimFrame = null;
+        let waveOffset = 0;
+        function startWaveOscillator() {
+            if (waveAnimFrame) cancelAnimationFrame(waveAnimFrame);
+            const canvas = document.getElementById('waveCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            function renderWave() {
+                const w = canvas.width = canvas.clientWidth;
+                const h = canvas.height = canvas.clientHeight;
+                ctx.clearRect(0, 0, w, h);
+
+                // Grid lines
+                ctx.strokeStyle = '#181232';
+                ctx.lineWidth = 1;
+                for (let y = 0; y < h; y += 20) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+                }
+
+                // RTB Sine Waves
+                ctx.beginPath();
+                ctx.strokeStyle = '#FF10F0';
+                ctx.lineWidth = 2;
+                for (let x = 0; x < w; x++) {
+                    const y = (h / 2) + Math.sin((x * 0.02) + waveOffset) * 25 + Math.sin((x * 0.05) - waveOffset * 0.5) * 12;
+                    if (x === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                // Secondary cyan harmonic
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(0, 240, 255, 0.4)';
+                ctx.lineWidth = 1.5;
+                for (let x = 0; x < w; x++) {
+                    const y = (h / 2) + Math.sin((x * 0.015) - waveOffset * 1.2) * 18;
+                    if (x === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                waveOffset += 0.05;
+                waveAnimFrame = requestAnimationFrame(renderWave);
+            }
+            renderWave();
+        }
+
+        // Instant One-Page Transparency Report Trigger (Step 4 of Slide)
+        function triggerInstantReport() {
+            playRelayClickSound(true);
+            const agency = document.getElementById('agencyInput').value.trim() || 'Mindshare / Partner';
+            document.getElementById('pAgencyName').innerText = agency;
+            document.getElementById('pTotalBudget').innerText = '৳ ' + (state.budget).toLocaleString();
+            document.getElementById('pDocNum').innerText = 'REF: TFC-2026-MC-' + Math.floor(1000 + Math.random() * 9000);
+
+            // Populate Table
+            const tbody = document.getElementById('pTableBody');
+            tbody.innerHTML = '';
+
+            const activeFormats = [];
+            if (state.placements.masthead) activeFormats.push({ name: 'Homepage Masthead Takeover (100% SOV)', share: 0.45 });
+            if (state.placements.lband) activeFormats.push({ name: 'Live Sports L-Band Overlay (Non-Intrusive)', share: 0.35 });
+            if (state.placements.midroll) activeFormats.push({ name: 'Contextual In-Stream Mid-Roll (70+ Channels)', share: 0.20 });
+
+            if (activeFormats.length === 0) {
+                activeFormats.push({ name: 'Default Multi-Channel Run of Network', share: 1.0 });
+            }
+
+            const totalShare = activeFormats.reduce((acc, f) => acc + f.share, 0);
+
+            activeFormats.forEach(fmt => {
+                const normShare = fmt.share / totalShare;
+                const fmtBudget = Math.round(state.budget * normShare);
+                const cpm = 160;
+                const imp = Math.round((fmtBudget / cpm) * 1000);
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="padding:10px; border-bottom:1px solid #f3f4f6; font-weight:700;">${fmt.name}</td>
+                    <td style="padding:10px; border-bottom:1px solid #f3f4f6; font-size:11px; color:#4b5563;">
+                        ${state.targeting.geo ? 'Geo-Fenced' : 'Open'} · ${state.targeting.demo ? '18-34' : 'All'} · ${state.targeting.behavior ? 'Stream Affinity' : 'Standard'}
+                    </td>
+                    <td style="padding:10px; border-bottom:1px solid #f3f4f6; font-family:'Space Mono'; font-weight:700; color:#7913C7;">${(imp / 1000000).toFixed(2)}M</td>
+                    <td style="padding:10px; border-bottom:1px solid #f3f4f6; font-family:'Space Mono';">৳ ${cpm}</td>
+                    <td style="padding:10px; border-bottom:1px solid #f3f4f6; text-align:right; font-family:'Space Mono'; font-weight:700;">৳ ${fmtBudget.toLocaleString()}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Trigger window print dialog
+            setTimeout(() => {
+                window.print();
+            }, 200);
+        }
+
+        // Hardware HID / Keyboard Shortcuts for Event Physical Encoders
+        window.addEventListener('keydown', (e) => {
+            if (e.key === '1') switchDashboardTab(1);
+            if (e.key === '2') switchDashboardTab(2);
+            if (e.key === '3') switchDashboardTab(3);
+            if (e.key === ' ' || e.code === 'Space') {
+                e.preventDefault();
+                togglePlacement('masthead');
+            }
+            if (e.key === 'l' || e.key === 'L') togglePlacement('lband');
+            if (e.key === 'm' || e.key === 'M') togglePlacement('midroll');
+            if (e.key === 'p' || e.key === 'P') triggerInstantReport();
+        });
+
+        // Initialize
+        recomputeCockpitMetrics();
+    </script>
+</body>
+</html>

@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToffeeCon 2026 · Speed-Gate Check-In & Badge Dispatch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #080612;
+            --panel-bg: #120e24;
+            --border-glow: #2f2354;
+            --orange: #FF6B00;
+            --purple: #9333EA;
+            --cyan: #00F0FF;
+            --green: #10B981;
+            --red: #EF4444;
+            --text-main: #F3F4F6;
+            --text-dim: #928BAA;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg-dark); color: var(--text-main); min-height: 100vh; padding: 24px; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-glow);
+            padding-bottom: 20px;
+            margin-bottom: 24px;
+        }
+
+        .brand-group {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .badge-terminal {
+            background: linear-gradient(135deg, var(--orange), var(--purple));
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .terminal-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 10px var(--green);
+            display: inline-block;
+        }
+
+        .status-dot.disconnected {
+            background: var(--red);
+            box-shadow: 0 0 10px var(--red);
+        }
+
+        .terminal-stats {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .stat-pill {
+            background: rgba(0, 240, 255, 0.08);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            padding: 6px 14px;
+            border-radius: 20px;
+            color: var(--cyan);
+        }
+
+        /* 3-Column Layout: Scanner | Badge Dispatch | Arrivals Live Feed */
+        .gate-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr 0.9fr;
+            gap: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .panel-h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Scan & Input Area */
+        .scan-box {
+            background: #000;
+            border: 2px dashed var(--border-glow);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        #cameraReader {
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto 16px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-glow);
+            display: none;
+        }
+
+        .btn-toggle-cam {
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-bottom: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-toggle-cam:hover {
+            background: rgba(0, 240, 255, 0.2);
+        }
+
+        /* Live Arrivals Feed */
+        .arrivals-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 480px;
+            overflow-y: auto;
+        }
+
+        .arrival-card {
+            background: #181330;
+            border-left: 3px solid var(--green);
+            padding: 10px 14px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .scan-box.success {
+            border-color: var(--green);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .scan-box.warning {
+            border-color: #F59E0B;
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .input-text {
+            flex-grow: 1;
+            background: #181330;
+            border: 1px solid var(--border-glow);
+            padding: 14px 18px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1.05rem;
+            font-family: 'Space Mono', monospace;
+            outline: none;
+        }
+
+        .input-text:focus {
+            border-color: var(--orange);
+        }
+
+        .btn-checkin {
+            background: linear-gradient(135deg, var(--orange), var(--purple));
+            color: #fff;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .btn-checkin:hover {
+            transform: scale(1.02);
+        }
+
+        /* Search Results List */
+        .search-results {
+            list-style: none;
+            margin-top: 12px;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .search-item {
+            background: #181330;
+            border: 1px solid var(--border-glow);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .search-item:hover {
+            border-color: var(--cyan);
+        }
+
+        /* Physical Lanyard Badge Preview */
+        .badge-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 520px;
+        }
+
+        .lanyard-badge {
+            width: 360px;
+            height: 520px;
+            background: #0f0a20;
+            border: 2px solid var(--purple);
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8), 0 0 30px rgba(147, 51, 234, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            background-image: radial-gradient(circle at 80% 20%, rgba(255, 107, 0, 0.15) 0%, transparent 50%);
+        }
+
+        .lanyard-badge::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 48px;
+            height: 12px;
+            background: #1b1433;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .badge-header {
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        .badge-summit-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #fff;
+        }
+
+        .badge-role-pill {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .role-speaker { background: #FF6B00; color: #fff; }
+        .role-advertiser { background: #9333EA; color: #fff; }
+        .role-partner { background: #00F0FF; color: #000; }
+        .role-press { background: #10B981; color: #fff; }
+        .role-creator { background: #EC4899; color: #fff; }
+
+        .badge-body {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .badge-guest-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.1rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .badge-guest-company {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            color: var(--cyan);
+        }
+
+        .badge-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-top: 1px dashed rgba(255,255,255,0.15);
+            padding-top: 16px;
+        }
+
+        .badge-qr-box {
+            background: #fff;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .badge-id-text {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--orange);
+        }
+
+        .btn-print {
+            background: var(--cyan);
+            color: #000;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin-top: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-print:hover {
+            opacity: 0.9;
+        }
+
+        /* Print Media Style for Thermal Badges */
+        @media print {
+            body * { visibility: hidden; }
+            .lanyard-badge, .lanyard-badge * { visibility: visible; }
+            .lanyard-badge {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100vw;
+                height: 100vh;
+                border: none;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="brand-group">
+            <img src="/assets/toffeecon-logo.png" alt="ToffeeCon" style="height:34px; filter:drop-shadow(0 0 12px rgba(184,0,136,0.5));">
+            <div class="badge-terminal">SPEED-GATE · TERMINAL 01</div>
+            <span class="status-dot" id="wsStatusDot" title="Live WebSocket Connected"></span>
+        </div>
+        <div class="terminal-stats">
+            <div class="stat-pill">CHECKED-IN: <b id="statCheckedIn">548</b></div>
+            <div class="stat-pill" style="color: var(--orange); border-color: rgba(255,107,0,0.3); background: rgba(255,107,0,0.08);">
+                TOTAL RSVP: <b id="statTotalRSVP">600</b>
+            </div>
+            <a href="/hub" style="color: var(--text-dim); text-decoration: none; align-self: center; font-size: 0.85rem;">Operator Hub ↗</a>
+        </div>
+    </header>
+
+    <div class="gate-layout">
+        <!-- Scan & Search Panel -->
+        <div class="panel">
+            <h2 class="panel-h2">
+                <span>Rapid Pass Check-In</span>
+                <span style="font-family:'Space Mono'; font-size:0.8rem; color:var(--cyan);">TARGET: &lt; 2.5s</span>
+            </h2>
+
+            <!-- Feedback Indicator Box -->
+            <div class="scan-box" id="feedbackBox">
+                <div style="font-size: 2.2rem; margin-bottom: 6px;" id="feedbackIcon">📷</div>
+                <div style="font-family: 'Syne'; font-size: 1.15rem; font-weight: 700;" id="feedbackTitle">Ready to Scan Pass</div>
+                <p style="color: var(--text-dim); font-size: 0.8rem; margin-top: 4px;" id="feedbackSub">
+                    Scan attendee QR pass or enter Ticket ID below
+                </p>
+            </div>
+
+            <!-- HTML5 Video Camera Viewfinder -->
+            <div style="text-align: center;">
+                <button type="button" class="btn-toggle-cam" id="btnToggleCam" onclick="toggleCameraScanner()">
+                    📷 Toggle Camera Viewfinder
+                </button>
+            </div>
+            <div id="cameraReader"></div>
+
+            <!-- Manual Input / USB Barcode Scanner Reader -->
+            <form onsubmit="handleManualCheckin(event)" class="input-group">
+                <input type="text" id="ticketInput" class="input-text" placeholder="Enter Ticket ID (e.g. TCON-3089)" autofocus autocomplete="off">
+                <button type="submit" class="btn-checkin">Verify Pass ⚡</button>
+            </form>
+
+            <!-- Search Guest by Name -->
+            <div style="margin-top: 20px; border-top: 1px solid var(--border-glow); padding-top: 16px;">
+                <label style="font-family:'Space Mono'; font-size:0.8rem; color:var(--text-dim); display:block; margin-bottom:8px;">
+                    LOST PASS LOOKUP (NAME / COMPANY / EMAIL)
+                </label>
+                <input type="text" id="searchInput" class="input-text" style="width: 100%;" placeholder="Search attendee..." oninput="handleSearch(this.value)">
+                <ul class="search-results" id="searchResults"></ul>
+            </div>
+        </div>
+
+        <!-- Badge Preview & Print Station -->
+        <div class="panel">
+            <h2 class="panel-h2">
+                <span>Dynamic Badge Preview</span>
+                <button class="btn-print" onclick="window.print()">🖨️ Print Badge</button>
+            </h2>
+
+            <div class="badge-stage">
+                <div class="lanyard-badge" id="lanyardBadge">
+                    <div class="badge-header">
+                        <div style="display:flex; justify-content:center; margin-bottom:8px;">
+                            <img src="/assets/toffeecon-logo.png" alt="ToffeeCon 2026" style="height:32px; filter:drop-shadow(0 0 8px rgba(184,0,136,0.4));">
+                        </div>
+                        <div style="font-family:'Space Mono'; font-size:0.75rem; color:#8F89A8; letter-spacing:2px; margin-top:2px;">THE FUTURE OF SCREENING</div>
+                        <div class="badge-role-pill role-speaker" id="badgeRolePill">KEYNOTE SPEAKER</div>
+                    </div>
+
+                    <div class="badge-body">
+                        <div class="badge-guest-name" id="badgeName">Taimur Rahman</div>
+                        <div class="badge-guest-company" id="badgeCompany">Banglalink · CCRO</div>
+                    </div>
+
+                    <div class="badge-footer">
+                        <div>
+                            <div style="font-family:'Space Mono'; font-size:0.75rem; color:var(--text-dim);">PASS ID</div>
+                            <div class="badge-id-text" id="badgeId">TCON-3089</div>
+                        </div>
+                        <div class="badge-qr-box">
+                            <img id="badgeQr" src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=https://toffeecon.live/programme?id=TCON-3089" width="75" height="75" alt="Badge QR">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Arrivals Live Feed Panel -->
+        <div class="panel">
+            <h2 class="panel-h2">
+                <span>Live Arrivals Feed</span>
+                <span style="font-family:'Space Mono'; font-size:0.8rem; color:var(--green);">REAL-TIME</span>
+            </h2>
+            <ul class="arrivals-list" id="arrivalsList">
+                <li class="arrival-card">
+                    <div>
+                        <b>Taimur Rahman</b>
+                        <div style="font-family:'Space Mono'; font-size:0.75rem; color:var(--cyan);">TCON-3089 · Banglalink</div>
+                    </div>
+                    <span style="font-family:'Space Mono'; font-size:0.75rem; color:var(--green);">VIP ✅</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Audio Feedback Cues -->
+    <script>
+        // Web Audio API Synth for Retro Chimes
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playChime(success = true) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (success) {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1); // A5
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.35);
+            } else {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(160, audioCtx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            }
+        }
+
+        // Checkin Execution
+        async function checkInTicket(ticketId) {
+            if (!ticketId) return;
+
+            try {
+                const res = await fetch('/api/gate/checkin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ticketId: ticketId.trim() })
+                });
+                const data = await res.json();
+
+                const box = document.getElementById('feedbackBox');
+                if (data.success) {
+                    playChime(true);
+                    box.className = 'scan-box success';
+                    document.getElementById('feedbackIcon').innerText = '✅';
+                    document.getElementById('feedbackTitle').innerText = data.alreadyCheckedIn ? 'RE-ENTRY VERIFIED' : 'ACCESS GRANTED';
+                    document.getElementById('feedbackSub').innerText = `${data.ticket.name} (${data.ticket.role}) · Welcome to ToffeeCon!`;
+                    
+                    updateBadge(data.ticket);
+                    document.getElementById('statCheckedIn').innerText = data.totalCheckedIn;
+                    document.getElementById('statTotalRSVP').innerText = data.totalRSVP;
+                } else {
+                    playChime(false);
+                    box.className = 'scan-box warning';
+                    document.getElementById('feedbackIcon').innerText = '⚠️';
+                    document.getElementById('feedbackTitle').innerText = 'PASS NOT FOUND';
+                    document.getElementById('feedbackSub').innerText = 'Invalid ticket ID. Please verify or use name search.';
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Camera QR Scanner instance
+        let html5QrScanner = null;
+        let isScannerRunning = false;
+
+        async function toggleCameraScanner() {
+            const readerDiv = document.getElementById('cameraReader');
+            const toggleBtn = document.getElementById('btnToggleCam');
+
+            if (isScannerRunning) {
+                if (html5QrScanner) {
+                    await html5QrScanner.stop();
+                    html5QrScanner = null;
+                }
+                readerDiv.style.display = 'none';
+                toggleBtn.innerText = '📷 Toggle Camera Viewfinder';
+                isScannerRunning = false;
+                return;
+            }
+
+            readerDiv.style.display = 'block';
+            toggleBtn.innerText = '🛑 Stop Camera';
+            isScannerRunning = true;
+
+            html5QrScanner = new Html5Qrcode("cameraReader");
+            try {
+                await html5QrScanner.start(
+                    { facingMode: "environment" },
+                    { fps: 10, qrbox: { width: 250, height: 250 } },
+                    (decodedText) => {
+                        let ticketCode = decodedText.trim();
+                        // Parse JSON if QR has full JSON payload or URL
+                        if (ticketCode.startsWith('{') && ticketCode.includes('"id"')) {
+                            try {
+                                const parsed = JSON.parse(ticketCode);
+                                if (parsed.id) ticketCode = parsed.id;
+                            } catch(e) {}
+                        }
+                        checkInTicket(ticketCode);
+                    },
+                    (error) => {}
+                );
+            } catch (err) {
+                console.warn('Camera start error:', err);
+                toggleBtn.innerText = '⚠️ Camera Unavailable (Use Manual Entry)';
+                readerDiv.style.display = 'none';
+                isScannerRunning = false;
+            }
+        }
+
+        function updateBadge(ticket) {
+            document.getElementById('badgeName').innerText = ticket.name;
+            document.getElementById('badgeCompany').innerText = `${ticket.company}`;
+            document.getElementById('badgeId').innerText = ticket.id;
+            document.getElementById('badgeQr').src = `https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=https://toffeecon.live/programme?id=${ticket.id}`;
+
+            const pill = document.getElementById('badgeRolePill');
+            pill.innerText = ticket.role.toUpperCase();
+            pill.className = 'badge-role-pill';
+
+            const roleLow = ticket.role.toLowerCase();
+            if (roleLow.includes('speaker')) pill.classList.add('role-speaker');
+            else if (roleLow.includes('advertiser') || roleLow.includes('buyer')) pill.classList.add('role-advertiser');
+            else if (roleLow.includes('press') || roleLow.includes('journal')) pill.classList.add('role-press');
+            else if (roleLow.includes('creator') || roleLow.includes('influencer')) pill.classList.add('role-creator');
+            else pill.classList.add('role-partner');
+        }
+
+        function addArrivalFeedItem(ticket) {
+            const feed = document.getElementById('arrivalsList');
+            const li = document.createElement('li');
+            li.className = 'arrival-card';
+            li.innerHTML = `
+                <div>
+                    <b>${ticket.name}</b>
+                    <div style="font-family:'Space Mono'; font-size:0.75rem; color:var(--cyan);">${ticket.id} · ${ticket.company}</div>
+                </div>
+                <span style="font-family:'Space Mono'; font-size:0.75rem; color:var(--green);">${ticket.role.split(' ')[0]} ✅</span>
+            `;
+            feed.insertBefore(li, feed.firstChild);
+            // Limit to 12 recent arrivals
+            if (feed.children.length > 12) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+
+        function handleManualCheckin(e) {
+            e.preventDefault();
+            const input = document.getElementById('ticketInput');
+            checkInTicket(input.value);
+            input.value = '';
+        }
+
+        // Live Guest Search
+        let debounceTimer;
+        function handleSearch(query) {
+            clearTimeout(debounceTimer);
+            const list = document.getElementById('searchResults');
+            if (!query.trim()) {
+                list.innerHTML = '';
+                return;
+            }
+
+            debounceTimer = setTimeout(async () => {
+                const res = await fetch(`/api/gate/search?q=${encodeURIComponent(query)}`);
+                const results = await res.json();
+                list.innerHTML = '';
+                results.forEach(guest => {
+                    const li = document.createElement('li');
+                    li.className = 'search-item';
+                    li.innerHTML = `
+                        <div>
+                            <b>${guest.name}</b> <span style="color:var(--text-dim);">(${guest.company})</span>
+                            <div style="font-family:'Space Mono'; font-size:0.75rem; color:var(--cyan);">${guest.id} · ${guest.role}</div>
+                        </div>
+                        <button class="btn-checkin" style="padding:6px 14px; font-size:0.8rem;">Check In</button>
+                    `;
+                    li.onclick = () => {
+                        checkInTicket(guest.id);
+                        list.innerHTML = '';
+                        document.getElementById('searchInput').value = '';
+                    };
+                    list.appendChild(li);
+                });
+            }, 250);
+        }
+
+        // Init stats
+        fetch('/api/state').then(r => r.json()).then(d => {
+            document.getElementById('statCheckedIn').innerText = d.telemetry.checkedInAttendees;
+            document.getElementById('statTotalRSVP').innerText = d.telemetry.totalRSVP;
+        });
+
+        // WebSocket for live arrivals feed & connection dot
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${protocol}//${window.location.host}`);
+        const statusDot = document.getElementById('wsStatusDot');
+
+        ws.onopen = () => {
+            if (statusDot) statusDot.classList.remove('disconnected');
+        };
+        ws.onclose = () => {
+            if (statusDot) statusDot.classList.add('disconnected');
+        };
+        ws.onmessage = (event) => {
+            const msg = JSON.parse(event.data);
+            if (msg.type === 'ATTENDEE_CHECKED_IN') {
+                document.getElementById('statCheckedIn').innerText = msg.data.totalCheckedIn;
+                document.getElementById('statTotalRSVP').innerText = msg.data.totalRSVP;
+                if (msg.data.ticket) {
+                    addArrivalFeedItem(msg.data.ticket);
+                }
+            }
+        };
+    </script>
+</body>
+</html>

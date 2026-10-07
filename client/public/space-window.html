@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToffeeCon 2026 · The Space Window & Hall of Fame</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #05020c;
+            --neon-pink: #FF10F0;
+            --neon-purple: #A855F7;
+            --neon-cyan: #00F0FF;
+            --neon-amber: #FFB300;
+            --panel-hull: #0e071e;
+            --border-metal: #2d184d;
+            --text-main: #FFFFFF;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body {
+            background: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 32px;
+            background: rgba(8, 4, 18, 0.9);
+            border-bottom: 1px solid #23123d;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .badge-space {
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            color: #000;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        /* Split Venue Layout: Ceiling Space Window + Floor Hall of Fame Wall */
+        .venue-stage {
+            display: grid;
+            grid-template-rows: 280px 1fr;
+            flex-grow: 1;
+            height: calc(100vh - 70px);
+        }
+
+        /* 1. Ceiling Space Window Viewport (Matching Slide Photo) */
+        .space-ceiling-frame {
+            position: relative;
+            background: #020108;
+            border-bottom: 4px solid var(--border-metal);
+            overflow: hidden;
+            box-shadow: inset 0 -20px 40px rgba(0,0,0,0.8);
+        }
+
+        canvas#spaceCanvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .space-hud-overlay {
+            position: absolute;
+            top: 14px; left: 24px;
+            z-index: 10;
+            background: rgba(10, 4, 22, 0.7);
+            border: 1px solid var(--border-metal);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* 2. Hall of Fame 100+ Channels Wall */
+        .hall-of-fame-wall {
+            background: var(--panel-hull);
+            padding: 24px 32px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .wall-title-banner {
+            border: 2px solid var(--neon-purple);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            background: rgba(168, 85, 247, 0.1);
+            margin-bottom: 20px;
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.3);
+        }
+
+        .wall-title-banner h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.8rem;
+            color: #fff;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px var(--neon-purple);
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: #15092a;
+            border: 1px solid #361763;
+            color: #b7a8d9;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover { border-color: var(--neon-cyan); color: #fff; }
+        .filter-btn.active {
+            background: var(--neon-cyan);
+            color: #000;
+            font-weight: 700;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        /* Channel Grid (100+ Live Channels) */
+        .channel-matrix {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            flex-grow: 1;
+        }
+
+        .channel-badge-card {
+            background: #14092b;
+            border: 1px solid #2e1654;
+            border-radius: 10px;
+            padding: 12px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .channel-badge-card:hover {
+            border-color: var(--neon-pink);
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(255, 16, 240, 0.4);
+        }
+
+        .channel-badge-card.uplinking {
+            border-color: var(--neon-cyan);
+            background: rgba(0, 240, 255, 0.15);
+            animation: pulse-uplink 1s infinite;
+        }
+        @keyframes pulse-uplink {
+            0%, 100% { box-shadow: 0 0 10px var(--neon-cyan); }
+            50% { box-shadow: 0 0 25px var(--neon-cyan); }
+        }
+
+        .ch-icon { font-size: 1.6rem; margin-bottom: 6px; }
+        .ch-name { font-weight: 700; font-size: 0.8rem; color: #fff; }
+        .ch-category { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: #8c7ba8; margin-top: 2px; }
+        .ch-live-dot {
+            position: absolute;
+            top: 6px; right: 6px;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #10B981;
+            box-shadow: 0 0 6px #10B981;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-brand">
+            <img src="/assets/toffeecon-logo.png" alt="ToffeeCon" style="height:32px; filter:drop-shadow(0 0 10px rgba(0,240,255,0.6));">
+            <div class="badge-space">THE SPACE WINDOW & HALL OF FAME</div>
+        </div>
+        <div style="font-family:'Space Mono'; font-size:0.8rem; color:var(--neon-cyan);">
+            SATELLITE DOWNLINK · 100+ LIVE CHANNELS
+        </div>
+    </header>
+
+    <div class="venue-stage">
+        <!-- 1. Ceiling Space Window Viewport -->
+        <div class="space-ceiling-frame">
+            <canvas id="spaceCanvas"></canvas>
+            <div class="space-hud-overlay">
+                <span style="color:var(--neon-green);">● SATELLITE DOWNLINK: BANGABANDHU-1 / TOFFEE RELAY-7</span>
+                <span style="color:var(--neon-cyan);">ORBIT ALTITUDE: 35,786 KM</span>
+                <span id="uplinkCounter" style="color:var(--neon-amber);">CHANNELS RELAYED: 100+</span>
+            </div>
+        </div>
+
+        <!-- 2. Floor Hall of Fame Wall -->
+        <div class="hall-of-fame-wall">
+            <div class="wall-title-banner">
+                <h1>TOFFEE HALL OF FAME</h1>
+                <div style="font-family:'Space Mono'; font-size:0.8rem; color:var(--neon-cyan); margin-top:4px;">
+                    EXPLORE 100+ CHANNELS UNDER THE BELT · TAP ANY CHANNEL TO TRIGGER ORBIT UPLINK
+                </div>
+            </div>
+
+            <!-- Category Filters -->
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filterChannels('all', this)">ALL CHANNELS (100+)</button>
+                <button class="filter-btn" onclick="filterChannels('sports', this)">⚽ SPORTS</button>
+                <button class="filter-btn" onclick="filterChannels('news', this)">📰 LIVE NEWS</button>
+                <button class="filter-btn" onclick="filterChannels('movies', this)">🎬 MOVIES & DRAMA</button>
+                <button class="filter-btn" onclick="filterChannels('music', this)">🎵 MUSIC</button>
+                <button class="filter-btn" onclick="filterChannels('kids', this)">🧸 KIDS</button>
+            </div>
+
+            <!-- Dynamic Channel Grid -->
+            <div class="channel-matrix" id="channelGrid">
+                <!-- Injected via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Space Ceiling Animation Canvas (Orbiting Satellite & Earth)
+        const spaceCanvas = document.getElementById('spaceCanvas');
+        const sCtx = spaceCanvas.getContext('2d');
+        let satAngle = 0;
+        let laserBeams = [];
+
+        function renderSpaceWindow() {
+            const w = spaceCanvas.width = spaceCanvas.clientWidth;
+            const h = spaceCanvas.height = spaceCanvas.clientHeight;
+            sCtx.clearRect(0, 0, w, h);
+
+            // Deep Space Nebula & Stars
+            sCtx.fillStyle = '#020108';
+            sCtx.fillRect(0, 0, w, h);
+
+            // Procedural Stars
+            for (let i = 0; i < 60; i++) {
+                const sx = (Math.sin(i * 99) * 0.5 + 0.5) * w;
+                const sy = (Math.cos(i * 33) * 0.5 + 0.5) * h;
+                sCtx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                sCtx.fillRect(sx, sy, 1.5, 1.5);
+            }
+
+            // Earth Limb in Background
+            sCtx.beginPath();
+            sCtx.arc(w / 2, h + 180, 260, 0, Math.PI * 2);
+            const earthGrad = sCtx.createRadialGradient(w/2, h + 180, 50, w/2, h + 180, 260);
+            earthGrad.addColorStop(0, '#0055ff');
+            earthGrad.addColorStop(0.8, '#001144');
+            earthGrad.addColorStop(1, '#000011');
+            sCtx.fillStyle = earthGrad;
+            sCtx.fill();
+            sCtx.strokeStyle = 'rgba(0, 240, 255, 0.5)';
+            sCtx.stroke();
+
+            // Orbiting Satellite Position
+            satAngle += 0.008;
+            const satX = (w / 2) + Math.cos(satAngle) * (w * 0.35);
+            const satY = 70 + Math.sin(satAngle * 2) * 25;
+
+            // Draw Satellite Body
+            sCtx.save();
+            sCtx.translate(satX, satY);
+            sCtx.rotate(Math.sin(satAngle) * 0.3);
+
+            // Solar Panels
+            sCtx.fillStyle = '#00F0FF';
+            sCtx.fillRect(-45, -8, 25, 16);
+            sCtx.fillRect(20, -8, 25, 16);
+            sCtx.strokeStyle = '#fff';
+            sCtx.strokeRect(-45, -8, 25, 16);
+            sCtx.strokeRect(20, -8, 25, 16);
+
+            // Center Chassis
+            sCtx.fillStyle = '#C5A059';
+            sCtx.fillRect(-15, -12, 30, 24);
+            sCtx.fillStyle = '#FF10F0';
+            sCtx.beginPath();
+            sCtx.arc(0, 0, 4, 0, Math.PI * 2);
+            sCtx.fill();
+            sCtx.restore();
+
+            // Render Uplink Laser Beams
+            for (let i = laserBeams.length - 1; i >= 0; i--) {
+                const beam = laserBeams[i];
+                beam.progress += 0.04;
+                const currentY = h - (beam.progress * (h - satY));
+                sCtx.beginPath();
+                sCtx.moveTo(beam.startX, h);
+                sCtx.lineTo(satX, currentY);
+                sCtx.strokeStyle = 'rgba(0, 240, 255, ' + (1 - beam.progress) + ')';
+                sCtx.lineWidth = 3;
+                sCtx.stroke();
+
+                if (beam.progress >= 1) {
+                    laserBeams.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(renderSpaceWindow);
+        }
+        renderSpaceWindow();
+
+        // 100+ Channels Catalog Generator
+        const sampleChannels = [
+            { name: 'T Sports HD', category: 'sports', icon: '⚽' },
+            { name: 'Sony Sports Ten 1', category: 'sports', icon: '🏏' },
+            { name: 'Sony Sports Ten 2', category: 'sports', icon: '🎾' },
+            { name: 'Star Sports 1', category: 'sports', icon: '🏆' },
+            { name: 'Gazi TV (GTV)', category: 'sports', icon: '🏏' },
+            { name: 'Somoy TV', category: 'news', icon: '📰' },
+            { name: 'Jamuna TV', category: 'news', icon: '📺' },
+            { name: 'Ekattor TV', category: 'news', icon: '🎙️' },
+            { name: 'Channel 24', category: 'news', icon: '📡' },
+            { name: 'BBC World News', category: 'news', icon: '🌍' },
+            { name: 'Zee Bangla Cinema', category: 'movies', icon: '🎬' },
+            { name: 'Star Jalsha', category: 'movies', icon: '🎭' },
+            { name: 'Colors Bangla', category: 'movies', icon: '✨' },
+            { name: 'BTV National', category: 'movies', icon: '🏛️' },
+            { name: 'NTV', category: 'movies', icon: '🎥' },
+            { name: 'Channel i', category: 'movies', icon: '🌟' },
+            { name: 'MTV Live', category: 'music', icon: '🎵' },
+            { name: 'Gaan Bangla', category: 'music', icon: '🎸' },
+            { name: 'Sangeet Bangla', category: 'music', icon: '🎶' },
+            { name: 'Cartoon Network', category: 'kids', icon: '🧸' },
+            { name: 'Nickelodeon HD', category: 'kids', icon: '🚀' },
+            { name: 'Discovery Kids', category: 'kids', icon: '🦁' },
+            { name: 'Animal Planet', category: 'movies', icon: '🐾' },
+            { name: 'National Geographic', category: 'movies', icon: '🌋' }
+        ];
+
+        // Replicate to 100+ Channels
+        const allChannels = [];
+        for (let i = 1; i <= 104; i++) {
+            const base = sampleChannels[(i - 1) % sampleChannels.length];
+            allChannels.push({
+                id: i,
+                name: i <= sampleChannels.length ? base.name : `${base.name} Feed ${Math.floor(i / sampleChannels.length) + 1}`,
+                category: base.category,
+                icon: base.icon
+            });
+        }
+
+        function populateChannels(filter = 'all') {
+            const grid = document.getElementById('channelGrid');
+            grid.innerHTML = '';
+            const filtered = filter === 'all' ? allChannels : allChannels.filter(c => c.category === filter);
+
+            filtered.forEach(ch => {
+                const card = document.createElement('div');
+                card.className = 'channel-badge-card';
+                card.innerHTML = `
+                    <div class="ch-live-dot"></div>
+                    <div class="ch-icon">${ch.icon}</div>
+                    <div class="ch-name">${ch.name}</div>
+                    <div class="ch-category">${ch.category.toUpperCase()}</div>
+                `;
+                card.onclick = (e) => triggerChannelUplink(card, e);
+                grid.appendChild(card);
+            });
+        }
+
+        function filterChannels(category, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            populateChannels(category);
+        }
+
+        function triggerChannelUplink(card, event) {
+            card.classList.add('uplinking');
+            setTimeout(() => card.classList.remove('uplinking'), 1500);
+
+            // Add laser beam to space window
+            const rect = card.getBoundingClientRect();
+            laserBeams.push({
+                startX: rect.left + rect.width / 2,
+                progress: 0
+            });
+        }
+
+        populateChannels('all');
+    </script>
+</body>
+</html>

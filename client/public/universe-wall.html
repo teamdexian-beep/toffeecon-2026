@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In Another Universe · Multi-Screen Video Wall Display · ToffeeCon 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #05020c;
+            --pink: #EC4899;
+            --cyan: #00F0FF;
+            --purple: #9333EA;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #FFFFFF;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px 30px;
+            font-family: 'Space Mono', monospace;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .wall-bg-glow {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(184, 0, 136, 0.2) 0%, #05020c 80%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Top Brand Marquee Header */
+        .wall-header {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 14px;
+        }
+
+        .header-title-box {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .wall-main-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #FFF 10%, #EC4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .wall-badge {
+            background: rgba(236, 72, 153, 0.15);
+            border: 1px solid #EC4899;
+            color: #F472B6;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+        }
+
+        /* The 6-Screen Architecture (Exact Match to Slide Photo) */
+        .multi-screen-matrix {
+            position: relative;
+            z-index: 10;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            flex-grow: 1;
+            margin: 20px 0;
+            align-items: center;
+        }
+
+        .screen-tile {
+            position: relative;
+            height: 38vh;
+            background: #080312;
+            border: 3.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.85);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 16px 20px;
+        }
+
+        .screen-tile.active-transform {
+            border-color: #EC4899;
+            box-shadow: 0 0 50px rgba(236, 72, 153, 0.8), inset 0 0 30px rgba(236, 72, 153, 0.5);
+            transform: scale(1.03);
+            z-index: 15;
+        }
+
+        .screen-poster-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7) contrast(1.1);
+            transition: transform 0.5s ease;
+        }
+
+        .screen-tile:hover .screen-poster-bg {
+            transform: scale(1.05);
+        }
+
+        .screen-gradient-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(5,2,12,0.95) 90%);
+        }
+
+        .screen-content {
+            position: relative;
+            z-index: 5;
+        }
+
+        .screen-genre-tag {
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .screen-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 6px;
+        }
+
+        .screen-starring-label {
+            font-size: 0.75rem;
+            color: #94A3B8;
+        }
+
+        /* Footer Wall Telemetry */
+        .wall-footer {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            padding-top: 12px;
+            font-size: 0.75rem;
+            color: #94A3B8;
+        }
+    </style>
+</head>
+<body>
+    <div class="wall-bg-glow"></div>
+
+    <div class="wall-header">
+        <div class="header-title-box">
+            <span style="font-size:1.8rem;">🎬</span>
+            <div>
+                <h1 class="wall-main-title">In Another Universe</h1>
+                <div style="font-size:0.75rem; color:#94A3B8; letter-spacing:1px;">
+                    TOFFEECON 2026 EXPERIENTIAL ZONE · SURROUNDING 6-SCREEN LED MATRIX
+                </div>
+            </div>
+        </div>
+        <div style="display:flex; gap:14px; align-items:center;">
+            <span class="wall-badge" id="wallStatusBadge">● 6 SCREENS SYNCED</span>
+            <div style="color:var(--cyan); font-weight:700;" id="portraitsCount">142 GUESTS TRANSFORMED</div>
+        </div>
+    </div>
+
+    <!-- 6-Screen Architecture Matching Slide Layout -->
+    <div class="multi-screen-matrix">
+        <!-- 1. ACTION Screen -->
+        <div class="screen-tile" id="tile-action">
+            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1000&q=80" alt="Action" class="screen-poster-bg" id="img-action">
+            <div class="screen-gradient-overlay"></div>
+            <div class="screen-content">
+                <div class="screen-genre-tag" style="color: #FF6B00;">01 // ACTION</div>
+                <div class="screen-title">CYBERPUNK COMMANDO</div>
+                <div class="screen-starring-label" id="star-action">STARRING: TANVIR AHMED</div>
+            </div>
+        </div>
+
+        <!-- 2. ADVENTURE Screen -->
+        <div class="screen-tile" id="tile-adventure">
+            <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1000&q=80" alt="Adventure" class="screen-poster-bg" id="img-adventure">
+            <div class="screen-gradient-overlay"></div>
+            <div class="screen-content">
+                <div class="screen-genre-tag" style="color: #10B981;">02 // ADVENTURE</div>
+                <div class="screen-title">PEAK CONQUEROR</div>
+                <div class="screen-starring-label" id="star-adventure">STARRING: GUEST STANDBY</div>
+            </div>
+        </div>
+
+        <!-- 3. DRAMA Screen -->
+        <div class="screen-tile" id="tile-drama">
+            <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1000&q=80" alt="Drama" class="screen-poster-bg" id="img-drama">
+            <div class="screen-gradient-overlay"></div>
+            <div class="screen-content">
+                <div class="screen-genre-tag" style="color: #A855F7;">03 // DRAMA</div>
+                <div class="screen-title">CINEMATIC NOIR LEAD</div>
+                <div class="screen-starring-label" id="star-drama">STARRING: GUEST STANDBY</div>
+            </div>
+        </div>
+
+        <!-- 4. FOOTBALL Screen -->
+        <div class="screen-tile" id="tile-football">
+            <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1000&q=80" alt="Football" class="screen-poster-bg" id="img-football">
+            <div class="screen-gradient-overlay"></div>
+            <div class="screen-content">
+                <div class="screen-genre-tag" style="color: #00F0FF;">04 // FOOTBALL</div>
+                <div class="screen-title">STADIUM TITAN</div>
+                <div class="screen-starring-label" id="star-football">STARRING: GUEST STANDBY</div>
+            </div>
+        </div>
+
+        <!-- 5. RACE Screen -->
+        <div class="screen-tile" id="tile-race">
+            <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1000&q=80" alt="Race" class="screen-poster-bg" id="img-race">
+            <div class="screen-gradient-overlay"></div>
+            <div class="screen-content">
+                <div class="screen-genre-tag" style="color: #EF4444;">05 // RACE</div>
+                <div class="screen-title">NEON VELOCITY</div>
+                <div class="screen-starring-label" id="star-race">STARRING: GUEST STANDBY</div>
+            </div>
+        </div>
+
+        <!-- 6. SCI-FI Screen -->
+        <div class="screen-tile active-transform" id="tile-scifi">
+            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80" alt="Sci-Fi" class="screen-poster-bg" id="img-scifi">
+            <div class="screen-gradient-overlay"></div>
+            <div class="screen-content">
+                <div class="screen-genre-tag" style="color: #EC4899;">06 // SCI-FI</div>
+                <div class="screen-title">COSMIC NAVIGATOR</div>
+                <div class="screen-starring-label" id="star-scifi">STARRING: ZUBAIR HOSSAIN</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wall-footer">
+        <div>TOFFEECON 2026 EVENT OPERATING SYSTEM</div>
+        <div style="color:var(--pink);">YOUR STORY, TRANSFORMED BY TOFFEE</div>
+        <div>SCAN QR AT KIOSK TO CAPTURE</div>
+    </div>
+
+    <script>
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${protocol}//${window.location.host}`);
+
+        ws.onmessage = (event) => {
+            try {
+                const msg = JSON.parse(event.data);
+                if (msg.type === 'UNIVERSE_POSTER_RENDERED') {
+                    highlightPoster(msg.data.poster);
+                    if (msg.data.booth) {
+                        document.getElementById('portraitsCount').textContent = 
+                            `${msg.data.booth.totalPortraitsRendered} GUESTS TRANSFORMED`;
+                    }
+                }
+            } catch (err) {}
+        };
+
+        function highlightPoster(poster) {
+            const genre = poster.genre.toLowerCase();
+            const tile = document.getElementById(`tile-${genre}`);
+            const img = document.getElementById(`img-${genre}`);
+            const star = document.getElementById(`star-${genre}`);
+
+            if (tile && img && star) {
+                // Remove active classes
+                document.querySelectorAll('.screen-tile').forEach(t => t.classList.remove('active-transform'));
+
+                // Flash new poster
+                tile.classList.add('active-transform');
+                img.src = poster.posterUrl;
+                star.textContent = `STARRING: ${poster.guestName.toUpperCase()}`;
+
+                const badge = document.getElementById('wallStatusBadge');
+                badge.textContent = `⚡ NEW TRANSFORM: ${genre.toUpperCase()}`;
+                badge.style.borderColor = '#00F0FF';
+                badge.style.color = '#00F0FF';
+
+                setTimeout(() => {
+                    badge.textContent = '● 6 SCREENS SYNCED';
+                    badge.style.borderColor = '#EC4899';
+                    badge.style.color = '#F472B6';
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>

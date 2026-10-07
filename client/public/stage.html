@@ -1,0 +1,2315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stage of Tomorrow · ToffeeCon 2026 Panoramic Keynote Display</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-void: #030107;
+            --orange: #FF6B00;
+            --purple: #9333EA;
+            --magenta: #B80088;
+            --cyan: #00F0FF;
+            --red: #FF0844;
+            --blue: #0072FF;
+            --text-main: #FFFFFF;
+            --text-dim: #94A3B8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* 1. Overhead Arena Moving-Head Beam Lights (Atmospheric Stage FX) */
+        .stage-beams {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            background: 
+                radial-gradient(ellipse at 50% 0%, rgba(184, 0, 136, 0.35) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 0%, rgba(147, 51, 234, 0.25) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 0%, rgba(255, 107, 0, 0.25) 0%, transparent 50%);
+            mix-blend-mode: screen;
+            transition: all 0.8s ease;
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(18, 16, 38, 0) 50%, rgba(0, 0, 0, 0.35) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            opacity: 0.55;
+            z-index: 50;
+        }
+
+        /* 2. Top Director HUD Bar */
+        .stage-director-bar {
+            position: absolute;
+            top: 14px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 60;
+            pointer-events: none;
+        }
+
+        .director-badge {
+            background: rgba(14, 8, 30, 0.88);
+            border: 1px solid rgba(255, 107, 0, 0.4);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: #E2E8F0;
+            letter-spacing: 1.5px;
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            pointer-events: auto;
+        }
+
+        .scene-pill {
+            background: rgba(0, 240, 255, 0.15);
+            color: var(--cyan);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        .director-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            pointer-events: auto;
+        }
+
+        .nav-btn {
+            background: rgba(14, 8, 30, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #F8FAFC;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            text-decoration: none;
+            cursor: pointer;
+            backdrop-filter: blur(12px);
+            transition: all 0.2s;
+        }
+        .nav-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+        .nav-btn.active { background: var(--orange); border-color: var(--orange); color: #fff; font-weight: 700; }
+
+        /* 3. The 3-Screen Panoramic Stage Architecture */
+        .stage-arena-container {
+            position: relative;
+            z-index: 10;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 30px 20px 30px;
+            perspective: 1200px;
+            perspective-origin: center center;
+        }
+
+        .triple-screen-rig {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 1720px;
+            height: 82vh;
+            gap: 20px;
+            transform-style: preserve-3d;
+        }
+
+        /* Screen Bezel Styling */
+        .screen-chassis {
+            position: relative;
+            background: #080312;
+            border: 4px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), inset 0 0 40px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Center Screen: Massive Master TV with Rounded Corners */
+        .screen-center-master {
+            flex: 1 1 58%;
+            height: 100%;
+            border-radius: 42px; /* Iconic Rounded CRT TV Bezel from Slide */
+            border: 6px solid #231938;
+            box-shadow: 
+                0 0 50px rgba(184, 0, 136, 0.35),
+                0 25px 80px rgba(0, 0, 0, 0.95),
+                inset 0 0 35px rgba(147, 51, 234, 0.2);
+            position: relative;
+            transform: translateZ(10px);
+        }
+
+        /* Side Wings: Angled inward */
+        .screen-wing {
+            flex: 0 0 21%;
+            height: 88%;
+            border-radius: 28px;
+            border: 4px solid #1c132d;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.85);
+            padding: 24px;
+        }
+
+        .screen-left-wing {
+            transform: rotateY(22deg);
+            transform-origin: right center;
+        }
+
+        .screen-right-wing {
+            transform: rotateY(-22deg);
+            transform-origin: left center;
+        }
+
+        /* Center Screen Inner Canvas & Scenes */
+        .screen-content-canvas {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 36px 48px;
+            background: radial-gradient(circle at center, #1b0d36 0%, #06020c 80%);
+            transition: all 0.6s ease;
+        }
+
+        /* Scene 1: Ambient Brand & 7-Year Rebirth */
+        .scene-ambient {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+        }
+
+        .ambient-emblem-wrap {
+            position: relative;
+            margin-bottom: 24px;
+        }
+        .ambient-emblem-img {
+            max-width: 480px;
+            height: auto;
+            filter: drop-shadow(0 0 40px rgba(184, 0, 136, 0.85));
+            animation: pulse-emblem 4s ease-in-out infinite alternate;
+        }
+        @keyframes pulse-emblem {
+            0% { transform: scale(0.98); filter: drop-shadow(0 0 30px rgba(184, 0, 136, 0.6)); }
+            100% { transform: scale(1.02); filter: drop-shadow(0 0 60px rgba(255, 107, 0, 0.8)); }
+        }
+
+        /* Scene 2: Speaker Entrance Portal ("Step Out of the Screen") */
+        .scene-portal {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: #020106;
+            overflow: hidden;
+            z-index: 30;
+        }
+        .scene-portal.active { display: flex; }
+
+        .portal-seam-left, .portal-seam-right {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 50%;
+            background: linear-gradient(135deg, #1b0d36, #07030e);
+            border: 2px solid rgba(0, 240, 255, 0.3);
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+        }
+        .portal-seam-left { left: 0; justify-content: flex-end; padding-right: 20px; }
+        .portal-seam-right { right: 0; justify-content: flex-start; padding-left: 20px; }
+
+        .scene-portal.open .portal-seam-left { transform: translateX(-92%); }
+        .scene-portal.open .portal-seam-right { transform: translateX(92%); }
+
+        .portal-vortex-gateway {
+            position: absolute;
+            width: 520px;
+            height: 520px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #FFFFFF 0%, var(--orange) 30%, var(--magenta) 60%, transparent 80%);
+            box-shadow: 0 0 100px var(--orange), 0 0 200px var(--magenta);
+            animation: spinVortex 8s linear infinite;
+            z-index: 1;
+        }
+        @keyframes spinVortex {
+            0% { transform: rotate(0deg) scale(0.9); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(0.9); }
+        }
+
+        .portal-speaker-reveal {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 1s ease 0.4s;
+        }
+        .scene-portal.open .portal-speaker-reveal {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .speaker-badge-kicker {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            color: var(--cyan);
+            letter-spacing: 4px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .speaker-name-hero {
+            font-family: 'Syne', sans-serif;
+            font-size: 4.2rem;
+            font-weight: 900;
+            line-height: 1.05;
+            background: linear-gradient(135deg, #FFFFFF 0%, var(--orange) 50%, #FFB800 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(255, 107, 0, 0.6);
+            margin-bottom: 12px;
+        }
+
+        .speaker-role-hero {
+            font-size: 1.4rem;
+            color: #F1F5F9;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .portal-door-indicator {
+            display: inline-block;
+            background: rgba(0, 240, 255, 0.15);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            padding: 8px 24px;
+            border-radius: 30px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            animation: blinkDoor 1s infinite alternate;
+        }
+        @keyframes blinkDoor {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; box-shadow: 0 0 20px var(--cyan); }
+        }
+
+        /* Scene 4: Opening AV Film & Keynote Handoff Transition */
+        .scene-film {
+            position: absolute;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #000000;
+            overflow: hidden;
+            z-index: 40;
+            border-radius: 36px;
+        }
+        .scene-film.active { display: flex; }
+
+        .film-video-player {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 36px;
+        }
+
+        /* The Magical Keynote Transition: Purple Dot Shooting Upward */
+        .handoff-container {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: #010003;
+            z-index: 50;
+            border-radius: 36px;
+        }
+        .handoff-container.active { display: flex; }
+
+        .purple-dot-hero {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #D8B4FE;
+            box-shadow: 0 0 25px #9333EA, 0 0 60px #B80088, 0 0 100px #9333EA;
+            position: relative;
+            transition: transform 1.2s cubic-bezier(0.12, 0.8, 0.3, 1), opacity 0.4s ease;
+        }
+        .purple-dot-hero.pulse {
+            animation: dotPulse 1.2s infinite alternate ease-in-out;
+        }
+        @keyframes dotPulse {
+            0% { transform: scale(0.85); box-shadow: 0 0 20px #9333EA, 0 0 40px #B80088; }
+            100% { transform: scale(1.4); box-shadow: 0 0 45px #D8B4FE, 0 0 90px #9333EA; }
+        }
+
+        .purple-dot-hero.shoot-up {
+            transform: translateY(-130vh) scaleY(4.5) scaleX(0.7);
+            opacity: 0.9;
+        }
+
+        .dot-vertical-beam {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 0;
+            background: linear-gradient(to top, rgba(147, 51, 234, 0.8), rgba(216, 180, 254, 1));
+            box-shadow: 0 0 30px #9333EA, 0 0 70px #B80088;
+            opacity: 0;
+            transition: height 0.8s ease, opacity 0.3s;
+        }
+        .dot-vertical-beam.active {
+            height: 140vh;
+            opacity: 1;
+        }
+
+        /* CEO Spotlight Cone */
+        .stage-spotlight-cone {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 320px;
+            height: 120vh;
+            background: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.9) 0%, rgba(216, 180, 254, 0.4) 30%, transparent 75%);
+            filter: blur(12px);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 60;
+            transition: opacity 0.8s ease;
+        }
+        .stage-spotlight-cone.active { opacity: 1; }
+
+        /* Scene 7: The Personal Dashboard (This or That Arena Gauges) */
+        .scene-dashboard {
+            position: absolute;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            background: radial-gradient(circle at 50% 15%, rgba(168, 85, 247, 0.25) 0%, #06020e 85%);
+            border-radius: 36px;
+            overflow: hidden;
+            z-index: 35;
+            padding: 30px 48px 24px 48px;
+            box-sizing: border-box;
+        }
+        .scene-dashboard.active { display: flex; }
+
+        .dash-header-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            padding-bottom: 14px;
+        }
+
+        .dash-title-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .dash-badge {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: #E2E8F0;
+            letter-spacing: 2px;
+        }
+
+        .dash-arena-stage {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 90px;
+            position: relative;
+            padding: 10px 0;
+        }
+
+        /* Vertical Dual Neon Pill Gauges (Matching Slide Mockup) */
+        .pillar-pod {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            position: relative;
+        }
+
+        .pillar-meta {
+            text-align: right;
+        }
+        .pillar-meta.right {
+            text-align: left;
+        }
+
+        .pillar-label {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.6rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .pillar-pct {
+            font-family: 'Space Mono', monospace;
+            font-size: 3.4rem;
+            font-weight: 800;
+            line-height: 1;
+            filter: drop-shadow(0 0 20px currentColor);
+        }
+
+        .pillar-votes {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: #94A3B8;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* The Neon Cylindrical Capsule Tube */
+        .neon-pill-tube {
+            width: 74px;
+            height: 290px;
+            background: rgba(18, 12, 38, 0.9);
+            border-radius: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.8);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column-reverse;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        .tube-fill {
+            width: 100%;
+            border-radius: 32px;
+            transition: height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 0 35px currentColor;
+        }
+
+        .tube-fill::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 20%;
+            width: 60%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 4px;
+            filter: blur(1px);
+        }
+
+        /* Middle VS Divider */
+        .dash-vs-badge {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: #0B061A;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: #FFF;
+            box-shadow: 0 0 30px rgba(184, 0, 136, 0.4);
+            z-index: 5;
+        }
+
+        /* Winner Content Showcase Overlay */
+        .dash-showcase-panel {
+            position: absolute;
+            inset: 0;
+            background: rgba(8, 4, 18, 0.95);
+            backdrop-filter: blur(25px);
+            border-radius: 36px;
+            display: none;
+            padding: 36px 48px;
+            z-index: 50;
+            animation: fadeInShowcase 0.5s ease;
+        }
+        .dash-showcase-panel.active { display: flex; }
+
+        @keyframes fadeInShowcase {
+            from { opacity: 0; transform: scale(0.97); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 40px;
+            width: 100%;
+            align-items: center;
+        }
+
+        .showcase-poster-frame {
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(168, 85, 247, 0.35);
+            height: 320px;
+            position: relative;
+        }
+
+        .showcase-poster-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .showcase-details {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .showcase-badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            background: rgba(168, 85, 247, 0.15);
+            border: 1px solid #A855F7;
+            color: #D8B4FE;
+            width: fit-content;
+        }
+
+        .showcase-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            line-height: 1.15;
+            color: #FFFFFF;
+        }
+
+        .showcase-stats-chip {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--cyan);
+            letter-spacing: 1px;
+        }
+
+        .showcase-desc {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #CBD5E1;
+            max-width: 600px;
+        }
+
+        /* Scene 8: ToffeeCon Wrapped & Capsule 2033 Deck */
+        .scene-wrapped {
+            position: absolute;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            background: radial-gradient(circle at 50% 15%, rgba(245, 158, 11, 0.22) 0%, #06020e 85%);
+            border-radius: 36px;
+            overflow: hidden;
+            z-index: 35;
+            padding: 26px 44px 20px 44px;
+            box-sizing: border-box;
+        }
+        .scene-wrapped.active { display: flex; }
+
+        /* The Steampunk/Cyberpunk Machine Console from the Slide Photo */
+        .capsule-machine-console {
+            position: relative;
+            background: linear-gradient(180deg, #1A132B 0%, #0D0819 100%);
+            border: 3px solid rgba(255, 255, 255, 0.18);
+            border-radius: 28px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.85), inset 0 2px 10px rgba(255,255,255,0.1);
+            padding: 24px 36px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            max-width: 1080px;
+            margin: auto;
+            width: 100%;
+        }
+
+        /* Glowing Amber Warm Nixie Tubes */
+        .nixie-tubes-housing {
+            background: #080410;
+            border: 3px solid #332244;
+            border-radius: 22px;
+            padding: 16px 28px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.9), 0 0 25px rgba(245, 158, 11, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nixie-glass-tube {
+            width: 76px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, rgba(10, 5, 20, 0.95) 85%);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-radius: 38px 38px 12px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(245, 158, 11, 0.3), 0 0 25px rgba(245, 158, 11, 0.4);
+        }
+
+        .nixie-digit {
+            font-family: 'Space Mono', monospace;
+            font-size: 3.8rem;
+            font-weight: 800;
+            color: #FFB020;
+            text-shadow: 0 0 10px #FF9000, 0 0 25px #FF6000, 0 0 45px #FF3B00;
+            line-height: 1;
+        }
+
+        /* Glowing Purple VHS Cassette in Deck Slot */
+        .vhs-deck-bay {
+            position: relative;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .vhs-slot-chassis {
+            width: 320px;
+            height: 90px;
+            background: #070311;
+            border: 3px solid #EC4899;
+            border-radius: 16px;
+            box-shadow: 0 0 35px rgba(236, 72, 153, 0.35), inset 0 0 20px #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: visible;
+        }
+
+        .vhs-tape-cassette {
+            position: absolute;
+            top: -120px;
+            width: 270px;
+            height: 140px;
+            background: linear-gradient(135deg, #1C0A33 0%, #3B0764 100%);
+            border: 2.5px solid #EC4899;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 12px 16px;
+            transform: rotate(-12deg);
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 10;
+        }
+
+        .vhs-tape-cassette.inserted {
+            top: -20px;
+            transform: rotate(0deg) scale(0.96);
+            border-color: #10B981;
+            box-shadow: 0 0 40px rgba(16, 185, 129, 0.8);
+        }
+
+        .vhs-tape-cassette.sealed {
+            top: 10px;
+            opacity: 0.85;
+            filter: grayscale(0.2) contrast(1.2);
+            border-color: #F59E0B;
+            box-shadow: 0 0 50px rgba(245, 158, 11, 0.9);
+        }
+
+        .vhs-spools-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .vhs-spool {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #0D0418;
+            border: 2px dashed rgba(0, 240, 255, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: spinSpool 6s linear infinite;
+        }
+        @keyframes spinSpool {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .vhs-label-strip {
+            background: #FFFFFF;
+            color: #000;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 800;
+            display: flex;
+            justify-content: space-between;
+            letter-spacing: 1px;
+        }
+
+        /* Live Audience 2033 Predictions Ticker */
+        .capsule-predictions-ticker {
+            background: rgba(14, 8, 30, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .predictions-scroller {
+            display: inline-flex;
+            gap: 36px;
+            animation: tickerScroll 24s linear infinite;
+        }
+        @keyframes tickerScroll {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Option A Fullscreen Recap Video Window */
+        .recap-fullscreen-wrap {
+            position: absolute;
+            inset: 0;
+            background: #000;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            border-radius: 36px;
+            overflow: hidden;
+            z-index: 40;
+        }
+        .recap-fullscreen-wrap.active { display: flex; }
+
+        .recap-signoff-card {
+            position: absolute;
+            inset: 0;
+            background: rgba(8, 4, 16, 0.95);
+            backdrop-filter: blur(25px);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+            z-index: 50;
+            animation: fadeInShowcase 0.8s ease;
+        }
+        .recap-signoff-card.active { display: flex; }
+
+        /* Scene 5: Memory Marathon (Rapid-Fire Crowd Trivia Race) */
+        .scene-marathon {
+            position: absolute;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            background: radial-gradient(circle at 50% 10%, rgba(184, 0, 136, 0.3) 0%, #06020f 80%);
+            border-radius: 36px;
+            overflow: hidden;
+            z-index: 35;
+        }
+        .scene-marathon.active { display: flex; }
+
+        .marathon-race-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .marathon-hud-top {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 24px 32px;
+        }
+
+        .marathon-q-card {
+            background: rgba(14, 8, 30, 0.92);
+            border: 2px solid var(--magenta);
+            border-radius: 16px;
+            padding: 16px 24px;
+            max-width: 580px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(184, 0, 136, 0.3);
+        }
+
+        .marathon-q-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            line-height: 1.25;
+            margin-bottom: 12px;
+        }
+
+        .marathon-options-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+        }
+        .marathon-opt-tag {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 6px 12px;
+            border-radius: 6px;
+            color: #E2E8F0;
+        }
+
+        .marathon-finish-banner {
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--orange), var(--magenta));
+            color: #fff;
+            padding: 10px 32px;
+            border-radius: 30px;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            box-shadow: 0 0 35px var(--magenta);
+            z-index: 10;
+            border: 2px solid #fff;
+        }
+
+        .marathon-leaderboard-box {
+            background: rgba(14, 8, 30, 0.92);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 16px;
+            padding: 16px 20px;
+            min-width: 220px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .leader-row {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .leader-row:first-child { color: var(--cyan); font-weight: 700; }
+
+        .marathon-hud-bottom {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 32px;
+            background: rgba(8, 3, 18, 0.85);
+            border-top: 2px dashed rgba(236, 72, 153, 0.4);
+        }
+
+        /* Scene 3: The Sonic Dilemma Battle (Live Audience Polling Duel) */
+        .scene-battle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+        .scene-battle.active { display: flex; }
+
+        canvas#waveCanvas {
+            width: 100%;
+            height: 160px;
+            border-radius: 12px;
+        }
+
+        .split-track {
+            height: 52px;
+            background: #15102a;
+            border-radius: 26px;
+            overflow: hidden;
+            display: flex;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            margin-top: 16px;
+        }
+
+        .bar-fill-red {
+            background: linear-gradient(90deg, #ff0844 0%, #ff4e50 100%);
+            height: 100%;
+            transition: width 0.35s ease;
+            display: flex;
+            align-items: center;
+            padding-left: 20px;
+            font-family: 'Space Mono', monospace;
+            font-weight: bold;
+        }
+
+        .bar-fill-blue {
+            background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+            height: 100%;
+            transition: width 0.35s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 20px;
+            font-family: 'Space Mono', monospace;
+            font-weight: bold;
+        }
+
+        /* Left Wing Content (Telemetry & Speaker Bio) */
+        .wing-kicker {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--cyan);
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .wing-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            margin-bottom: 14px;
+        }
+
+        .telemetry-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .telemetry-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.68rem;
+            color: #94A3B8;
+            margin-bottom: 4px;
+        }
+
+        .telemetry-val {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #FFFFFF;
+        }
+
+        /* Right Wing Content (Live QR + Audience Pulse) */
+        .qr-wing-box {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 14px;
+        }
+
+        .qr-wing-img {
+            width: 140px;
+            height: 140px;
+            border-radius: 8px;
+            background: #fff;
+            padding: 6px;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+        }
+
+        /* Footer Telemetry on Stage */
+        .stage-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 14px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        /* Winner Reveal Modal on Center Screen */
+        .winner-modal {
+            position: absolute;
+            inset: 0;
+            background: rgba(6, 4, 12, 0.94);
+            backdrop-filter: blur(25px);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+            border-radius: 36px;
+        }
+        .winner-modal.active { display: flex; }
+    </style>
+</head>
+<body>
+
+    <div class="stage-beams" id="stageBeams"></div>
+    <div class="scanlines"></div>
+
+    <!-- Director Bar -->
+    <div class="stage-director-bar">
+        <div class="director-badge">
+            <span class="scene-pill" id="directorSceneBadge">SCENE: AMBIENT</span>
+            <span>STAGE OF TOMORROW · 3-SCREEN PANORAMA</span>
+        </div>
+        <div class="director-controls">
+            <button class="nav-btn" onclick="triggerScene('ambient')">1. Ambient</button>
+            <button class="nav-btn" onclick="triggerScene('opening_film')">2. Opening AV</button>
+            <button class="nav-btn" onclick="triggerKeynoteHandoff()">3. Purple Dot Handoff</button>
+            <button class="nav-btn" onclick="triggerScene('speaker_portal')">4. Speaker Portal</button>
+            <button class="nav-btn" onclick="triggerScene('sonic_battle')">5. Sonic Battle</button>
+            <button class="nav-btn" onclick="triggerScene('marathon_race')" style="color:var(--pink); border-color:var(--pink);">6. Memory Marathon 🏁</button>
+            <button class="nav-btn" onclick="triggerScene('personal_dashboard')" style="color:#EC4899; border-color:#EC4899;">7. Personal Dashboard 📊</button>
+            <button class="nav-btn" onclick="triggerScene('wrapped_capsule')" style="color:#F59E0B; border-color:#F59E0B;">8. ToffeeCon Wrapped 📼</button>
+            <a href="/hub" class="nav-btn" style="border-color:var(--orange);">Operator Hub ↗</a>
+        </div>
+    </div>
+
+    <!-- 3-Screen Arena Canvas -->
+    <div class="stage-arena-container">
+        <div class="triple-screen-rig">
+
+            <!-- 1. LEFT WING SCREEN (Angled Inward) -->
+            <div class="screen-chassis screen-wing screen-left-wing">
+                <div>
+                    <div class="wing-kicker">SUMMIT TELEMETRY</div>
+                    <h3 class="wing-title">Live Arena Feed</h3>
+
+                    <div class="telemetry-card">
+                        <div class="telemetry-label">AUDIENCE ACCREDITATION</div>
+                        <div class="telemetry-val" id="statAttendees">548 / 600</div>
+                    </div>
+
+                    <div class="telemetry-card">
+                        <div class="telemetry-label">AI DUB BOOTHS ACTIVE</div>
+                        <div class="telemetry-val" id="statDubs">284 Completed</div>
+                    </div>
+
+                    <div class="telemetry-card">
+                        <div class="telemetry-label">STREAMING ENGINE</div>
+                        <div class="telemetry-val" style="color:var(--cyan);">60 FPS · 4K HDR</div>
+                    </div>
+                </div>
+
+                <div style="font-family:'Space Mono'; font-size:0.7rem; color:#64748B;">
+                    LEFT WING · OUTPUT 01
+                </div>
+            </div>
+
+            <!-- 2. CENTER MASTER SCREEN (Rounded Bezel TV from Future) -->
+            <div class="screen-chassis screen-center-master">
+                
+                <!-- Inner Screen Content Area -->
+                <div class="screen-content-canvas" id="centerCanvas">
+
+                    <!-- SCENE 1: Ambient Brand Scene -->
+                    <div class="scene-ambient" id="sceneAmbient">
+                        <div class="ambient-emblem-wrap">
+                            <img src="/assets/toffeecon-hero-emblem.png" alt="ToffeeCon 2026" class="ambient-emblem-img">
+                        </div>
+                        <div style="font-family:'Space Mono'; font-size:1.1rem; color:var(--cyan); letter-spacing:4px; margin-bottom:6px;">
+                            THE BIGGEST KEYNOTE SCREEN IN BANGLADESH
+                        </div>
+                        <p style="font-size:1.15rem; color:#CBD5E1; max-width:620px;">
+                            7 Years of Screenovation. The Screen of Tomorrow unfolds live from the Radisson Blu Grand Ballroom.
+                        </p>
+                    </div>
+
+                    <!-- SCENE 2: Speaker Entrance Portal ("Step Out of the Screen") -->
+                    <div class="scene-portal" id="scenePortal">
+                        <div class="portal-vortex-gateway"></div>
+                        <div class="portal-seam-left"></div>
+                        <div class="portal-seam-right"></div>
+
+                        <div class="portal-speaker-reveal">
+                            <div class="speaker-badge-kicker">KEYNOTE SPEAKER STEPPING FORTH</div>
+                            <h1 class="speaker-name-hero" id="portalSpeakerName">TAIMUR RAHMAN</h1>
+                            <div class="speaker-role-hero" id="portalSpeakerRole">Chief Commercial Officer · Banglalink</div>
+                            <div class="portal-door-indicator">⚡ SCREEN SEAM OPEN · ENTER STAGE ⚡</div>
+                        </div>
+                    </div>
+
+                    <!-- SCENE 4: Opening AV Brand Film (Executive Summary Reel) -->
+                    <div class="scene-film" id="sceneFilm">
+                        <video id="openingFilmPlayer" class="film-video-player" playsinline>
+                            <source src="/assets/opening-film.mp4" type="video/mp4">
+                        </video>
+                        <!-- Fallback Generative Canvas Reel when video file is pending -->
+                        <canvas id="filmFallbackCanvas" style="position:absolute; inset:0; width:100%; height:100%; display:none;"></canvas>
+                        
+                        <div id="filmPlayHint" style="position:absolute; bottom:20px; font-family:'Space Mono'; font-size:0.8rem; color:var(--cyan); background:rgba(0,0,0,0.7); padding:6px 16px; border-radius:20px;">
+                            ▶ OPENING BRAND FILM: 7 YEARS OF SCREENOVA TION
+                        </div>
+                    </div>
+
+                    <!-- KEYNOTE TRANSITION: The Magical Purple Dot Shoot-Up -->
+                    <div class="handoff-container" id="handoffContainer">
+                        <div class="dot-vertical-beam" id="dotVerticalBeam"></div>
+                        <div class="purple-dot-hero pulse" id="purpleDotHero"></div>
+                    </div>
+
+                    <!-- CEO Spotlight Cone FX -->
+                    <div class="stage-spotlight-cone" id="stageSpotlightCone"></div>
+
+                    <!-- SCENE 3: The Sonic Dilemma Battle -->
+                    <div class="scene-battle" id="sceneBattle">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <div style="font-family:'Space Mono'; font-size:0.95rem; color:#A855F7; letter-spacing:3px;">
+                                    LIVE AUDIENCE VOTE
+                                </div>
+                                <h2 style="font-family:'Syne'; font-size:2.8rem; font-weight:800;">The Sonic Dilemma</h2>
+                            </div>
+                            <div style="font-family:'Space Mono'; font-size:0.9rem; color:var(--cyan);" id="battleTotalVotes">
+                                TOTAL BALLOTS: 600
+                            </div>
+                        </div>
+
+                        <!-- Waveform Battle Canvas -->
+                        <div>
+                            <!-- Composer Evolution Strip (The Charlie Puth Motif Breakdown) -->
+                            <div style="display:flex; justify-content:center; gap:12px; margin-bottom:12px;">
+                                <button onclick="playStageMotif('seed')" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.25); color:#F8FAFC; padding:6px 16px; border-radius:20px; font-family:'Space Mono'; font-size:0.75rem; cursor:pointer;">
+                                    🎹 Motif 0: Seed Sound
+                                </button>
+                                <button onclick="playStageMotif('alpha')" style="background:rgba(255, 8, 68, 0.2); border:1px solid var(--red); color:#FF8FA3; padding:6px 16px; border-radius:20px; font-family:'Space Mono'; font-size:0.75rem; cursor:pointer;">
+                                    🔊 Play Sonic Alpha (Red)
+                                </button>
+                                <button onclick="playStageMotif('beta')" style="background:rgba(0, 114, 255, 0.2); border:1px solid var(--blue); color:#8FC4FF; padding:6px 16px; border-radius:20px; font-family:'Space Mono'; font-size:0.75rem; cursor:pointer;">
+                                    🔊 Play Sonic Beta (Blue)
+                                </button>
+                            </div>
+
+                            <canvas id="waveCanvas"></canvas>
+                            <div class="split-track">
+                                <div class="bar-fill-red" id="barRed" style="width:52%;">
+                                    <span id="pctRed">52%</span>
+                                </div>
+                                <div class="bar-fill-blue" id="barBlue" style="width:48%;">
+                                    <span id="pctBlue">48%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Labels Row -->
+                        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                            <div>
+                                <div style="font-family:'Syne'; font-size:1.4rem; font-weight:800; color:var(--red);">SONIC ALPHA</div>
+                                <div style="font-family:'Space Mono'; font-size:0.85rem; color:#94A3B8;">Retro Dynamic (Warm Analog Synth Brass)</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-family:'Syne'; font-size:1.4rem; font-weight:800; color:var(--blue);">SONIC BETA</div>
+                                <div style="font-family:'Space Mono'; font-size:0.85rem; color:#94A3B8;">Futuristic Pulse (Sub Bass & Crystal Chime)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SCENE 5: Memory Marathon (Rapid-Fire Crowd Trivia Race) -->
+                    <div class="scene-marathon" id="sceneMarathon">
+                        <canvas id="marathonCanvas" class="marathon-race-canvas"></canvas>
+
+                        <div class="marathon-finish-banner">
+                            ★ FINISH LINE: KEYNOTE CHAMPION! ★
+                        </div>
+
+                        <!-- Top HUD: Question & Leaderboard -->
+                        <div class="marathon-hud-top">
+                            <div class="marathon-q-card">
+                                <div style="font-family:'Space Mono'; font-size:0.75rem; color:var(--cyan); margin-bottom:6px;" id="marathonQNumber">
+                                    RAPID-FIRE MCQ · QUESTION 01/05
+                                </div>
+                                <div class="marathon-q-title" id="marathonQText">
+                                    In what year did Toffee officially launch in Bangladesh?
+                                </div>
+                                <div class="marathon-options-row">
+                                    <div class="marathon-opt-tag" id="mOpt0">A) 2017</div>
+                                    <div class="marathon-opt-tag" id="mOpt1">B) 2019</div>
+                                    <div class="marathon-opt-tag" id="mOpt2">C) 2021</div>
+                                    <div class="marathon-opt-tag" id="mOpt3">D) 2015</div>
+                                </div>
+                            </div>
+
+                            <div class="marathon-leaderboard-box">
+                                <div style="font-family:'Space Mono'; font-size:0.72rem; color:var(--pink); letter-spacing:1px; margin-bottom:8px;">
+                                    🏆 TOP RACERS
+                                </div>
+                                <div id="marathonLeadersList">
+                                    <div class="leader-row"><span>1. Sarah_K</span><span>320 pts</span></div>
+                                    <div class="leader-row"><span>2. Tanvir_M</span><span>280 pts</span></div>
+                                    <div class="leader-row"><span>3. Nusrat_J</span><span>250 pts</span></div>
+                                </div>
+                                <div style="margin-top:10px; font-family:'Space Mono'; font-size:0.65rem; color:#64748B;">
+                                    PLAY ON: /race
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom HUD: Start Baseline & Controls -->
+                        <div class="marathon-hud-bottom">
+                            <div style="font-family:'Space Mono'; font-size:0.85rem; color:var(--pink); letter-spacing:2px; font-weight:700;">
+                                ▼ START BASELINE · 600+ CROWD PARTICIPANT DOTS
+                            </div>
+                            <div style="display:flex; gap:10px; align-items:center;">
+                                <div style="font-family:'Space Mono'; font-size:0.9rem; color:var(--orange);" id="marathonTimerText">
+                                    TIMER: 10s
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SCENE 7: The Personal Dashboard (This or That Vertical Pill Arena) -->
+                    <div class="scene-dashboard" id="sceneDashboard">
+                        <!-- Top Header Bar -->
+                        <div class="dash-header-wrap">
+                            <div class="dash-title-row">
+                                <span style="font-size:1.6rem;" id="dashCategoryIcon">🎭</span>
+                                <div>
+                                    <div style="font-family:'Space Mono'; font-size:0.75rem; color:#A855F7; letter-spacing:3px;" id="dashHeaderKicker">
+                                        INTERACTIVE ENDING OPTION 3
+                                    </div>
+                                    <h2 style="font-family:'Syne'; font-size:2.2rem; font-weight:800; margin:0;" id="dashHeaderTitle">
+                                        AUDIENCE VOTING RESULTS
+                                    </h2>
+                                </div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:16px;">
+                                <div class="dash-badge" id="dashRoundBadge">ROUND 1/3: DRAMA OR ROMANCE?</div>
+                                <div style="font-family:'Space Mono'; font-size:0.85rem; color:var(--cyan);" id="dashTotalBallots">
+                                    TOTAL VOTES: 200
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Central Voting Pillars Arena (Exact Match to Slide Mockup) -->
+                        <div class="dash-arena-stage" id="dashArenaStage">
+                            <!-- Left Pillar: Option A (e.g. DRAMA) -->
+                            <div class="pillar-pod">
+                                <div class="pillar-meta">
+                                    <div class="pillar-label" id="dashLabelA" style="color:#A855F7;">DRAMA</div>
+                                    <div class="pillar-pct" id="dashPctA" style="color:#A855F7;">70%</div>
+                                    <div class="pillar-votes" id="dashVotesA">140 VOTES</div>
+                                </div>
+                                <div class="neon-pill-tube" style="border-color:rgba(168, 85, 247, 0.45); box-shadow:0 0 35px rgba(168, 85, 247, 0.25);">
+                                    <div class="tube-fill" id="tubeFillA" style="height:70%; background:linear-gradient(180deg, #C084FC 0%, #A855F7 100%); color:#A855F7;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Center VS Divider -->
+                            <div class="dash-vs-badge">VS</div>
+
+                            <!-- Right Pillar: Option B (e.g. ROMANCE) -->
+                            <div class="pillar-pod">
+                                <div class="neon-pill-tube" style="border-color:rgba(236, 72, 153, 0.45); box-shadow:0 0 35px rgba(236, 72, 153, 0.25);">
+                                    <div class="tube-fill" id="tubeFillB" style="height:30%; background:linear-gradient(180deg, #F472B6 0%, #EC4899 100%); color:#EC4899;"></div>
+                                </div>
+                                <div class="pillar-meta right">
+                                    <div class="pillar-label" id="dashLabelB" style="color:#EC4899;">ROMANCE</div>
+                                    <div class="pillar-pct" id="dashPctB" style="color:#EC4899;">30%</div>
+                                    <div class="pillar-votes" id="dashVotesB">60 VOTES</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Winner Content Showcase Overlay (Toffee Catalog Match) -->
+                        <div class="dash-showcase-panel" id="dashShowcasePanel">
+                            <div class="showcase-grid">
+                                <div class="showcase-poster-frame">
+                                    <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80" alt="Showcase Content" class="showcase-poster-img" id="showcasePosterImg">
+                                </div>
+                                <div class="showcase-details">
+                                    <div class="showcase-badge-pill" id="showcaseBadgePill">
+                                        <span>★</span> <span id="showcaseTagText">TRENDING #1 DRAMA SERIES</span>
+                                    </div>
+                                    <h1 class="showcase-title" id="showcaseTitleText">Mr. Kolikata & Toffee Originals</h1>
+                                    <div class="showcase-stats-chip" id="showcaseStatsText">4.8★ · 18M+ Streams · 4K HDR · 5.1 DOLBY AUDIO</div>
+                                    <p class="showcase-desc" id="showcaseDescText">
+                                        Bangladesh’s highest-rated original psychological drama series. Exclusively streaming in ultra-high bitrate on Toffee.
+                                    </p>
+                                    <div style="display:flex; gap:14px; margin-top:8px;">
+                                        <button onclick="playShowcaseClip()" style="background:linear-gradient(135deg, #A855F7, #EC4899); border:none; color:#fff; font-family:'Space Mono'; font-weight:700; font-size:0.85rem; padding:10px 24px; border-radius:24px; cursor:pointer;">
+                                            ▶ Stream Winner Reel
+                                        </button>
+                                        <button onclick="dismissShowcase()" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:#fff; font-family:'Space Mono'; font-size:0.8rem; padding:10px 20px; border-radius:24px; cursor:pointer;">
+                                            ← Back to Live Voting
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scene Subtitle Prompt -->
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+                            <div style="font-family:'Space Mono'; font-size:0.75rem; color:#94A3B8;">
+                                VOTE NOW ON SMARTPHONES: <span style="color:var(--cyan); font-weight:700;">toffeecon.live/dashboard</span>
+                            </div>
+                            <div style="font-family:'Space Mono'; font-size:0.75rem; color:#A855F7;" id="dashStatusLabel">
+                                LIVE AUDIENCE BALLOTING OPEN
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SCENE 8: ToffeeCon Wrapped & Capsule 2033 Deck -->
+                    <div class="scene-wrapped" id="sceneWrapped">
+                        <!-- Top Header -->
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.12); padding-bottom:12px;">
+                            <div style="display:flex; align-items:center; gap:14px;">
+                                <span style="font-size:1.6rem;" id="wrappedHeaderIcon">📼</span>
+                                <div>
+                                    <div style="font-family:'Space Mono'; font-size:0.75rem; color:#F59E0B; letter-spacing:3px;">
+                                        INTERACTIVE ENDING OPTION 4
+                                    </div>
+                                    <h2 style="font-family:'Syne'; font-size:2.2rem; font-weight:800; margin:0;" id="wrappedHeaderTitle">
+                                        TOFFEECON WRAPPED: CAPSULE 2033
+                                    </h2>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:12px; align-items:center;">
+                                <div class="dash-badge" id="wrappedModeBadge" style="border-color:#F59E0B; color:#F59E0B;">OPTION B: THE TIME CAPSULE</div>
+                                <div style="font-family:'Space Mono'; font-size:0.85rem; color:var(--cyan);" id="wrappedPredictionsCount">
+                                    42 PREDICTIONS LOGGED
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Steampunk / Cyberpunk Capsule Deck Machine (Exact Match to Slide Photo) -->
+                        <div class="capsule-machine-console" id="capsuleConsole">
+                            <!-- Left Section: Glowing Amber Nixie Tubes -->
+                            <div class="nixie-tubes-housing">
+                                <div class="nixie-glass-tube">
+                                    <div class="nixie-digit" id="nixieDigit1">0</div>
+                                </div>
+                                <div class="nixie-glass-tube">
+                                    <div class="nixie-digit" id="nixieDigit2">8</div>
+                                </div>
+                                <div class="nixie-glass-tube">
+                                    <div class="nixie-digit" id="nixieDigit3">0</div>
+                                </div>
+                            </div>
+
+                            <!-- Center Section: Glowing Purple VHS Cassette in Deck Slot -->
+                            <div class="vhs-deck-bay">
+                                <div class="vhs-slot-chassis">
+                                    <!-- Animated VHS Cassette Dropping In -->
+                                    <div class="vhs-tape-cassette" id="vhsCassette">
+                                        <div class="vhs-spools-row">
+                                            <div class="vhs-spool"></div>
+                                            <div style="font-family:'Space Mono'; font-size:0.6rem; color:#EC4899; font-weight:700;">CAPSULE 2033</div>
+                                            <div class="vhs-spool"></div>
+                                        </div>
+                                        <div class="vhs-label-strip">
+                                            <span>TOFFEECON</span>
+                                            <span>BETA-CHROMIUM · 2026</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="font-family:'Space Mono'; font-size:0.75rem; color:#EC4899; margin-top:14px; letter-spacing:1px; font-weight:700;" id="vhsDeckStatus">
+                                    ⚡ RETRO-FUTURISTIC VHS DECK · READY FOR SEALING
+                                </div>
+                            </div>
+
+                            <!-- Right Section: Sealing Lock Status -->
+                            <div style="text-align:right;">
+                                <div style="font-family:'Space Mono'; font-size:0.75rem; color:#94A3B8;">VAULT ARCHIVE</div>
+                                <div style="font-family:'Syne'; font-size:2.2rem; font-weight:900; color:#F59E0B;" id="capsuleYearDisplay">2033</div>
+                                <div style="font-family:'Space Mono'; font-size:0.75rem; color:#10B981; margin-top:4px;" id="capsuleLockState">
+                                    ● UNSEALED · OPEN FOR PREDICTIONS
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Live Predictions Scroller Bar -->
+                        <div class="capsule-predictions-ticker">
+                            <span style="font-family:'Space Mono'; font-size:0.72rem; color:#F59E0B; font-weight:700; letter-spacing:1px;">
+                                LIVE 2033 PREDICTIONS:
+                            </span>
+                            <div class="predictions-scroller" id="predictionsTicker">
+                                <span><b>Tahmid A. (Apex Media):</b> "360 holographic cricket streaming to neural implants"</span>
+                                <span><b>Nabila H. (Dentsu):</b> "AI real-time choose-your-own-adventure Bengali dramas"</span>
+                                <span><b>Salman F. (TeleTech):</b> "Zero-buffer 16K mobile broadcast reaching 180M citizens"</span>
+                            </div>
+                        </div>
+
+                        <!-- Option A: Fullscreen Recap Player & Climax Card -->
+                        <div class="recap-fullscreen-wrap" id="recapWrap">
+                            <video id="recapVideoPlayer" style="width:100%; height:100%; object-fit:cover;" playsinline>
+                                <source src="/assets/opening-film.mp4" type="video/mp4">
+                            </video>
+                            
+                            <!-- Climax Card: "See you in 7 years." -->
+                            <div class="recap-signoff-card" id="recapSignoffCard">
+                                <div style="font-family:'Space Mono'; font-size:1.1rem; color:var(--cyan); letter-spacing:4px; margin-bottom:16px;">
+                                    TOFFEECON 2026 WRAPPED
+                                </div>
+                                <h1 style="font-family:'Syne'; font-size:4.5rem; font-weight:900; line-height:1.1; margin-bottom:20px; background:linear-gradient(135deg, #FFF, #EC4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
+                                    "See you in 7 years."
+                                </h1>
+                                <p style="font-family:'Space Mono'; font-size:1.2rem; color:#CBD5E1; max-width:640px;">
+                                    7 Years of Screenovation. The future of Bangladesh’s entertainment ecosystem has just begun.
+                                </p>
+                                <div style="margin-top:24px; font-family:'Space Mono'; font-size:0.9rem; color:#F59E0B;">
+                                    TOFFEECON 2033 · DHAKA, BANGLADESH
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Link Hint -->
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:8px;">
+                            <div style="font-family:'Space Mono'; font-size:0.72rem; color:#94A3B8;">
+                                SUBMIT 2033 PREDICTIONS ON SMARTPHONES: <span style="color:var(--cyan); font-weight:700;">toffeecon.live/capsule</span>
+                            </div>
+                            <div style="font-family:'Space Mono'; font-size:0.72rem; color:#F59E0B;">
+                                TIME CAPSULE PROTOCOL: OPEN IN 2033
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Screen Telemetry -->
+                    <div class="stage-footer">
+                        <div>TOFFEECON 2026 · EOS STAGE CONTROLLER</div>
+                        <div style="color:var(--cyan);">CENTER SCREEN · MASTER BEZEL (ROUNDED)</div>
+                        <div id="clockDisplay">18:00:00 BST</div>
+                    </div>
+
+                    <!-- Winner Reveal Modal -->
+                    <div class="winner-modal" id="winnerModal">
+                        <div style="font-family:'Space Mono'; color:var(--cyan); letter-spacing:3px; margin-bottom:12px;">
+                            POLL CONCLUDED
+                        </div>
+                        <h1 id="winnerHeading" style="font-family:'Syne'; font-size:3.5rem; font-weight:900; margin-bottom:16px;">
+                            SONIC ALPHA WINS
+                        </h1>
+                        <p id="winnerDesc" style="color:#CBD5E1; font-size:1.2rem; max-width:600px;">
+                            Official Sound of ToffeeCon 2026 selected by live industry vote.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 3. RIGHT WING SCREEN (Angled Inward) -->
+            <div class="screen-chassis screen-wing screen-right-wing">
+                <div>
+                    <div class="wing-kicker">AUDIENCE INTERACTION</div>
+                    <h3 class="wing-title">Scan To Engage</h3>
+
+                    <div class="qr-wing-box">
+                        <img id="stageQrImg" class="qr-wing-img" src="" alt="Scan QR">
+                        <div style="font-family:'Space Mono'; font-size:0.75rem; color:var(--cyan); margin-top:8px;" id="qrUrlLabel">
+                            toffeecon.live/vote
+                        </div>
+                        <div style="font-size:0.8rem; color:#94A3B8; margin-top:4px;">
+                            Cast ballot from your smartphone
+                        </div>
+                    </div>
+                </div>
+
+                <div style="font-family:'Space Mono'; font-size:0.7rem; color:#64748B; text-align:right;">
+                    RIGHT WING · OUTPUT 03
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        /* -------------------------------------------------------------
+           1. Clock & UI Time
+           ------------------------------------------------------------- */
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clockDisplay').textContent = 
+                now.toLocaleTimeString('en-US', { hour12: false }) + ' BST';
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        /* -------------------------------------------------------------
+           2. Multi-Scene Switcher Engine
+           ------------------------------------------------------------- */
+        let currentScene = 'ambient';
+
+        function triggerScene(sceneName, speakerData) {
+            currentScene = sceneName;
+            document.getElementById('directorSceneBadge').textContent = `SCENE: ${sceneName.toUpperCase()}`;
+
+            const ambient = document.getElementById('sceneAmbient');
+            const portal = document.getElementById('scenePortal');
+            const battle = document.getElementById('sceneBattle');
+            const film = document.getElementById('sceneFilm');
+            const handoff = document.getElementById('handoffContainer');
+            const spotlight = document.getElementById('stageSpotlightCone');
+            const beams = document.getElementById('stageBeams');
+            const wrapped = document.getElementById('sceneWrapped');
+
+            ambient.style.display = 'none';
+            portal.classList.remove('active', 'open');
+            battle.classList.remove('active');
+            film.classList.remove('active');
+            handoff.classList.remove('active');
+            spotlight.classList.remove('active');
+            if (wrapped) wrapped.classList.remove('active');
+
+            if (sceneName === 'ambient') {
+                ambient.style.display = 'flex';
+                beams.style.background = 'radial-gradient(ellipse at 50% 0%, rgba(184, 0, 136, 0.35) 0%, transparent 60%)';
+            } else if (sceneName === 'opening_film') {
+                film.classList.add('active');
+                beams.style.background = 'radial-gradient(ellipse at 50% 0%, rgba(147, 51, 234, 0.25) 0%, transparent 80%)';
+                playOpeningFilm();
+            } else if (sceneName === 'speaker_portal') {
+                portal.classList.add('active');
+                beams.style.background = 'radial-gradient(ellipse at 50% 0%, rgba(0, 240, 255, 0.45) 0%, transparent 70%)';
+                
+                if (speakerData) {
+                    if (speakerData.name) document.getElementById('portalSpeakerName').textContent = speakerData.name;
+                    if (speakerData.role) document.getElementById('portalSpeakerRole').textContent = speakerData.role;
+                }
+
+                // Simulate screen parting seam opening after 600ms
+                setTimeout(() => {
+                    portal.classList.add('open');
+                }, 600);
+
+            } else if (sceneName === 'sonic_battle') {
+                battle.classList.add('active');
+                // The Slide Transition: Room color splits into Red vs. Blue (from purple)
+                beams.style.background = 'linear-gradient(90deg, rgba(255, 8, 68, 0.45) 0%, rgba(255, 8, 68, 0.25) 45%, rgba(147, 51, 234, 0.2) 50%, rgba(0, 114, 255, 0.25) 55%, rgba(0, 114, 255, 0.45) 100%)';
+            } else if (sceneName === 'marathon_race') {
+                const marathon = document.getElementById('sceneMarathon');
+                if (marathon) marathon.classList.add('active');
+                beams.style.background = 'radial-gradient(ellipse at 50% 0%, rgba(236, 72, 153, 0.4) 0%, rgba(147, 51, 234, 0.3) 50%, transparent 80%)';
+                initMarathonStage();
+            } else if (sceneName === 'personal_dashboard') {
+                const dash = document.getElementById('sceneDashboard');
+                if (dash) dash.classList.add('active');
+                beams.style.background = 'radial-gradient(ellipse at 50% 0%, rgba(168, 85, 247, 0.45) 0%, rgba(236, 72, 153, 0.35) 50%, transparent 80%)';
+                fetch('/api/dashboard/state').then(r => r.json()).then(data => updateDashboardState(data));
+            } else if (sceneName === 'wrapped_capsule') {
+                if (wrapped) wrapped.classList.add('active');
+                beams.style.background = 'radial-gradient(ellipse at 50% 0%, rgba(245, 158, 11, 0.45) 0%, rgba(236, 72, 153, 0.3) 50%, transparent 80%)';
+                fetch('/api/capsule/state').then(r => r.json()).then(data => updateCapsuleStage(data));
+            }
+        }
+
+        /* Opening Film Controller */
+        const videoPlayer = document.getElementById('openingFilmPlayer');
+        videoPlayer.addEventListener('ended', () => {
+            // Auto transition to the magical purple dot handoff when video ends
+            triggerKeynoteHandoff();
+        });
+
+        function playOpeningFilm() {
+            if (videoPlayer) {
+                videoPlayer.currentTime = 0;
+                videoPlayer.play().catch(e => {
+                    console.log('Video file not yet uploaded or blocked by autoplay. Running generative fallback preview.');
+                    runFilmFallbackAnimation();
+                });
+            }
+        }
+
+        /* Generative Fallback Canvas for Film Preview before MP4 is uploaded */
+        function runFilmFallbackAnimation() {
+            const fbCanvas = document.getElementById('filmFallbackCanvas');
+            fbCanvas.style.display = 'block';
+            fbCanvas.width = fbCanvas.parentElement.clientWidth;
+            fbCanvas.height = fbCanvas.parentElement.clientHeight;
+            const fbCtx = fbCanvas.getContext('2d');
+
+            let frame = 0;
+            const scenes = [
+                "1. AT FIRST THERE WAS NOTHING... (GENESIS)",
+                "2. 2019: SOMETHING NEW SHOWED UP (THE TOFFEE ORB)",
+                "3. CHANGED THE WAY WE CONSUME TV. FOREVER.",
+                "4. 100M+ LIFETIME USERS · 8 WORLD CUP EVENTS",
+                "5. AI DUBBING · GLOBAL EXPANSION · SCREEN OF TOMORROW"
+            ];
+
+            const interval = setInterval(() => {
+                if (currentScene !== 'opening_film') {
+                    clearInterval(interval);
+                    fbCanvas.style.display = 'none';
+                    return;
+                }
+                frame++;
+                fbCtx.fillStyle = '#05020c';
+                fbCtx.fillRect(0, 0, fbCanvas.width, fbCanvas.height);
+
+                // Cosmic warp particles
+                for (let i = 0; i < 60; i++) {
+                    fbCtx.fillStyle = i % 2 === 0 ? 'rgba(184, 0, 136, 0.6)' : 'rgba(0, 240, 255, 0.6)';
+                    fbCtx.beginPath();
+                    fbCtx.arc(Math.random() * fbCanvas.width, Math.random() * fbCanvas.height, Math.random() * 3, 0, Math.PI * 2);
+                    fbCtx.fill();
+                }
+
+                const sceneIndex = Math.min(scenes.length - 1, Math.floor(frame / 60));
+                fbCtx.fillStyle = '#FFFFFF';
+                fbCtx.font = 'bold 28px "Syne", sans-serif';
+                fbCtx.textAlign = 'center';
+                fbCtx.fillText(scenes[sceneIndex], fbCanvas.width / 2, fbCanvas.height / 2);
+
+                if (frame >= 300) {
+                    clearInterval(interval);
+                    fbCanvas.style.display = 'none';
+                    triggerKeynoteHandoff();
+                }
+            }, 30);
+        }
+
+        /* The Slide 5 Magical Handoff Sequence:
+           1. Screen goes dark with lingering purple dot.
+           2. Dot shoots vertically upward into ceiling.
+           3. Spotlight snaps on revealing CEO with Toffee sonic. */
+        function triggerKeynoteHandoff() {
+            triggerScene('handoff_internal');
+            const handoff = document.getElementById('handoffContainer');
+            const dot = document.getElementById('purpleDotHero');
+            const beam = document.getElementById('dotVerticalBeam');
+            const spotlight = document.getElementById('stageSpotlightCone');
+            const beams = document.getElementById('stageBeams');
+
+            handoff.classList.add('active');
+            dot.classList.remove('shoot-up');
+            beam.classList.remove('active');
+            spotlight.classList.remove('active');
+
+            // 1. Lingering glowing purple dot
+            beams.style.background = '#010003';
+
+            // 2. After 1.6s, shoot upward into ceiling
+            setTimeout(() => {
+                beam.classList.add('active');
+                dot.classList.add('shoot-up');
+
+                // 3. Spotlight snaps on revealing the CEO
+                setTimeout(() => {
+                    spotlight.classList.add('active');
+                    beams.style.background = 'radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.8) 0%, rgba(147, 51, 234, 0.3) 40%, transparent 70%)';
+                    
+                    // Switch to Speaker Portal Reveal scene
+                    setTimeout(() => {
+                        triggerScene('speaker_portal');
+                    }, 1400);
+                }, 800);
+            }, 1600);
+        }
+
+        /* -------------------------------------------------------------
+           3. Composer Motif Sound Synthesizer (The Charlie Puth Demo)
+           ------------------------------------------------------------- */
+        let stageAudioCtx = null;
+        function getStageAudio() {
+            if (!stageAudioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                stageAudioCtx = new AudioContext();
+            }
+            if (stageAudioCtx.state === 'suspended') stageAudioCtx.resume();
+            return stageAudioCtx;
+        }
+
+        function playStageMotif(motif) {
+            const ctx = getStageAudio();
+            const now = ctx.currentTime;
+
+            if (motif === 'seed') {
+                // Raw Seed Sound (Simple organic sine motif)
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(440, now);
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.35);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.9);
+
+            } else if (motif === 'alpha') {
+                // Sonic Alpha: Retro Dynamic (Warm Analog Synth Brass)
+                const freqs = [220, 277.18, 329.63, 440, 554.37]; // A major 9th chords
+                freqs.forEach((f, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(f, now + idx * 0.05);
+
+                    const filter = ctx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(800, now);
+                    filter.frequency.exponentialRampToValueAtTime(2800, now + 0.25);
+                    filter.frequency.exponentialRampToValueAtTime(600, now + 1.2);
+
+                    gain.gain.setValueAtTime(0.12, now + idx * 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.4);
+
+                    osc.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + idx * 0.05);
+                    osc.stop(now + 1.5);
+                });
+
+            } else if (motif === 'beta') {
+                // Sonic Beta: Futuristic Pulse (Sub Bass & Crystal Digital Chime)
+                // Sub Bass Hit
+                const sub = ctx.createOscillator();
+                const subGain = ctx.createGain();
+                sub.type = 'sine';
+                sub.frequency.setValueAtTime(110, now);
+                sub.frequency.exponentialRampToValueAtTime(45, now + 0.4);
+                subGain.gain.setValueAtTime(0.4, now);
+                subGain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+                sub.connect(subGain);
+                subGain.connect(ctx.destination);
+                sub.start(now);
+                sub.stop(now + 1.3);
+
+                // Crystal Digital Arpeggio Chimes
+                [880, 1174.66, 1479.98, 1760].forEach((f, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(f, now + 0.15 + idx * 0.07);
+                    gain.gain.setValueAtTime(0.15, now + 0.15 + idx * 0.07);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15 + idx * 0.07 + 0.8);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + 0.15 + idx * 0.07);
+                    osc.stop(now + 1.4);
+                });
+            }
+        }
+
+        /* -------------------------------------------------------------
+           4. Waveform Battle Canvas
+           ------------------------------------------------------------- */
+        const canvas = document.getElementById('waveCanvas');
+        const ctx = canvas.getContext('2d');
+        let wavePhase = 0;
+        let redRatio = 0.52;
+
+        function resizeCanvas() {
+            if (!canvas.parentElement) return;
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = 140;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        setTimeout(resizeCanvas, 100);
+
+        function drawWaveforms() {
+            if (canvas.width <= 0) return requestAnimationFrame(drawWaveforms);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            wavePhase += 0.05;
+            const midY = canvas.height / 2;
+
+            const redAmp = 14 + (redRatio * 65);
+            const blueAmp = 14 + ((1 - redRatio) * 65);
+
+            // Red wave
+            ctx.beginPath();
+            ctx.lineWidth = redRatio >= 0.5 ? 4 : 2;
+            ctx.strokeStyle = '#FF0844';
+            for (let x = 0; x < canvas.width; x++) {
+                const amp = Math.sin(x * 0.015 + wavePhase) * Math.cos(x * 0.008 + wavePhase) * redAmp;
+                const y = midY + amp;
+                if (x === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            // Blue wave
+            ctx.beginPath();
+            ctx.lineWidth = redRatio < 0.5 ? 4 : 2;
+            ctx.strokeStyle = '#0072FF';
+            for (let x = 0; x < canvas.width; x++) {
+                const amp = Math.cos(x * 0.02 - wavePhase) * Math.sin(x * 0.01 - wavePhase) * blueAmp;
+                const y = midY + amp;
+                if (x === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            requestAnimationFrame(drawWaveforms);
+        }
+        drawWaveforms();
+
+        /* -------------------------------------------------------------
+           4. WebSocket Real-Time Stage Sync with Server & Hub
+           ------------------------------------------------------------- */
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${protocol}//${window.location.host}`);
+
+        ws.onmessage = (event) => {
+            try {
+                const msg = JSON.parse(event.data);
+                if (msg.type === 'INIT_STATE') {
+                    if (msg.data.stageScene) triggerScene(msg.data.stageScene, msg.data.stageSpeaker);
+                    if (msg.data.voting) updateVoting(msg.data.voting);
+                    if (msg.data.telemetry) updateTelemetry(msg.data.telemetry);
+                } else if (msg.type === 'STAGE_SCENE_CHANGE') {
+                    triggerScene(msg.data.scene, msg.data.speaker);
+                } else if (msg.type === 'VOTE_UPDATE') {
+                    updateVoting(msg.data);
+                } else if (msg.type === 'MARATHON_UPDATE') {
+                    updateMarathonState(msg.data);
+                } else if (msg.type === 'DASHBOARD_UPDATE') {
+                    updateDashboardState(msg.data);
+                } else if (msg.type === 'CAPSULE_UPDATE') {
+                    updateCapsuleStage(msg.data);
+                } else if (msg.type === 'STAGE_CONTROL') {
+                    if (msg.data.action === 'reveal') {
+                        triggerWinner(msg.data.voting);
+                    } else if (msg.data.action === 'reset' || msg.data.action === 'open') {
+                        document.getElementById('winnerModal').classList.remove('active');
+                    }
+                }
+            } catch (e) {
+                console.error('WS Error:', e);
+            }
+        };
+
+        function updateVoting(voting) {
+            const red = voting.options.red.votes;
+            const blue = voting.options.blue.votes;
+            const total = red + blue;
+            redRatio = red / total;
+
+            const pctR = Math.round((red / total) * 100);
+            const pctB = 100 - pctR;
+
+            document.getElementById('barRed').style.width = pctR + '%';
+            document.getElementById('barBlue').style.width = pctB + '%';
+            document.getElementById('pctRed').textContent = pctR + '%';
+            document.getElementById('pctBlue').textContent = pctB + '%';
+            document.getElementById('battleTotalVotes').textContent = `TOTAL BALLOTS: ${total}`;
+
+            if (voting.status === 'revealed') {
+                triggerWinner(voting);
+            }
+        }
+
+        function triggerWinner(voting) {
+            const red = voting.options.red.votes;
+            const blue = voting.options.blue.votes;
+            const modal = document.getElementById('winnerModal');
+            const heading = document.getElementById('winnerHeading');
+            const desc = document.getElementById('winnerDesc');
+            const beams = document.getElementById('stageBeams');
+            modal.classList.add('active');
+
+            if (red >= blue) {
+                heading.textContent = 'SONIC ALPHA WINS!';
+                heading.style.color = '#FF0844';
+                desc.textContent = "Sonic Alpha (Retro Dynamic) officially becomes Toffee's signature sonic identity!";
+                beams.style.background = 'radial-gradient(ellipse at center, rgba(255, 8, 68, 0.6) 0%, transparent 70%)';
+                playStageMotif('alpha');
+            } else {
+                heading.textContent = 'SONIC BETA WINS!';
+                heading.style.color = '#0072FF';
+                desc.textContent = "Sonic Beta (Futuristic Pulse) officially becomes Toffee's signature sonic identity!";
+                beams.style.background = 'radial-gradient(ellipse at center, rgba(0, 114, 255, 0.6) 0%, transparent 70%)';
+                playStageMotif('beta');
+            }
+        }
+
+        function updateTelemetry(t) {
+            if (t.checkedInAttendees) {
+                document.getElementById('statAttendees').textContent = `${t.checkedInAttendees} / ${t.totalRSVP || 600}`;
+            }
+            if (t.dubBoothsCompleted) {
+                document.getElementById('statDubs').textContent = `${t.dubBoothsCompleted} Completed`;
+            }
+        }
+
+        /* -------------------------------------------------------------
+           5. Memory Marathon Stage Canvas Physics Engine
+           ------------------------------------------------------------- */
+        let marathonRunning = false;
+        let marathonDots = [];
+        let marathonCanvas = null;
+        let mCtx = null;
+
+        function initMarathonStage() {
+            marathonCanvas = document.getElementById('marathonCanvas');
+            if (!marathonCanvas) return;
+            marathonCanvas.width = marathonCanvas.parentElement.clientWidth;
+            marathonCanvas.height = marathonCanvas.parentElement.clientHeight;
+            mCtx = marathonCanvas.getContext('2d');
+
+            // Generate 80 crowd dots clustered at the start baseline
+            marathonDots = [];
+            const w = marathonCanvas.width;
+            const h = marathonCanvas.height;
+            for (let i = 0; i < 90; i++) {
+                marathonDots.push({
+                    id: `dot_${i}`,
+                    name: i < 5 ? ['Sarah_K', 'Tanvir_M', 'Nusrat_J', 'Asif_Ad', 'Rafiq_Dev'][i] : `Player_${i}`,
+                    x: (w * 0.12) + Math.random() * (w * 0.76),
+                    baselineY: h - 90 - (Math.random() * 45),
+                    currentY: h - 90 - (Math.random() * 45),
+                    targetProgress: 0.05 + (Math.random() * 0.08),
+                    radius: 7 + Math.random() * 4,
+                    color: i < 5 ? '#00F0FF' : (Math.random() > 0.5 ? '#EC4899' : '#B80088'),
+                    trail: []
+                });
+            }
+
+            if (!marathonRunning) {
+                marathonRunning = true;
+                requestAnimationFrame(renderMarathonLoop);
+            }
+        }
+
+        function renderMarathonLoop() {
+            if (currentScene !== 'marathon_race') {
+                marathonRunning = false;
+                return;
+            }
+            mCtx.clearRect(0, 0, marathonCanvas.width, marathonCanvas.height);
+            const w = marathonCanvas.width;
+            const h = marathonCanvas.height;
+            const finishY = 90;
+
+            // Draw raceway track guidelines
+            mCtx.strokeStyle = 'rgba(236, 72, 153, 0.15)';
+            mCtx.lineWidth = 2;
+            for (let x = w * 0.15; x <= w * 0.85; x += w * 0.14) {
+                mCtx.beginPath();
+                mCtx.moveTo(x, finishY);
+                mCtx.lineTo(x, h - 80);
+                mCtx.stroke();
+            }
+
+            // Draw and update each player dot
+            marathonDots.forEach((dot, idx) => {
+                // Interpolate toward target progress
+                const targetY = dot.baselineY - (dot.targetProgress * (dot.baselineY - finishY));
+                dot.currentY += (targetY - dot.currentY) * 0.05;
+
+                // Add to trail
+                dot.trail.push({ x: dot.x, y: dot.currentY });
+                if (dot.trail.length > 14) dot.trail.shift();
+
+                // Draw vertical motion light streak
+                if (dot.trail.length > 1) {
+                    mCtx.beginPath();
+                    mCtx.strokeStyle = dot.color;
+                    mCtx.lineWidth = dot.radius * 0.75;
+                    mCtx.globalAlpha = 0.4;
+                    mCtx.moveTo(dot.trail[0].x, dot.trail[0].y);
+                    for (let p of dot.trail) mCtx.lineTo(p.x, p.y);
+                    mCtx.stroke();
+                    mCtx.globalAlpha = 1.0;
+                }
+
+                // Draw Glowing Dot Head
+                mCtx.fillStyle = '#FFFFFF';
+                mCtx.beginPath();
+                mCtx.arc(dot.x, dot.currentY, dot.radius, 0, Math.PI * 2);
+                mCtx.fill();
+
+                mCtx.strokeStyle = dot.color;
+                mCtx.lineWidth = 3;
+                mCtx.stroke();
+
+                // Label for top 5 racers
+                if (idx < 5) {
+                    mCtx.fillStyle = dot.color;
+                    mCtx.font = 'bold 11px "Space Mono", monospace';
+                    mCtx.fillText(dot.name, dot.x + 10, dot.currentY + 4);
+                }
+            });
+
+            requestAnimationFrame(renderMarathonLoop);
+        }
+
+        function updateMarathonState(race) {
+            if (!race) return;
+            document.getElementById('marathonQNumber').textContent = 
+                `RAPID-FIRE MCQ · QUESTION 0${race.currentQuestionIndex + 1}/0${race.questions.length}`;
+            const q = race.questions[race.currentQuestionIndex];
+            document.getElementById('marathonQText').textContent = q.q;
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`mOpt${i}`).textContent = q.options[i];
+            }
+
+            // Update top racers
+            const sorted = [...race.racers].sort((a,b) => b.score - a.score).slice(0, 4);
+            const list = document.getElementById('marathonLeadersList');
+            list.innerHTML = sorted.map((r, i) => 
+                `<div class="leader-row"><span>${i+1}. ${r.name}</span><span>${r.score} pts</span></div>`
+            ).join('');
+
+            // Push forward stage dots based on real player progress
+            race.racers.forEach((r, idx) => {
+                if (marathonDots[idx]) {
+                    marathonDots[idx].targetProgress = Math.max(marathonDots[idx].targetProgress, r.progress);
+                }
+            });
+        }
+
+        /* -------------------------------------------------------------
+           5. Personal Dashboard (Scene 7) State Sync & Showcase Engine
+           ------------------------------------------------------------- */
+        let currentDashRoundData = null;
+
+        function updateDashboardState(data) {
+            if (!data || !data.round) return;
+            const r = data.round;
+            currentDashRoundData = r;
+
+            document.getElementById('dashHeaderTitle').textContent = r.title || 'AUDIENCE VOTING RESULTS';
+            document.getElementById('dashRoundBadge').textContent = `ROUND ${data.currentRoundIndex + 1}/3: ${r.category.toUpperCase()}`;
+            document.getElementById('dashCategoryIcon').textContent = r.optionA.icon || '🎭';
+            document.getElementById('dashTotalBallots').textContent = `TOTAL VOTES: ${r.totalVotes}`;
+
+            // Left Option A
+            document.getElementById('dashLabelA').textContent = r.optionA.label;
+            document.getElementById('dashLabelA').style.color = r.optionA.color;
+            document.getElementById('dashPctA').textContent = `${r.pctA}%`;
+            document.getElementById('dashPctA').style.color = r.optionA.color;
+            document.getElementById('dashVotesA').textContent = `${r.optionA.votes} VOTES`;
+            document.getElementById('tubeFillA').style.height = `${Math.max(8, r.pctA)}%`;
+            document.getElementById('tubeFillA').style.background = `linear-gradient(180deg, #FFFFFF 0%, ${r.optionA.color} 100%)`;
+            document.getElementById('tubeFillA').style.color = r.optionA.color;
+
+            // Right Option B
+            document.getElementById('dashLabelB').textContent = r.optionB.label;
+            document.getElementById('dashLabelB').style.color = r.optionB.color;
+            document.getElementById('dashPctB').textContent = `${r.pctB}%`;
+            document.getElementById('dashPctB').style.color = r.optionB.color;
+            document.getElementById('dashVotesB').textContent = `${r.optionB.votes} VOTES`;
+            document.getElementById('tubeFillB').style.height = `${Math.max(8, r.pctB)}%`;
+            document.getElementById('tubeFillB').style.background = `linear-gradient(180deg, #FFFFFF 0%, ${r.optionB.color} 100%)`;
+            document.getElementById('tubeFillB').style.color = r.optionB.color;
+
+            // Status label & Showcase overlay
+            const showcasePanel = document.getElementById('dashShowcasePanel');
+            const statusLabel = document.getElementById('dashStatusLabel');
+
+            if (data.status === 'locked') {
+                statusLabel.textContent = '🔒 VOTING LOCKED · REVEALING PREFERENCE...';
+                statusLabel.style.color = '#F59E0B';
+            } else if (data.status === 'showcase') {
+                statusLabel.textContent = '★ TOFFEE CONTENT SHOWCASE MATCH STREAMING';
+                statusLabel.style.color = '#10B981';
+
+                // Populate showcase details
+                if (r.showcase) {
+                    document.getElementById('showcaseTagText').textContent = r.showcase.tag;
+                    document.getElementById('showcaseTitleText').textContent = r.showcase.title;
+                    document.getElementById('showcaseStatsText').textContent = `${r.showcase.stats} · ${r.showcase.badge}`;
+                    document.getElementById('showcaseDescText').textContent = r.showcase.desc;
+                    if (r.showcase.poster) document.getElementById('showcasePosterImg').src = r.showcase.poster;
+                }
+                showcasePanel.classList.add('active');
+            } else {
+                statusLabel.textContent = 'LIVE AUDIENCE BALLOTING OPEN';
+                statusLabel.style.color = '#A855F7';
+                showcasePanel.classList.remove('active');
+            }
+        }
+
+        function playShowcaseClip() {
+            // Smoothly switch stage center player to the opening film showcase reel
+            triggerScene('opening_film');
+        }
+
+        function dismissShowcase() {
+            fetch('/api/dashboard/control', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'voting' })
+            });
+        }
+
+        /* -------------------------------------------------------------
+           6. ToffeeCon Wrapped (Scene 8) & Capsule 2033 Stage Engine
+           ------------------------------------------------------------- */
+        function updateCapsuleStage(data) {
+            if (!data) return;
+
+            const modeBadge = document.getElementById('wrappedModeBadge');
+            const vhs = document.getElementById('vhsCassette');
+            const statusText = document.getElementById('vhsDeckStatus');
+            const lockState = document.getElementById('capsuleLockState');
+            const countLabel = document.getElementById('wrappedPredictionsCount');
+            const recapWrap = document.getElementById('recapWrap');
+            const recapSignoff = document.getElementById('recapSignoffCard');
+            const nixie1 = document.getElementById('nixieDigit1');
+            const nixie2 = document.getElementById('nixieDigit2');
+            const nixie3 = document.getElementById('nixieDigit3');
+
+            if (data.predictions) {
+                countLabel.textContent = `${data.predictions.length} PREDICTIONS LOGGED`;
+                const ticker = document.getElementById('predictionsTicker');
+                if (ticker && data.predictions.length > 0) {
+                    ticker.innerHTML = data.predictions.map(p => 
+                        `<span><b>${p.author} (${p.company}):</b> "${p.text}"</span>`
+                    ).join('');
+                }
+            }
+
+            // Mode handling
+            if (data.activeSubOption === 'recap') {
+                modeBadge.textContent = 'OPTION A: THE RECAP REEL';
+                modeBadge.style.color = 'var(--cyan)';
+                modeBadge.style.borderColor = 'var(--cyan)';
+
+                if (data.status === 'recap_playing') {
+                    recapWrap.classList.add('active');
+                    recapSignoff.classList.remove('active');
+                    const vPlayer = document.getElementById('recapVideoPlayer');
+                    vPlayer.currentTime = 0;
+                    vPlayer.play().catch(() => {});
+                    vPlayer.onended = () => {
+                        recapSignoff.classList.add('active');
+                    };
+                } else if (data.status === 'recap_ended') {
+                    recapWrap.classList.add('active');
+                    recapSignoff.classList.add('active');
+                } else {
+                    recapWrap.classList.remove('active');
+                }
+            } else {
+                modeBadge.textContent = 'OPTION B: THE TIME CAPSULE';
+                modeBadge.style.color = '#F59E0B';
+                modeBadge.style.borderColor = '#F59E0B';
+                recapWrap.classList.remove('active');
+
+                // Nixie display update
+                if (data.nixieDisplay) {
+                    const str = String(data.nixieDisplay).padStart(3, '0');
+                    nixie1.textContent = str[0] || '0';
+                    nixie2.textContent = str[1] || '8';
+                    nixie3.textContent = str[2] || '0';
+                }
+
+                // VHS Cassette animation state
+                if (data.status === 'inserting') {
+                    vhs.className = 'vhs-tape-cassette inserted';
+                    statusText.textContent = '📼 VHS CASSETTE MOUNTED IN DECK · READY TO BURN PREDICTIONS';
+                    statusText.style.color = '#10B981';
+                    lockState.textContent = '⚡ BURNING 2026-2033 ARCHIVE';
+                    lockState.style.color = '#10B981';
+                } else if (data.status === 'sealed') {
+                    vhs.className = 'vhs-tape-cassette sealed';
+                    statusText.textContent = '🔒 TIME CAPSULE 2033 HERMETICALLY SEALED ON STAGE';
+                    statusText.style.color = '#F59E0B';
+                    lockState.textContent = '🔒 SEALED · OPEN IN NOVEMBER 2033';
+                    lockState.style.color = '#F59E0B';
+                    nixie1.textContent = '3';
+                    nixie2.textContent = '3';
+                    nixie3.textContent = '★';
+                } else {
+                    vhs.className = 'vhs-tape-cassette';
+                    statusText.textContent = '⚡ RETRO-FUTURISTIC VHS DECK · READY FOR SEALING';
+                    statusText.style.color = '#EC4899';
+                    lockState.textContent = '● UNSEALED · OPEN FOR PREDICTIONS';
+                    lockState.style.color = '#10B981';
+                }
+            }
+        }
+
+        /* -------------------------------------------------------------
+           7. Dynamic QR Code for Stage Right Wing
+           ------------------------------------------------------------- */
+        fetch('/api/network-ip').then(r => r.json()).then(data => {
+            const ip = data.ip || window.location.hostname;
+            const port = window.location.port ? `:${window.location.port}` : '';
+            const voteUrl = `http://${ip}${port}/vote`;
+            document.getElementById('qrUrlLabel').textContent = `${ip}${port}/vote`;
+            document.getElementById('stageQrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(voteUrl)}`;
+        }).catch(() => {
+            const voteUrl = `${window.location.protocol}//${window.location.host}/vote`;
+            document.getElementById('qrUrlLabel').textContent = `${window.location.host}/vote`;
+            document.getElementById('stageQrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(voteUrl)}`;
+        });
+    </script>
+</body>
+</html>

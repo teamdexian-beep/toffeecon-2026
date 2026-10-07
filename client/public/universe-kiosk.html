@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>In Another Universe · GenAI Photobooth · ToffeeCon 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #070312;
+            --purple: #9333EA;
+            --magenta: #B80088;
+            --pink: #EC4899;
+            --cyan: #00F0FF;
+            --orange: #FF6B00;
+            --emerald: #10B981;
+            --text-main: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 10%, rgba(236, 72, 153, 0.25) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        header {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(236, 72, 153, 0.15);
+            border: 1px solid rgba(236, 72, 153, 0.35);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: #F472B6;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+        }
+
+        .brand-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #FFF 20%, #F472B6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-subtitle {
+            font-size: 0.95rem;
+            color: #94A3B8;
+            margin-top: 4px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }
+
+        .kiosk-grid {
+            position: relative;
+            z-index: 10;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 28px;
+            max-width: 1040px;
+            margin: 0 auto;
+            width: 100%;
+            align-items: start;
+        }
+
+        @media (max-width: 820px) {
+            .kiosk-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Camera Pod */
+        .camera-pod {
+            background: rgba(14, 8, 30, 0.9);
+            border: 2px solid rgba(236, 72, 153, 0.35);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .viewfinder-box {
+            position: relative;
+            width: 100%;
+            height: 380px;
+            border-radius: 18px;
+            overflow: hidden;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+        }
+
+        #cameraFeed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+
+        #capturedPreview {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .viewfinder-guides {
+            position: absolute;
+            inset: 20px;
+            border: 1px dashed rgba(0, 240, 255, 0.4);
+            border-radius: 14px;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .viewfinder-crosshair {
+            width: 30px;
+            height: 30px;
+            position: relative;
+        }
+        .viewfinder-crosshair::before, .viewfinder-crosshair::after {
+            content: '';
+            position: absolute;
+            background: rgba(0, 240, 255, 0.7);
+        }
+        .viewfinder-crosshair::before { top: 14px; left: 0; right: 0; height: 2px; }
+        .viewfinder-crosshair::after { left: 14px; top: 0; bottom: 0; width: 2px; }
+
+        .countdown-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 6rem;
+            font-weight: 900;
+            color: #00F0FF;
+            text-shadow: 0 0 30px #00F0FF;
+            z-index: 20;
+        }
+
+        .camera-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .btn-snap {
+            flex-grow: 1;
+            background: linear-gradient(135deg, #EC4899 0%, #B80088 100%);
+            border: none;
+            color: #fff;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.95rem;
+            font-weight: 800;
+            padding: 14px;
+            border-radius: 14px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-retake {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 14px 20px;
+            border-radius: 14px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        /* Universe Selector & Preview Panel */
+        .controls-pod {
+            background: rgba(14, 8, 30, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+        }
+
+        .section-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--cyan);
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .genre-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .genre-pill-btn {
+            background: #090412;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            padding: 12px 14px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #E2E8F0;
+        }
+
+        .genre-pill-btn:hover {
+            border-color: rgba(236, 72, 153, 0.6);
+        }
+
+        .genre-pill-btn.active {
+            border-color: #EC4899;
+            background: rgba(236, 72, 153, 0.15);
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+            color: #fff;
+        }
+
+        .genre-icon { font-size: 1.4rem; }
+        .genre-name { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 800; }
+
+        .name-input-group {
+            margin-bottom: 20px;
+        }
+
+        .name-input {
+            width: 100%;
+            background: #090412;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+        }
+        .name-input:focus { border-color: var(--cyan); }
+
+        .btn-generate {
+            width: 100%;
+            background: linear-gradient(135deg, #00F0FF 0%, #3B82F6 100%);
+            border: none;
+            color: #000;
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            font-weight: 800;
+            padding: 16px;
+            border-radius: 14px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.35);
+            transition: all 0.2s;
+        }
+
+        .btn-generate:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Resulting Poster Preview Card */
+        .poster-result-card {
+            display: none;
+            background: rgba(14, 8, 30, 0.95);
+            border: 2px solid #EC4899;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(236, 72, 153, 0.4);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .poster-img-frame {
+            width: 100%;
+            height: 280px;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .poster-img-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        footer {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            margin-top: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: #64748B;
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-glow"></div>
+
+    <header>
+        <div class="brand-badge">
+            <span>●</span> IN AN ENTIRELY DIFFERENT WORLD · TOFFEECON 2026
+        </div>
+        <h1 class="brand-title">In Another Universe</h1>
+        <p class="brand-subtitle">
+            Take a portrait and watch yourself transform across giant venue screens into retro-futuristic Toffee entertainment worlds.
+        </p>
+    </header>
+
+    <div class="kiosk-grid">
+        <!-- 1. Live Camera Pod -->
+        <div class="camera-pod">
+            <span class="section-label">01 // LIVE VIEWPORT</span>
+            <div class="viewfinder-box">
+                <video id="cameraFeed" autoplay playsinline muted></video>
+                <img id="capturedPreview" alt="Snapshot Preview">
+                <div class="viewfinder-guides">
+                    <div class="viewfinder-crosshair"></div>
+                </div>
+                <div class="countdown-overlay" id="countdownOverlay">3</div>
+            </div>
+
+            <div class="camera-actions">
+                <button class="btn-snap" id="btnSnap" onclick="startPhotoCountdown()">
+                    <span>📸</span> <span>CAPTURE PORTRAIT</span>
+                </button>
+                <button class="btn-retake" id="btnRetake" style="display:none;" onclick="retakePhoto()">
+                    ↺ RETAKE
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. Universe Selection & Generation Controls -->
+        <div class="controls-pod">
+            <span class="section-label">02 // SELECT ENTERTAINMENT UNIVERSE</span>
+            
+            <div class="genre-grid">
+                <button class="genre-pill-btn active" onclick="selectGenre('scifi', this)">
+                    <span class="genre-icon">🚀</span>
+                    <div>
+                        <div class="genre-name">Sci-Fi</div>
+                        <div style="font-family:'Space Mono'; font-size:0.65rem; color:#94A3B8;">Cosmic Pilot</div>
+                    </div>
+                </button>
+
+                <button class="genre-pill-btn" onclick="selectGenre('action', this)">
+                    <span class="genre-icon">💥</span>
+                    <div>
+                        <div class="genre-name">Action</div>
+                        <div style="font-family:'Space Mono'; font-size:0.65rem; color:#94A3B8;">Commando</div>
+                    </div>
+                </button>
+
+                <button class="genre-pill-btn" onclick="selectGenre('drama', this)">
+                    <span class="genre-icon">🎭</span>
+                    <div>
+                        <div class="genre-name">Drama</div>
+                        <div style="font-family:'Space Mono'; font-size:0.65rem; color:#94A3B8;">Noir Lead</div>
+                    </div>
+                </button>
+
+                <button class="genre-pill-btn" onclick="selectGenre('football', this)">
+                    <span class="genre-icon">⚽</span>
+                    <div>
+                        <div class="genre-name">Football</div>
+                        <div style="font-family:'Space Mono'; font-size:0.65rem; color:#94A3B8;">Stadium Titan</div>
+                    </div>
+                </button>
+
+                <button class="genre-pill-btn" onclick="selectGenre('adventure', this)">
+                    <span class="genre-icon">🏔️</span>
+                    <div>
+                        <div class="genre-name">Adventure</div>
+                        <div style="font-family:'Space Mono'; font-size:0.65rem; color:#94A3B8;">Explorer</div>
+                    </div>
+                </button>
+
+                <button class="genre-pill-btn" onclick="selectGenre('race', this)">
+                    <span class="genre-icon">🏎️</span>
+                    <div>
+                        <div class="genre-name">Race</div>
+                        <div style="font-family:'Space Mono'; font-size:0.65rem; color:#94A3B8;">Motorsport</div>
+                    </div>
+                </button>
+            </div>
+
+            <div class="name-input-group">
+                <label class="section-label">03 // GUEST IDENTIFIER</label>
+                <input type="text" id="guestNameInput" class="name-input" placeholder="Enter name for poster credit (e.g. Asif Rahman)">
+            </div>
+
+            <button class="btn-generate" id="btnGenerate" onclick="triggerTransformation()">
+                ⚡ TRANSFORM ACROSS VENUE WALL SCREENS
+            </button>
+
+            <!-- Transformed Poster Card -->
+            <div class="poster-result-card" id="posterResultCard">
+                <div class="poster-img-frame">
+                    <img id="resultPosterImg" src="" alt="Transformed Poster">
+                </div>
+                <div style="font-family:'Syne'; font-size:1.3rem; font-weight:800;" id="resultTitle">
+                    SCI-FI: COSMIC NAVIGATOR
+                </div>
+                <div style="font-family:'Space Mono'; font-size:0.75rem; color:var(--cyan); margin:6px 0;" id="resultCredit">
+                    STARPING: ASIF RAHMAN · TOFFEECON 2026
+                </div>
+                <div style="font-family:'Space Mono'; font-size:0.72rem; color:#10B981; margin-top:8px;">
+                    ✓ STREAMING LIVE ON SURROUNDING VENUE SCREENS
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div>TOFFEECON 2026 EVENT OPERATING SYSTEM</div>
+        <div style="margin-top:4px; color:var(--pink);">YOUR STORY, TRANSFORMED BY TOFFEE</div>
+    </footer>
+
+    <!-- Hidden Canvas for frame snapshot -->
+    <canvas id="snapshotCanvas" style="display:none;"></canvas>
+
+    <script>
+        let currentStream = null;
+        let capturedPhotoBase64 = null;
+        let selectedGenre = 'scifi';
+
+        const video = document.getElementById('cameraFeed');
+        const capturedImg = document.getElementById('capturedPreview');
+        const countdownEl = document.getElementById('countdownOverlay');
+        const btnSnap = document.getElementById('btnSnap');
+        const btnRetake = document.getElementById('btnRetake');
+        const btnGenerate = document.getElementById('btnGenerate');
+
+        // Initialize WebCam
+        async function initCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' },
+                    audio: false
+                });
+                currentStream = stream;
+                video.srcObject = stream;
+            } catch (err) {
+                console.warn('WebCam not accessible. Using virtual studio mode.');
+                useVirtualStudioFallback();
+            }
+        }
+
+        function useVirtualStudioFallback() {
+            // Generates a mock cyber portrait if camera permission denied or unavailable
+            const canvas = document.getElementById('snapshotCanvas');
+            canvas.width = 640;
+            canvas.height = 480;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#1A0E2E';
+            ctx.fillRect(0, 0, 640, 480);
+            ctx.fillStyle = '#EC4899';
+            ctx.font = 'bold 24px "Space Mono", monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('VIP GUEST PORTRAIT STANDBY', 320, 240);
+            capturedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.85);
+        }
+
+        initCamera();
+
+        function selectGenre(genre, btn) {
+            selectedGenre = genre;
+            document.querySelectorAll('.genre-pill-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function startPhotoCountdown() {
+            let count = 3;
+            countdownEl.style.display = 'flex';
+            countdownEl.textContent = count;
+
+            const timer = setInterval(() => {
+                count -= 1;
+                if (count > 0) {
+                    countdownEl.textContent = count;
+                } else {
+                    clearInterval(timer);
+                    countdownEl.style.display = 'none';
+                    takePhoto();
+                }
+            }, 800);
+        }
+
+        function takePhoto() {
+            const canvas = document.getElementById('snapshotCanvas');
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            const ctx = canvas.getContext('2d');
+            
+            // Mirror flip
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            capturedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.85);
+            capturedImg.src = capturedPhotoBase64;
+            capturedImg.style.display = 'block';
+            video.style.display = 'none';
+
+            btnSnap.style.display = 'none';
+            btnRetake.style.display = 'block';
+        }
+
+        function retakePhoto() {
+            capturedPhotoBase64 = null;
+            capturedImg.style.display = 'none';
+            video.style.display = 'block';
+            btnSnap.style.display = 'flex';
+            btnRetake.style.display = 'none';
+        }
+
+        async function triggerTransformation() {
+            const guestName = document.getElementById('guestNameInput').value || 'VIP Delegate';
+            btnGenerate.disabled = true;
+            btnGenerate.textContent = 'GENERATING AI UNIVERSE...';
+
+            try {
+                const res = await fetch('/api/booth/universe/transform', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        guestName,
+                        guestPhotoBase64: capturedPhotoBase64,
+                        genre: selectedGenre
+                    })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    const poster = data.poster;
+                    document.getElementById('resultPosterImg').src = poster.posterUrl;
+                    document.getElementById('resultTitle').textContent = poster.template.title;
+                    document.getElementById('resultTitle').style.color = poster.template.accentColor;
+                    document.getElementById('resultCredit').textContent = `STARRING: ${poster.guestName.toUpperCase()} · ${poster.template.badgeText}`;
+                    document.getElementById('posterResultCard').style.display = 'block';
+                }
+            } catch (err) {
+                console.error(err);
+            } finally {
+                btnGenerate.disabled = false;
+                btnGenerate.textContent = '⚡ TRANSFORM ACROSS VENUE WALL SCREENS';
+            }
+        }
+    </script>
+</body>
+</html>

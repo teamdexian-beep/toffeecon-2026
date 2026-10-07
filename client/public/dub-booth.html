@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToffeeCon 2026 · The Dub Booth (Acoustic AI Telephone Box)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-beach: #0a0618;
+            --box-purple: #341258;
+            --box-frame: #4a197d;
+            --neon-pink: #FF10F0;
+            --neon-purple: #A855F7;
+            --neon-cyan: #00F0FF;
+            --neon-amber: #FFB300;
+            --brass: #C5A059;
+            --text-main: #F4F4F8;
+            --text-dim: #9D92B8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--bg-beach);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(ellipse at 50% 20%, rgba(255, 16, 240, 0.12) 0%, transparent 60%),
+                radial-gradient(circle at 10% 80%, rgba(74, 25, 125, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.1) 0%, transparent 50%);
+        }
+
+        /* Top Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2d184d;
+            padding: 18px 32px;
+            background: rgba(10, 6, 24, 0.85);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .booth-badge {
+            background: linear-gradient(135deg, var(--neon-pink), var(--box-frame));
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 16, 240, 0.8);
+        }
+
+        /* Telephone Box Main Stage Layout */
+        .stage-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1.1fr;
+            gap: 36px;
+            flex-grow: 1;
+        }
+
+        /* Left: Stylized Neon Telephone Box Housing (Matching Slide Photo) */
+        .telephone-booth-kiosk {
+            background: #120926;
+            border: 4px solid var(--box-frame);
+            border-radius: 24px;
+            padding: 24px;
+            position: relative;
+            box-shadow: 
+                0 0 40px rgba(74, 25, 125, 0.5),
+                inset 0 0 30px rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .booth-roof-sign {
+            background: #06030e;
+            border: 2px solid var(--neon-pink);
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--neon-pink);
+            letter-spacing: 6px;
+            text-shadow: 0 0 15px var(--neon-pink), 0 0 30px var(--neon-pink);
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(255, 16, 240, 0.3);
+        }
+
+        /* Vintage Brass Telephone & Mini CRT Shelf */
+        .interior-shelf {
+            background: #090514;
+            border: 2px solid #2d184d;
+            border-radius: 16px;
+            padding: 18px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .brass-telephone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+        }
+
+        .handset-icon {
+            font-size: 3.5rem;
+            color: var(--brass);
+            filter: drop-shadow(0 0 8px rgba(197, 160, 89, 0.6));
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .handset-icon:hover { transform: scale(1.08) rotate(-5deg); }
+        .handset-icon.off-hook {
+            color: var(--neon-pink);
+            filter: drop-shadow(0 0 15px var(--neon-pink));
+            animation: ringRing 0.5s infinite;
+        }
+        @keyframes ringRing {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        /* Mini CRT Inside the Phonebox */
+        .mini-crt-screen {
+            flex-grow: 1;
+            background: #04020a;
+            border: 2px solid #3c1e66;
+            border-radius: 12px;
+            padding: 14px;
+            position: relative;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.9);
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .crt-scanlines {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.2) 0px, rgba(0,0,0,0.2) 1px, transparent 1px, transparent 3px);
+            border-radius: 12px;
+        }
+
+        /* Mode Selector: Function A vs Function B (From Slide) */
+        .mode-tab-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .mode-btn {
+            background: #180f33;
+            border: 1px solid #3d236b;
+            color: #b1a4d1;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .mode-btn:hover { border-color: var(--neon-purple); color: #fff; }
+        .mode-btn.active {
+            background: linear-gradient(135deg, rgba(255, 16, 240, 0.2), rgba(168, 85, 247, 0.2));
+            border-color: var(--neon-pink);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(255, 16, 240, 0.4);
+        }
+
+        /* Scene & Dialect Selectors */
+        .config-card {
+            background: #160c30;
+            border: 1px solid #2d184d;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .card-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--neon-cyan);
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .dialect-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .dialect-chip {
+            background: #0e071f;
+            border: 1px solid #341c59;
+            color: #a496c4;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .dialect-chip:hover { border-color: var(--neon-pink); color: #fff; }
+        .dialect-chip.selected {
+            background: var(--neon-pink);
+            color: #000;
+            font-weight: 700;
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 10px rgba(255, 16, 240, 0.6);
+        }
+
+        /* Recording & Waveform Section */
+        .recording-area {
+            background: #090514;
+            border: 1px solid #2d184d;
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+        }
+
+        canvas#audioWave {
+            width: 100%;
+            height: 70px;
+            background: #05020c;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px solid #201138;
+        }
+
+        .btn-record-large {
+            background: linear-gradient(135deg, #EF4444, #B91C1C);
+            border: none;
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+            transition: transform 0.15s;
+        }
+        .btn-record-large.active {
+            animation: pulse-red 1s infinite;
+        }
+        @keyframes pulse-red {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 0 35px rgba(239, 68, 68, 0.9); }
+        }
+
+        /* Right Column: 9:16 Social Video Output & Teleprompter */
+        .output-panel {
+            background: #120926;
+            border: 3px solid var(--box-frame);
+            border-radius: 24px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        .panel-h2 {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.95rem;
+            color: var(--neon-pink);
+            letter-spacing: 1.5px;
+            border-bottom: 1px solid #2d184d;
+            padding-bottom: 10px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .teleprompter-box {
+            background: #090514;
+            border: 1px solid #3c1e66;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .teleprompter-text {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.25rem;
+            color: var(--neon-amber);
+            line-height: 1.5;
+            margin: 8px 0;
+            text-shadow: 0 0 10px rgba(255, 179, 0, 0.5);
+        }
+
+        /* 9:16 Mobile Video Mockup Screen */
+        .video-reel-frame {
+            width: 280px;
+            height: 480px;
+            background: #000;
+            border: 4px solid #331956;
+            border-radius: 28px;
+            overflow: hidden;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 16px;
+        }
+
+        .reel-video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.85;
+        }
+
+        .reel-overlay {
+            position: relative;
+            z-index: 10;
+        }
+
+        .subtitle-pill {
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid var(--neon-pink);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            color: #fff;
+            text-align: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .qr-strip {
+            background: #fff;
+            padding: 8px;
+            border-radius: 8px;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .action-bar-bottom {
+            margin-top: 16px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-download-dub {
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            flex-grow: 1;
+            box-shadow: 0 4px 20px rgba(255, 16, 240, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-brand">
+            <img src="/assets/toffeecon-logo.png" alt="ToffeeCon" style="height:32px; filter:drop-shadow(0 0 10px rgba(255,16,240,0.6));">
+            <div class="booth-badge">ACOUSTIC DUB BOOTH · TELEPHONE BOX</div>
+        </div>
+        <div style="font-family:'Space Mono'; font-size:0.8rem; color:var(--neon-cyan);">
+            AI VOICE STUDIO · 5 DIALECTS · ZERO-SHOT
+        </div>
+    </header>
+
+    <div class="stage-container">
+        <!-- Left: Physical Telephone Box Enclosure -->
+        <div class="telephone-booth-kiosk">
+            <div class="booth-roof-sign">TELEPHONE</div>
+
+            <!-- Shelf with Vintage Brass Phone and Mini CRT -->
+            <div class="interior-shelf">
+                <div class="brass-telephone">
+                    <div class="handset-icon" id="handsetBtn" onclick="toggleHandset()" title="Pick up Handset">📞</div>
+                    <div style="font-family:'Space Mono'; font-size:0.65rem; color:var(--brass); margin-top:4px;">BRASS HANDSET</div>
+                    <div style="font-size:0.6rem; color:#8775a6;" id="handsetStatus">ON HOOK</div>
+                </div>
+
+                <div class="mini-crt-screen">
+                    <div class="crt-scanlines"></div>
+                    <div style="font-family:'Space Mono'; font-size:0.7rem; color:var(--neon-green); margin-bottom:4px;">
+                        ● TOFFEE AI DUB ENGINE v2.6
+                    </div>
+                    <div style="font-family:'Share Tech Mono'; font-size:0.95rem; color:#fff;" id="miniCrtText">
+                        "Pick up handset or press record to dub dialogue."
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dual Function Selector (From Slide) -->
+            <div class="mode-tab-bar">
+                <div class="mode-btn active" id="btnFuncB" onclick="switchFunction('B')">
+                    FUNCTION B: SCENE DUBBER
+                </div>
+                <div class="mode-btn" id="btnFuncA" onclick="switchFunction('A')">
+                    FUNCTION A: INSTANT DIALECT
+                </div>
+            </div>
+
+            <!-- Dialect Selector -->
+            <div class="config-card">
+                <div class="card-label">
+                    <span>SELECT TARGET REGIONAL DIALECT</span>
+                    <span id="dialectStatus">SYLHETI (ACTIVE)</span>
+                </div>
+                <div class="dialect-chips">
+                    <div class="dialect-chip selected" onclick="setDialect('sylheti', this)">Sylheti (সিলেটি)</div>
+                    <div class="dialect-chip" onclick="setDialect('chittagonian', this)">Chittagonian (চাটগাঁইয়া)</div>
+                    <div class="dialect-chip" onclick="setDialect('noakhali', this)">Noakhali (নোয়াখালী)</div>
+                    <div class="dialect-chip" onclick="setDialect('pure_bangla', this)">Standard Bangla</div>
+                    <div class="dialect-chip" onclick="setDialect('english', this)">English (UK/US)</div>
+                </div>
+            </div>
+
+            <!-- Scene Selector (For Function B) -->
+            <div class="config-card" id="scenePickerCard">
+                <div class="card-label">
+                    <span>SELECT ICONIC TOFFEE SCENE</span>
+                    <span>3 VAULT SCENES</span>
+                </div>
+                <select id="sceneSelect" onchange="onSceneSelect()" style="width:100%; background:#0b0518; border:1px solid #3d236b; color:#fff; padding:10px; border-radius:6px; font-family:'Space Mono'; font-size:0.8rem; outline:none;">
+                    <option value="fifa">⚽ FIFA World Cup Final · Bengali Commentary</option>
+                    <option value="thriller">🎭 Toffee Original Thriller · Climax Confrontation</option>
+                    <option value="scifi">🚀 Capsule 2033 · Deep Space Transmission</option>
+                </select>
+            </div>
+
+            <!-- Vocal Recording Area -->
+            <div class="recording-area">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-family:'Space Mono'; font-size:0.75rem; color:#8778a8;">MICROPHONE TELEMETRY</span>
+                    <input type="text" id="speakerName" value="Tahmid" placeholder="Your Name" style="background:#160c30; border:1px solid #3c1e66; color:#fff; padding:4px 8px; border-radius:4px; font-size:0.75rem; width:120px; text-align:center;">
+                </div>
+                <canvas id="audioWave"></canvas>
+                <button class="btn-record-large" id="btnRecord" onclick="toggleRecording()">
+                    <span id="recIcon">🎙️</span>
+                    <span id="recLabel">START RECORDING (4s)</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Right: Social Output Screen & Teleprompter (Step 3: Walk Out With It) -->
+        <div class="output-panel">
+            <div class="panel-h2">
+                <span>STEP 3: WALK OUT WITH INSTANT 9:16 REEL</span>
+                <span style="color:var(--neon-green); font-size:0.8rem;" id="aiStatusTag">AI DUB READY</span>
+            </div>
+
+            <!-- Teleprompter Script -->
+            <div class="teleprompter-box">
+                <div style="font-family:'Space Mono'; font-size:0.7rem; color:#8274a1;">TELEPROMPTER SCRIPT:</div>
+                <div class="teleprompter-text" id="prompterScript">
+                    "গোওওল! টফি স্ক্রিনে বিশ্বকাপ রোমাঞ্চ, ইতিহাস রচিত হলো ঢাকা থেকে দোহা!"
+                </div>
+                <div style="font-size:0.75rem; color:var(--neon-cyan); font-family:'Share Tech Mono';" id="prompterTranslated">
+                    Dialect Preview: "গোওওল! টফি স্ক্রিনে বিশ্বকাপ রোমাঞ্চ, ইতিহাস রচিত অইব রে ভাই!"
+                </div>
+            </div>
+
+            <!-- 9:16 Social Reel Mockup Container -->
+            <div class="video-reel-frame">
+                <video class="reel-video" autoplay loop muted playsinline src="/assets/opening-film.mp4"></video>
+
+                <div class="reel-overlay" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="background:rgba(0,0,0,0.6); padding:3px 8px; border-radius:4px; font-size:0.65rem; color:var(--neon-pink); font-family:'Space Mono'; font-weight:700;">
+                        TOFFEE CON 2026
+                    </span>
+                    <span style="font-family:'Space Mono'; font-size:0.65rem; color:#fff;" id="dubIdBadge">
+                        #DUB-48192
+                    </span>
+                </div>
+
+                <div class="reel-overlay" style="margin-top:auto; margin-bottom:12px;">
+                    <div class="subtitle-pill" id="subtitlePill">
+                        <b id="subSpeakerName">Tahmid</b>: "খেলা অইব রে ভাই! টফি লাইভে রেকর্ড ভাঙল!"
+                    </div>
+                </div>
+
+                <div class="reel-overlay" style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.2); padding-top:8px;">
+                    <div class="qr-strip">
+                        <img id="qrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=TOFFEECON-DUB-48192" width="46" height="46" alt="QR">
+                    </div>
+                    <div style="text-align:right; font-size:0.65rem; color:#d1c8e8; font-family:'Space Mono';">
+                        <span>SCAN TO DOWNLOAD</span><br>
+                        <span style="color:var(--neon-cyan);">INSTANT REEL (9:16)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-bar-bottom">
+                <button class="btn-download-dub" onclick="downloadDubKeepsake()">
+                    <span>💾</span> DOWNLOAD 9:16 SOCIAL REEL
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Web Audio Synthesizer for Phone Clicks & Dialect Audio Simulation
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            return audioCtx;
+        }
+
+        function playPhoneClick(isUp) {
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(isUp ? 440 : 220, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.08);
+                gain.gain.setValueAtTime(0.25, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.08);
+            } catch(e) {}
+        }
+
+        // State Machine
+        const state = {
+            functionMode: 'B', // 'A' or 'B'
+            dialect: 'sylheti',
+            isHandsetOffHook: false,
+            isRecording: false,
+            currentScene: 'fifa'
+        };
+
+        const sceneScripts = {
+            fifa: {
+                title: "FIFA World Cup Final",
+                text: "গোওওল! টফি স্ক্রিনে বিশ্বকাপ রোমাঞ্চ, ইতিহাস রচিত হলো ঢাকা থেকে দোহা!",
+                translated: {
+                    sylheti: "গোওওল! টফি স্ক্রিনে বিশ্বকাপ রোমাঞ্চ, ইতিহাস রচিত অইব রে ভাই!",
+                    chittagonian: "গোওওল! টফি স্ক্রিনে বিশ্বকাপ রোমাঞ্চ, ইতিহাস খেলা অইবো আর কি!",
+                    noakhali: "গোওওল! টফি স্ক্রিনে বিশ্বকাপ রোমাঞ্চ, খেলা হইবো হানে!",
+                    pure_bangla: "গোওওল! টফি স্ক্রিনে বিশ্বকাপ রোমাঞ্চ, ইতিহাস রচিত হলো ঢাকা থেকে দোহা!",
+                    english: "Goal! Live World Cup thrills on Toffee, history written from Dhaka to Doha!"
+                }
+            },
+            thriller: {
+                title: "Toffee Original Thriller",
+                text: "সত্যিটা সামনে আসবেই, টফি লাইভে পর্দা নামার আগেই সব প্রমাণ হয়ে যাবে!",
+                translated: {
+                    sylheti: "সত্যিটা সামনে আইবই, পর্দা লামার আগেই সব শেষ অইব রে ভাই!",
+                    chittagonian: "সত্যিটা হমুনে আইবো, খেলা অইবো আর কি!",
+                    noakhali: "হত্যিটা সামনে আইবো হানে, টফি লাইভে প্রমাণ হইবো!",
+                    pure_bangla: "সত্যিটা সামনে আসবেই, টফি লাইভে পর্দা নামার আগেই সব প্রমাণ হয়ে যাবে!",
+                    english: "The truth will emerge before the final curtain drops on Toffee live!"
+                }
+            },
+            scifi: {
+                title: "Capsule 2033 Sci-Fi",
+                text: "স্বাগতম ২০৩৩ সালে। স্ক্রিন আর কোনো ফ্রেম নয়, বিনোদন এখন আপনার চারপাশে।",
+                translated: {
+                    sylheti: "স্বাগতম ২০৩৩ সালে। স্ক্রিন আর খানো বাক্স নায়, বিনোদন চারুবাগে রে ভাই!",
+                    chittagonian: "স্বাগতম ২০৩৩ সালে। বিনোদন হনডে নাই, হগলখানে আর কি!",
+                    noakhali: "স্বাগতম ২০৩৩ সালে। বিনোদন অহন হগল জায়গায় হানে!",
+                    pure_bangla: "স্বাগতম ২০৩৩ সালে। স্ক্রিন আর কোনো ফ্রেম নয়, বিনোদন এখন আপনার চারপাশে।",
+                    english: "Welcome to 2033. Screening is no longer a box, entertainment surrounds you."
+                }
+            }
+        };
+
+        function switchFunction(func) {
+            state.functionMode = func;
+            document.getElementById('btnFuncA').classList.toggle('active', func === 'A');
+            document.getElementById('btnFuncB').classList.toggle('active', func === 'B');
+            document.getElementById('scenePickerCard').style.display = func === 'B' ? 'block' : 'none';
+            playPhoneClick(true);
+            updatePrompter();
+        }
+
+        function toggleHandset() {
+            state.isHandsetOffHook = !state.isHandsetOffHook;
+            playPhoneClick(state.isHandsetOffHook);
+            const icon = document.getElementById('handsetBtn');
+            const status = document.getElementById('handsetStatus');
+            icon.classList.toggle('off-hook', state.isHandsetOffHook);
+            status.innerText = state.isHandsetOffHook ? 'OFF HOOK · MIC LIVE' : 'ON HOOK';
+            status.style.color = state.isHandsetOffHook ? 'var(--neon-pink)' : '#8775a6';
+
+            if (state.isHandsetOffHook) {
+                document.getElementById('miniCrtText').innerText = "Vocal channel linked. Speak dialogue into brass receiver.";
+            } else {
+                document.getElementById('miniCrtText').innerText = "Handset docked. System ready.";
+            }
+        }
+
+        function setDialect(dialectKey, el) {
+            state.dialect = dialectKey;
+            document.querySelectorAll('.dialect-chip').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            document.getElementById('dialectStatus').innerText = dialectKey.toUpperCase() + ' (ACTIVE)';
+            playPhoneClick(true);
+            updatePrompter();
+        }
+
+        function onSceneSelect() {
+            state.currentScene = document.getElementById('sceneSelect').value;
+            updatePrompter();
+        }
+
+        function updatePrompter() {
+            const sc = sceneScripts[state.currentScene];
+            const trans = sc.translated[state.dialect] || sc.text;
+            document.getElementById('prompterScript').innerText = `"${sc.text}"`;
+            document.getElementById('prompterTranslated').innerText = `Dialect (${state.dialect.toUpperCase()}): "${trans}"`;
+            document.getElementById('subSpeakerName').innerText = document.getElementById('speakerName').value || 'Guest';
+            document.getElementById('subtitlePill').innerHTML = `<b>${document.getElementById('speakerName').value || 'Guest'}</b>: "${trans}"`;
+        }
+
+        // Live Audio Waveform Simulation
+        const waveCanvas = document.getElementById('audioWave');
+        const waveCtx = waveCanvas.getContext('2d');
+        let waveOffset = 0;
+        let isWaveActive = false;
+
+        function drawWave() {
+            const w = waveCanvas.width = waveCanvas.clientWidth;
+            const h = waveCanvas.height = waveCanvas.clientHeight;
+            waveCtx.clearRect(0, 0, w, h);
+
+            waveCtx.beginPath();
+            waveCtx.strokeStyle = isWaveActive ? '#FF10F0' : '#4a2575';
+            waveCtx.lineWidth = 2;
+
+            for (let x = 0; x < w; x++) {
+                const amp = isWaveActive ? 22 : 4;
+                const y = (h / 2) + Math.sin((x * 0.05) + waveOffset) * amp + (isWaveActive ? (Math.random() * 6 - 3) : 0);
+                if (x === 0) waveCtx.moveTo(x, y);
+                else waveCtx.lineTo(x, y);
+            }
+            waveCtx.stroke();
+            waveOffset += 0.1;
+            requestAnimationFrame(drawWave);
+        }
+        drawWave();
+
+        // Recording Trigger
+        function toggleRecording() {
+            if (state.isRecording) return;
+            state.isRecording = true;
+            isWaveActive = true;
+            playPhoneClick(true);
+
+            const btn = document.getElementById('btnRecord');
+            const lbl = document.getElementById('recLabel');
+            btn.classList.add('active');
+            lbl.innerText = 'RECORDING VOCALS... (3s)';
+
+            // Call Server AI Dub Endpoint
+            const speaker = document.getElementById('speakerName').value || 'Summit Attendee';
+            const scene = sceneScripts[state.currentScene];
+
+            setTimeout(async () => {
+                state.isRecording = false;
+                isWaveActive = false;
+                btn.classList.remove('active');
+                lbl.innerText = 'DUB COMPLETE · CLICK TO RE-RECORD';
+
+                try {
+                    const res = await fetch('/api/booth/dub-ai', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            speakerName: speaker,
+                            text: scene.text,
+                            targetDialect: state.dialect
+                        })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        document.getElementById('dubIdBadge').innerText = '#' + data.dub.dubId;
+                        document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=${encodeURIComponent('https://toffeecon.live/dub/' + data.dub.dubId)}`;
+                        document.getElementById('miniCrtText').innerText = `Dubbed into ${data.dub.dialect} successfully! Scan QR to save.`;
+                        document.getElementById('subSpeakerName').innerText = speaker;
+                        document.getElementById('subtitlePill').innerHTML = `<b>${speaker}</b>: "${data.dub.translatedText}"`;
+                    }
+                } catch(e) {
+                    console.error('Dub AI error:', e);
+                }
+            }, 3000);
+        }
+
+        function downloadDubKeepsake() {
+            alert('Your 9:16 ToffeeCon Dialect Dub reel has been queued for download! Scan the on-screen QR code to save directly to your mobile device.');
+        }
+
+        updatePrompter();
+    </script>
+</body>
+</html>

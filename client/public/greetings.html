@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Greetings.exe · WebAR Holographic CG Announcement · ToffeeCon 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #05020a;
+            --orange: #FF6B00;
+            --purple: #9333EA;
+            --cyan: #00F0FF;
+            --gold: #FFB800;
+            --text-main: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* 1. Video Camera Passthrough (WebAR) */
+        #camera-video {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%) scaleX(1);
+            object-fit: cover;
+            z-index: 1;
+            display: none;
+        }
+
+        /* 2. Cyber Studio Background (Desktop / Simulator fallback) */
+        #studio-backdrop {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 40%, #1c0a35 0%, #080312 60%, #030106 100%);
+            z-index: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .studio-grid {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 50%;
+            background-image: 
+                linear-gradient(rgba(147, 51, 234, 0.25) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(147, 51, 234, 0.25) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: perspective(600px) rotateX(65deg);
+            transform-origin: bottom center;
+            mask-image: linear-gradient(to top, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 90%);
+            -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 90%);
+        }
+
+        /* 3. Three.js 3D WebGL Canvas */
+        #webgl-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: auto;
+        }
+
+        /* 4. AR Scanline & Camera Grid Overlay */
+        .ar-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 8;
+            background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            opacity: 0.6;
+        }
+
+        /* AR Target Reticle / Card Frame */
+        .card-target-guide {
+            position: absolute;
+            top: 48%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 290px;
+            height: 380px;
+            border: 2px dashed rgba(0, 240, 255, 0.45);
+            border-radius: 16px;
+            pointer-events: none;
+            z-index: 9;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: inset 0 0 30px rgba(0, 240, 255, 0.1);
+        }
+
+        .target-corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-color: var(--cyan);
+            border-style: solid;
+        }
+        .tc-tl { top: -2px; left: -2px; border-width: 3px 0 0 3px; border-top-left-radius: 16px; }
+        .tc-tr { top: -2px; right: -2px; border-width: 3px 3px 0 0; border-top-right-radius: 16px; }
+        .tc-bl { bottom: -2px; left: -2px; border-width: 0 0 3px 3px; border-bottom-left-radius: 16px; }
+        .tc-br { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; border-bottom-right-radius: 16px; }
+
+        .target-label {
+            position: absolute;
+            bottom: -32px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--cyan);
+            letter-spacing: 1.5px;
+            white-space: nowrap;
+            background: rgba(0, 240, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            text-transform: uppercase;
+        }
+
+        /* 5. HUD Top Bar */
+        .hud-top {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 25;
+        }
+
+        .brand-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(14, 8, 30, 0.85);
+            padding: 8px 16px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 107, 0, 0.3);
+            backdrop-filter: blur(12px);
+        }
+
+        .brand-badge img {
+            height: 24px;
+            filter: drop-shadow(0 0 8px rgba(255, 107, 0, 0.6));
+        }
+
+        .brand-badge span {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: #E2E8F0;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .controls-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mode-btn {
+            background: rgba(14, 8, 30, 0.85);
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            color: var(--cyan);
+            padding: 8px 14px;
+            border-radius: 40px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            cursor: pointer;
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .mode-btn:hover {
+            background: rgba(0, 240, 255, 0.2);
+            border-color: var(--cyan);
+            transform: scale(1.03);
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(147, 51, 234, 0.4));
+            border-color: var(--cyan);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+        }
+
+        /* 6. Audio Visualizer Bar */
+        .audio-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 18px;
+        }
+        .bar {
+            width: 3px;
+            background: var(--cyan);
+            border-radius: 2px;
+            animation: bounce 0.6s ease-in-out infinite alternate;
+        }
+        .bar:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+        .bar:nth-child(2) { height: 16px; animation-delay: 0.3s; }
+        .bar:nth-child(3) { height: 10px; animation-delay: 0.2s; }
+        .bar:nth-child(4) { height: 14px; animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0% { transform: scaleY(0.3); opacity: 0.5; }
+            100% { transform: scaleY(1); opacity: 1; }
+        }
+
+        /* 7. Bottom Transmission HUD */
+        .hud-bottom {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 25;
+            max-width: 580px;
+            width: 92%;
+        }
+
+        .transmission-card {
+            background: rgba(14, 8, 30, 0.88);
+            border: 1px solid rgba(255, 107, 0, 0.35);
+            padding: 16px 20px;
+            border-radius: 14px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(147, 51, 234, 0.2);
+            margin-bottom: 14px;
+            text-align: left;
+        }
+
+        .transmission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--gold);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #22c55e;
+            display: inline-block;
+            margin-right: 6px;
+            animation: pulse-dot 1.2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { opacity: 0.3; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.3); }
+            100% { opacity: 0.3; transform: scale(0.9); }
+        }
+
+        .transmission-body {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: #F8FAFC;
+            line-height: 1.45;
+            min-height: 48px;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        }
+
+        .cursor-blink {
+            display: inline-block;
+            width: 8px;
+            height: 14px;
+            background: var(--cyan);
+            margin-left: 4px;
+            animation: cursor-blink 0.8s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes cursor-blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .action-cta-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn-claim-pass {
+            flex: 1;
+            background: linear-gradient(135deg, var(--orange) 0%, #B80088 50%, var(--purple) 100%);
+            color: #FFFFFF;
+            text-decoration: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 6px 30px rgba(255, 107, 0, 0.45);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-claim-pass:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 35px rgba(255, 107, 0, 0.7);
+        }
+
+        .btn-sound-toggle {
+            background: rgba(14, 8, 30, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #CBD5E1;
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            backdrop-filter: blur(12px);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-sound-toggle:hover {
+            border-color: var(--cyan);
+            color: #fff;
+        }
+
+        /* 8. Gyro / Tap Hint */
+        .ar-hint {
+            position: absolute;
+            top: 84px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: #CBD5E1;
+            background: rgba(0, 0, 0, 0.65);
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            z-index: 20;
+            pointer-events: none;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        /* Mobile specific styling */
+        @media (max-width: 600px) {
+            .hud-top {
+                top: 14px;
+                left: 14px;
+                right: 14px;
+            }
+            .hud-bottom {
+                bottom: 16px;
+                width: 94%;
+            }
+            .transmission-body {
+                font-size: 0.8rem;
+                min-height: 42px;
+            }
+            .card-target-guide {
+                width: 250px;
+                height: 330px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Camera Feed for Live WebAR Overlay -->
+    <video id="camera-video" autoplay playsinline muted></video>
+
+    <!-- Studio Grid Background for Simulator / Desktop fallback -->
+    <div id="studio-backdrop">
+        <div class="studio-grid"></div>
+    </div>
+
+    <!-- Scanline Texture Overlay -->
+    <div class="ar-overlay"></div>
+
+    <!-- Alignment Target Reticle for Physical Card -->
+    <div class="card-target-guide" id="target-guide">
+        <div class="target-corner tc-tl"></div>
+        <div class="target-corner tc-tr"></div>
+        <div class="target-corner tc-bl"></div>
+        <div class="target-corner tc-br"></div>
+        <div class="target-label" id="target-label">⚡ Align Camera with Physical Acrylic Card</div>
+    </div>
+
+    <!-- Top HUD Overlay -->
+    <div class="hud-top">
+        <div class="brand-badge">
+            <img src="/assets/toffeecon-logo.png" alt="ToffeeCon 2026">
+            <span>GREETINGS.EXE</span>
+        </div>
+        <div class="controls-right">
+            <button class="mode-btn" id="btn-toggle-cam" title="Toggle Real Camera Feed">
+                <span>📹</span>
+                <span id="cam-btn-text">Enable WebAR</span>
+            </button>
+            <a href="/" class="mode-btn" style="text-decoration:none;">
+                <span>🌐</span>
+                <span>Hub</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="ar-hint" id="hint-banner">
+        ✦ DRAG OR TILT PHONE TO EXPLORE 3D CG HOLOGRAPHIC OVERLAY ✦
+    </div>
+
+    <!-- 3D Three.js WebGL Container -->
+    <div id="webgl-container"></div>
+
+    <!-- Bottom HUD Transmission & Direct Gate Pass CTA -->
+    <div class="hud-bottom">
+        <div class="transmission-card">
+            <div class="transmission-header">
+                <div><span class="pulse-dot"></span>VIP ENCRYPTED CHANNEL 01</div>
+                <div class="audio-bar-container">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+            </div>
+            <div class="transmission-body">
+                <span id="typewriter"></span><span class="cursor-blink"></span>
+            </div>
+        </div>
+
+        <div class="action-cta-row">
+            <a href="/gate" class="btn-claim-pass" id="cta-pass-btn">
+                <span>⚡ Claim VIP Speed-Gate Pass</span>
+                <span>→</span>
+            </a>
+            <button class="btn-sound-toggle" id="btn-sound" title="Toggle Synthesizer Sound">
+                <span id="sound-icon">🔊</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        /* -------------------------------------------------------------
+           1. Web Audio Synthesizer (Cyber Hologram Ambience & Chimes)
+           ------------------------------------------------------------- */
+        let audioCtx = null;
+        let isMuted = false;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playHologramChime() {
+            if (isMuted || !audioCtx) return;
+            const now = audioCtx.currentTime;
+            
+            // Cyber chords (Major 9th futuristic synth)
+            const freqs = [523.25, 659.25, 783.99, 987.77, 1174.66]; // C5, E5, G5, B5, D6
+            freqs.forEach((freq, idx) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                
+                gain.gain.setValueAtTime(0.001, now + idx * 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.12, now + idx * 0.08 + 0.04);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.08 + 1.6);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start(now + idx * 0.08);
+                osc.stop(now + idx * 0.08 + 1.8);
+            });
+        }
+
+        const soundBtn = document.getElementById('btn-sound');
+        soundBtn.addEventListener('click', () => {
+            initAudio();
+            isMuted = !isMuted;
+            document.getElementById('sound-icon').textContent = isMuted ? '🔇' : '🔊';
+            if (!isMuted) playHologramChime();
+        });
+
+        /* -------------------------------------------------------------
+           2. WebAR Camera Passthrough Engine (getUserMedia)
+           ------------------------------------------------------------- */
+        const videoElem = document.getElementById('camera-video');
+        const studioBackdrop = document.getElementById('studio-backdrop');
+        const camBtn = document.getElementById('btn-toggle-cam');
+        const camBtnText = document.getElementById('cam-btn-text');
+        const targetGuide = document.getElementById('target-guide');
+        const targetLabel = document.getElementById('target-label');
+        let cameraStream = null;
+        let isCameraActive = false;
+
+        async function startCamera() {
+            try {
+                initAudio();
+                const constraints = {
+                    video: {
+                        facingMode: { ideal: 'environment' },
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 }
+                    },
+                    audio: false
+                };
+                cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+                videoElem.srcObject = cameraStream;
+                await videoElem.play();
+
+                videoElem.style.display = 'block';
+                studioBackdrop.style.opacity = '0';
+                isCameraActive = true;
+                camBtn.classList.add('active');
+                camBtnText.textContent = 'WebAR Active';
+                targetLabel.textContent = '⚡ Physical Card Tracked · CG Overlay Active';
+                targetGuide.style.borderColor = 'rgba(0, 240, 255, 0.9)';
+                targetGuide.style.boxShadow = '0 0 35px rgba(0, 240, 255, 0.4)';
+                
+                // Switch 3D scene from studio pedestal to floating card CG overlay
+                if (window.acrylicCardGroup) {
+                    window.acrylicCardGroup.position.set(0, 0, 0);
+                    // Dim simulated base so attendee sees their real physical base
+                    if (window.baseStandMesh) window.baseStandMesh.visible = false;
+                }
+                playHologramChime();
+            } catch (err) {
+                console.warn('Camera access unavailable or declined:', err);
+                alert('WebAR camera access could not be started. Running in 3D Holographic Simulator Mode.');
+                stopCamera();
+            }
+        }
+
+        function stopCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+            videoElem.style.display = 'none';
+            studioBackdrop.style.opacity = '1';
+            isCameraActive = false;
+            camBtn.classList.remove('active');
+            camBtnText.textContent = 'Enable WebAR';
+            targetLabel.textContent = '⚡ Align Camera with Physical Acrylic Card';
+            targetGuide.style.borderColor = 'rgba(0, 240, 255, 0.45)';
+            targetGuide.style.boxShadow = 'none';
+
+            if (window.baseStandMesh) window.baseStandMesh.visible = true;
+        }
+
+        camBtn.addEventListener('click', () => {
+            if (isCameraActive) {
+                stopCamera();
+            } else {
+                startCamera();
+            }
+        });
+
+        // Auto-attempt camera on mobile viewports
+        if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    startCamera();
+                }, 800);
+            });
+        }
+
+        /* -------------------------------------------------------------
+           3. Three.js 3D Holographic CG Overlay Scene
+           ------------------------------------------------------------- */
+        const container = document.getElementById('webgl-container');
+        const scene = new THREE.Scene();
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 0.2, 5.5);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.3;
+        container.appendChild(renderer.domElement);
+
+        // Lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+        scene.add(ambientLight);
+
+        const orangeGlow = new THREE.PointLight(0xFF6B00, 3.5, 12);
+        orangeGlow.position.set(-2, 2, 3);
+        scene.add(orangeGlow);
+
+        const purpleGlow = new THREE.PointLight(0x9333EA, 4, 12);
+        purpleGlow.position.set(2, 2, 3);
+        scene.add(purpleGlow);
+
+        const bottomLedBeam = new THREE.PointLight(0x00F0FF, 5, 8);
+        bottomLedBeam.position.set(0, -1.8, 1);
+        scene.add(bottomLedBeam);
+
+        // Root Parent Group for Holographic Card and Projections
+        const cardRootGroup = new THREE.Group();
+        window.acrylicCardGroup = cardRootGroup;
+        scene.add(cardRootGroup);
+
+        /* A. The Transparent Acrylic Plaque Simulation (visible in Simulator Mode) */
+        const plaqueGeo = new THREE.BoxGeometry(2.0, 2.7, 0.08);
+        const plaqueMat = new THREE.MeshPhysicalMaterial({
+            color: 0xffffff,
+            transmission: 0.92,
+            opacity: 1,
+            transparent: true,
+            roughness: 0.08,
+            ior: 1.5, // Acrylic refractive index
+            reflectivity: 0.6,
+            thickness: 0.15,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1
+        });
+        const acrylicPlaque = new THREE.Mesh(plaqueGeo, plaqueMat);
+        cardRootGroup.add(acrylicPlaque);
+
+        // Plaque Edge Neon Glow (Simulating Bottom LED Edge-lighting)
+        const edgeGlowGeo = new THREE.BoxGeometry(2.02, 2.72, 0.06);
+        const edgeGlowMat = new THREE.MeshBasicMaterial({
+            color: 0x9333EA,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.35
+        });
+        const edgeGlowMesh = new THREE.Mesh(edgeGlowGeo, edgeGlowMat);
+        cardRootGroup.add(edgeGlowMesh);
+
+        /* B. Physical LED Light-Bar Holder Base Stand (with AAA battery compartment) */
+        const baseStandGeo = new THREE.BoxGeometry(2.4, 0.35, 0.8);
+        const baseStandMat = new THREE.MeshStandardMaterial({
+            color: 0x110c1f,
+            metalness: 0.85,
+            roughness: 0.25
+        });
+        const baseStand = new THREE.Mesh(baseStandGeo, baseStandMat);
+        baseStand.position.set(0, -1.5, 0);
+        window.baseStandMesh = baseStand;
+        cardRootGroup.add(baseStand);
+
+        // LED Emitter Slot on Base Stand
+        const ledStripGeo = new THREE.BoxGeometry(2.0, 0.04, 0.12);
+        const ledStripMat = new THREE.MeshBasicMaterial({ color: 0x00F0FF });
+        const ledStrip = new THREE.Mesh(ledStripGeo, ledStripMat);
+        ledStrip.position.set(0, -1.31, 0);
+        baseStand.add(ledStrip);
+
+        /* C. Laser-Etched Graphic Plane on the Acrylic */
+        const graphicCanvas = document.createElement('canvas');
+        graphicCanvas.width = 1024;
+        graphicCanvas.height = 1024;
+        const gCtx = graphicCanvas.getContext('2d');
+
+        function renderEtchedArtwork() {
+            gCtx.clearRect(0, 0, 1024, 1024);
+
+            // Subtle laser-etched border
+            gCtx.strokeStyle = 'rgba(0, 240, 255, 0.7)';
+            gCtx.lineWidth = 6;
+            gCtx.strokeRect(40, 40, 944, 944);
+
+            // Corner registration reticles
+            gCtx.strokeStyle = 'rgba(255, 107, 0, 0.8)';
+            gCtx.lineWidth = 10;
+            gCtx.beginPath();
+            gCtx.moveTo(40, 120); gCtx.lineTo(40, 40); gCtx.lineTo(120, 40);
+            gCtx.moveTo(984, 120); gCtx.lineTo(984, 40); gCtx.lineTo(904, 40);
+            gCtx.moveTo(40, 904); gCtx.lineTo(40, 984); gCtx.lineTo(120, 984);
+            gCtx.moveTo(984, 904); gCtx.lineTo(984, 984); gCtx.lineTo(904, 984);
+            gCtx.stroke();
+
+            // Draw Official Logo
+            const logoImg = new Image();
+            logoImg.src = '/assets/toffeecon-logo.png';
+            logoImg.onload = () => {
+                const targetW = 680;
+                const aspect = logoImg.height / logoImg.width;
+                const targetH = targetW * aspect;
+                gCtx.drawImage(logoImg, (1024 - targetW) / 2, 220, targetW, targetH);
+                if (etchedTexture) etchedTexture.needsUpdate = true;
+            };
+
+            // Etched typography
+            gCtx.fillStyle = '#00F0FF';
+            gCtx.font = 'bold 36px "Space Mono", monospace';
+            gCtx.textAlign = 'center';
+            gCtx.fillText('THE SCREEN OF TOMORROW', 512, 540);
+
+            gCtx.fillStyle = '#F3F4F6';
+            gCtx.font = '28px "Space Mono", monospace';
+            gCtx.fillText('VIP ACCREDITATION PASS', 512, 600);
+
+            gCtx.fillStyle = 'rgba(255, 184, 0, 0.9)';
+            gCtx.font = 'bold 26px "Space Mono", monospace';
+            gCtx.fillText('OCTOBER 10, 2026 · RADISSON BLU', 512, 660);
+
+            // Simulated laser printed QR code pattern
+            gCtx.fillStyle = '#FFFFFF';
+            gCtx.fillRect(442, 720, 140, 140);
+            gCtx.fillStyle = '#05020a';
+            gCtx.fillRect(452, 730, 40, 40);
+            gCtx.fillRect(532, 730, 40, 40);
+            gCtx.fillRect(452, 810, 40, 40);
+            gCtx.fillStyle = '#FFFFFF';
+            gCtx.fillRect(462, 740, 20, 20);
+            gCtx.fillRect(542, 740, 20, 20);
+            gCtx.fillRect(462, 820, 20, 20);
+        }
+        renderEtchedArtwork();
+
+        const etchedTexture = new THREE.CanvasTexture(graphicCanvas);
+        const etchedMat = new THREE.MeshBasicMaterial({
+            map: etchedTexture,
+            transparent: true,
+            opacity: 0.92,
+            side: THREE.DoubleSide
+        });
+        const etchedMesh = new THREE.Mesh(new THREE.PlaneGeometry(1.9, 2.55), etchedMat);
+        etchedMesh.position.set(0, 0, 0.045);
+        cardRootGroup.add(etchedMesh);
+
+        /* D. Holographic CG Projection Emitter (Floating 3D Elements Above Card) */
+        const cgHoloGroup = new THREE.Group();
+        cgHoloGroup.position.set(0, 0.2, 0.4);
+        cardRootGroup.add(cgHoloGroup);
+
+        // 1. Floating 3D ToffeeCon Hero Emblem (Billboard/Rotator)
+        const emblemTexture = new THREE.TextureLoader().load('/assets/toffeecon-hero-emblem.png');
+        const emblemMat = new THREE.MeshBasicMaterial({
+            map: emblemTexture,
+            transparent: true,
+            opacity: 0.95,
+            side: THREE.DoubleSide
+        });
+        const emblemMesh = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 1.6), emblemMat);
+        emblemMesh.position.set(0, 0.5, 0.3);
+        cgHoloGroup.add(emblemMesh);
+
+        // 2. Holographic Ring Lasers
+        const ringGeo1 = new THREE.TorusGeometry(1.2, 0.015, 16, 80);
+        const ringMat1 = new THREE.MeshBasicMaterial({ color: 0x00F0FF, transparent: true, opacity: 0.7 });
+        const holoRing1 = new THREE.Mesh(ringGeo1, ringMat1);
+        holoRing1.rotation.x = Math.PI / 2.3;
+        cgHoloGroup.add(holoRing1);
+
+        const ringGeo2 = new THREE.TorusGeometry(1.5, 0.012, 16, 80);
+        const ringMat2 = new THREE.MeshBasicMaterial({ color: 0xFF6B00, transparent: true, opacity: 0.6 });
+        const holoRing2 = new THREE.Mesh(ringGeo2, ringMat2);
+        holoRing2.rotation.x = Math.PI / 1.9;
+        cgHoloGroup.add(holoRing2);
+
+        // 3. Volumetric Particle Beams
+        const particleCount = 220;
+        const particleGeo = new THREE.BufferGeometry();
+        const particlePos = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount * 3; i += 3) {
+            particlePos[i] = (Math.random() - 0.5) * 2.2;
+            particlePos[i + 1] = (Math.random() - 0.5) * 3.0;
+            particlePos[i + 2] = (Math.random() - 0.5) * 1.5;
+        }
+        particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
+
+        const particleMat = new THREE.PointsMaterial({
+            color: 0xFFB800,
+            size: 0.04,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+        const particleSystem = new THREE.Points(particleGeo, particleMat);
+        cgHoloGroup.add(particleSystem);
+
+        /* -------------------------------------------------------------
+           4. Gyroscope Orientation & Touch Drag Interaction
+           ------------------------------------------------------------- */
+        let targetRotationX = 0;
+        let targetRotationY = 0;
+        let isDragging = false;
+        let prevMouse = { x: 0, y: 0 };
+
+        window.addEventListener('mousedown', (e) => {
+            initAudio();
+            isDragging = true;
+            prevMouse = { x: e.clientX, y: e.clientY };
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const deltaX = e.clientX - prevMouse.x;
+            const deltaY = e.clientY - prevMouse.y;
+            targetRotationY += deltaX * 0.008;
+            targetRotationX += deltaY * 0.008;
+            prevMouse = { x: e.clientX, y: e.clientY };
+        });
+
+        window.addEventListener('mouseup', () => isDragging = false);
+
+        // Mobile Touch
+        window.addEventListener('touchstart', (e) => {
+            initAudio();
+            if (e.touches.length === 1) {
+                isDragging = true;
+                prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging || e.touches.length !== 1) return;
+            const deltaX = e.touches[0].clientX - prevMouse.x;
+            const deltaY = e.touches[0].clientY - prevMouse.y;
+            targetRotationY += deltaX * 0.01;
+            targetRotationX += deltaY * 0.01;
+            prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        });
+
+        window.addEventListener('touchend', () => isDragging = false);
+
+        // Device Gyroscope Support (Tilt phone to shift 3D CG hologram naturally)
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', (event) => {
+                if (event.gamma !== null && event.beta !== null) {
+                    const tiltY = THREE.MathUtils.clamp(event.gamma * 0.012, -0.6, 0.6);
+                    const tiltX = THREE.MathUtils.clamp((event.beta - 45) * 0.012, -0.5, 0.5);
+                    if (!isDragging) {
+                        targetRotationY = tiltY;
+                        targetRotationX = tiltX;
+                    }
+                }
+            });
+        }
+
+        // Window Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        /* -------------------------------------------------------------
+           5. Typewriter Transmission & Sound Sequence
+           ------------------------------------------------------------- */
+        const transmissionScript = [
+            "VIP ACCREDITATION DETECTED // GREETINGS RECOGNIZED.",
+            "WELCOME TO TOFFEECON 2026: THE SCREEN OF TOMORROW.",
+            "OCT 10, 2026 · RADISSON BLU WATER GARDEN, DHAKA.",
+            "YOUR SMART SPEED-GATE DIGITAL PASS IS READY TO ACTIVATE."
+        ];
+
+        let lineIndex = 0;
+        let charIndex = 0;
+        const typewriterElem = document.getElementById('typewriter');
+
+        function typeTransmission() {
+            if (lineIndex < transmissionScript.length) {
+                const currentLine = transmissionScript[lineIndex];
+                if (charIndex < currentLine.length) {
+                    typewriterElem.textContent += currentLine.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(typeTransmission, 28);
+                } else {
+                    setTimeout(() => {
+                        lineIndex++;
+                        if (lineIndex < transmissionScript.length) {
+                            typewriterElem.textContent = "";
+                            charIndex = 0;
+                            typeTransmission();
+                        }
+                    }, 2400);
+                }
+            }
+        }
+
+        // Start typewriter on load
+        setTimeout(() => {
+            typeTransmission();
+            playHologramChime();
+        }, 600);
+
+        /* -------------------------------------------------------------
+           6. Render & Animation Loop
+           ------------------------------------------------------------- */
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const elapsed = clock.getElapsedTime();
+
+            // Smooth interpolation to target rotation
+            cardRootGroup.rotation.y += (targetRotationY - cardRootGroup.rotation.y) * 0.08;
+            cardRootGroup.rotation.x += (targetRotationX - cardRootGroup.rotation.x) * 0.08;
+
+            // Idle floating hover
+            if (!isDragging) {
+                cardRootGroup.position.y = Math.sin(elapsed * 1.8) * 0.06;
+            }
+
+            // Holographic CG Overlays Animation
+            emblemMesh.position.y = 0.5 + Math.sin(elapsed * 2.2) * 0.08;
+            holoRing1.rotation.z += 0.015;
+            holoRing2.rotation.z -= 0.012;
+
+            // Particle drift
+            const positions = particleGeo.attributes.position.array;
+            for (let i = 1; i < particleCount * 3; i += 3) {
+                positions[i] += 0.008;
+                if (positions[i] > 1.8) {
+                    positions[i] = -1.5;
+                }
+            }
+            particleGeo.attributes.position.needsUpdate = true;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>

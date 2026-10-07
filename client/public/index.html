@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToffeeCon 2026 - Event OS Control Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #07050f;
+            --panel: #110d22;
+            --border: #2c224d;
+            --orange: #FF6B00;
+            --purple: #9333EA;
+            --cyan: #00F0FF;
+            --red: #FF0055;
+            --text: #F3F4F6;
+            --dim: #8B87A2;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding: 24px; min-height: 100vh; }
+        header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+        .logo-group { display: flex; align-items: center; gap: 14px; }
+        .badge { background: linear-gradient(135deg, var(--orange), var(--purple)); padding: 6px 14px; border-radius: 6px; font-family: 'Space Mono', monospace; font-size: 0.85rem; font-weight: bold; }
+        .title { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; }
+        .status { font-family: 'Space Mono', monospace; font-size: 0.85rem; color: var(--cyan); display: flex; align-items: center; gap: 8px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); animation: blink 1.5s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+        
+        .grid-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+        .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 24px; }
+        .panel-h2 { font-family: 'Syne', sans-serif; font-size: 1.25rem; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* 100 Phone Wall Mini Grid */
+        .wall-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; aspect-ratio: 16/9; background: #000; padding: 12px; border-radius: 10px; border: 1px solid var(--border); position: relative; }
+        .phone-node { background: #1a1533; border: 1px solid #3b2c6d; border-radius: 2px; font-family: 'Space Mono', monospace; font-size: 0.55rem; color: #b6abd9; display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; }
+        .phone-node.synced { background: var(--purple); color: #fff; border-color: var(--orange); font-weight: bold; }
+        
+        /* Voting Bar */
+        .vote-bar { display: flex; height: 40px; border-radius: 8px; overflow: hidden; margin: 16px 0; border: 1px solid rgba(255,255,255,0.1); }
+        .bar-red { background: linear-gradient(90deg, #ff0844, #ff4e50); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem; transition: width 0.3s; }
+        .bar-blue { background: linear-gradient(90deg, #00c6ff, #0072ff); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem; transition: width 0.3s; }
+        
+        .btn { background: linear-gradient(135deg, var(--orange), var(--purple)); color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.9rem; }
+        .btn:hover { opacity: 0.9; }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+        .btn-outline:hover { background: rgba(255,255,255,0.05); }
+
+        .stat-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; }
+        .stat-val { font-family: 'Space Mono', monospace; font-weight: bold; color: var(--cyan); }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-group">
+            <div class="badge">LOCAL EDGE NODE</div>
+            <div class="title">TOFFEECON 2026 · EOS HUB</div>
+        </div>
+        <div class="status">
+            <div class="dot"></div>
+            WEBSOCKET: <span id="wsStatus">CONNECTING...</span>
+        </div>
+    </header>
+
+    <div class="grid-layout">
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+            <!-- 100 Phone Wall Live Controller -->
+            <div class="panel">
+                <div class="panel-h2">
+                    <span>100-Phone Wall ("Found in Translation")</span>
+                    <button class="btn" onclick="triggerWallSync()">Trigger 60s Sync Broadcast</button>
+                </div>
+                <p style="color: var(--dim); font-size: 0.85rem; margin-bottom: 12px;">Live clock-synchronized canvas slicing across 100 mounted handsets.</p>
+                <div class="wall-grid" id="wallGrid"></div>
+            </div>
+
+            <!-- Stage Keynote Engine -->
+            <div class="panel">
+                <div class="panel-h2">
+                    <span>Main Stage Keynote Engine ("The Sonic Dilemma")</span>
+                    <span style="font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--cyan);" id="voteTotal">Total: 600 Votes</span>
+                </div>
+                <div class="vote-bar">
+                    <div class="bar-red" id="barRed" style="width: 52%;">Sonic Alpha (52%)</div>
+                    <div class="bar-blue" id="barBlue" style="width: 48%;">Sonic Beta (48%)</div>
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 12px;">
+                    <button class="btn-outline" onclick="injectVote('red')">+1 Vote Sonic Alpha (Red)</button>
+                    <button class="btn-outline" onclick="injectVote('blue')">+1 Vote Sonic Beta (Blue)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Telemetry & Live Stats -->
+        <div class="panel">
+            <h2 class="panel-h2">Event Telemetry OS</h2>
+            
+            <div class="stat-row">
+                <span style="color: var(--dim);">Active WebSocket Clients</span>
+                <span class="stat-val" id="statSockets">0</span>
+            </div>
+            <div class="stat-row">
+                <span style="color: var(--dim);">VIP Check-in Rate</span>
+                <span class="stat-val">548 / 600 (91.3%)</span>
+            </div>
+            <div class="stat-row">
+                <span style="color: var(--dim);">Dub Booth AI Renders</span>
+                <span class="stat-val">284 Completed</span>
+            </div>
+            <div class="stat-row">
+                <span style="color: var(--dim);">Mission Control Proposals</span>
+                <span class="stat-val">92 Printed</span>
+            </div>
+            <div class="stat-row">
+                <span style="color: var(--dim);">Edge Server Latency</span>
+                <span class="stat-val">&lt; 1.2ms (Local Mesh)</span>
+            </div>
+
+            <div style="margin-top: 24px; padding: 16px; background: rgba(0,0,0,0.4); border-radius: 8px; border: 1px solid var(--border);">
+                <div style="font-family:'Space Mono', monospace; font-size:0.75rem; color:#A855F7; margin-bottom:6px;">OFFLINE-FIRST SAFEGUARD</div>
+                <p style="font-size: 0.8rem; color: var(--dim); line-height: 1.4;">
+                    If venue fiber drops, this local Edge Node handles all booth rendering and stage votes in memory with auto SQLite syncing.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Populate 100 Phone Matrix
+        const copyList = ['খেলা হবে', 'Toffee Live', 'বিয়ে বাড়ি', 'Streaming', 'ম্যাচ শুরু', 'Ultra HD', 'অনলাইন টিভি', 'Bengali Drama'];
+        const grid = document.getElementById('wallGrid');
+        for (let i = 0; i < 100; i++) {
+            const div = document.createElement('div');
+            div.className = 'phone-node';
+            div.id = 'node-' + i;
+            div.innerText = copyList[i % copyList.length];
+            grid.appendChild(div);
+        }
+
+        // Connect WebSocket to local edge server
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.host}`;
+        const ws = new WebSocket(wsUrl);
+
+        ws.onopen = () => {
+            document.getElementById('wsStatus').innerText = 'ONLINE (LOCAL MESH)';
+            document.getElementById('wsStatus').style.color = '#10B981';
+        };
+
+        ws.onmessage = (event) => {
+            const msg = JSON.parse(event.data);
+            if (msg.type === 'INIT_STATE' || msg.type === 'VOTE_UPDATE') {
+                updateVotes(msg.data.voting || msg.data);
+            } else if (msg.type === 'PHONE_WALL_SYNC') {
+                handleWallSync(msg.data.mode);
+            }
+        };
+
+        function updateVotes(voting) {
+            const red = voting.options.red.votes;
+            const blue = voting.options.blue.votes;
+            const total = red + blue;
+            const pctRed = Math.round((red / total) * 100);
+            const pctBlue = 100 - pctRed;
+
+            document.getElementById('barRed').style.width = pctRed + '%';
+            document.getElementById('barRed').innerText = `Sonic Alpha (${pctRed}%)`;
+            document.getElementById('barBlue').style.width = pctBlue + '%';
+            document.getElementById('barBlue').innerText = `Sonic Beta (${pctBlue}%)`;
+            document.getElementById('voteTotal').innerText = `Total: ${total} Votes`;
+        }
+
+        function handleWallSync(mode) {
+            for (let i = 0; i < 100; i++) {
+                const node = document.getElementById('node-' + i);
+                if (mode === 'synced_logo') {
+                    node.classList.add('synced');
+                    node.innerText = 'TOFFEE';
+                } else {
+                    node.classList.remove('synced');
+                    node.innerText = copyList[i % copyList.length];
+                }
+            }
+        }
+
+        function triggerWallSync() {
+            fetch('/api/phone-wall/sync', { method: 'POST' });
+        }
+
+        function injectVote(opt) {
+            fetch('/api/vote', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ option: opt })
+            });
+        }
+    </script>
+</body>
+</html>

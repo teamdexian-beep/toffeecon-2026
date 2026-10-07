@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ToffeeCon 2026 · The Sonic Dilemma (Audience Vote)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #07050f;
+            --card-bg: #120d24;
+            --orange: #FF6B00;
+            --purple: #9333EA;
+            --cyan: #00F0FF;
+            --red: #FF0844;
+            --blue: #0072FF;
+            --text-main: #F3F4F6;
+            --text-dim: #9089AA;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; }
+
+        header {
+            text-align: center;
+            padding: 16px 0 10px;
+        }
+
+        .badge-live {
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            color: var(--cyan);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        /* Voting Cards Container */
+        .vote-options {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin: 20px 0;
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+        .option-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            border: 2px solid transparent;
+            user-select: none;
+        }
+
+        .option-card:active {
+            transform: scale(0.98);
+        }
+
+        .card-red {
+            border-color: rgba(255, 8, 68, 0.4);
+            background: linear-gradient(180deg, rgba(255, 8, 68, 0.08) 0%, rgba(18, 13, 36, 0.95) 100%);
+        }
+
+        .card-red.selected {
+            border-color: var(--red);
+            box-shadow: 0 0 30px rgba(255, 8, 68, 0.5);
+            background: linear-gradient(180deg, rgba(255, 8, 68, 0.2) 0%, rgba(18, 13, 36, 0.95) 100%);
+        }
+
+        .card-blue {
+            border-color: rgba(0, 114, 255, 0.4);
+            background: linear-gradient(180deg, rgba(0, 114, 255, 0.08) 0%, rgba(18, 13, 36, 0.95) 100%);
+        }
+
+        .card-blue.selected {
+            border-color: var(--blue);
+            box-shadow: 0 0 30px rgba(0, 114, 255, 0.5);
+            background: linear-gradient(180deg, rgba(0, 114, 255, 0.2) 0%, rgba(18, 13, 36, 0.95) 100%);
+        }
+
+        .opt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .opt-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .tag-red { background: var(--red); color: #fff; }
+        .tag-blue { background: var(--blue); color: #fff; }
+
+        .btn-preview {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-family: 'Space Mono', monospace;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .btn-preview:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .opt-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .opt-desc {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            line-height: 1.4;
+        }
+
+        /* Confirmation HUD */
+        .status-box {
+            background: #0f0b1f;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .vote-confirmed {
+            color: #10B981;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div style="display:flex; justify-content:center; margin-bottom:12px;">
+            <img src="/assets/toffeecon-logo.png" alt="ToffeeCon" style="height:32px; filter:drop-shadow(0 0 14px rgba(184,0,136,0.5));">
+        </div>
+        <div class="badge-live">● KEYNOTE ARENA INTERACTION</div>
+        <h1 class="title">THE SONIC DILEMMA</h1>
+        <p class="subtitle">Tap to listen to candidate audio, then cast your official vote.</p>
+    </header>
+
+    <div class="vote-options">
+        <!-- Option 1: Sonic Alpha -->
+        <div class="option-card card-red" id="cardRed" onclick="castMobileVote('red')">
+            <div class="opt-header">
+                <span class="opt-tag tag-red">SONIC ALPHA</span>
+                <button class="btn-preview" onclick="playAudio('alpha', event)">🔊 Listen Sample</button>
+            </div>
+            <div class="opt-title">Retro Dynamic</div>
+            <p class="opt-desc">Warm analog synthesizer chords with high-energy punch. Reflects Toffee's 7-year sports heritage.</p>
+        </div>
+
+        <!-- Option 2: Sonic Beta -->
+        <div class="option-card card-blue" id="cardBlue" onclick="castMobileVote('blue')">
+            <div class="opt-header">
+                <span class="opt-tag tag-blue">SONIC BETA</span>
+                <button class="btn-preview" onclick="playAudio('beta', event)">🔊 Listen Sample</button>
+            </div>
+            <div class="opt-title">Futuristic Pulse</div>
+            <p class="opt-desc">Deep spatial bass glide with crystal digital chime. Reflects Toffee's 2033 technology leadership.</p>
+        </div>
+    </div>
+
+    <div class="status-box">
+        <div id="votePrompt">Tap either card to cast your vote on the 40ft stage screen.</div>
+        <div class="vote-confirmed" id="voteConfirmed">
+            ✓ VOTE RECORDED ON MAIN STAGE LED!
+        </div>
+    </div>
+
+    <script>
+        // Web Audio Synthesizer for High-Fidelity Sonic Previews
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playAudio(track, e) {
+            if (e) e.stopPropagation();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const now = audioCtx.currentTime;
+
+            if (track === 'alpha') {
+                // Retro Synth Chords (Warm analog brass vibe)
+                const freqs = [220, 277.18, 329.63, 440];
+                freqs.forEach((f, i) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(f, now + i * 0.05);
+
+                    gain.gain.setValueAtTime(0.08, now + i * 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + i * 0.05);
+                    osc.stop(now + 0.85);
+                });
+            } else {
+                // Futuristic Digital Pulse (Spatial Sub + Chime)
+                const sub = audioCtx.createOscillator();
+                const subGain = audioCtx.createGain();
+                sub.type = 'sine';
+                sub.frequency.setValueAtTime(150, now);
+                sub.frequency.exponentialRampToValueAtTime(60, now + 0.5);
+                subGain.gain.setValueAtTime(0.25, now);
+                subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+                sub.connect(subGain);
+                subGain.connect(audioCtx.destination);
+                sub.start(now);
+                sub.stop(now + 0.9);
+
+                // High Chime
+                const chime = audioCtx.createOscillator();
+                const chimeGain = audioCtx.createGain();
+                chime.type = 'triangle';
+                chime.frequency.setValueAtTime(880, now + 0.1);
+                chime.frequency.setValueAtTime(1760, now + 0.2);
+                chimeGain.gain.setValueAtTime(0.12, now + 0.1);
+                chimeGain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+                chime.connect(chimeGain);
+                chimeGain.connect(audioCtx.destination);
+                chime.start(now + 0.1);
+                chime.stop(now + 0.9);
+            }
+        }
+
+        // Unique voter token per device stored in localStorage
+        function getVoterToken() {
+            let token = localStorage.getItem('tcon_voter_token');
+            if (!token) {
+                token = 'VT-' + Math.random().toString(36).substring(2, 10) + '-' + Date.now();
+                localStorage.setItem('tcon_voter_token', token);
+            }
+            return token;
+        }
+
+        // Check if user already voted
+        window.addEventListener('DOMContentLoaded', () => {
+            const previousVote = localStorage.getItem('tcon_user_vote');
+            if (previousVote) {
+                applyLockedVote(previousVote);
+            }
+        });
+
+        function applyLockedVote(option) {
+            document.getElementById('cardRed').classList.remove('selected');
+            document.getElementById('cardBlue').classList.remove('selected');
+            document.getElementById('cardRed').style.pointerEvents = 'none';
+            document.getElementById('cardBlue').style.pointerEvents = 'none';
+
+            if (option === 'red') {
+                document.getElementById('cardRed').classList.add('selected');
+                document.getElementById('cardBlue').style.opacity = '0.35';
+            } else {
+                document.getElementById('cardBlue').classList.add('selected');
+                document.getElementById('cardRed').style.opacity = '0.35';
+            }
+
+            document.getElementById('votePrompt').style.display = 'none';
+            const confirmedBox = document.getElementById('voteConfirmed');
+            confirmedBox.style.display = 'block';
+            confirmedBox.innerText = `✓ YOUR VOTE FOR ${option === 'red' ? 'SONIC ALPHA' : 'SONIC BETA'} IS LOCKED & COUNTED`;
+        }
+
+        async function castMobileVote(option) {
+            if (localStorage.getItem('tcon_user_vote')) {
+                return;
+            }
+
+            // Haptic vibration feedback on supported smartphones
+            if (navigator.vibrate) navigator.vibrate([40]);
+
+            playAudio(option === 'red' ? 'alpha' : 'beta');
+            localStorage.setItem('tcon_user_vote', option);
+            applyLockedVote(option);
+
+            try {
+                const res = await fetch('/api/vote', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+        // ==========================================
+        // WebSocket Real-Time Stage Synchronization
+        // ==========================================
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.host}`;
+        let ws;
+
+        function connectSocket() {
+            ws = new WebSocket(wsUrl);
+            ws.onmessage = (event) => {
+                try {
+                    const msg = JSON.parse(event.data);
+                    if (msg.type === 'STAGE_CONTROL') {
+                        if (msg.data.action === 'reset') {
+                            // Director reset the poll: unlock voter cards!
+                            localStorage.removeItem('tcon_user_vote');
+                            document.getElementById('cardRed').classList.remove('selected');
+                            document.getElementById('cardBlue').classList.remove('selected');
+                            document.getElementById('cardRed').style.pointerEvents = 'auto';
+                            document.getElementById('cardBlue').style.pointerEvents = 'auto';
+                            document.getElementById('cardRed').style.opacity = '1';
+                            document.getElementById('cardBlue').style.opacity = '1';
+                            document.getElementById('votePrompt').style.display = 'block';
+                            document.getElementById('votePrompt').innerText = 'Poll has been reset by director. Tap to recast your vote!';
+                            document.getElementById('voteConfirmed').style.display = 'none';
+                            if (navigator.vibrate) navigator.vibrate([30, 50, 30]);
+                        } else if (msg.data.action === 'reveal') {
+                            // Grand Winner Reveal fanfare!
+                            const confirmedBox = document.getElementById('voteConfirmed');
+                            confirmedBox.style.display = 'block';
+                            confirmedBox.style.color = '#FFB300';
+                            confirmedBox.innerHTML = '★ GRAND WINNER REVEALED ON 40FT STAGE LED! ★';
+                            if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
+                        } else if (msg.data.action === 'lock') {
+                            document.getElementById('cardRed').style.pointerEvents = 'none';
+                            document.getElementById('cardBlue').style.pointerEvents = 'none';
+                            document.getElementById('votePrompt').innerText = '🔒 Voting has been locked by showcaller.';
+                        }
+                    }
+                } catch(e) {}
+            };
+            ws.onclose = () => setTimeout(connectSocket, 2500);
+        }
+        connectSocket();
+    </script>
+</body>
+</html>

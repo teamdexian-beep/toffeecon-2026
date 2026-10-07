@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ToffeeCon 2026 · Wall Node Client</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-node: #07050e;
+            --orange: #FF6B00;
+            --purple: #9333EA;
+            --cyan: #00F0FF;
+            --text-main: #F4F4F8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body {
+            background-color: var(--bg-node);
+            color: var(--text-main);
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Scanline Overlay */
+        .scanlines {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(18, 16, 38, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            opacity: 0.7;
+            z-index: 10;
+        }
+
+        /* Mode 1: Multilingual Copy Display */
+        .copy-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px;
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.3s ease;
+        }
+
+        .copy-view.hidden {
+            display: none;
+        }
+
+        .lang-badge {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--cyan);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            background: rgba(0, 240, 255, 0.08);
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            letter-spacing: 2px;
+        }
+
+        .copy-text {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2rem, 8vw, 3.2rem);
+            font-weight: 800;
+            line-height: 1.15;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .copy-sub {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            color: #8D87A5;
+            margin-top: 16px;
+            letter-spacing: 1px;
+        }
+
+        /* Mode 2: Synchronized Canvas Sliced View */
+        .canvas-view {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+
+        .canvas-view.active {
+            display: flex;
+        }
+
+        canvas#slicedCanvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Diagnostic HUD (Top & Bottom bars) */
+        .node-hud {
+            position: absolute;
+            top: 14px;
+            left: 18px;
+            right: 18px;
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: #797394;
+            z-index: 20;
+        }
+
+        .hud-status {
+            color: #10B981;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hud-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #10B981;
+            box-shadow: 0 0 6px #10B981;
+        }
+
+        /* Coordinate Setup Overlay (If no ID provided) */
+        .setup-modal {
+            position: absolute;
+            inset: 0;
+            background: #07050e;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 24px;
+        }
+
+        .setup-modal.active {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+
+    <div class="node-hud">
+        <span id="nodeIdLabel">NODE: #-- [R:-, C:-]</span>
+        <span class="hud-status"><span class="hud-dot"></span> MESH ONLINE</span>
+    </div>
+
+    <!-- Mode 1: Multilingual Regional Copy -->
+    <div class="copy-view" id="copyView">
+        <div class="lang-badge" id="langBadge">BANGLA · বাংলা</div>
+        <div class="copy-text" id="copyText">খেলা হবে</div>
+        <div class="copy-sub">TOFFEE SCREENING ECOSYSTEM</div>
+    </div>
+
+    <!-- Mode 2: Sliced Canvas View (Master Logo Assembly) -->
+    <div class="canvas-view" id="canvasView">
+        <canvas id="slicedCanvas"></canvas>
+    </div>
+
+    <!-- ID Assignment Modal (if opened without ?id=) -->
+    <div class="setup-modal" id="setupModal">
+        <h2 style="font-family:'Syne'; font-size:1.8rem; margin-bottom:12px;">Calibrate Wall Node</h2>
+        <p style="color:#8D87A5; font-size:0.9rem; margin-bottom:20px;">Enter Grid Index (0 - 99):</p>
+        <div style="display:flex; gap:10px;">
+            <input type="number" id="nodeIdInput" min="0" max="99" style="background:#17112c; border:1px solid #3b2c6d; color:#fff; font-family:'Space Mono'; font-size:1.5rem; width:100px; text-align:center; padding:10px; border-radius:8px;" placeholder="45">
+            <button onclick="setNodeIdManual()" style="background:var(--orange); color:#fff; border:none; padding:10px 20px; font-weight:bold; border-radius:8px; cursor:pointer;">Set Node</button>
+        </div>
+    </div>
+
+    <script>
+        // Screen Wake Lock with Auto-Reacquisition on Visibility Change
+        let screenWakeLock = null;
+        async function requestWakeLock() {
+            if ('wakeLock' in navigator) {
+                try {
+                    screenWakeLock = await navigator.wakeLock.request('screen');
+                    screenWakeLock.addEventListener('release', () => {
+                        screenWakeLock = null;
+                    });
+                } catch (e) {
+                    console.log('WakeLock error:', e);
+                }
+            }
+        }
+        requestWakeLock();
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && !screenWakeLock) {
+                requestWakeLock();
+            }
+        });
+
+        // Parse Phone Coordinate ID
+        const urlParams = new URLSearchParams(window.location.search);
+        let nodeId = parseInt(urlParams.get('id'));
+
+        if (isNaN(nodeId)) {
+            document.getElementById('setupModal').classList.add('active');
+        } else {
+            initNode(nodeId);
+        }
+
+        function setNodeIdManual() {
+            const inputVal = parseInt(document.getElementById('nodeIdInput').value);
+            if (!isNaN(inputVal) && inputVal >= 0 && inputVal < 100) {
+                document.getElementById('setupModal').classList.remove('active');
+                initNode(inputVal);
+            }
+        }
+
+        let nodeRow = 0;
+        let nodeCol = 0;
+
+        function initNode(id) {
+            nodeId = id;
+            nodeRow = Math.floor(nodeId / 10);
+            nodeCol = nodeId % 10;
+            document.getElementById('nodeIdLabel').innerText = `NODE #${String(nodeId).padStart(2, '0')} [ROW ${nodeRow}, COL ${nodeCol}]`;
+        }
+
+        // Multilingual Phrases Array (Matching Slide: Bangla, Chittagonian, Sylheti, English)
+        const phraseDictionary = [
+            { lang: 'BANGLA', text: 'খেলা হবে', sub: 'TOFFEE SPORTS HUB' },
+            { lang: 'CHITTAGONIAN', text: 'আইয়্যুন চা খাই', sub: 'REGIONAL ORIGINAL DIALECT' },
+            { lang: 'SYLHETI', text: 'কিতা খবর ভাই', sub: 'AUTHENTIC REGIONAL SCRIPT' },
+            { lang: 'ENGLISH', text: 'Toffee Live', sub: 'NEXT-GEN STREAMING' },
+            { lang: 'BANGLA', text: 'অনলাইন টিভি', sub: 'ULTRA HD BROADCAST' },
+            { lang: 'CHITTAGONIAN', text: 'হেব্বি খেলা', sub: 'SPORTS 60FPS' },
+            { lang: 'SYLHETI', text: 'শুদ্ধ বিনোদন', sub: 'ALL SCREENS CONNECTED' },
+            { lang: 'TECH SPEC', text: 'Zero Buffer', sub: 'HIGH-THROUGHPUT CDN' },
+            { lang: 'MILESTONE', text: '100M+ Users', sub: 'BANGLADESH MARKET LEADER' }
+        ];
+
+        let phraseIndex = nodeId % phraseDictionary.length;
+        const copyView = document.getElementById('copyView');
+        const canvasView = document.getElementById('canvasView');
+        const copyText = document.getElementById('copyText');
+        const langBadge = document.getElementById('langBadge');
+
+        // Rotate individual phrases every 5 seconds
+        setInterval(() => {
+            if (canvasView.classList.contains('active')) return;
+            phraseIndex = (phraseIndex + 1) % phraseDictionary.length;
+            
+            copyText.style.opacity = '0';
+            copyText.style.transform = 'translateY(10px)';
+
+            setTimeout(() => {
+                const item = phraseDictionary[phraseIndex];
+                copyText.innerText = item.text;
+                langBadge.innerText = item.lang;
+                copyText.style.opacity = '1';
+                copyText.style.transform = 'translateY(0)';
+            }, 300);
+        }, 5000);
+
+        // Master Canvas Slicing Engine (Mode 2)
+        const canvas = document.getElementById('slicedCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let animFrame;
+        let logoPhase = 0;
+
+        // Preload Official 3D Event Hero Emblem
+        const logoImg = new Image();
+        logoImg.src = '/assets/toffeecon-hero-emblem.png';
+        let logoLoaded = false;
+        logoImg.onload = () => { logoLoaded = true; };
+
+        function renderMasterSlice() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            logoPhase += 0.04;
+
+            // Conceptual Master 10x10 Virtual Matrix Dimensions
+            const masterW = canvas.width * 10;
+            const masterH = canvas.height * 10;
+
+            // Offset the viewport to this handset's slice
+            ctx.save();
+            ctx.translate(-nodeCol * canvas.width, -nodeRow * canvas.height);
+
+            // Draw Giant Unified Toffee Logo across the 10x10 virtual canvas
+            const centerX = masterW / 2;
+            const centerY = masterH / 2;
+
+            // Glowing Dynamic Radial Background
+            const grad = ctx.createRadialGradient(centerX, centerY, 100, centerX, centerY, masterW * 0.45);
+            grad.addColorStop(0, 'rgba(184, 0, 136, 0.9)');
+            grad.addColorStop(0.4, 'rgba(121, 19, 199, 0.85)');
+            grad.addColorStop(1, 'rgba(5, 3, 11, 0.98)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, masterW, masterH);
+
+            // Render Official Logo Image or High-Impact Fallback
+            if (logoLoaded) {
+                const targetW = masterW * 0.72;
+                const aspect = logoImg.height / logoImg.width;
+                const targetH = targetW * aspect;
+                
+                // Subtle pulse glow
+                const floatOffset = Math.sin(logoPhase) * (masterH * 0.015);
+                ctx.shadowColor = 'rgba(255, 46, 147, 0.9)';
+                ctx.shadowBlur = 90;
+                ctx.drawImage(logoImg, centerX - targetW / 2, centerY - targetH / 2 + floatOffset, targetW, targetH);
+            } else {
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = `bold ${masterW * 0.14}px Syne, sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.shadowColor = 'rgba(230, 0, 126, 0.9)';
+                ctx.shadowBlur = 80;
+                ctx.fillText('TOFFEECON', centerX, centerY - masterH * 0.05);
+            }
+
+            // Subtitle
+            ctx.fillStyle = '#00F0FF';
+            ctx.font = `bold ${masterW * 0.028}px Space Mono, monospace`;
+            ctx.shadowBlur = 30;
+            ctx.shadowColor = '#00F0FF';
+            ctx.textAlign = 'center';
+            ctx.fillText('7 YEARS OF SCREENOVATION · 2026', centerX, centerY + masterH * 0.16);
+
+            ctx.restore();
+
+            animFrame = requestAnimationFrame(renderMasterSlice);
+        }
+
+        // WebSocket Connection for Sub-Millisecond Wall Sync
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${protocol}//${window.location.host}`);
+
+        ws.onmessage = (event) => {
+            const msg = JSON.parse(event.data);
+            if (msg.type === 'WALL_SYNC_TRIGGER') {
+                if (msg.data.mode === 'synced_logo') {
+                    // Activate Synchronized Canvas View
+                    copyView.classList.add('hidden');
+                    canvasView.classList.add('active');
+                    renderMasterSlice();
+                } else {
+                    // Return to Multilingual Independent Rotation
+                    canvasView.classList.remove('active');
+                    copyView.classList.remove('hidden');
+                    cancelAnimationFrame(animFrame);
+                }
+            }
+        };
+    </script>
+</body>
+</html>
