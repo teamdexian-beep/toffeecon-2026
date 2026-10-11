@@ -71,25 +71,25 @@
         /* Portal HUD Top Bar */
         .hud-header {
             position: absolute;
-            top: 20px;
+            top: 18px;
             left: 20px;
             right: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 20;
+            z-index: 25;
             pointer-events: none;
         }
 
         .hud-left {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             pointer-events: auto;
         }
 
         .portal-badge {
-            background: rgba(14, 8, 30, 0.85);
+            background: rgba(14, 8, 30, 0.88);
             border: 1px solid rgba(255, 0, 119, 0.4);
             padding: 8px 18px;
             border-radius: 30px;
@@ -113,23 +113,48 @@
             font-weight: 700;
         }
 
+        .director-pulse-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(0, 240, 255, 0.15);
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--cyan);
+            backdrop-filter: blur(10px);
+        }
+
+        .director-pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--cyan);
+            box-shadow: 0 0 8px var(--cyan);
+            animation: pulse-dot 1.2s infinite;
+        }
+
         .hud-right {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             pointer-events: auto;
+            flex-wrap: wrap;
+            justify-content: flex-end;
         }
 
         .hud-btn {
             background: rgba(14, 8, 30, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #F8FAFC;
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 30px;
             font-family: 'Space Mono', monospace;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             text-decoration: none;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 6px;
             cursor: pointer;
@@ -150,44 +175,98 @@
             box-shadow: 0 0 15px rgba(255, 0, 119, 0.4);
         }
 
-        /* Walkthrough Depth Progress Meter */
+        /* Camera Viewpoint Selector Bar */
+        .camera-selector-bar {
+            position: absolute;
+            top: 76px;
+            left: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 25;
+            background: rgba(10, 6, 22, 0.85);
+            padding: 6px 12px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .cam-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-dim);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.68rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .cam-btn:hover {
+            color: #fff;
+        }
+
+        .cam-btn.active {
+            background: rgba(0, 240, 255, 0.2);
+            border-color: var(--cyan);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+            font-weight: 700;
+        }
+
+        /* Walkthrough Depth Progress Meter & Time Scrubber */
         .portal-timeline-meter {
             position: absolute;
-            bottom: 24px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            width: 92%;
-            max-width: 720px;
-            background: rgba(11, 7, 24, 0.88);
+            width: 94%;
+            max-width: 840px;
+            background: rgba(11, 7, 24, 0.92);
             border: 1px solid rgba(255, 0, 119, 0.4);
-            border-radius: 16px;
-            padding: 16px 24px;
-            backdrop-filter: blur(16px);
-            z-index: 20;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 0, 119, 0.3);
+            border-radius: 18px;
+            padding: 14px 22px;
+            backdrop-filter: blur(20px);
+            z-index: 25;
+            box-shadow: 0 10px 45px rgba(0, 0, 0, 0.85), 0 0 35px rgba(255, 0, 119, 0.25);
         }
 
         .meter-labels {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-family: 'Space Mono', monospace;
-            font-size: 0.72rem;
-            letter-spacing: 1.5px;
+            font-size: 0.7rem;
+            letter-spacing: 1.2px;
             text-transform: uppercase;
         }
 
-        .label-past { color: #94A3B8; }
-        .label-mid { color: var(--cyan); }
-        .label-future { color: var(--magenta); font-weight: 700; text-shadow: 0 0 10px var(--magenta); }
+        .label-past { color: #94A3B8; cursor: pointer; }
+        .label-mid { color: var(--cyan); cursor: pointer; }
+        .label-future { color: var(--magenta); font-weight: 700; text-shadow: 0 0 10px var(--magenta); cursor: pointer; }
+        .label-past:hover, .label-mid:hover, .label-future:hover { text-decoration: underline; }
+
+        /* Interactive Timeline Scrubber Track */
+        .progress-track-container {
+            width: 100%;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
 
         .progress-track {
             width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 6px;
             position: relative;
-            overflow: hidden;
+            overflow: visible;
         }
 
         .progress-fill {
@@ -195,19 +274,36 @@
             top: 0; left: 0; height: 100%;
             width: 0%;
             background: linear-gradient(90deg, #64748B 0%, var(--cyan) 50%, var(--magenta) 100%);
-            border-radius: 4px;
-            transition: width 0.1s ease;
+            border-radius: 6px;
             box-shadow: 0 0 14px var(--magenta);
+            pointer-events: none;
+        }
+
+        .scrubber-handle {
+            position: absolute;
+            top: 50%;
+            left: 0%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+            height: 16px;
+            background: #FFFFFF;
+            border: 2px solid var(--magenta);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--magenta);
+            pointer-events: none;
+            transition: transform 0.1s;
         }
 
         .meter-status {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 10px;
+            margin-top: 8px;
             font-family: 'Space Mono', monospace;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: #E2E8F0;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .status-badge {
@@ -235,10 +331,10 @@
             background: linear-gradient(135deg, var(--orange), var(--magenta));
             border: none;
             color: #fff;
-            padding: 8px 18px;
+            padding: 7px 16px;
             border-radius: 8px;
             font-weight: 700;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             cursor: pointer;
             letter-spacing: 1px;
             box-shadow: 0 0 15px rgba(255, 0, 119, 0.4);
@@ -249,11 +345,11 @@
         /* Navigation Hint */
         .walk-instructions {
             position: absolute;
-            top: 80px;
+            top: 120px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.75);
-            border: 1px solid rgba(255, 0, 119, 0.3);
+            background: rgba(0, 0, 0, 0.78);
+            border: 1px solid rgba(255, 0, 119, 0.35);
             padding: 6px 18px;
             border-radius: 20px;
             font-family: 'Space Mono', monospace;
@@ -263,6 +359,7 @@
             z-index: 15;
             pointer-events: none;
             white-space: nowrap;
+            transition: opacity 0.5s ease;
         }
 
         /* Holographic Screen Inspection Detail Modal */
@@ -387,9 +484,17 @@
             transition: transform 0.2s;
         }
         .btn-enter-summit:hover { transform: scale(1.04); }
+
+        /* Hidden video element for live video textures */
+        #hero-video-source {
+            display: none;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Shared Loop Video for Hero LED Screen Textures -->
+    <video id="hero-video-source" src="/assets/opening-film.mp4" loop muted playsinline crossOrigin="anonymous"></video>
 
     <!-- CRT Glitch & Noise Overlays for Analog Grain Transition -->
     <div id="crt-overlay"></div>
@@ -402,40 +507,63 @@
                 <img src="/assets/toffeecon-logo.png" alt="ToffeeCon 2026">
                 <span>THE PORTAL TO A NEW ERA</span>
             </div>
+            <div class="director-pulse-badge" id="director-status-pill">
+                <span class="director-pulse-dot"></span>
+                <span id="director-status-text">LIVE SYNC</span>
+            </div>
         </div>
         <div class="hud-right">
-            <button class="hud-btn" id="btn-tour">
-                <span>✈️</span>
-                <span id="tour-label">Fly-Through Tour: OFF</span>
-            </button>
             <button class="hud-btn" id="btn-audio" title="Toggle Ambience Sound">
-                <span id="audio-icon">🔊</span>
-                <span>Spatial Sound</span>
+                <span id="audio-icon">🔇</span>
+                <span>Spatial Sound: Muted</span>
             </button>
+            <a href="/hub" class="hud-btn" title="Director Hub Control">
+                <span>🎛️</span>
+                <span>Director Hub</span>
+            </a>
             <a href="/" class="hud-btn">
                 <span>←</span>
-                <span>Summit Hub</span>
+                <span>Summit Home</span>
             </a>
         </div>
     </div>
 
+    <!-- Camera Viewpoint Selector Bar -->
+    <div class="camera-selector-bar">
+        <button class="cam-btn active" id="cam-walk" onclick="setCameraMode('walk')">
+            <span>🚶</span> <span>Walker</span>
+        </button>
+        <button class="cam-btn" id="cam-drone" onclick="setCameraMode('drone')">
+            <span>✈️</span> <span>Drone Tour</span>
+        </button>
+        <button class="cam-btn" id="cam-crane" onclick="setCameraMode('crane')">
+            <span>🎥</span> <span>Wide Crane</span>
+        </button>
+        <button class="cam-btn" id="cam-floor" onclick="setCameraMode('floor')">
+            <span>🔍</span> <span>Floor Cam</span>
+        </button>
+    </div>
+
     <!-- Interactive Navigation Hint -->
     <div class="walk-instructions" id="walk-hint">
-        ✦ SCROLL, DRAG, OR USE WASD TO STEP INSIDE THE BROWSING MENU ✦
+        ✦ SCROLL, DRAG, OR SCRUB TIMELINE TO TRAVEL THROUGH 7 YEARS OF SCREENING ✦
     </div>
 
     <!-- 3D Three.js WebGL Container -->
     <div id="portal-canvas"></div>
 
-    <!-- Bottom Timeline / Evolution Progress Meter -->
+    <!-- Bottom Timeline / Evolution Progress Meter & Scrubber -->
     <div class="portal-timeline-meter">
         <div class="meter-labels">
-            <span class="label-past">ZONE 1: ANALOG STATIC (1980s)</span>
-            <span class="label-mid">ZONE 2: DIGITAL SHIFT (2000s)</span>
-            <span class="label-future">ZONE 3: REBIRTH OF SCREENING (2026)</span>
+            <span class="label-past" onclick="scrubToZone(0.05)" title="Jump to 1990s Analog Dawn">ZONE 1: 480i CRT ANALOG (1990s)</span>
+            <span class="label-mid" onclick="scrubToZone(0.50)" title="Jump to 2010s Digital Streaming">ZONE 2: 1080p DIGITAL SHIFT (2010s)</span>
+            <span class="label-future" onclick="scrubToZone(0.96)" title="Jump to 2026 4K HDR Rebirth">ZONE 3: 4K HDR REBIRTH (2026)</span>
         </div>
-        <div class="progress-track">
-            <div class="progress-fill" id="progress-fill"></div>
+        <div class="progress-track-container" id="timeline-scrubber">
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+                <div class="scrubber-handle" id="scrubber-handle"></div>
+            </div>
         </div>
         <div class="meter-status">
             <div class="status-badge">
@@ -479,24 +607,24 @@
             <a href="/stage" class="btn-enter-summit">Enter 3-Screen Mainstage ⚡</a>
             <a href="/hub" class="btn-enter-summit" style="background:linear-gradient(135deg, var(--purple), var(--cyan));">Mission Control Hub 🎛️</a>
         </div>
-        <div style="margin-top:16px;">
-            <button onclick="resetPortal()" style="background:none; border:none; color:#94A3B8; font-family:'Space Mono'; font-size:0.75rem; cursor:pointer; text-decoration:underline;">
-                Walk Through Again ↺
-            </button>
-        </div>
     </div>
 
     <script>
         /* =============================================================
-           1. Web Audio API Continuum (Analog Static -> Soaring Synth)
+           1. Web Audio API Continuum & Procedural Foley Soundscapes
            ============================================================= */
         let audioCtx = null;
-        let isAudioMuted = false;
+        let isAudioMuted = true; // Default muted per browser autoplay standards
         let noiseGain = null;
         let synthGain = null;
+        let footstepGain = null;
+        let digitalBleepGain = null;
 
         function initSoundscape() {
-            if (audioCtx) return;
+            if (audioCtx) {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                return;
+            }
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             audioCtx = new AudioContext();
 
@@ -517,7 +645,7 @@
             filterNode.frequency.value = 1600;
 
             noiseGain = audioCtx.createGain();
-            noiseGain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+            noiseGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
 
             whiteNoise.connect(filterNode);
             filterNode.connect(noiseGain);
@@ -526,9 +654,9 @@
 
             // 2. Synthesizer Drone (For future rebirth at exit)
             synthGain = audioCtx.createGain();
-            synthGain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+            synthGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
 
-            const freqs = [130.81, 196.00, 261.63, 329.63, 392.00, 523.25]; // C3, G3, C4, E4, G4, C5
+            const freqs = [130.81, 196.00, 261.63, 329.63, 392.00, 523.25]; // C3, G3, C4, E4, G4, C5 chord
             freqs.forEach(f => {
                 const osc = audioCtx.createOscillator();
                 osc.type = 'sawtooth';
@@ -544,16 +672,63 @@
             });
 
             synthGain.connect(audioCtx.destination);
+
+            // 3. Footstep Foley Gain
+            footstepGain = audioCtx.createGain();
+            footstepGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+            footstepGain.connect(audioCtx.destination);
+
+            // 4. Digital UI Chirp Gain
+            digitalBleepGain = audioCtx.createGain();
+            digitalBleepGain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+            digitalBleepGain.connect(audioCtx.destination);
+
+            // Try starting background video element
+            const videoElem = document.getElementById('hero-video-source');
+            if (videoElem) {
+                videoElem.play().catch(e => console.log('Video autoplay deferred:', e.message));
+            }
+        }
+
+        function triggerFootstepSound() {
+            if (!audioCtx || isAudioMuted) return;
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            osc.frequency.setValueAtTime(80, now);
+            osc.frequency.exponentialRampToValueAtTime(35, now + 0.08);
+            g.gain.setValueAtTime(0.03, now);
+            g.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
+            osc.connect(g);
+            g.connect(footstepGain);
+            osc.start(now);
+            osc.stop(now + 0.08);
+        }
+
+        function triggerDigitalChirp() {
+            if (!audioCtx || isAudioMuted) return;
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(880, now);
+            osc.frequency.setValueAtTime(1760, now + 0.04);
+            g.gain.setValueAtTime(0.02, now);
+            g.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
+            osc.connect(g);
+            g.connect(digitalBleepGain);
+            osc.start(now);
+            osc.stop(now + 0.08);
         }
 
         function updateAudioByDepth(progressRatio) {
             if (!audioCtx || isAudioMuted) return;
             const now = audioCtx.currentTime;
             const staticLevel = Math.max(0.0001, (1.0 - progressRatio) * 0.08);
-            const synthLevel = Math.max(0.0001, progressRatio * 0.14);
+            const synthLevel = Math.max(0.0001, progressRatio * 0.16);
 
-            noiseGain.gain.setTargetAtTime(staticLevel, now, 0.1);
-            synthGain.gain.setTargetAtTime(synthLevel, now, 0.1);
+            if (noiseGain) noiseGain.gain.setTargetAtTime(staticLevel, now, 0.1);
+            if (synthGain) synthGain.gain.setTargetAtTime(synthLevel, now, 0.1);
         }
 
         const audioBtn = document.getElementById('btn-audio');
@@ -561,9 +736,15 @@
             initSoundscape();
             isAudioMuted = !isAudioMuted;
             document.getElementById('audio-icon').textContent = isAudioMuted ? '🔇' : '🔊';
+            audioBtn.querySelector('span:nth-child(2)').textContent = isAudioMuted ? 'Spatial Sound: Muted' : 'Spatial Sound: LIVE';
+            audioBtn.classList.toggle('active', !isAudioMuted);
+
             if (isAudioMuted) {
                 if (noiseGain) noiseGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
                 if (synthGain) synthGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+            } else {
+                const progressRatio = Math.min(1.0, Math.max(0.0, -currentZ / TUNNEL_LENGTH));
+                updateAudioByDepth(progressRatio);
             }
         });
 
@@ -574,7 +755,7 @@
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x020106, 0.015);
 
-        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 240);
+        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 250);
         camera.position.set(0, 0, 0);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
@@ -599,6 +780,16 @@
             { title: "Toffee Comedy Corner", desc: "Stand-up specials and regional comedy sketches.", res: "1920x1080", bitrate: "8.0 Mbps" },
             { title: "Classic Drama 1994", desc: "Archival footage digitised from analog magnetic tape.", res: "640x480 (480i)", bitrate: "2.5 Mbps" }
         ];
+
+        // Shared Video Texture Setup for Key Hero Screens
+        const videoElem = document.getElementById('hero-video-source');
+        let videoTexture = null;
+        if (videoElem) {
+            videoTexture = new THREE.VideoTexture(videoElem);
+            videoTexture.minFilter = THREE.LinearFilter;
+            videoTexture.magFilter = THREE.LinearFilter;
+            videoTexture.format = THREE.RGBAFormat;
+        }
 
         // Procedural Dynamic Canvas Texture Generator
         function createScreenCanvas(ringIdx, screenIdx, totalRings) {
@@ -690,9 +881,11 @@
         const screenGroup = new THREE.Group();
         scene.add(screenGroup);
         const interactiveMeshes = [];
+        const heroVideoMeshes = [];
 
         for (let ring = 0; ring < SCREEN_RINGS; ring++) {
             const zPos = -ring * (TUNNEL_LENGTH / SCREEN_RINGS);
+            const progress = ring / SCREEN_RINGS;
 
             for (let s = 0; s < SCREENS_PER_RING; s++) {
                 const angle = (s / SCREENS_PER_RING) * Math.PI * 2;
@@ -710,13 +903,24 @@
                 }
 
                 const screenGeometry = new THREE.PlaneGeometry(width, height);
-                const canvas = createScreenCanvas(ring, s, SCREEN_RINGS);
-                const texture = new THREE.CanvasTexture(canvas);
+                let material;
 
-                const material = new THREE.MeshBasicMaterial({
-                    map: texture,
-                    side: THREE.DoubleSide
-                });
+                // Assign actual video feed to prominent hero screens in Zone 2 and Zone 3
+                const isHeroVideoTile = videoTexture && ((ring === 10 && s === 3) || (ring === 14 && s === 11) || (ring === 20 && s === 4) || (ring === 26 && s === 12));
+
+                if (isHeroVideoTile) {
+                    material = new THREE.MeshBasicMaterial({
+                        map: videoTexture,
+                        side: THREE.DoubleSide
+                    });
+                } else {
+                    const canvas = createScreenCanvas(ring, s, SCREEN_RINGS);
+                    const texture = new THREE.CanvasTexture(canvas);
+                    material = new THREE.MeshBasicMaterial({
+                        map: texture,
+                        side: THREE.DoubleSide
+                    });
+                }
 
                 const screenMesh = new THREE.Mesh(screenGeometry, material);
                 screenMesh.position.x = Math.cos(angle) * TUNNEL_RADIUS;
@@ -727,17 +931,18 @@
                 screenMesh.rotateY(Math.PI);
 
                 if (isFloor) {
-                    // Runway floor screens (wider tiles on floor)
                     screenMesh.scale.set(1.3, 1.3, 1);
                 }
 
                 screenMesh.userData = {
                     ring,
-                    tileInfo: TILE_CATALOG[(ring + s) % TILE_CATALOG.length]
+                    tileInfo: TILE_CATALOG[(ring + s) % TILE_CATALOG.length],
+                    isHeroVideo: isHeroVideoTile
                 };
 
                 screenGroup.add(screenMesh);
                 interactiveMeshes.push(screenMesh);
+                if (isHeroVideoTile) heroVideoMeshes.push(screenMesh);
             }
         }
 
@@ -792,7 +997,7 @@
         runway.position.set(0, -TUNNEL_RADIUS + 0.35, -TUNNEL_LENGTH / 2);
         scene.add(runway);
 
-        // Human Silhouette Spectators Walking Ahead (Exactly matching the pitch deck slide)
+        // Human Silhouette Spectators Walking Ahead (Matching pitch deck slide)
         function createSilhouetteTexture() {
             const canvas = document.createElement('canvas');
             canvas.width = 128;
@@ -853,7 +1058,7 @@
         spectator3.scale.set(0.75, 0.75, 1);
         scene.add(spectator3);
 
-        // Floating Volumetric Photon Particles
+        // Floating Volumetric Photon Particles (Velocity-reactive)
         const particleCount = 450;
         const particleGeo = new THREE.BufferGeometry();
         const particlePositions = new Float32Array(particleCount * 3);
@@ -869,7 +1074,7 @@
         particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
         const particleMat = new THREE.PointsMaterial({
             color: 0xFF0077,
-            size: 0.12,
+            size: 0.14,
             transparent: true,
             opacity: 0.65
         });
@@ -878,6 +1083,7 @@
 
         // Glowing Neon Toroidal Arcs Along Tunnel (Magenta, Purple, Cyan)
         const tunnelLights = [];
+        const tunnelRings = [];
         for (let i = 0; i < 7; i++) {
             const z = -i * 18;
             const progress = i / 6;
@@ -894,6 +1100,7 @@
             const ringMesh = new THREE.Mesh(ringGeo, ringMat);
             ringMesh.position.z = z;
             scene.add(ringMesh);
+            tunnelRings.push(ringMesh);
         }
 
         // Luminous Exit Portal Arch (The Rebirth Ring)
@@ -903,8 +1110,8 @@
         exitArch.position.z = -TUNNEL_LENGTH;
         scene.add(exitArch);
 
-        // Volumetric Hyperspace Exit Light Cone
-        const exitBeamGeo = new THREE.CylinderGeometry(0.8, TUNNEL_RADIUS, 24, 32, 1, true);
+        // Volumetric Hyperspace Exit Light Cone (God Rays)
+        const exitBeamGeo = new THREE.CylinderGeometry(0.8, TUNNEL_RADIUS, 32, 32, 1, true);
         const exitBeamMat = new THREE.MeshBasicMaterial({
             color: 0xFF0077,
             transparent: true,
@@ -913,88 +1120,141 @@
         });
         const exitBeam = new THREE.Mesh(exitBeamGeo, exitBeamMat);
         exitBeam.rotation.x = Math.PI / 2;
-        exitBeam.position.z = -TUNNEL_LENGTH - 8;
+        exitBeam.position.z = -TUNNEL_LENGTH - 10;
         scene.add(exitBeam);
 
+        // Volumetric Light God Ray Shimmer Cone (Additive Blending)
+        const godRayGeo = new THREE.ConeGeometry(TUNNEL_RADIUS * 1.1, 40, 32, 1, true);
+        const godRayMat = new THREE.MeshBasicMaterial({
+            color: 0x00F0FF,
+            transparent: true,
+            opacity: 0.22,
+            blending: THREE.AdditiveBlending,
+            side: THREE.DoubleSide
+        });
+        const godRays = new THREE.Mesh(godRayGeo, godRayMat);
+        godRays.rotation.x = -Math.PI / 2;
+        godRays.position.z = -TUNNEL_LENGTH + 12;
+        scene.add(godRays);
+
         /* =============================================================
-           3. Walkthrough Physics, Navigation & Drone Fly-Through
+           3. Multi-Angle Camera System & Trajectory Rig
            ============================================================= */
         let targetZ = 0;
         let currentZ = 0;
         let mouseLook = { x: 0, y: 0 };
         let isDragging = false;
         let prevMouse = { x: 0, y: 0 };
-        let isAutoTour = false;
+        let cameraMode = 'walk'; // 'walk', 'drone', 'crane', 'floor'
+        let cameraOffset = new THREE.Vector3(0, 0, 0);
+
+        function setCameraMode(mode) {
+            cameraMode = mode;
+            initSoundscape();
+
+            document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.getElementById(`cam-${mode}`);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            const hint = document.getElementById('walk-hint');
+            if (mode === 'drone') {
+                hint.textContent = '✦ DRONE FLY-THROUGH ACTIVE · GLIDING THROUGH THE 360° MOSAIC ✦';
+            } else if (mode === 'crane') {
+                hint.textContent = '✦ ELEVATED CRANE PERSPECTIVE · VIEWING THE CURVED CYLINDER ✦';
+            } else if (mode === 'floor') {
+                hint.textContent = '✦ LOW FLOOR REFLECTION CAM · LASER GUIDE RUNWAY VIEW ✦';
+            } else {
+                hint.textContent = '✦ WALKER MODE · SCROLL, DRAG, OR SCRUB TIMELINE TO ADVANCE ✦';
+            }
+        }
 
         const crtOverlay = document.getElementById('crt-overlay');
         const noiseOverlay = document.getElementById('noise-overlay');
         const progressFill = document.getElementById('progress-fill');
+        const scrubberHandle = document.getElementById('scrubber-handle');
         const statusText = document.getElementById('portal-status-text');
         const statusDot = document.getElementById('status-dot');
         const rebirthBanner = document.getElementById('rebirth-banner');
-        const tourBtn = document.getElementById('btn-tour');
-        const tourLabel = document.getElementById('tour-label');
 
         function moveForward(amount = 6) {
             initSoundscape();
-            isAutoTour = false;
-            updateTourButton();
+            triggerFootstepSound();
             targetZ = Math.max(-TUNNEL_LENGTH, Math.min(0, targetZ - amount));
         }
 
         function moveBackward(amount = 6) {
             initSoundscape();
-            isAutoTour = false;
-            updateTourButton();
             targetZ = Math.max(-TUNNEL_LENGTH, Math.min(0, targetZ + amount));
         }
 
-        function resetPortal() {
+        function scrubToZone(ratio) {
+            initSoundscape();
+            targetZ = -ratio * TUNNEL_LENGTH;
+            triggerDigitalChirp();
+        }
+
+        document.getElementById('btn-walk-forward').addEventListener('click', () => moveForward(8));
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            initSoundscape();
             targetZ = 0;
-            currentZ = 0;
-            isAutoTour = false;
-            updateTourButton();
-            rebirthBanner.classList.remove('show');
-            updateDepthState(0);
-        }
-
-        function toggleTour() {
-            initSoundscape();
-            isAutoTour = !isAutoTour;
-            updateTourButton();
-        }
-
-        function updateTourButton() {
-            if (isAutoTour) {
-                tourBtn.classList.add('active');
-                tourLabel.textContent = 'Fly-Through: ON';
-            } else {
-                tourBtn.classList.remove('active');
-                tourLabel.textContent = 'Fly-Through: OFF';
-            }
-        }
-
-        document.getElementById('btn-walk-forward').addEventListener('click', () => moveForward(10));
-        document.getElementById('btn-reset').addEventListener('click', resetPortal);
-        tourBtn.addEventListener('click', toggleTour);
-
-        // Wheel Scroll
-        window.addEventListener('wheel', (e) => {
-            initSoundscape();
-            if (e.deltaY > 0) moveForward(4);
-            else moveBackward(4);
+            mouseLook = { x: 0, y: 0 };
+            setCameraMode('walk');
         });
 
-        // Keyboard Controls
+        // Timeline Scrubber Drag & Click
+        const timelineScrubber = document.getElementById('timeline-scrubber');
+        let isScrubbing = false;
+
+        function handleScrub(e) {
+            const rect = timelineScrubber.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clickX = Math.max(0, Math.min(rect.width, clientX - rect.left));
+            const ratio = clickX / rect.width;
+            scrubToZone(ratio);
+        }
+
+        timelineScrubber.addEventListener('mousedown', (e) => {
+            isScrubbing = true;
+            handleScrub(e);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isScrubbing) handleScrub(e);
+        });
+
+        window.addEventListener('mouseup', () => {
+            isScrubbing = false;
+        });
+
+        timelineScrubber.addEventListener('touchstart', (e) => {
+            isScrubbing = true;
+            handleScrub(e);
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (isScrubbing) handleScrub(e);
+        });
+
+        window.addEventListener('touchend', () => {
+            isScrubbing = false;
+        });
+
+        // Wheel and Keyboard Controls
+        window.addEventListener('wheel', (e) => {
+            initSoundscape();
+            targetZ = Math.max(-TUNNEL_LENGTH, Math.min(0, targetZ - e.deltaY * 0.055));
+            if (Math.abs(e.deltaY) > 20) triggerFootstepSound();
+        }, { passive: true });
+
         window.addEventListener('keydown', (e) => {
             initSoundscape();
             if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') moveForward(5);
             if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') moveBackward(5);
-            if (e.key === 't' || e.key === 'T') toggleTour();
         });
 
-        // Mouse Drag & Touch Controls
+        // Mouse Drag Navigation
         window.addEventListener('mousedown', (e) => {
+            if (e.target.closest('.hud-header') || e.target.closest('.camera-selector-bar') || e.target.closest('.portal-timeline-meter') || e.target.closest('.inspect-card') || e.target.closest('.rebirth-banner')) return;
             initSoundscape();
             isDragging = true;
             prevMouse = { x: e.clientX, y: e.clientY };
@@ -1017,6 +1277,7 @@
 
         // Touch Interaction
         window.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.hud-header') || e.target.closest('.camera-selector-bar') || e.target.closest('.portal-timeline-meter') || e.target.closest('.inspect-card') || e.target.closest('.rebirth-banner')) return;
             initSoundscape();
             if (e.touches.length === 1) {
                 isDragging = true;
@@ -1040,8 +1301,7 @@
         const mouseVec = new THREE.Vector2();
 
         window.addEventListener('click', (e) => {
-            // Avoid clicking HUD elements
-            if (e.target.closest('.hud-header') || e.target.closest('.portal-timeline-meter') || e.target.closest('.inspect-card') || e.target.closest('.rebirth-banner')) return;
+            if (e.target.closest('.hud-header') || e.target.closest('.camera-selector-bar') || e.target.closest('.portal-timeline-meter') || e.target.closest('.inspect-card') || e.target.closest('.rebirth-banner')) return;
 
             mouseVec.x = (e.clientX / window.innerWidth) * 2 - 1;
             mouseVec.y = -(e.clientY / window.innerHeight) * 2 + 1;
@@ -1069,6 +1329,7 @@
             document.getElementById('inspectZoneTag').textContent = progress < 0.35 ? 'ZONE 1 // 480i ANALOG' : (progress < 0.7 ? 'ZONE 2 // 1080p DIGITAL' : 'ZONE 3 // 4K HDR REBIRTH');
 
             modal.classList.add('show');
+            triggerDigitalChirp();
             if (navigator.vibrate) navigator.vibrate([40]);
         }
 
@@ -1080,7 +1341,9 @@
            5. Evolutionary State & Dynamic Shaders
            ============================================================= */
         function updateDepthState(progress) {
-            progressFill.style.width = `${progress * 100}%`;
+            const pct = Math.round(progress * 100);
+            progressFill.style.width = `${pct}%`;
+            scrubberHandle.style.left = `${pct}%`;
             updateAudioByDepth(progress);
 
             // Dynamically dissolve CRT scanlines & static noise as user reaches clarity
@@ -1088,15 +1351,15 @@
             noiseOverlay.style.opacity = Math.max(0, (1.0 - progress * 1.25) * 0.35).toString();
 
             if (progress < 0.33) {
-                statusText.textContent = `ZONE 01: ANALOG DAWN (480i CRT SCANLINES & STATIC) · DEPTH: ${Math.round(progress * 100)}%`;
+                statusText.textContent = `ZONE 01: ANALOG DAWN (480i CRT SCANLINES & STATIC) · ${pct}%`;
                 statusDot.style.background = '#64748B';
                 statusDot.style.boxShadow = '0 0 8px #64748B';
             } else if (progress < 0.72) {
-                statusText.textContent = `ZONE 02: THE DIGITAL SHIFT (BROWSING MENUS & BUFFERING) · DEPTH: ${Math.round(progress * 100)}%`;
+                statusText.textContent = `ZONE 02: THE DIGITAL SHIFT (BROWSING MENUS & BUFFERING) · ${pct}%`;
                 statusDot.style.background = '#00F0FF';
                 statusDot.style.boxShadow = '0 0 10px #00F0FF';
             } else {
-                statusText.textContent = `ZONE 03: REBIRTH OF SCREENING (4K HDR CRISP STREAMING) · DEPTH: ${Math.round(progress * 100)}%`;
+                statusText.textContent = `ZONE 03: REBIRTH OF SCREENING (4K HDR CRISP STREAMING) · ${pct}%`;
                 statusDot.style.background = '#FF0077';
                 statusDot.style.boxShadow = '0 0 14px #FF0077';
             }
@@ -1115,32 +1378,96 @@
         });
 
         /* =============================================================
-           6. Render Loop
+           6. Real-Time Director Sync via WebSocket
+           ============================================================= */
+        let ws = null;
+        function connectPortalWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.host}`;
+            try {
+                ws = new WebSocket(wsUrl);
+                ws.onopen = () => {
+                    document.getElementById('director-status-text').textContent = 'DIRECTOR SYNC ACTIVE';
+                    document.getElementById('director-status-pill').style.borderColor = 'var(--cyan)';
+                };
+                ws.onmessage = (event) => {
+                    try {
+                        const msg = JSON.parse(event.data);
+                        if (msg.type === 'SCENE_CHANGE') {
+                            applyDirectorPulse(msg.data.sceneId);
+                        } else if (msg.type === 'STAGE_CONTROL' && msg.data.action === 'blackout') {
+                            flashBlackout();
+                        }
+                    } catch (e) {}
+                };
+                ws.onclose = () => {
+                    document.getElementById('director-status-text').textContent = 'LOCAL STANDALONE';
+                    setTimeout(connectPortalWebSocket, 5000);
+                };
+            } catch (e) {}
+        }
+        connectPortalWebSocket();
+
+        function applyDirectorPulse(sceneId) {
+            let colorHex = 0xFF0077;
+            if (sceneId === 'awards') colorHex = 0xFFB300;
+            if (sceneId === 'future') colorHex = 0x00F0FF;
+            if (sceneId === 'sonic') colorHex = 0x9333EA;
+
+            tunnelLights.forEach(l => l.color.setHex(colorHex));
+            exitArchMat.color.setHex(colorHex);
+            exitBeamMat.color.setHex(colorHex);
+        }
+
+        function flashBlackout() {
+            tunnelLights.forEach(l => l.intensity = 0.2);
+            setTimeout(() => {
+                tunnelLights.forEach(l => l.intensity = 3.5);
+            }, 3000);
+        }
+
+        /* =============================================================
+           7. Render Loop & Camera Kinematics
            ============================================================= */
         const clock = new THREE.Clock();
 
         function animate() {
             requestAnimationFrame(animate);
             const delta = clock.getDelta();
+            const elapsed = clock.getElapsedTime();
 
-            // Auto Tour mode
-            if (isAutoTour) {
-                targetZ = Math.max(-TUNNEL_LENGTH, targetZ - delta * 8.5);
-                if (targetZ <= -TUNNEL_LENGTH + 1) {
-                    isAutoTour = false;
-                    updateTourButton();
+            // 1. Camera Movement Calculations per Mode
+            if (cameraMode === 'drone') {
+                targetZ = Math.max(-TUNNEL_LENGTH, targetZ - delta * 7.5);
+                if (targetZ <= -TUNNEL_LENGTH + 1) targetZ = 0; // Seamless loop in drone tour
+
+                // Banking flight spline motion
+                camera.position.x = Math.sin(elapsed * 0.8) * 1.5;
+                camera.position.y = Math.cos(elapsed * 0.6) * 1.2;
+                camera.rotation.z = Math.sin(elapsed * 0.8) * 0.15;
+            } else if (cameraMode === 'crane') {
+                camera.position.x = 0;
+                camera.position.y = 2.8;
+                camera.rotation.z = 0;
+            } else if (cameraMode === 'floor') {
+                camera.position.x = 0;
+                camera.position.y = -TUNNEL_RADIUS + 0.9;
+                camera.rotation.z = 0;
+            } else {
+                // Walker mode: eye-level spectator with walking bobbing
+                camera.position.x = 0;
+                camera.rotation.z = 0;
+                const walkSpeed = Math.abs(targetZ - currentZ);
+                if (walkSpeed > 0.04) {
+                    camera.position.y = Math.sin(elapsed * 7) * 0.06;
+                } else {
+                    camera.position.y = 0;
                 }
             }
 
-            // Smooth camera travel
+            // Smooth camera Z interpolation
             currentZ += (targetZ - currentZ) * 0.08;
             camera.position.z = currentZ;
-
-            // Head bobbing motion during forward walk
-            const walkSpeed = Math.abs(targetZ - currentZ);
-            if (walkSpeed > 0.04) {
-                camera.position.y = Math.sin(clock.getElapsedTime() * 7) * 0.05;
-            }
 
             camera.rotation.y = -mouseLook.x;
             camera.rotation.x = mouseLook.y;
@@ -1148,16 +1475,17 @@
             const progressRatio = Math.min(1.0, Math.max(0.0, -currentZ / TUNNEL_LENGTH));
             updateDepthState(progressRatio);
 
-            // Rotate exit arches & subtle particle drift
+            // 2. Rotate exit arches, beams and god rays
             exitArch.rotation.z += 0.008;
             exitBeam.rotation.z -= 0.004;
+            godRays.rotation.y += 0.005;
             particles.rotation.z += 0.0006;
 
-            // Subtle spectator walking bobbing motion
+            // 3. Subtle spectator walking bobbing motion
             if (spectator1 && spectator2 && spectator3) {
-                spectator1.position.y = -TUNNEL_RADIUS + 1.95 + Math.sin(clock.getElapsedTime() * 3.5) * 0.03;
-                spectator2.position.y = -TUNNEL_RADIUS + 1.95 + Math.sin(clock.getElapsedTime() * 3.2 + 1) * 0.03;
-                spectator3.position.y = -TUNNEL_RADIUS + 1.95 + Math.sin(clock.getElapsedTime() * 3.0 + 2) * 0.02;
+                spectator1.position.y = -TUNNEL_RADIUS + 1.95 + Math.sin(elapsed * 3.5) * 0.03;
+                spectator2.position.y = -TUNNEL_RADIUS + 1.95 + Math.sin(elapsed * 3.2 + 1) * 0.03;
+                spectator3.position.y = -TUNNEL_RADIUS + 1.95 + Math.sin(elapsed * 3.0 + 2) * 0.02;
             }
 
             renderer.render(scene, camera);
