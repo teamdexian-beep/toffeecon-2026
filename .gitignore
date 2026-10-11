@@ -20,5 +20,7 @@ deck_slides.html
 # Persistent backups and temp files
 server/data/*.tmp
 server/data/snapshots/
+server/data/media/*
+!server/data/media/.gitkeep
 .system_generated/
 scratch/

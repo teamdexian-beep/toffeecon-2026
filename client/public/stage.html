@@ -1947,6 +1947,10 @@
                     } else if (msg.data.action === 'reset' || msg.data.action === 'open') {
                         document.getElementById('winnerModal').classList.remove('active');
                     }
+                } else if (msg.type === 'STAGE_AUDITION_COMMAND') {
+                    handleStageAuditionCommand(msg.action, msg.playback);
+                } else if (msg.type === 'AUDITION_TOP10_UPDATED' || msg.type === 'AUDITION_CLIP_UPLOADED' || msg.type === 'AUDITION_SUBMITTED') {
+                    refreshAuditionStageData();
                 }
             } catch (e) {
                 console.error('WS Error:', e);
@@ -2297,19 +2301,258 @@
         }
 
         /* -------------------------------------------------------------
-           7. Dynamic QR Code for Stage Right Wing
+           8. Top 10 Audition Stage Reveal & Video Sequence Player
            ------------------------------------------------------------- */
-        fetch('/api/network-ip').then(r => r.json()).then(data => {
-            const ip = data.ip || window.location.hostname;
-            const port = window.location.port ? `:${window.location.port}` : '';
-            const voteUrl = `http://${ip}${port}/vote`;
-            document.getElementById('qrUrlLabel').textContent = `${ip}${port}/vote`;
-            document.getElementById('stageQrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(voteUrl)}`;
-        }).catch(() => {
-            const voteUrl = `${window.location.protocol}//${window.location.host}/vote`;
-            document.getElementById('qrUrlLabel').textContent = `${window.location.host}/vote`;
-            document.getElementById('stageQrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(voteUrl)}`;
-        });
+        let auditionCandidates = [];
+        let auditionTop10Ids = [];
+        let auditionActiveIndex = 0;
+        let auditionTimer = null;
+        let auditionIsPlaying = false;
+
+        async function refreshAuditionStageData() {
+            try {
+                const res = await fetch('/api/booth/audition/candidates');
+                const data = await res.json();
+                if (data.success) {
+                    auditionCandidates = data.candidates || [];
+                    auditionTop10Ids = data.top10Ids || [];
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        refreshAuditionStageData();
+
+        function handleStageAuditionCommand(action, playback) {
+            const overlay = document.getElementById('auditionStageOverlay');
+            if (action === 'LAUNCH') {
+                overlay.style.display = 'flex';
+                playAuditionIntro();
+            } else if (action === 'PLAY') {
+                overlay.style.display = 'flex';
+                resumeAuditionPlayback();
+            } else if (action === 'PAUSE') {
+                pauseAuditionPlayback();
+            } else if (action === 'NEXT') {
+                if (auditionActiveIndex < auditionTop10Ids.length - 1) {
+                    renderAuditionCandidate(auditionActiveIndex + 1);
+                }
+            } else if (action === 'PREV') {
+                if (auditionActiveIndex > 0) {
+                    renderAuditionCandidate(auditionActiveIndex - 1);
+                }
+            } else if (action === 'WINNER') {
+                overlay.style.display = 'flex';
+                renderAuditionWinner();
+            } else if (action === 'RESET') {
+                overlay.style.display = 'none';
+                if (auditionTimer) clearInterval(auditionTimer);
+            }
+        }
+
+        function playAuditionIntro() {
+            const intro = document.getElementById('auditionStageIntro');
+            const main = document.getElementById('auditionStageMain');
+            const winner = document.getElementById('auditionStageWinner');
+            intro.style.display = 'flex';
+            main.style.display = 'none';
+            winner.style.display = 'none';
+
+            let count = 5;
+            document.getElementById('introCount').innerText = count;
+            const introInterval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    document.getElementById('introCount').innerText = count;
+                } else {
+                    clearInterval(introInterval);
+                    intro.style.display = 'none';
+                    main.style.display = 'flex';
+                    renderAuditionCandidate(0);
+                }
+            }, 1000);
+        }
+
+        function renderAuditionCandidate(index) {
+            auditionActiveIndex = index;
+            const candId = auditionTop10Ids[index];
+            const cand = auditionCandidates.find(c => c.id === candId) || auditionCandidates[0];
+            if (!cand) return;
+
+            // Render Lower Thirds
+            document.getElementById('stageRankPill').innerText = `TOP #${index + 1} OF 10`;
+            document.getElementById('stageScorePill').innerText = `${cand.ottScore}% OTT READINESS`;
+            document.getElementById('stageCharName').innerText = cand.characterName;
+            document.getElementById('stageRoleTitle').innerText = cand.roleTitle.toUpperCase();
+            document.getElementById('stageActorMeta').innerText = `Performer: ${cand.realName} · Genre: ${cand.genre.toUpperCase()}`;
+            document.getElementById('stageTagline').innerText = `"${cand.tagline}"`;
+            document.getElementById('stageSummary').innerText = cand.summary;
+
+            // Render Media (Video or Poster)
+            const videoElem = document.getElementById('stageCandidateVideo');
+            const posterElem = document.getElementById('stageCandidatePoster');
+
+            if (cand.videoUrl && cand.videoUrl.length > 5) {
+                videoElem.src = cand.videoUrl;
+                videoElem.style.display = 'block';
+                posterElem.style.display = 'none';
+                videoElem.play().catch(() => {});
+            } else {
+                posterElem.src = cand.portraitUrl;
+                posterElem.style.display = 'block';
+                videoElem.style.display = 'none';
+            }
+
+            // Render Top Track Pills
+            const track = document.getElementById('stageSequenceTrack');
+            track.innerHTML = '';
+            for (let i = 0; i < Math.max(10, auditionTop10Ids.length); i++) {
+                const pill = document.createElement('div');
+                pill.className = `stage-seq-dot ${i === index ? 'active' : (i < index ? 'done' : '')}`;
+                pill.innerText = `#${i + 1}`;
+                track.appendChild(pill);
+            }
+
+            // Reset 10-second autoplay timer
+            if (auditionTimer) clearInterval(auditionTimer);
+            let timeRemaining = 12; // 12 seconds per candidate
+            auditionTimer = setInterval(() => {
+                timeRemaining--;
+                if (timeRemaining <= 0) {
+                    if (auditionActiveIndex < auditionTop10Ids.length - 1) {
+                        renderAuditionCandidate(auditionActiveIndex + 1);
+                    } else {
+                        renderAuditionWinner();
+                    }
+                }
+            }, 1000);
+        }
+
+        function pauseAuditionPlayback() {
+            if (auditionTimer) clearInterval(auditionTimer);
+            const video = document.getElementById('stageCandidateVideo');
+            if (video) video.pause();
+        }
+
+        function resumeAuditionPlayback() {
+            renderAuditionCandidate(auditionActiveIndex);
+        }
+
+        function renderAuditionWinner() {
+            if (auditionTimer) clearInterval(auditionTimer);
+            const intro = document.getElementById('auditionStageIntro');
+            const main = document.getElementById('auditionStageMain');
+            const winner = document.getElementById('auditionStageWinner');
+            intro.style.display = 'none';
+            main.style.display = 'none';
+            winner.style.display = 'flex';
+
+            const winnerCand = auditionCandidates.find(c => c.id === auditionTop10Ids[0]) || auditionCandidates[0];
+            if (winnerCand) {
+                document.getElementById('winnerPoster').src = winnerCand.portraitUrl;
+                document.getElementById('winnerName').innerText = winnerCand.characterName;
+                document.getElementById('winnerScore').innerText = `${winnerCand.ottScore}% READINESS`;
+                document.getElementById('winnerTagline').innerText = `"${winnerCand.tagline}"`;
+                document.getElementById('winnerActor').innerText = `Grand Winner: ${winnerCand.realName}`;
+            }
+        }
+
+        function closeAuditionStage() {
+            document.getElementById('auditionStageOverlay').style.display = 'none';
+            if (auditionTimer) clearInterval(auditionTimer);
+        }
     </script>
+
+    <!-- Audition Stage Fullscreen Overlay Container -->
+    <div id="auditionStageOverlay" style="display: none; position: fixed; inset: 0; z-index: 9999; background: #06050C; color: #FFF; flex-direction: column; overflow: hidden; font-family: 'Plus Jakarta Sans', sans-serif;">
+        <!-- Top Stage Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 3rem; background: rgba(0, 0, 0, 0.7); border-bottom: 2px solid rgba(255, 102, 0, 0.4); backdrop-filter: blur(20px);">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="background: linear-gradient(135deg, #FF6600, #FF2A2A); font-family: 'Space Mono'; font-weight: 900; font-size: 1.3rem; padding: 6px 16px; border-radius: 8px;">TOFFEE ORIGINAL</div>
+                <div style="font-family: 'Syne'; font-size: 1.4rem; font-weight: 800; letter-spacing: 1px;">AI OTT CASTING AUDITION · TOP 10 REVEAL</div>
+            </div>
+            <div id="stageSequenceTrack" style="display: flex; gap: 8px;">
+                <!-- Dots populated dynamically -->
+            </div>
+            <button onclick="closeAuditionStage()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #FFF; padding: 6px 14px; border-radius: 6px; cursor: pointer;">✕ Close</button>
+        </div>
+
+        <!-- Mode 1: 5-Second Intro Countdown Bumper -->
+        <div id="auditionStageIntro" style="flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: radial-gradient(circle at center, rgba(255, 102, 0, 0.25) 0%, transparent 60%);">
+            <div style="font-size: 1.6rem; letter-spacing: 4px; color: #FFB800; font-family: 'Space Mono'; margin-bottom: 1rem;">GET READY FOR THE REVEAL</div>
+            <div id="introCount" style="font-size: 12rem; font-weight: 900; font-family: 'Space Mono'; color: #FFF; text-shadow: 0 0 60px #FF6600;">5</div>
+            <div style="font-size: 2.2rem; font-family: 'Syne'; font-weight: 800; margin-top: 1rem;">NEXT-GEN FACES OF BANGLADESH STREAMING</div>
+        </div>
+
+        <!-- Mode 2: Main Character Showcase & Video Player -->
+        <div id="auditionStageMain" style="flex: 1; display: none; padding: 2rem 4rem; gap: 3.5rem; align-items: center; justify-content: center;">
+            <!-- Left: Video / Poster Display Box -->
+            <div style="width: 480px; height: 680px; border-radius: 24px; overflow: hidden; position: relative; border: 3px solid #FF6600; box-shadow: 0 20px 80px rgba(255, 102, 0, 0.4); background: #000;">
+                <video id="stageCandidateVideo" style="width: 100%; height: 100%; object-fit: cover; display: none;" autoplay loop playsinline muted></video>
+                <img id="stageCandidatePoster" style="width: 100%; height: 100%; object-fit: cover;" src="" alt="Character">
+                <div style="position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.8); border: 1px solid #FF6600; color: #FF6600; font-family: 'Space Mono'; font-size: 0.8rem; font-weight: 800; padding: 6px 12px; border-radius: 6px;">4K HDR · VEO GENERATED</div>
+            </div>
+
+            <!-- Right: Broadcast Lower-Third Details -->
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 1.25rem; max-width: 750px;">
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <span id="stageRankPill" style="background: linear-gradient(135deg, #FF6600, #E04800); font-family: 'Space Mono'; font-weight: 900; font-size: 1.2rem; padding: 6px 16px; border-radius: 8px;">TOP #1 OF 10</span>
+                    <span id="stageScorePill" style="background: rgba(255, 184, 0, 0.2); border: 1px solid #FFB800; color: #FFB800; font-family: 'Space Mono'; font-weight: 800; font-size: 1.1rem; padding: 6px 14px; border-radius: 8px;">94% OTT READINESS</span>
+                </div>
+
+                <div>
+                    <h1 id="stageCharName" style="font-size: 4rem; font-family: 'Syne'; font-weight: 900; line-height: 1.1; margin-bottom: 6px; text-shadow: 0 4px 20px rgba(0,0,0,0.8);">বল্টু ভাই</h1>
+                    <div id="stageRoleTitle" style="font-size: 1.4rem; color: #FFB800; font-family: 'Space Mono'; letter-spacing: 1.5px; font-weight: 700;">OLD DHAKA UNDERGROUND DON</div>
+                    <div id="stageActorMeta" style="font-size: 1.1rem; color: rgba(255,255,255,0.6); margin-top: 4px;">Performer: তানভীর আহমেদ · Genre: THRILLER</div>
+                </div>
+
+                <div style="background: rgba(0,0,0,0.5); border-left: 6px solid #FF6600; padding: 1.25rem 1.5rem; border-radius: 12px; font-size: 1.6rem; font-weight: 600; line-height: 1.5; color: #FFF;" id="stageTagline">
+                    "শহরের প্রতিটা গলিতে আমার নিঃশ্বাসের শব্দ বাজে।"
+                </div>
+
+                <div style="font-size: 1.25rem; line-height: 1.6; color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 1.25rem; border-radius: 14px;" id="stageSummary">
+                    পুরান ঢাকার বিরিয়ানির কারবারি হলেও রাতের আঁধারে নিয়ন্ত্রণ করে সমগ্র নদীপথের চোরাচালান। ঠান্ডা মাথার কুশলী কিন্তু বন্ধুদের জন্য জানবাজ।
+                </div>
+            </div>
+        </div>
+
+        <!-- Mode 3: Grand Winner Spotlight Mode -->
+        <div id="auditionStageWinner" style="flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: radial-gradient(circle at center, rgba(255, 184, 0, 0.3) 0%, transparent 60%); padding: 2rem;">
+            <div style="font-family: 'Space Mono'; font-size: 1.4rem; color: #FFB800; letter-spacing: 3px; margin-bottom: 0.5rem;">👑 TOFFEECON 2026 AUDITION CHAMPION</div>
+            <h1 id="winnerName" style="font-size: 4.5rem; font-family: 'Syne'; font-weight: 900; color: #FFF; margin-bottom: 0.5rem;">বল্টু ভাই (Boltu Bhai)</h1>
+            <div id="winnerActor" style="font-size: 1.6rem; color: rgba(255,255,255,0.8); margin-bottom: 1.5rem;">Grand Winner: তানভীর আহমেদ</div>
+
+            <div style="width: 320px; height: 440px; border-radius: 20px; overflow: hidden; border: 4px solid #FFB800; box-shadow: 0 0 60px rgba(255, 184, 0, 0.6); margin-bottom: 1.5rem;">
+                <img id="winnerPoster" style="width: 100%; height: 100%; object-fit: cover;" src="" alt="Winner">
+            </div>
+
+            <div id="winnerScore" style="font-family: 'Space Mono'; font-size: 1.8rem; font-weight: 900; color: #FFB800; margin-bottom: 0.5rem;">94% OTT READINESS</div>
+            <div id="winnerTagline" style="font-size: 1.4rem; font-style: italic; color: #EEE; max-width: 700px;">"শহরের প্রতিটা গলিতে আমার নিঃশ্বাসের শব্দ বাজে।"</div>
+        </div>
+    </div>
+
+    <style>
+        .stage-seq-dot {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6);
+            transition: all 0.3s;
+        }
+        .stage-seq-dot.active {
+            background: #FF6600;
+            color: #FFF;
+            font-weight: 900;
+            transform: scale(1.15);
+            box-shadow: 0 0 15px #FF6600;
+        }
+        .stage-seq-dot.done {
+            background: rgba(255, 102, 0, 0.25);
+            color: #FFB800;
+        }
+    </style>
 </body>
 </html>
+

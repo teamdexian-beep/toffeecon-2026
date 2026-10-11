@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ToffeeCon 2026 - MC Presenter Remote & Teleprompter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Hind+Siliguri:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --toffee-orange: #FF6600;
+            --toffee-gold: #FFB800;
+            --dark-bg: #06060A;
+            --card-bg: rgba(20, 20, 32, 0.95);
+            --border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #FFF;
+            font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+        }
+
+        .brand-badge {
+            background: linear-gradient(135deg, var(--toffee-orange), #FF2A2A);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .status-badge {
+            background: rgba(0, 240, 255, 0.15);
+            color: #00F0FF;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 240, 255, 0.3);
+        }
+
+        /* Large Touch Buttons */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .ctrl-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            color: #FFF;
+            border-radius: 16px;
+            padding: 1.25rem 0.5rem;
+            font-size: 1.15rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+        }
+
+        .ctrl-btn:active {
+            transform: scale(0.96);
+            border-color: var(--toffee-orange);
+            background: rgba(255, 102, 0, 0.2);
+        }
+
+        .ctrl-btn.launch {
+            grid-column: span 2;
+            background: linear-gradient(135deg, #FF2A2A, #C00);
+            border-color: #FF6666;
+            color: #FFF;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 20px rgba(255, 42, 42, 0.4);
+        }
+
+        .ctrl-btn.winner {
+            grid-column: span 2;
+            background: linear-gradient(135deg, var(--toffee-gold), #D97706);
+            border-color: #FDE68A;
+            color: #000;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 20px rgba(255, 184, 0, 0.4);
+        }
+
+        /* Teleprompter Card */
+        .teleprompter-card {
+            background: var(--card-bg);
+            border: 2px solid var(--toffee-orange);
+            border-radius: 20px;
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            margin-bottom: 1rem;
+        }
+
+        .prompter-label {
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--toffee-gold);
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .character-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 0.5rem 0 0.25rem;
+            color: #FFF;
+        }
+
+        .actor-name {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.75rem;
+        }
+
+        .dialogue-bubble {
+            background: rgba(0, 0, 0, 0.4);
+            border-left: 4px solid var(--toffee-gold);
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            line-height: 1.5;
+            font-weight: 600;
+            color: #FFF;
+            margin: 0.75rem 0;
+        }
+
+        .backstory-notes {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+
+        /* Up Next Bar */
+        .up-next-bar {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .up-next-title {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+        }
+
+        .up-next-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--toffee-orange);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="brand-badge">TOFFEE</span>
+            <span style="font-weight: 700; font-size: 0.95rem;">MC Presenter Remote</span>
+        </div>
+        <div class="status-badge" id="syncStatus">STAGE CONNECTED</div>
+    </header>
+
+    <!-- Large Host Buttons -->
+    <div class="controls-grid">
+        <button class="ctrl-btn launch" onclick="sendCmd('LAUNCH')">
+            <span>🎬</span> LAUNCH TOP 10 REVEAL
+        </button>
+        <button class="ctrl-btn" onclick="sendCmd('PLAY')">
+            <span style="font-size: 1.5rem;">▶</span> PLAY SHOW
+        </button>
+        <button class="ctrl-btn" onclick="sendCmd('PAUSE')">
+            <span style="font-size: 1.5rem;">⏸</span> PAUSE
+        </button>
+        <button class="ctrl-btn" onclick="sendCmd('PREV')">
+            <span style="font-size: 1.5rem;">⏮</span> PREVIOUS
+        </button>
+        <button class="ctrl-btn" onclick="sendCmd('NEXT')">
+            <span style="font-size: 1.5rem;">⏭</span> NEXT (#<span id="nextRankNum">2</span>)
+        </button>
+        <button class="ctrl-btn winner" onclick="sendCmd('WINNER')">
+            <span>👑</span> REVEAL #1 GRAND WINNER
+        </button>
+    </div>
+
+    <!-- Live Teleprompter for MC -->
+    <div class="teleprompter-card">
+        <div>
+            <div class="prompter-label">
+                <span>🔴 NOW ON STAGE SCREEN</span>
+                <span id="prompterRank">RANK #1</span>
+            </div>
+            <div class="character-title" id="prompterCharName">বল্টু ভাই (Boltu Bhai)</div>
+            <div class="actor-name" id="prompterActorName">Performer: তানভীর আহমেদ · OTT Score: <b style="color:var(--toffee-orange)">94%</b></div>
+
+            <div class="dialogue-bubble" id="prompterDialogue">
+                "শহরের প্রতিটা গলিতে আমার নিঃশ্বাসের শব্দ বাজে।"
+            </div>
+
+            <div class="backstory-notes" id="prompterSummary">
+                পুরান ঢাকার বিরিয়ানির কারবারি হলেও রাতের আঁধারে নিয়ন্ত্রণ করে সমগ্র নদীপথের চোরাচালান। ঠান্ডা মাথার কুশলী কিন্তু বন্ধুদের জন্য জানবাজ।
+            </div>
+        </div>
+
+        <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--toffee-gold);">
+            💡 <b>Host Tip:</b> Highlight their dialogue punch and ask the audience to cheer for their OTT transformation!
+        </div>
+    </div>
+
+    <!-- Up Next Preview -->
+    <div class="up-next-bar">
+        <div>
+            <div class="up-next-title">Up Next on Big Screen:</div>
+            <div class="up-next-name" id="upNextName">মায়া সেন (Maya Sen) · Rank #2</div>
+        </div>
+        <button class="ctrl-btn" style="padding: 6px 14px; font-size: 0.85rem;" onclick="sendCmd('NEXT')">Jump ➔</button>
+    </div>
+
+    <script>
+        let candidates = [];
+        let top10Ids = [];
+        let currentIndex = 0;
+        let ws = null;
+
+        function initWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            ws = new WebSocket(`${protocol}//${window.location.host}`);
+
+            ws.onmessage = (event) => {
+                try {
+                    const msg = JSON.parse(event.data);
+                    if (msg.type === 'INIT_STATE' && msg.data?.ottAudition) {
+                        candidates = msg.data.ottAudition.candidates || [];
+                        top10Ids = msg.data.ottAudition.top10Ids || [];
+                        currentIndex = msg.data.ottAudition.stagePlayback?.activeIndex || 0;
+                        updateTeleprompter();
+                    } else if (msg.type === 'STAGE_AUDITION_COMMAND') {
+                        if (msg.playback) {
+                            currentIndex = msg.playback.activeIndex || 0;
+                            updateTeleprompter();
+                        }
+                    } else if (msg.type === 'AUDITION_TOP10_UPDATED') {
+                        top10Ids = msg.top10Ids;
+                        updateTeleprompter();
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            };
+        }
+
+        async function loadData() {
+            try {
+                const res = await fetch('/api/booth/audition/candidates');
+                const data = await res.json();
+                if (data.success) {
+                    candidates = data.candidates || [];
+                    top10Ids = data.top10Ids || [];
+                    currentIndex = data.stagePlayback?.activeIndex || 0;
+                    updateTeleprompter();
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function updateTeleprompter() {
+            const currentCandId = top10Ids[currentIndex];
+            const currentCand = candidates.find(c => c.id === currentCandId) || candidates[0];
+
+            if (currentCand) {
+                document.getElementById('prompterRank').innerText = `RANK #${currentIndex + 1} OF 10`;
+                document.getElementById('prompterCharName').innerText = currentCand.characterName;
+                document.getElementById('prompterActorName').innerHTML = `Performer: ${currentCand.realName} · OTT Score: <b style="color:var(--toffee-orange)">${currentCand.ottScore}%</b>`;
+                document.getElementById('prompterDialogue').innerText = `"${currentCand.tagline}"`;
+                document.getElementById('prompterSummary').innerText = currentCand.summary;
+            }
+
+            // Up Next
+            const nextIdx = currentIndex + 1;
+            document.getElementById('nextRankNum').innerText = nextIdx < 10 ? nextIdx + 1 : '1';
+
+            if (nextIdx < top10Ids.length) {
+                const nextCand = candidates.find(c => c.id === top10Ids[nextIdx]);
+                if (nextCand) {
+                    document.getElementById('upNextName').innerText = `${nextCand.characterName} · Rank #${nextIdx + 1}`;
+                }
+            } else {
+                document.getElementById('upNextName').innerText = `End of Sequence (Showcase Complete)`;
+            }
+        }
+
+        async function sendCmd(action) {
+            await fetch('/api/booth/audition/stage-control', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action })
+            });
+        }
+
+        window.onload = () => {
+            initWebSocket();
+            loadData();
+        };
+    </script>
+</body>
+</html>

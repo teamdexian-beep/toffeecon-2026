@@ -192,5 +192,142 @@ module.exports = function(eventStore, broadcast, aiProvider) {
         res.json({ success: true, duel: eventStore.getState().tasteDuel });
     });
 
+    // ========================================================
+    // 6. Toffee OTT AI Casting Audition & Stage Reel Engine
+    // ========================================================
+    const castingStore = require('../stores/castingStore');
+
+    // Submit new audition from Touch Kiosk
+    router.post('/audition/submit', async (req, res) => {
+        try {
+            const { characterName, speechTranscript, genre, photoBase64, realName } = req.body;
+            
+            // Run AI analysis & Veo prompt synthesis
+            const aiResult = await aiProvider.analyzeAndGenerateAudition({
+                characterName: characterName || 'অপরিচিত নায়ক',
+                speechTranscript: speechTranscript || '',
+                genre: genre || 'thriller',
+                photoBase64,
+                realName: realName || 'ToffeeCon Star'
+            });
+
+            const newCandidate = castingStore.addCandidate({
+                characterName: characterName || 'বল্টু ভাই',
+                realName: realName || 'অডিশন প্রার্থী',
+                genre: genre || 'thriller',
+                photoBase64,
+                roleTitle: aiResult.roleTitle,
+                tagline: aiResult.tagline,
+                summary: aiResult.summary,
+                ottScore: aiResult.ottScore,
+                scoreBreakdown: aiResult.scoreBreakdown,
+                prompts: aiResult.prompts
+            });
+
+            // Keep facade store in sync
+            eventStore.update(st => {
+                st.ottAudition = castingStore.getState();
+            });
+
+            // WebSocket live broadcast to Curator Panel and Displays
+            broadcast('AUDITION_SUBMITTED', {
+                candidate: newCandidate,
+                totalAuditions: castingStore.getState().totalAuditions
+            });
+
+            res.json({
+                success: true,
+                candidate: newCandidate,
+                totalAuditions: castingStore.getState().totalAuditions
+            });
+        } catch (err) {
+            console.error('[Audition Submit Error]:', err);
+            res.status(500).json({ success: false, error: err.message });
+        }
+    });
+
+    // Get all audition candidates and stage state
+    router.get('/audition/candidates', (req, res) => {
+        const ott = castingStore.getState();
+        res.json({
+            success: true,
+            totalAuditions: ott.candidates.length,
+            candidates: ott.candidates,
+            top10Ids: ott.top10Ids,
+            stagePlayback: ott.stagePlayback
+        });
+    });
+
+    // Curate / Reorder Top 10 List
+    router.post('/audition/curate', (req, res) => {
+        const { top10Ids } = req.body;
+        if (!Array.isArray(top10Ids)) {
+            return res.status(400).json({ success: false, error: 'top10Ids must be an array' });
+        }
+
+        const updatedIds = castingStore.curateTop10(top10Ids);
+        eventStore.update(st => {
+            st.ottAudition = castingStore.getState();
+        });
+
+        broadcast('AUDITION_TOP10_UPDATED', {
+            top10Ids: updatedIds,
+            candidates: castingStore.getState().candidates
+        });
+
+        res.json({ success: true, top10Ids: updatedIds });
+    });
+
+    // Upload / Associate 10s Veo video clip with a character
+    router.post('/audition/upload-clip', (req, res) => {
+        const { candidateId, videoUrl } = req.body;
+        if (!candidateId || !videoUrl) {
+            return res.status(400).json({ success: false, error: 'Missing candidateId or videoUrl' });
+        }
+
+        const updatedCandidate = castingStore.uploadClip(candidateId, videoUrl);
+        if (!updatedCandidate) {
+            return res.status(404).json({ success: false, error: 'Candidate not found' });
+        }
+
+        eventStore.update(st => {
+            st.ottAudition = castingStore.getState();
+        });
+
+        broadcast('AUDITION_CLIP_UPLOADED', {
+            candidateId,
+            videoUrl,
+            candidate: updatedCandidate
+        });
+
+        res.json({ success: true, candidate: updatedCandidate });
+    });
+
+    // Stage LED Control & MC Remote Trigger
+    router.post('/audition/stage-control', (req, res) => {
+        const { action, index, candidateId, autoPlay, masterVideoUrl } = req.body;
+        const playbackState = castingStore.updateStagePlayback({ action, index, candidateId, autoPlay, masterVideoUrl });
+
+        eventStore.update(st => {
+            st.ottAudition = castingStore.getState();
+        });
+
+        broadcast('STAGE_AUDITION_COMMAND', {
+            action,
+            playback: playbackState
+        });
+
+        res.json({ success: true, playback: playbackState });
+    });
+
+    // Get current audition & stage state
+    router.get('/audition/state', (req, res) => {
+        res.json({
+            success: true,
+            ottAudition: castingStore.getState()
+        });
+    });
+
     return router;
 };
+

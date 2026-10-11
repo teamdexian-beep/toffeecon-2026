@@ -29,12 +29,18 @@ app.use(sanitizeBody);
 // Serve static assets from client/public (without auto-shadowing landing.html)
 app.use(express.static(path.join(__dirname, '../client/public'), { index: false }));
 
-// WebSocket Broadcast Helper
-function broadcast(type, data) {
+// Serve local media uploads (posters & video clips)
+app.use('/api/media', express.static(path.join(__dirname, 'data/media')));
+
+// WebSocket Channel & Room Broadcast Helper
+function broadcast(type, data, room = null) {
     const payload = JSON.stringify({ type, data });
     wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
-            client.send(payload);
+            // If room targeted, send to matching room or wildcard subscribers
+            if (!room || !client.room || client.room === room || client.room === 'all') {
+                client.send(payload);
+            }
         }
     });
 }
@@ -96,10 +102,25 @@ app.get('/booth/universe', (req, res) => res.sendFile(path.join(clientPublic, 'u
 app.get('/booth/universe-wall', (req, res) => res.sendFile(path.join(clientPublic, 'universe-wall.html')));
 app.get('/booth/taste-duel', (req, res) => res.sendFile(path.join(clientPublic, 'taste-duel.html')));
 
+// Toffee OTT AI Casting Audition Activations
+app.get('/booth/audition', (req, res) => res.sendFile(path.join(clientPublic, 'audition-booth.html')));
+app.get('/audition', (req, res) => res.sendFile(path.join(clientPublic, 'audition-booth.html')));
+app.get('/casting', (req, res) => res.sendFile(path.join(clientPublic, 'casting-curator.html')));
+app.get('/curator', (req, res) => res.sendFile(path.join(clientPublic, 'casting-curator.html')));
+app.get('/presenter', (req, res) => res.sendFile(path.join(clientPublic, 'presenter-remote.html')));
+app.get('/mc', (req, res) => res.sendFile(path.join(clientPublic, 'presenter-remote.html')));
+
+// Role-Based Architecture Aliases (EOS 2.0)
+app.get('/attendee/audition', (req, res) => res.sendFile(path.join(clientPublic, 'audition-booth.html')));
+app.get('/crew/curator', (req, res) => res.sendFile(path.join(clientPublic, 'casting-curator.html')));
+app.get('/crew/mc', (req, res) => res.sendFile(path.join(clientPublic, 'presenter-remote.html')));
+app.get('/stage/led', (req, res) => res.sendFile(path.join(clientPublic, 'stage.html')));
+
 // ==========================================
 // WebSocket Connection Lifecycle Handling
 // ==========================================
 wss.on('connection', (ws) => {
+    ws.room = 'all'; // Default room
     const currentState = eventStore.getState();
 
     // Send complete hydrated state snapshot immediately on connection
@@ -124,14 +145,17 @@ wss.on('connection', (ws) => {
                     pctB: 100 - Math.round((currentState.personalDashboard.rounds[currentState.personalDashboard.currentRoundIndex].optionA.votes / (currentState.personalDashboard.rounds[currentState.personalDashboard.currentRoundIndex].optionA.votes + currentState.personalDashboard.rounds[currentState.personalDashboard.currentRoundIndex].optionB.votes)) * 100)
                 }
             },
-            capsuleWrapped: currentState.capsuleWrapped
+            capsuleWrapped: currentState.capsuleWrapped,
+            ottAudition: currentState.ottAudition
         }
     }));
 
     ws.on('message', (raw) => {
         try {
             const parsed = JSON.parse(raw);
-            if (parsed.type === 'REGISTER_PHONE') {
+            if (parsed.type === 'SUBSCRIBE') {
+                ws.room = parsed.room || 'all';
+            } else if (parsed.type === 'REGISTER_PHONE') {
                 eventStore.update(st => {
                     st.phoneWall.activePhones[parsed.phoneId] = Date.now();
                 });

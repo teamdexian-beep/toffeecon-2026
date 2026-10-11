@@ -266,16 +266,140 @@ class AIProviderService {
         };
     }
 
-    async callExternalAIProvider({ guestPhotoBase64, genre, template }) {
-        const startTime = Date.now();
-        if (this.config.provider === 'gemini') {
-            return {
-                imageUrl: template.backdropUrl,
-                durationMs: Date.now() - startTime
-            };
+    /**
+     * Gemini & Procedural Engine for Toffee OTT AI Casting Audition
+     */
+    async analyzeAndGenerateAudition({ characterName, speechTranscript, genre = 'thriller', photoBase64, realName = 'VIP Auditionee' }) {
+        const apiKey = process.env.GEMINI_API_KEY || this.config.apiKey || '';
+        
+        // Check if we can invoke Gemini API
+        if (apiKey && apiKey.length > 10) {
+            try {
+                const prompt = `You are the Lead Casting Director & Creative Showrunner for Toffee, the #1 OTT streaming platform in Bangladesh.
+An attendee at ToffeeCon has auditioned for a Toffee Original web series.
+Character Name: "${characterName}"
+Real Performer Name: "${realName}"
+Genre: "${genre}" (options: thriller, action, comedy, romance, scifi, drama)
+Audition Pitch/Dialogue: "${speechTranscript || 'Looking for my breakout role'}"
+
+Analyze this audition and output ONLY a valid JSON object with the following structure (no markdown fences, just pure JSON):
+{
+  "roleTitle": "Creative archetypal title (in English, e.g. Old Dhaka Syndicate Enforcer, Maverick Cyber Detective, Chittagong Street Rapper, Dhaka High-Society Heist Mastermind)",
+  "tagline": "Punchy 1-line dramatic dialogue/tagline in Bengali script (e.g. শহরের প্রতিটি গলিতে আমার নাম প্রতিধ্বনিত হয়)",
+  "summary": "Compelling 2-sentence character backstory in Bengali script (highlighting their ambition, conflict, and distinct quirk)",
+  "ottScore": 88, // integer between 82 and 97
+  "scoreBreakdown": {
+    "screenPresence": 92, // integer 80-98
+    "dramaticGrit": 88, // integer 80-98
+    "dialoguePunch": 90, // integer 80-98
+    "originality": 89 // integer 80-98
+  },
+  "prompts": {
+    "portraitPrompt": "Hyper-realistic cinematic character poster for ${characterName}, 35mm film still, character in striking costume reflecting ${genre}, dramatic volumetric lighting with teal/amber rim light, atmospheric Dhaka texture, depth of field, 8k resolution --ar 9:16",
+    "fullBodyPrompt": "Full body dynamic hero character stance of ${characterName}, atmospheric cinematic environment reflecting ${genre}, high detail textile costume, confident body language, anamorphic lens flare, photorealistic 8k",
+    "veo10sPrompt": "Cinematic 10-second OTT character reveal. [Camera Move: slow dolly push-in transitioning to high-angle hero angle]. ${characterName}, in bespoke ${genre} costume, makes an intense dramatic gesture, turning collar or adjusting posture, gazing piercingly into the camera. Lighting: Moody cinematic noir with neon edge illumination and atmospheric haze. Atmospheric audio: Low bass sub-drop with environmental sound cues. 24fps 4K."
+  }
+}`;
+
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: {
+                            temperature: 0.7,
+                            responseMimeType: 'application/json'
+                        }
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const candidateText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (candidateText) {
+                        const parsed = JSON.parse(candidateText.trim());
+                        return {
+                            success: true,
+                            source: 'gemini',
+                            ...parsed
+                        };
+                    }
+                } else {
+                    console.warn('[AIProvider] Gemini HTTP error, falling back to procedural:', response.status);
+                }
+            } catch (err) {
+                console.warn('[AIProvider] Gemini API invocation error, using procedural fallback:', err.message);
+            }
         }
-        return null;
+
+        // Procedural High-Fidelity Fallback (Guarantees zero-downtime offline during the event)
+        return this.getProceduralAudition({ characterName, speechTranscript, genre, realName });
+    }
+
+    getProceduralAudition({ characterName = 'বল্টু', speechTranscript = '', genre = 'thriller', realName = 'VIP Guest' }) {
+        const archetypeMap = {
+            thriller: {
+                roleTitle: 'Old Dhaka Syndicate Enforcer',
+                tagline: 'অন্ধকার যখন নামে, তখন শুরু হয় আমার আসল খেলা।',
+                summary: 'বুড়িগঙ্গার তীর ঘেঁষে গড়ে ওঠা গোপন নেটওয়ার্কের মূল চাবিকাঠি তার হাতে। শহরের পুলিশ প্রশাসন যাকে হন্যে হয়ে খুঁজছে কিন্তু প্রতিবার সে অদৃশ্য হয়ে যায়।',
+                baseScore: 93,
+                lighting: 'Moody noir with amber streetlamp glow and atmospheric river fog'
+            },
+            action: {
+                roleTitle: 'Spec-Ops Rogue Recon Specialist',
+                tagline: 'মিশন যখন শেষ হবে, তখন কেবল আমার পায়ের ছাপ বাকি থাকবে।',
+                summary: 'কঠিন ট্রেনিংপ্রাপ্ত সাবেক সামরিক স্পেশালিস্ট, যিনি এখন ঢাকার সাইবার আন্ডারগ্রাউন্ডের সাথে এক অসম লড়াইয়ে নেমেছেন। যার লক্ষ্য কেবল সত্য উন্মোচন করা।',
+                baseScore: 91,
+                lighting: 'High-contrast cyan and crimson neon rim light with metallic highlights'
+            },
+            comedy: {
+                roleTitle: 'Dhaka Neighborhood Hustler & Matchmaker',
+                tagline: 'সমস্যা যেটাই হোক, সমাধানের একটাই নাম—আমি!',
+                summary: 'পুরো মহল্লার মানুষ যাকে ভালোবাসে কিন্তু তার ফাঁদে পড়ে নাকানি-চুবানি খায়। কথার জাদুতে চোরকেও সাধু বানিয়ে দেওয়ার অদ্ভুত ক্ষমতা তার।',
+                baseScore: 89,
+                lighting: 'Warm saturated golden hour light with vibrant street market background'
+            },
+            romance: {
+                roleTitle: 'Melancholic Metro Songwriter',
+                tagline: 'তোমার চোখের বৃষ্টিতে আমার শেষ সুর ভিজে যায়।',
+                summary: 'ঢাকা শহরের ছাদ আর বৃষ্টির রাতে হারানো ভালোবাসার খোঁজে সুর বুনে চলে। যার প্রতিটি সৃষ্টি এক অদ্ভুত বেদনাময় প্রেমের গল্প বলে।',
+                baseScore: 92,
+                lighting: 'Soft diffused blue hour illumination with warm cafe fairy lights'
+            },
+            scifi: {
+                roleTitle: 'Dhaka 2033 Quantum Grid Navigator',
+                tagline: 'ভবিষ্যৎ কেবল দেখা যায় না, তাকে নিজের হাতে বানাতে হয়।',
+                summary: 'ঢাকার ভবিষ্যৎ ডিজিটাল নেটওয়ার্কের শীর্ষ ডেটাহ্যাকার। যার নিউরাল ইন্টারফেসের ভেতর লুকিয়ে আছে গোটা শহরের ভবিষ্যৎ শক্তির চাবিকাঠি।',
+                baseScore: 95,
+                lighting: 'Deep indigo and electric violet volumetric lasers with holographic glints'
+            }
+        };
+
+        const config = archetypeMap[genre.toLowerCase()] || archetypeMap.thriller;
+        const jitter = Math.floor(Math.random() * 5);
+        const ottScore = Math.min(97, config.baseScore + jitter);
+
+        return {
+            success: true,
+            source: 'procedural_fallback',
+            roleTitle: config.roleTitle,
+            tagline: config.tagline,
+            summary: config.summary,
+            ottScore,
+            scoreBreakdown: {
+                screenPresence: Math.min(98, ottScore + Math.floor(Math.random() * 3) - 1),
+                dramaticGrit: Math.min(98, ottScore - 2 + Math.floor(Math.random() * 4)),
+                dialoguePunch: Math.min(98, ottScore + 1 + Math.floor(Math.random() * 3)),
+                originality: Math.min(98, ottScore + Math.floor(Math.random() * 2))
+            },
+            prompts: {
+                portraitPrompt: `Cinematic 8K character poster for ${characterName}, playing as ${config.roleTitle}, 35mm film still, intense penetrating gaze, ${config.lighting}, fine Dhaka textures, authentic Bengali persona, Toffee Original aesthetic, depth of field --ar 9:16`,
+                fullBodyPrompt: `Full body cinematic action hero still of ${characterName} in authentic stylized costume for ${config.roleTitle}, atmospheric set reflecting ${genre}, standing with confident posture, ${config.lighting}, 8k photorealistic`,
+                veo10sPrompt: `Cinematic 10-second OTT character reveal. [Camera Move: slow dolly push-in transitioning to high-angle hero reveal]. ${characterName}, dressed as ${config.roleTitle}, turns collar up, making an intense dramatic gaze directly into the camera lens with a subtle confident smirk. Lighting: ${config.lighting}. Atmosphere: light atmospheric mist and dust motes. Audio: deep cinematic bass pulse with ambient environmental sound. 24fps 4K.`
+            }
+        };
     }
 }
 
 module.exports = new AIProviderService();
+

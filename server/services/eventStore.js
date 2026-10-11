@@ -140,6 +140,83 @@ class EventStore {
                 guestAnswers: [],
                 friendGuesses: [],
                 duelOutcome: null
+            },
+            ottAudition: {
+                status: 'active',
+                totalAuditions: 3,
+                candidates: [
+                    {
+                        id: 'cand-1',
+                        characterName: 'বল্টু ভাই (Boltu Bhai)',
+                        realName: 'তানভীর আহমেদ',
+                        genre: 'thriller',
+                        roleTitle: 'Old Dhaka Underground Don',
+                        tagline: 'শহরের প্রতিটা গলিতে আমার নিঃশ্বাসের শব্দ বাজে।',
+                        summary: 'পুরান ঢাকার বিরিয়ানির কারবারি হলেও রাতের আঁধারে নিয়ন্ত্রণ করে সমগ্র নদীপথের চোরাচালান। ঠান্ডা মাথার কুশলী কিন্তু বন্ধুদের জন্য জানবাজ।',
+                        portraitUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80',
+                        ottScore: 94,
+                        scoreBreakdown: { screenPresence: 96, dramaticGrit: 94, dialoguePunch: 92, originality: 95 },
+                        prompts: {
+                            portraitPrompt: 'Ultra-cinematic character portrait of a rugged Bangladeshi don named Boltu Bhai, mid-30s, sharp piercing eyes, dark mustard kurta with gold chain, brooding expression, Dhaka rain backdrop, amber neon lighting, 35mm film grain, 8k --ar 9:16',
+                            fullBodyPrompt: 'Full body cinematic action shot of Boltu Bhai standing on a wooden boat in Buriganga river, atmospheric river fog, moody night, streetlights reflecting on water, looking into camera with quiet menace, photorealistic, cinematic grading',
+                            veo10sPrompt: 'Cinematic 10-second OTT character reveal. [Camera Move: slow dolly push-in transitioning to high-angle reveal]. Boltu Bhai, dressed in black silk kurta with gold buttons, turns his collar up as heavy monsoon rain pours down. He glares straight into the camera lens with a faint, lethal smirk. Volumetric amber rim lighting cutting through dense blue fog. Atmospheric audio: low bass drone, rain sound effects, 24fps 4K.'
+                        },
+                        videoUrl: 'https://assets.toffeecon.live/dubs/sample.mp4',
+                        isTop10: true,
+                        rank: 1,
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 'cand-2',
+                        characterName: 'মায়া সেন (Maya Sen)',
+                        realName: 'ইশরাত জাহান',
+                        genre: 'action',
+                        roleTitle: 'Cyber Crime Spec-Ops Agent',
+                        tagline: 'ফায়ারওয়াল ভাঙা সহজ, কিন্তু আমার নজর ফাঁকি দেওয়া অসম্ভব।',
+                        summary: 'জাতীয় ডিজিটাল সিকিউরিটি সেলের শীর্ষ গোয়েন্দা কর্মকর্তা। ডার্কওয়েবের সবচেয়ে বিপজ্জনক সিন্ডিকেটকে একাই ধাওয়া করছেন ঢাকার নিয়ন-ভেজা অলিতে গলিতে।',
+                        portraitUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80',
+                        ottScore: 91,
+                        scoreBreakdown: { screenPresence: 92, dramaticGrit: 90, dialoguePunch: 93, originality: 89 },
+                        prompts: {
+                            portraitPrompt: 'Cinematic portrait of female tactical hacker detective Maya Sen in Dhaka cyber police unit, dark tactical bomber jacket, sleek braided hair, glowing holographic reflections on her face, cool cyan and magenta neon hues, photorealistic 8k',
+                            fullBodyPrompt: 'Full body stance of Maya Sen in tactical operations room, surrounded by glowing data monitors, holster on belt, confident authoritative posture, atmospheric dust motes in light beams, 35mm anamorphic cinema lens',
+                            veo10sPrompt: 'Cinematic 10-second OTT character reveal. [Camera Move: dynamic 180-degree camera sweep]. Maya Sen holsters a tactical sidearm inside a neon-lit server room, then taps an ear communicator. She turns sharply to look into the lens, eyes narrowing with determination. Flickering blue server lights and lens flare. Audio: electric pulse and radio chirp, 24fps 4K.'
+                        },
+                        videoUrl: 'https://assets.toffeecon.live/dubs/sample.mp4',
+                        isTop10: true,
+                        rank: 2,
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 'cand-3',
+                        characterName: 'রকস্টার রনি (Rockstar Rony)',
+                        realName: 'রাকিবুল হাসান',
+                        genre: 'comedy',
+                        roleTitle: 'Chittagong Underground Rapper',
+                        tagline: 'গান আমার রক্তে, ডায়লগে ফাটিয়ে দেব পুরো ঢাকা!',
+                        summary: 'চট্টগ্রামের লোকাল গলির তুখোড় র‍্যাপার। কথা বলতে গেলে ভুল ইংরেজি কিন্তু স্টেজে উঠলে আগুনের ফুলকি। যার ড্রামা দেখার জন্য সারা মহল্লা পাগল।',
+                        portraitUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80',
+                        ottScore: 88,
+                        scoreBreakdown: { screenPresence: 89, dramaticGrit: 84, dialoguePunch: 95, originality: 86 },
+                        prompts: {
+                            portraitPrompt: 'Vibrant expressive portrait of energetic Bengali street rapper Rony, oversized retro vintage shades, quirky smile, colourful street graffiti wall background, golden hour rim light, high fashion editorial style, 8k',
+                            fullBodyPrompt: 'Full body high energy pose of street musician Rony holding a vintage microphone on a Dhaka rooftop, sunset skyline behind, vibrant casual streetwear, cinematic depth of field',
+                            veo10sPrompt: 'Cinematic 10-second OTT character reveal. [Camera Move: quick snap-zoom into low-angle hero shot]. Rockstar Rony points his retro mic at the camera, spins around with charismatic street energy, and drops his sunglasses to wink into the lens. Golden sunset flare and rooftop breeze blowing. Audio: punchy beat drop and crowd cheer, 24fps 4K.'
+                        },
+                        videoUrl: 'https://assets.toffeecon.live/dubs/sample.mp4',
+                        isTop10: true,
+                        rank: 3,
+                        createdAt: new Date().toISOString()
+                    }
+                ],
+                top10Ids: ['cand-1', 'cand-2', 'cand-3'],
+                stagePlayback: {
+                    status: 'idle', // 'idle', 'intro', 'playing', 'paused', 'winner'
+                    activeIndex: 0,
+                    currentCandidateId: 'cand-1',
+                    autoPlay: true,
+                    masterVideoUrl: null
+                }
             }
         };
     }

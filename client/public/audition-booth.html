@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Toffee OTT AI Casting Audition Kiosk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        :root {
+            --toffee-orange: #FF6600;
+            --toffee-red: #FF2A2A;
+            --toffee-gold: #FFB800;
+            --neon-cyan: #00F0FF;
+            --neon-purple: #A855F7;
+            --dark-bg: #07070C;
+            --panel-bg: rgba(18, 18, 28, 0.85);
+            --border-glow: rgba(255, 102, 0, 0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #FFFFFF;
+            font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(255, 102, 0, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.12) 0%, transparent 40%),
+                linear-gradient(to bottom, #090912 0%, #050508 100%);
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 2rem;
+            background: rgba(10, 10, 18, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            z-index: 50;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-badge {
+            background: linear-gradient(135deg, var(--toffee-orange), var(--toffee-red));
+            color: #FFF;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.5);
+        }
+
+        .brand-tag {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .screen-indicators {
+            display: flex;
+            gap: 8px;
+        }
+
+        .step-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .step-dot.active {
+            background: var(--toffee-orange);
+            box-shadow: 0 0 10px var(--toffee-orange);
+            transform: scale(1.3);
+        }
+
+        /* Main Screen Container */
+        .kiosk-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .screen-view {
+            display: none;
+            width: 100%;
+            max-width: 900px;
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .screen-view.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Glass Cards */
+        .glass-panel {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2.5rem;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            text-align: center;
+        }
+
+        h1.title {
+            font-size: 2.6rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, #FFFFFF 30%, #FFB800 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            font-size: 1.15rem;
+            color: rgba(255, 255, 255, 0.75);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* Buttons */
+        .glow-btn {
+            background: linear-gradient(135deg, var(--toffee-orange), #E04800);
+            color: white;
+            border: none;
+            padding: 1.1rem 2.8rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(255, 102, 0, 0.45);
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .glow-btn:active {
+            transform: scale(0.97);
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.6);
+        }
+
+        .glow-btn.secondary {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: none;
+            color: #DDD;
+        }
+
+        /* Inputs */
+        .custom-input {
+            width: 100%;
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.45);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 1.1rem 1.5rem;
+            color: #FFF;
+            font-size: 1.3rem;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.25s ease;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .custom-input:focus {
+            border-color: var(--toffee-orange);
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.35);
+        }
+
+        /* Genre Grid */
+        .genre-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto 2rem;
+        }
+
+        .genre-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .genre-card.selected {
+            background: rgba(255, 102, 0, 0.2);
+            border-color: var(--toffee-orange);
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .genre-icon { font-size: 1.8rem; }
+        .genre-title { font-weight: 700; font-size: 0.95rem; }
+        .genre-sub { font-size: 0.75rem; color: rgba(255, 255, 255, 0.5); }
+
+        /* Microphone & Audio Recording */
+        .mic-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 1.5rem 0;
+        }
+
+        .mic-circle {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--toffee-red) 0%, #A00000 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 35px rgba(255, 42, 42, 0.5);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .mic-circle.recording {
+            animation: pulseRecord 1.2s infinite alternate;
+        }
+
+        @keyframes pulseRecord {
+            from { transform: scale(1); box-shadow: 0 0 25px rgba(255, 42, 42, 0.4); }
+            to { transform: scale(1.12); box-shadow: 0 0 50px rgba(255, 42, 42, 0.85); }
+        }
+
+        .mic-waves {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            height: 40px;
+            margin: 1.5rem 0;
+        }
+
+        .wave-bar {
+            width: 6px;
+            height: 10px;
+            background: var(--toffee-orange);
+            border-radius: 3px;
+            transition: height 0.15s ease;
+        }
+
+        /* Camera Box */
+        .camera-container {
+            width: 100%;
+            max-width: 440px;
+            height: 440px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            background: #000;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        }
+
+        #cameraVideo, #photoCanvas, #snapshotImg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .flash-overlay {
+            position: absolute;
+            inset: 0;
+            background: #FFF;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .countdown-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            font-weight: 900;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--toffee-gold);
+            text-shadow: 0 0 30px rgba(255, 184, 0, 0.8);
+            background: rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Poster Preview Card (Screen 5 & 7) */
+        .poster-card {
+            width: 320px;
+            height: 480px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            background: #111;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(255, 102, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 0 auto 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1.5rem;
+            text-align: left;
+        }
+
+        .poster-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: contrast(1.1) brightness(0.95);
+        }
+
+        .poster-vignette {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.2) 100%);
+        }
+
+        .poster-header-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--toffee-orange);
+            color: var(--toffee-orange);
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .poster-rating-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 102, 0, 0.9);
+            color: #FFF;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .poster-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .poster-name {
+            font-size: 1.6rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: #FFF;
+            margin-bottom: 4px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+
+        .poster-archetype {
+            font-size: 0.8rem;
+            color: var(--toffee-gold);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .poster-tagline {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.4;
+            font-style: italic;
+            border-left: 2px solid var(--toffee-orange);
+            padding-left: 8px;
+        }
+
+        /* Score Circle */
+        .score-display-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .radial-score {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 6px solid var(--toffee-orange);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 102, 0, 0.1);
+            box-shadow: 0 0 35px rgba(255, 102, 0, 0.35);
+        }
+
+        .radial-score .score-num {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #FFF;
+        }
+
+        .radial-score .score-lbl {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--toffee-gold);
+        }
+
+        .stat-bars {
+            flex: 1;
+            max-width: 320px;
+            text-align: left;
+        }
+
+        .stat-row {
+            margin-bottom: 10px;
+        }
+
+        .stat-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .stat-track {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--toffee-orange), var(--toffee-gold));
+            border-radius: 3px;
+        }
+
+        /* QR Code Box */
+        .qr-wrapper {
+            background: #FFF;
+            padding: 16px;
+            border-radius: 16px;
+            display: inline-block;
+            margin: 1rem 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .qr-wrapper canvas {
+            display: block;
+        }
+
+        .reset-countdown {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 1rem;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(255, 102, 0, 0.2);
+            border-top-color: var(--toffee-orange);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="top-bar">
+        <div class="brand-logo">
+            <span class="brand-badge">TOFFEE</span>
+            <span class="brand-tag">AI OTT Casting Audition</span>
+        </div>
+        <div class="screen-indicators" id="screenIndicators">
+            <div class="step-dot active"></div>
+            <div class="step-dot"></div>
+            <div class="step-dot"></div>
+            <div class="step-dot"></div>
+            <div class="step-dot"></div>
+            <div class="step-dot"></div>
+            <div class="step-dot"></div>
+        </div>
+    </header>
+
+    <!-- Kiosk Content Area -->
+    <main class="kiosk-container">
+
+        <!-- SCREEN 1: Welcome / Launch Screen -->
+        <section class="screen-view active" id="screen1">
+            <div class="glass-panel">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">🎬</div>
+                <h1 class="title">OTT Casting Audition</h1>
+                <p class="subtitle">
+                    “যেমন খুশি তেমন সাজো” এখন টফি ওটিটি অরিজিনাল কাস্টিং!<br>
+                    আপনার ভেতরের চরিত্রকে রূপ দিন স্ক্রিনের সুপারস্টারে।
+                </p>
+                <div style="margin-top: 2rem;">
+                    <button class="glow-btn" onclick="goToScreen(2)">
+                        ENTER AUDITION <span>➔</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 2: Character Name & Genre -->
+        <section class="screen-view" id="screen2">
+            <div class="glass-panel">
+                <h1 class="title">আপনার Character এর নাম</h1>
+                <p class="subtitle">আপনি আজ কী চরিত্রে রূপ নিতে চান? নাম ও ধরণ নির্ধারণ করুন।</p>
+                
+                <input type="text" id="characterNameInput" class="custom-input" placeholder="যেমন: বল্টু ভাই / মায়া সেন / ডন রফিক" value="বল্টু ভাই">
+                <input type="text" id="realNameInput" class="custom-input" placeholder="আপনার নিজের নাম (অভিনয়শিল্পী)" style="max-width: 450px; font-size: 1.1rem; padding: 0.9rem;" value="তানভীর আহমেদ">
+
+                <div class="genre-grid">
+                    <div class="genre-card selected" onclick="selectGenre('thriller', this)">
+                        <div class="genre-icon">🕵️</div>
+                        <div class="genre-title">ক্রাইম থ্রিলার</div>
+                        <div class="genre-sub">Crime / Thriller</div>
+                    </div>
+                    <div class="genre-card" onclick="selectGenre('action', this)">
+                        <div class="genre-icon">💥</div>
+                        <div class="genre-title">অ্যাকশন হিরো</div>
+                        <div class="genre-sub">Action Spec-Ops</div>
+                    </div>
+                    <div class="genre-card" onclick="selectGenre('comedy', this)">
+                        <div class="genre-icon">🎭</div>
+                        <div class="genre-title">হাসির ড্রামা</div>
+                        <div class="genre-sub">Dhaka Comedy</div>
+                    </div>
+                    <div class="genre-card" onclick="selectGenre('romance', this)">
+                        <div class="genre-icon">💔</div>
+                        <div class="genre-title">রোমান্টিক</div>
+                        <div class="genre-sub">Metro Romance</div>
+                    </div>
+                    <div class="genre-card" onclick="selectGenre('scifi', this)">
+                        <div class="genre-icon">⚡</div>
+                        <div class="genre-title">ফিউচারিস্টিক</div>
+                        <div class="genre-sub">Dhaka 2033 Sci-Fi</div>
+                    </div>
+                    <div class="genre-card" onclick="selectGenre('drama', this)">
+                        <div class="genre-icon">🔥</div>
+                        <div class="genre-title">ডার্ক ভিলেন</div>
+                        <div class="genre-sub">Underground Boss</div>
+                    </div>
+                </div>
+
+                <button class="glow-btn" onclick="goToScreen(3)">
+                    NEXT: চরিত্র বর্ণনা <span>➔</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- SCREEN 3: 20-60s Voice Pitch -->
+        <section class="screen-view" id="screen3">
+            <div class="glass-panel">
+                <h1 class="title">Character সম্পর্কে বলুন</h1>
+                <p class="subtitle">
+                    মাইক্রোফোনে আপনার চরিত্রের ১-২টি ডায়লগ বা গল্প বলুন।<br>
+                    <span style="color: var(--toffee-gold); font-weight: 600;">টফি এআই আপনার ডায়লগ ও চরিত্রের ডেপথ বিশ্লেষণ করবে।</span>
+                </p>
+
+                <div class="mic-box">
+                    <div class="mic-circle" id="micButton" onclick="toggleAudioRecording()">
+                        <span style="font-size: 2.8rem;" id="micIcon">🎙️</span>
+                    </div>
+                    <div style="font-family: 'Orbitron'; font-size: 1.8rem; margin-top: 1rem; color: var(--toffee-orange);" id="timerDisplay">
+                        00:20
+                    </div>
+                    <div class="mic-waves" id="micWaves">
+                        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                    </div>
+                </div>
+
+                <textarea id="speechTranscriptInput" class="custom-input" style="height: 100px; font-size: 1.1rem; text-align: left;" placeholder="আপনার ডায়লগ বা গল্প স্বয়ংক্রিয়ভাবে এখানে উঠবে... (বা টাইপও করতে পারেন)">আমি পুরান ঢাকার রাজা, শহরের প্রতিটা গলিতে আমার হুকুম চলে। রাতের আঁধারে আমার ছায়া ছাড়া কাউকে দেখা যায় না।</textarea>
+
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button class="glow-btn secondary" onclick="goToScreen(2)">আগের পাতা</button>
+                    <button class="glow-btn" onclick="goToScreen(4)">NEXT: পোর্ট্রেট ক্যাপচার <span>➔</span></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 4: Studio Snapshot / QR Upload -->
+        <section class="screen-view" id="screen4">
+            <div class="glass-panel">
+                <h1 class="title">আপনার Portrait তুলুন</h1>
+                <p class="subtitle">ক্যামেরার দিকে চরিত্রের অভিব্যক্তি নিয়ে তাকান এবং ছবি তুলুন।</p>
+
+                <div class="camera-container" id="cameraBox">
+                    <video id="cameraVideo" autoplay playsinline muted></video>
+                    <canvas id="photoCanvas" style="display: none;"></canvas>
+                    <img id="snapshotImg" style="display: none;" alt="Portrait Preview">
+                    <div class="flash-overlay" id="flashOverlay"></div>
+                    <div class="countdown-overlay" id="countdownOverlay">3</div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem;">
+                    <button class="glow-btn" id="snapBtn" onclick="takeSnapshot()">📸 SNAP PHOTO</button>
+                    <button class="glow-btn secondary" id="retakeBtn" style="display: none;" onclick="startCamera()">🔄 RETAKE</button>
+                </div>
+
+                <p style="font-size: 0.85rem; color: rgba(255,255,255,0.4);">
+                    অথবা ফোন থেকে ছবি আপলোড করতে চান? <label style="color: var(--toffee-gold); cursor: pointer; text-decoration: underline;">
+                        ফাইল সিলেক্ট করুন <input type="file" id="fileUploadInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+                    </label>
+                </p>
+
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center;">
+                    <button class="glow-btn secondary" onclick="goToScreen(3)">আগের পাতা</button>
+                    <button class="glow-btn" id="toDossierBtn" onclick="submitAuditionForAnalysis()">AI বিশ্লেষণ শুরু করুন <span>➔</span></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 5: AI Dossier & Poster Review -->
+        <section class="screen-view" id="screen5">
+            <div class="glass-panel" style="max-width: 950px;">
+                <div id="analysisLoading">
+                    <div class="spinner"></div>
+                    <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">AI কাস্টিং ডিরেক্টর বিশ্লেষণ করছে...</h2>
+                    <p style="color: rgba(255,255,255,0.6);">Google Gemini দিয়ে ডায়লগ, লুক ও চরিত্র বিন্যাস প্রস্তুত হচ্ছে...</p>
+                </div>
+
+                <div id="dossierContent" style="display: none;">
+                    <div style="display: flex; gap: 2rem; align-items: center; justify-content: center; flex-wrap: wrap;">
+                        <!-- Movie Poster Preview -->
+                        <div class="poster-card" id="posterPreview">
+                            <img class="poster-bg" id="posterImg" src="" alt="Character Poster">
+                            <div class="poster-vignette"></div>
+                            <div class="poster-header-badge">TOFFEE ORIGINAL</div>
+                            <div class="poster-rating-badge" id="posterScoreBadge">94%</div>
+                            <div class="poster-content">
+                                <div class="poster-archetype" id="posterArchetype">OLD DHAKA DON</div>
+                                <div class="poster-name" id="posterCharName">বল্টু ভাই</div>
+                                <div class="poster-tagline" id="posterTagline">"শহরের প্রতিটা গলিতে আমার নিঃশ্বাসের শব্দ বাজে।"</div>
+                            </div>
+                        </div>
+
+                        <!-- Text Dossier -->
+                        <div style="flex: 1; min-width: 320px; text-align: left;">
+                            <span style="background: rgba(255,102,0,0.15); color: var(--toffee-orange); padding: 4px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;" id="dossierGenreTag">CRIME THRILLER</span>
+                            <h2 style="font-size: 2.2rem; margin: 0.5rem 0;" id="dossierName">বল্টু ভাই</h2>
+                            <p style="font-size: 1.1rem; color: var(--toffee-gold); margin-bottom: 1rem;" id="dossierRole">Old Dhaka Syndicate Enforcer</p>
+                            
+                            <div style="background: rgba(0,0,0,0.4); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.08);">
+                                <div style="font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-bottom: 4px;">LIFE SUMMARY / ব্যাকস্টোরি:</div>
+                                <div style="font-size: 1.05rem; line-height: 1.6;" id="dossierSummary">
+                                    পুরান ঢাকার অন্ধকার জগতের মূল চাবিকাঠি তার হাতে। ঠান্ডা মাথার কুশলী কিন্তু বন্ধুদের জন্য জানবাজ।
+                                </div>
+                            </div>
+
+                            <button class="glow-btn" style="width: 100%;" onclick="goToScreen(6)">
+                                SUBMIT FOR COMPETITION <span>★</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 6: OTT Readiness Score -->
+        <section class="screen-view" id="screen6">
+            <div class="glass-panel">
+                <div style="font-size: 3rem; margin-bottom: 0.5rem;">🏆</div>
+                <h1 class="title">OTT Readiness Score</h1>
+                <p class="subtitle">টফি ওটিটি প্লাটফর্মে অভিনয়ের জন্য আপনার চরিত্রের স্কোর কার্ড</p>
+
+                <div class="score-display-box">
+                    <div class="radial-score">
+                        <span class="score-num" id="ottScoreValue">94%</span>
+                        <span class="score-lbl">READINESS</span>
+                    </div>
+
+                    <div class="stat-bars">
+                        <div class="stat-row">
+                            <div class="stat-meta"><span>Screen Presence</span><span id="statPresence">96%</span></div>
+                            <div class="stat-track"><div class="stat-fill" id="fillPresence" style="width: 96%;"></div></div>
+                        </div>
+                        <div class="stat-row">
+                            <div class="stat-meta"><span>Dramatic Grit</span><span id="statGrit">94%</span></div>
+                            <div class="stat-track"><div class="stat-fill" id="fillGrit" style="width: 94%;"></div></div>
+                        </div>
+                        <div class="stat-row">
+                            <div class="stat-meta"><span>Dialogue Punch</span><span id="statPunch">92%</span></div>
+                            <div class="stat-track"><div class="stat-fill" id="fillPunch" style="width: 92%;"></div></div>
+                        </div>
+                        <div class="stat-row">
+                            <div class="stat-meta"><span>Character Originality</span><span id="statOrig">95%</span></div>
+                            <div class="stat-track"><div class="stat-fill" id="fillOrig" style="width: 95%;"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(255, 102, 0, 0.1); border: 1px solid var(--toffee-orange); border-radius: 12px; padding: 1rem 1.5rem; max-width: 600px; margin: 1rem auto;">
+                    <div style="font-weight: 700; color: var(--toffee-gold); margin-bottom: 4px;">🎉 CONGRATULATIONS!</div>
+                    <div style="font-size: 1rem; color: #FFF;" id="rankAnnouncement">
+                        You are ranked among the Top Candidates of ToffeeCon 2026!
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <button class="glow-btn" onclick="goToScreen(7)">
+                        পোস্টার শেয়ার ও ডাউনলোড <span>➔</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 7: Social Share QR Code, Poster Preview & Final Reset -->
+        <section class="screen-view" id="screen7">
+            <div class="glass-panel" style="max-width: 900px;">
+                <h1 class="title">পোস্টার ডাউনলোড ও শেয়ার</h1>
+                <p class="subtitle">আপনার ফোনের ক্যামেরা দিয়ে কিউআর কোড স্ক্যান করে পোস্টারটি সেভ করুন অথবা সরাসরি ডাউনলোড করুন।</p>
+
+                <div style="display: flex; gap: 2.5rem; align-items: center; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                    <!-- Visual Poster Preview on Screen 7 -->
+                    <div class="poster-card" style="margin: 0; width: 280px; height: 420px;">
+                        <img class="poster-bg" id="screen7PosterImg" src="" alt="Character Poster">
+                        <div class="poster-vignette"></div>
+                        <div class="poster-header-badge">TOFFEE ORIGINAL</div>
+                        <div class="poster-rating-badge" id="screen7ScoreBadge">94%</div>
+                        <div class="poster-content">
+                            <div class="poster-archetype" id="screen7Archetype">OLD DHAKA DON</div>
+                            <div class="poster-name" id="screen7CharName">বল্টু ভাই</div>
+                            <div class="poster-tagline" id="screen7Tagline">"শহরের প্রতিটা গলিতে আমার নিঃশ্বাসের শব্দ বাজে।"</div>
+                        </div>
+                    </div>
+
+                    <!-- QR Code & Action Controls -->
+                    <div style="display: flex; flex-direction: column; align-items: center; max-width: 320px;">
+                        <div class="qr-wrapper" id="qrContainer" style="width: 220px; height: 220px; display: flex; align-items: center; justify-content: center; background: #FFF; padding: 10px;">
+                            <canvas id="qrCanvas" style="display: none; width: 200px; height: 200px;"></canvas>
+                            <img id="qrCodeImg" style="width: 200px; height: 200px; object-fit: contain;" src="" alt="Scan QR Code">
+                        </div>
+
+                        <div style="margin-top: 0.8rem; font-size: 1rem; color: var(--toffee-gold); font-weight: 700;">
+                            Scan QR with Phone Camera!
+                        </div>
+                        <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6); margin: 4px 0 12px;">
+                            #ToffeeCon2026 #ToffeeOTT
+                        </p>
+
+                        <button class="glow-btn secondary" style="width: 100%; justify-content: center; font-size: 0.95rem; padding: 0.8rem;" onclick="downloadPosterImage()">
+                            📥 পোস্টার ডাউনলোড করুন (SAVE)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="reset-countdown" id="resetCountdownText">
+                    পরবর্তী অডিশনের জন্য স্ক্রিন রিসেট হবে ২৫ সেকেন্ডে...
+                </div>
+
+                <div style="margin-top: 1.25rem;">
+                    <button class="glow-btn" onclick="resetKiosk()">নতুন অডিশন শুরু করুন (NEW) ➔</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // State
+        let currentScreen = 1;
+        let selectedGenre = 'thriller';
+        let mediaStream = null;
+        let capturedPhotoBase64 = '';
+        let isRecording = false;
+        let recordTimer = null;
+        let recordSecondsLeft = 20;
+        let activeCandidateData = null;
+        let autoResetTimer = null;
+
+        // Screen Navigation
+        function goToScreen(screenNumber) {
+            document.querySelectorAll('.screen-view').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(`screen${screenNumber}`);
+            if (target) target.classList.add('active');
+
+            // Dots
+            const dots = document.querySelectorAll('.step-dot');
+            dots.forEach((d, i) => {
+                d.classList.toggle('active', i === screenNumber - 1);
+            });
+
+            currentScreen = screenNumber;
+
+            // Screen Specific Triggers
+            if (screenNumber === 4) {
+                startCamera();
+            } else if (mediaStream && screenNumber !== 4) {
+                stopCamera();
+            }
+
+            if (screenNumber === 7) {
+                renderShareQR();
+                startAutoResetCountdown();
+            } else if (autoResetTimer) {
+                clearInterval(autoResetTimer);
+            }
+        }
+
+        function selectGenre(genre, elem) {
+            selectedGenre = genre;
+            document.querySelectorAll('.genre-card').forEach(c => c.classList.remove('selected'));
+            elem.classList.add('selected');
+        }
+
+        // Camera Handlers
+        async function startCamera() {
+            const video = document.getElementById('cameraVideo');
+            const img = document.getElementById('snapshotImg');
+            img.style.display = 'none';
+            video.style.display = 'block';
+            document.getElementById('snapBtn').style.display = 'inline-flex';
+            document.getElementById('retakeBtn').style.display = 'none';
+
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: { ideal: 1080 }, height: { ideal: 1080 }, facingMode: 'user' },
+                    audio: false
+                });
+                video.srcObject = mediaStream;
+            } catch (err) {
+                console.warn('Camera access denied or unavailable, using high-res fallback poster.');
+            }
+        }
+
+        function stopCamera() {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+        }
+
+        function takeSnapshot() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('photoCanvas');
+            const img = document.getElementById('snapshotImg');
+            const countdown = document.getElementById('countdownOverlay');
+            const flash = document.getElementById('flashOverlay');
+
+            let count = 3;
+            countdown.style.opacity = '1';
+            countdown.innerText = count;
+
+            const countInterval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdown.innerText = count;
+                } else {
+                    clearInterval(countInterval);
+                    countdown.style.opacity = '0';
+
+                    // Flash
+                    flash.style.opacity = '1';
+                    setTimeout(() => flash.style.opacity = '0', 250);
+
+                    // Capture frame
+                    canvas.width = video.videoWidth || 640;
+                    canvas.height = video.videoHeight || 640;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                    capturedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.9);
+                    img.src = capturedPhotoBase64;
+                    img.style.display = 'block';
+                    video.style.display = 'none';
+
+                    document.getElementById('snapBtn').style.display = 'none';
+                    document.getElementById('retakeBtn').style.display = 'inline-flex';
+                }
+            }, 800);
+        }
+
+        function handleFileSelect(evt) {
+            const file = evt.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                capturedPhotoBase64 = e.target.result;
+                const img = document.getElementById('snapshotImg');
+                img.src = capturedPhotoBase64;
+                img.style.display = 'block';
+                document.getElementById('cameraVideo').style.display = 'none';
+                document.getElementById('snapBtn').style.display = 'none';
+                document.getElementById('retakeBtn').style.display = 'inline-flex';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Voice Recording Handlers
+        function toggleAudioRecording() {
+            const micBtn = document.getElementById('micButton');
+            const waves = document.getElementById('micWaves');
+            const timerElem = document.getElementById('timerDisplay');
+
+            if (!isRecording) {
+                isRecording = true;
+                micBtn.classList.add('recording');
+                recordSecondsLeft = 20;
+
+                // Speech recognition if browser allows
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    try {
+                        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                        const recog = new SpeechRecognition();
+                        recog.lang = 'bn-BD';
+                        recog.onresult = (e) => {
+                            const transcript = e.results[0][0].transcript;
+                            document.getElementById('speechTranscriptInput').value = transcript;
+                        };
+                        recog.start();
+                    } catch (e) {}
+                }
+
+                recordTimer = setInterval(() => {
+                    recordSecondsLeft--;
+                    timerElem.innerText = `00:${recordSecondsLeft < 10 ? '0' : ''}${recordSecondsLeft}`;
+                    
+                    // Wave simulation
+                    document.querySelectorAll('.wave-bar').forEach(b => {
+                        b.style.height = `${Math.floor(8 + Math.random() * 32)}px`;
+                    });
+
+                    if (recordSecondsLeft <= 0) {
+                        toggleAudioRecording();
+                    }
+                }, 1000);
+            } else {
+                isRecording = false;
+                micBtn.classList.remove('recording');
+                clearInterval(recordTimer);
+                document.querySelectorAll('.wave-bar').forEach(b => b.style.height = '10px');
+            }
+        }
+
+        // Submit Audition to Backend AI Engine
+        async function submitAuditionForAnalysis() {
+            goToScreen(5);
+            document.getElementById('analysisLoading').style.display = 'block';
+            document.getElementById('dossierContent').style.display = 'none';
+
+            const characterName = document.getElementById('characterNameInput').value.trim() || 'বল্টু ভাই';
+            const realName = document.getElementById('realNameInput').value.trim() || 'অডিশন প্রার্থী';
+            const speechTranscript = document.getElementById('speechTranscriptInput').value.trim();
+
+            const payload = {
+                characterName,
+                realName,
+                genre: selectedGenre,
+                speechTranscript,
+                photoBase64: capturedPhotoBase64
+            };
+
+            try {
+                const res = await fetch('/api/booth/audition/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success && data.candidate) {
+                    activeCandidateData = data.candidate;
+                    displayDossier(data.candidate);
+                } else {
+                    throw new Error('Analysis failed');
+                }
+            } catch (err) {
+                console.error(err);
+                // Procedural client fallback
+                displayDossier({
+                    characterName,
+                    realName,
+                    genre: selectedGenre,
+                    roleTitle: 'Old Dhaka Syndicate Enforcer',
+                    tagline: 'শহরের প্রতিটা গলিতে আমার নিঃশ্বাসের শব্দ বাজে।',
+                    summary: 'পুরান ঢাকার অন্ধকার জগতের মূল চাবিকাঠি তার হাতে। ঠান্ডা মাথার কুশলী কিন্তু বন্ধুদের জন্য জানবাজ।',
+                    portraitUrl: capturedPhotoBase64 || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80',
+                    ottScore: 94,
+                    scoreBreakdown: { screenPresence: 96, dramaticGrit: 94, dialoguePunch: 92, originality: 95 }
+                });
+            }
+        }
+
+        function displayDossier(cand) {
+            document.getElementById('analysisLoading').style.display = 'none';
+            document.getElementById('dossierContent').style.display = 'block';
+
+            // Poster Card
+            document.getElementById('posterImg').src = cand.portraitUrl;
+            document.getElementById('posterScoreBadge').innerText = `${cand.ottScore}%`;
+            document.getElementById('posterCharName').innerText = cand.characterName;
+            document.getElementById('posterArchetype').innerText = cand.roleTitle.toUpperCase();
+            document.getElementById('posterTagline').innerText = `"${cand.tagline}"`;
+
+            // Dossier Text
+            document.getElementById('dossierGenreTag').innerText = cand.genre.toUpperCase();
+            document.getElementById('dossierName').innerText = `${cand.characterName} (${cand.realName})`;
+            document.getElementById('dossierRole').innerText = cand.roleTitle;
+            document.getElementById('dossierSummary').innerText = cand.summary;
+
+            // Score Screen (Screen 6)
+            document.getElementById('ottScoreValue').innerText = `${cand.ottScore}%`;
+            if (cand.scoreBreakdown) {
+                document.getElementById('statPresence').innerText = `${cand.scoreBreakdown.screenPresence}%`;
+                document.getElementById('fillPresence').style.width = `${cand.scoreBreakdown.screenPresence}%`;
+
+                document.getElementById('statGrit').innerText = `${cand.scoreBreakdown.dramaticGrit}%`;
+                document.getElementById('fillGrit').style.width = `${cand.scoreBreakdown.dramaticGrit}%`;
+
+                document.getElementById('statPunch').innerText = `${cand.scoreBreakdown.dialoguePunch}%`;
+                document.getElementById('fillPunch').style.width = `${cand.scoreBreakdown.dialoguePunch}%`;
+
+                document.getElementById('statOrig').innerText = `${cand.scoreBreakdown.originality}%`;
+                document.getElementById('fillOrig').style.width = `${cand.scoreBreakdown.originality}%`;
+            }
+        }
+
+        // Render QR Code & Sync Screen 7 Poster
+        function renderShareQR() {
+            const cand = activeCandidateData || {
+                characterName: document.getElementById('characterNameInput').value || 'বল্টু ভাই',
+                roleTitle: 'Old Dhaka Underground Don',
+                tagline: 'শহরের প্রতিটা গলিতে আমার নিঃশ্বাসের শব্দ বাজে।',
+                ottScore: 94,
+                portraitUrl: capturedPhotoBase64 || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80'
+            };
+
+            // Sync Screen 7 Poster Card
+            document.getElementById('screen7PosterImg').src = cand.portraitUrl;
+            document.getElementById('screen7ScoreBadge').innerText = `${cand.ottScore}%`;
+            document.getElementById('screen7Archetype').innerText = (cand.roleTitle || 'TOFFEE STAR').toUpperCase();
+            document.getElementById('screen7CharName').innerText = cand.characterName;
+            document.getElementById('screen7Tagline').innerText = `"${cand.tagline}"`;
+
+            // Bulletproof QR Code Generation
+            const shareUrl = `${window.location.origin}/curator?highlight=${cand.id || 'top10'}`;
+            const qrCanvas = document.getElementById('qrCanvas');
+            const qrImg = document.getElementById('qrCodeImg');
+
+            // 1. Try online QR service first
+            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=4&data=${encodeURIComponent(shareUrl)}`;
+            qrImg.style.display = 'block';
+            qrCanvas.style.display = 'none';
+
+            // 2. Fallback to client-side QRCode library if available
+            if (window.QRCode && typeof QRCode.toCanvas === 'function') {
+                QRCode.toCanvas(qrCanvas, shareUrl, {
+                    width: 200,
+                    margin: 1,
+                    color: { dark: '#000000', light: '#FFFFFF' }
+                }, (err) => {
+                    if (!err) {
+                        qrCanvas.style.display = 'block';
+                        qrImg.style.display = 'none';
+                    }
+                });
+            }
+
+            // 3. Fallback if both fail (Offline matrix generator)
+            qrImg.onerror = () => {
+                drawOfflineQRPlaceholder(qrCanvas, shareUrl);
+                qrCanvas.style.display = 'block';
+                qrImg.style.display = 'none';
+            };
+        }
+
+        // Offline Procedural QR Pattern Fallback
+        function drawOfflineQRPlaceholder(canvas, text) {
+            canvas.width = 200;
+            canvas.height = 200;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, 200, 200);
+
+            // Draw Finder Patterns
+            function drawFinder(x, y) {
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(x, y, 48, 48);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(x + 6, y + 6, 36, 36);
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(x + 14, y + 14, 20, 20);
+            }
+            drawFinder(10, 10);
+            drawFinder(142, 10);
+            drawFinder(10, 142);
+
+            // Pseudo-random data modules seeded by string
+            ctx.fillStyle = '#000000';
+            let seed = 42;
+            for (let i = 0; i < text.length; i++) seed = (seed * 31 + text.charCodeAt(i)) % 99991;
+
+            for (let r = 0; r < 25; r++) {
+                for (let c = 0; c < 25; c++) {
+                    if ((r < 7 && c < 7) || (r < 7 && c > 17) || (r > 17 && c < 7)) continue;
+                    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+                    if (seed % 3 === 0) {
+                        ctx.fillRect(10 + c * 7.2, 10 + r * 7.2, 6, 6);
+                    }
+                }
+            }
+        }
+
+        // Direct Poster Download Action
+        function downloadPosterImage() {
+            const cand = activeCandidateData || {
+                characterName: document.getElementById('characterNameInput').value || 'বল্টু ভাই',
+                roleTitle: 'Old Dhaka Underground Don',
+                tagline: 'শহরের প্রতিটা গলিতে আমার নিঃশ্বাসের শব্দ বাজে।',
+                ottScore: 94
+            };
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 800;
+            canvas.height = 1200;
+            const ctx = canvas.getContext('2d');
+
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0, 800, 1200);
+
+                // Vignette gradient
+                const grad = ctx.createLinearGradient(0, 500, 0, 1200);
+                grad.addColorStop(0, 'rgba(0,0,0,0)');
+                grad.addColorStop(0.7, 'rgba(0,0,0,0.85)');
+                grad.addColorStop(1, 'rgba(0,0,0,0.98)');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, 800, 1200);
+
+                // Toffee Badge
+                ctx.fillStyle = '#FF6600';
+                ctx.fillRect(40, 40, 240, 44);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = 'bold 22px sans-serif';
+                ctx.fillText('TOFFEE ORIGINAL', 55, 70);
+
+                // Rating
+                ctx.fillStyle = 'rgba(255, 184, 0, 0.95)';
+                ctx.fillRect(630, 40, 130, 44);
+                ctx.fillStyle = '#000000';
+                ctx.font = 'bold 24px sans-serif';
+                ctx.fillText(`${cand.ottScore}% READINESS`, 640, 71);
+
+                // Text
+                ctx.fillStyle = '#FFB800';
+                ctx.font = 'bold 24px sans-serif';
+                ctx.fillText((cand.roleTitle || 'TOFFEE STAR').toUpperCase(), 40, 990);
+
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = 'bold 54px sans-serif';
+                ctx.fillText(cand.characterName, 40, 1055);
+
+                ctx.fillStyle = '#DDDDDD';
+                ctx.font = 'italic 26px sans-serif';
+                ctx.fillText(`"${cand.tagline}"`, 40, 1115);
+
+                // Trigger Download
+                const link = document.createElement('a');
+                link.download = `Toffee_Poster_${cand.characterName.replace(/\\s+/g, '_')}.jpg`;
+                link.href = canvas.toDataURL('image/jpeg', 0.92);
+                link.click();
+            };
+
+            const posterSrc = document.getElementById('screen7PosterImg').src || capturedPhotoBase64;
+            img.src = posterSrc;
+        }
+
+        function startAutoResetCountdown() {
+            let seconds = 25;
+            const textElem = document.getElementById('resetCountdownText');
+            autoResetTimer = setInterval(() => {
+                seconds--;
+                textElem.innerText = `পরবর্তী অডিশনের জন্য স্ক্রিন রিসেট হবে ${seconds} সেকেন্ডে...`;
+                if (seconds <= 0) {
+                    clearInterval(autoResetTimer);
+                    resetKiosk();
+                }
+            }, 1000);
+        }
+
+        function resetKiosk() {
+            if (autoResetTimer) clearInterval(autoResetTimer);
+            capturedPhotoBase64 = '';
+            activeCandidateData = null;
+            document.getElementById('characterNameInput').value = 'বল্টু ভাই';
+            document.getElementById('realNameInput').value = '';
+            document.getElementById('speechTranscriptInput').value = '';
+            goToScreen(1);
+        }
+    </script>
+</body>
+</html>
