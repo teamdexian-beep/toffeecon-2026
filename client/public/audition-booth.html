@@ -1434,8 +1434,8 @@
         async function renderThematicPosterCanvas({ baseImageUrl, photoBase64, genre, characterName, realName, seriesTitle, roleTitle, tagline, ottScore }) {
             const archetype = genreArchetypes[genre] || genreArchetypes.thriller;
             const canvas = document.createElement('canvas');
-            canvas.width = 800;
-            canvas.height = 1200;
+            canvas.width = 900;
+            canvas.height = 1600;
             const ctx = canvas.getContext('2d');
 
             // Helper to load image promise
@@ -1448,22 +1448,41 @@
                 img.src = src;
             });
 
+            // Helper to draw image cover preserving aspect ratio
+            const drawCover = (img, x, y, w, h) => {
+                const imgRatio = img.width / img.height;
+                const targetRatio = w / h;
+                let sW, sH, sX, sY;
+                if (imgRatio > targetRatio) {
+                    sH = img.height;
+                    sW = img.height * targetRatio;
+                    sX = (img.width - sW) / 2;
+                    sY = 0;
+                } else {
+                    sW = img.width;
+                    sH = img.width / targetRatio;
+                    sX = 0;
+                    sY = (img.height - sH) / 2;
+                }
+                ctx.drawImage(img, sX, sY, sW, sH, x, y, w, h);
+            };
+
             // 1. Draw Base Artwork: Neural Face Swapped Image OR Local Thematic Archetype Backdrop
             if (baseImageUrl) {
                 const baseImg = await loadImage(baseImageUrl);
                 if (baseImg) {
-                    ctx.drawImage(baseImg, 0, 0, 800, 1200);
+                    drawCover(baseImg, 0, 0, 900, 1600);
                 } else {
-                    ctx.fillStyle = '#111118';
-                    ctx.fillRect(0, 0, 800, 1200);
+                    ctx.fillStyle = '#08080C';
+                    ctx.fillRect(0, 0, 900, 1600);
                 }
             } else {
                 const bgImg = await loadImage(archetype.backdropUrl);
                 if (bgImg) {
-                    ctx.drawImage(bgImg, 0, 0, 800, 1200);
+                    drawCover(bgImg, 0, 0, 900, 1600);
                 } else {
-                    ctx.fillStyle = '#111118';
-                    ctx.fillRect(0, 0, 800, 1200);
+                    ctx.fillStyle = '#08080C';
+                    ctx.fillRect(0, 0, 900, 1600);
                 }
 
                 // Fallback composite: blend attendee portrait with soft feathered vignette
@@ -1471,12 +1490,11 @@
                     const portraitImg = await loadImage(photoBase64);
                     if (portraitImg) {
                         ctx.save();
-                        // Soft elliptical feathered mask
                         ctx.beginPath();
-                        ctx.ellipse(400, 480, 260, 320, 0, 0, Math.PI * 2);
+                        ctx.ellipse(450, 620, 300, 380, 0, 0, Math.PI * 2);
                         ctx.clip();
                         ctx.globalAlpha = 0.94;
-                        ctx.drawImage(portraitImg, 80, 160, 640, 640);
+                        drawCover(portraitImg, 150, 240, 600, 760);
                         ctx.restore();
                     }
                 }
@@ -1485,86 +1503,144 @@
             // 2. Cinematic Color Grading LUT Overlay
             ctx.save();
             if (archetype.colorGrade === 'teal-orange') {
-                const tint = ctx.createLinearGradient(0, 0, 800, 1200);
-                tint.addColorStop(0, 'rgba(0, 70, 90, 0.22)');
-                tint.addColorStop(1, 'rgba(255, 110, 0, 0.25)');
+                const tint = ctx.createLinearGradient(0, 0, 900, 1600);
+                tint.addColorStop(0, 'rgba(0, 50, 80, 0.18)');
+                tint.addColorStop(1, 'rgba(255, 110, 0, 0.20)');
                 ctx.fillStyle = tint;
                 ctx.globalCompositeOperation = 'color-burn';
-                ctx.fillRect(0, 0, 800, 1200);
+                ctx.fillRect(0, 0, 900, 1600);
             } else if (archetype.colorGrade === 'cyber-neon') {
-                const tint = ctx.createLinearGradient(0, 0, 800, 1200);
-                tint.addColorStop(0, 'rgba(0, 240, 255, 0.20)');
-                tint.addColorStop(1, 'rgba(168, 85, 247, 0.22)');
+                const tint = ctx.createLinearGradient(0, 0, 900, 1600);
+                tint.addColorStop(0, 'rgba(0, 240, 255, 0.16)');
+                tint.addColorStop(1, 'rgba(168, 85, 247, 0.18)');
                 ctx.fillStyle = tint;
                 ctx.globalCompositeOperation = 'overlay';
-                ctx.fillRect(0, 0, 800, 1200);
+                ctx.fillRect(0, 0, 900, 1600);
             } else if (archetype.colorGrade === 'noir-mono') {
-                ctx.fillStyle = 'rgba(20, 20, 25, 0.30)';
+                ctx.fillStyle = 'rgba(15, 15, 22, 0.22)';
                 ctx.globalCompositeOperation = 'luminosity';
-                ctx.fillRect(0, 0, 800, 1200);
+                ctx.fillRect(0, 0, 900, 1600);
             }
             ctx.restore();
 
-            // 3. Heavy Cinematic Bottom Vignette Gradient
-            const vignette = ctx.createLinearGradient(0, 380, 0, 1200);
-            vignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
-            vignette.addColorStop(0.45, 'rgba(5, 5, 10, 0.65)');
-            vignette.addColorStop(0.85, 'rgba(5, 5, 10, 0.95)');
-            vignette.addColorStop(1, 'rgba(5, 5, 10, 1.0)');
-            ctx.fillStyle = vignette;
-            ctx.fillRect(0, 0, 800, 1200);
+            // 3. Top Header Ambient Dark Gradient (For badge readability)
+            const topGradient = ctx.createLinearGradient(0, 0, 0, 280);
+            topGradient.addColorStop(0, 'rgba(0, 0, 0, 0.75)');
+            topGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = topGradient;
+            ctx.fillRect(0, 0, 900, 280);
 
-            // 4. Toffee Original Brand Emblem
+            // 4. Heavy Cinematic Bottom Vignette Gradient (For title and credits)
+            const bottomVignette = ctx.createLinearGradient(0, 800, 0, 1600);
+            bottomVignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
+            bottomVignette.addColorStop(0.35, 'rgba(5, 5, 10, 0.65)');
+            bottomVignette.addColorStop(0.70, 'rgba(5, 5, 10, 0.92)');
+            bottomVignette.addColorStop(1, 'rgba(4, 4, 8, 1.0)');
+            ctx.fillStyle = bottomVignette;
+            ctx.fillRect(0, 800, 900, 800);
+
+            // 5. Top Bar: Toffee Original Brand Pill
+            ctx.save();
+            ctx.shadowColor = 'rgba(255, 102, 0, 0.5)';
+            ctx.shadowBlur = 16;
             ctx.fillStyle = '#FF6600';
-            ctx.fillRect(40, 45, 230, 44);
+            ctx.beginPath();
+            ctx.roundRect(50, 50, 260, 48, 8);
+            ctx.fill();
+            ctx.restore();
+
             ctx.fillStyle = '#FFFFFF';
-            ctx.font = 'bold 22px "Orbitron", sans-serif';
-            ctx.fillText('TOFFEE ORIGINAL', 55, 75);
-
-            // 5. Series Title Badge
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
-            ctx.strokeStyle = archetype.accentColor;
-            ctx.lineWidth = 2;
-            ctx.strokeRect(40, 100, 360, 38);
-            ctx.fillRect(40, 100, 360, 38);
-            ctx.fillStyle = archetype.accentColor;
-            ctx.font = 'bold 18px "Hind Siliguri", sans-serif';
-            ctx.fillText(`🎬 ${seriesTitle || archetype.seriesTitle}`, 55, 126);
-
-            // 6. Critic Rating / Readiness Score Badge
-            ctx.fillStyle = 'rgba(255, 184, 0, 0.95)';
-            ctx.fillRect(600, 45, 160, 44);
-            ctx.fillStyle = '#000000';
             ctx.font = '900 22px "Orbitron", sans-serif';
-            ctx.fillText(`${ottScore || 94}% FIT`, 620, 75);
+            ctx.fillText('TOFFEE ORIGINAL', 70, 82);
 
-            // 7. Typography Section
-            // Archetype role
+            // 6. Series Title Badge
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.strokeStyle = archetype.accentColor;
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.roundRect(50, 112, 420, 42, 8);
+            ctx.fill();
+            ctx.stroke();
+
             ctx.fillStyle = archetype.accentColor;
-            ctx.font = 'bold 24px "Orbitron", sans-serif';
-            ctx.fillText((roleTitle || archetype.roleTitle).toUpperCase(), 45, 960);
+            ctx.font = 'bold 20px "Hind Siliguri", sans-serif';
+            ctx.fillText(`🎬 ${seriesTitle || archetype.seriesTitle}`, 68, 140);
 
-            // Character Name (Bengali)
+            // 7. Critic Rating / Casting Fit Badge
+            ctx.save();
+            ctx.shadowColor = 'rgba(255, 184, 0, 0.4)';
+            ctx.shadowBlur = 14;
+            ctx.fillStyle = 'rgba(15, 15, 20, 0.85)';
+            ctx.strokeStyle = '#FFB800';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(680, 50, 170, 48, 8);
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.fillStyle = '#FFB800';
+            ctx.font = '900 20px "Orbitron", sans-serif';
+            ctx.fillText(`★ ${ottScore || 95}% FIT`, 702, 82);
+
+            // 8. Bottom Section: Genre & Archetype Banner
+            ctx.fillStyle = archetype.accentColor;
+            ctx.font = '700 18px "Orbitron", sans-serif';
+            ctx.letterSpacing = '3px';
+            ctx.fillText(`◆ ${(genre || 'CRIME').toUpperCase()} ORIGINAL ◆`, 50, 1260);
+
+            // Archetype Role
+            ctx.fillStyle = '#E2E8F0';
+            ctx.font = '600 22px "Orbitron", sans-serif';
+            ctx.fillText((roleTitle || archetype.roleTitle).toUpperCase(), 50, 1300);
+
+            // Character Name (Bengali Hero Title)
+            ctx.save();
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+            ctx.shadowBlur = 20;
             ctx.fillStyle = '#FFFFFF';
-            ctx.font = 'bold 54px "Hind Siliguri", sans-serif';
-            ctx.fillText(characterName, 45, 1025);
+            ctx.font = 'bold 64px "Hind Siliguri", sans-serif';
+            ctx.fillText(characterName, 50, 1375);
+            ctx.restore();
 
             // Real Performer Name
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
-            ctx.font = '22px "Plus Jakarta Sans", sans-serif';
-            ctx.fillText(`Performer: ${realName || 'Audition Guest'}`, 45, 1060);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.font = '600 24px "Plus Jakarta Sans", "Hind Siliguri", sans-serif';
+            ctx.fillText(`Starring: ${realName || 'Audition Guest'} as ${characterName}`, 50, 1420);
 
-            // Tagline
-            ctx.fillStyle = '#E5E5E5';
-            ctx.font = 'italic 25px "Hind Siliguri", sans-serif';
-            ctx.fillText(`"${tagline || archetype.tagline}"`, 45, 1115);
+            // Tagline in Quotes
+            ctx.fillStyle = '#CBD5E1';
+            ctx.font = 'italic 26px "Hind Siliguri", sans-serif';
+            ctx.fillText(`"${tagline || archetype.tagline}"`, 50, 1470);
 
-            // Border Accent
+            // 9. Authentic Theatrical Billing Block (Movie Poster Credits)
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+            ctx.font = '500 11px "Plus Jakarta Sans", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('TOFFEE ORIGINAL PRODUCTIONS PRESENTS A BANGLALINK CREATIVE ENTERTAINMENT RELEASE', 450, 1525);
+            ctx.fillText('DIRECTED BY TOFFEE AI STORY LAB • CINEMATOGRAPHY BY EOS ULTRA 4K • SOUND MASTERING BY DOLBY ATMOS', 450, 1545);
+            ctx.fillText('STREAMING EXCLUSIVELY ON TOFFEE APP & TOFFEE TV • TOFFEECON 2026 SUMMIT SPECIAL', 450, 1565);
+            ctx.textAlign = 'left';
+
+            // 10. Outer Cinematic Golden / Accent Frame
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(20, 20, 860, 1560);
+
             ctx.strokeStyle = archetype.accentColor;
-            ctx.lineWidth = 6;
-            ctx.strokeRect(3, 3, 794, 1194);
+            ctx.lineWidth = 3;
+            // Sleek corner accents
+            const cornerSize = 40;
+            // Top-left
+            ctx.beginPath(); ctx.moveTo(20, 20 + cornerSize); ctx.lineTo(20, 20); ctx.lineTo(20 + cornerSize, 20); ctx.stroke();
+            // Top-right
+            ctx.beginPath(); ctx.moveTo(880 - cornerSize, 20); ctx.lineTo(880, 20); ctx.lineTo(880, 20 + cornerSize); ctx.stroke();
+            // Bottom-left
+            ctx.beginPath(); ctx.moveTo(20, 1580 - cornerSize); ctx.lineTo(20, 1580); ctx.lineTo(20 + cornerSize, 1580); ctx.stroke();
+            // Bottom-right
+            ctx.beginPath(); ctx.moveTo(880 - cornerSize, 1580); ctx.lineTo(880, 1580); ctx.lineTo(880, 1580 - cornerSize); ctx.stroke();
 
-            return canvas.toDataURL('image/jpeg', 0.92);
+            return canvas.toDataURL('image/jpeg', 0.94);
         }
 
         // Submit Audition to Backend AI Engine

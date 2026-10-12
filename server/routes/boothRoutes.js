@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const fs = require('fs');
+const path = require('path');
 const { aiRateLimiter } = require('../middleware/security');
 
 module.exports = function(eventStore, broadcast, aiProvider) {
@@ -213,12 +215,18 @@ module.exports = function(eventStore, broadcast, aiProvider) {
 
             // Optional Neural AI Cloud Face-Swap via PiAPI (Lowest cost identity preservation)
             let finalPosterBase64 = posterBase64;
-            if (aiProvider.config.apiKey && photoBase64 && aiResult.backdropUrl) {
+            if (aiProvider.config.apiKey && photoBase64) {
                 try {
-                    console.log('[BoothRoutes] Invoking PiAPI neural face swap for attendee...');
+                    console.log(`[BoothRoutes] Invoking PiAPI neural face swap for attendee with genre: ${genre || 'thriller'}...`);
+                    const archetypePath = path.join(__dirname, '../data/media/archetypes', `${(genre || 'thriller').toLowerCase()}.jpg`);
+                    let targetImage = aiResult.backdropUrl;
+                    if (fs.existsSync(archetypePath)) {
+                        targetImage = 'data:image/jpeg;base64,' + fs.readFileSync(archetypePath).toString('base64');
+                        console.log(`[BoothRoutes] Using bespoke cinematic archetype master: ${(genre || 'thriller').toLowerCase()}.jpg`);
+                    }
                     const swapRes = await aiProvider.callPiAPIFaceSwap({
                         swapImageBase64: photoBase64,
-                        targetImageUrl: aiResult.backdropUrl
+                        targetImageUrl: targetImage
                     });
                     if (swapRes.success && swapRes.imageUrl) {
                         try {
