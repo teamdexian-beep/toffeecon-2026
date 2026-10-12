@@ -464,8 +464,41 @@
   },
   "ottAudition": {
     "status": "active",
-    "totalAuditions": 18,
+    "totalAuditions": 19,
     "candidates": [
+      {
+        "id": "cand-1791842333017",
+        "characterName": "বল্টু ভাই",
+        "realName": "রাকিব আহমেদ",
+        "genre": "action",
+        "roleTitle": "Spec-Ops Rogue Recon Specialist",
+        "seriesTitle": "সাইবার স্ট্রাইক ২০২৬",
+        "englishTitle": "CYBER STRIKE: SPEC-OPS",
+        "tagline": "মিশন যখন শেষ হবে, তখন কেবল আমার পায়ের ছাপ বাকি থাকবে।",
+        "summary": "কঠিন ট্রেনিংপ্রাপ্ত সাবেক সামরিক স্পেশালিস্ট, যিনি এখন ঢাকার সাইবার আন্ডারগ্রাউন্ডের সাথে এক অসম লড়াইয়ে নেমেছেন। যার লক্ষ্য কেবল সত্য উন্মোচন করা।",
+        "thematicBackdropUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=80",
+        "accentColor": "#00F0FF",
+        "colorGrade": "cyber-neon",
+        "actingCritique": "অ্যাকশন এনার্জি: ৯৩% — ক্ষিপ্র শারীরিক ভাষা ও তীক্ষ্ণ চোখ। ব্লকব্লাস্টার অ্যাকশন থ্রিলারের জন্য উপযোগী।",
+        "portraitUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
+        "audioUrl": "",
+        "ottScore": 91,
+        "scoreBreakdown": {
+          "screenPresence": 91,
+          "dramaticGrit": 91,
+          "dialoguePunch": 94,
+          "originality": 92
+        },
+        "prompts": {
+          "portraitPrompt": "Cinematic 8K character poster for বল্টু ভাই, playing as Spec-Ops Rogue Recon Specialist in \"CYBER STRIKE: SPEC-OPS\", 35mm film still, intense penetrating gaze, High-contrast cyan and crimson neon rim light with metallic highlights, fine Dhaka textures, authentic Bengali persona, Toffee Original aesthetic, depth of field --ar 9:16",
+          "fullBodyPrompt": "Full body cinematic action hero still of বল্টু ভাই in authentic stylized costume for Spec-Ops Rogue Recon Specialist, atmospheric set reflecting action, standing with confident posture, High-contrast cyan and crimson neon rim light with metallic highlights, 8k photorealistic",
+          "veo10sPrompt": "Cinematic 10-second OTT character reveal. [Camera Move: slow dolly push-in transitioning to high-angle hero reveal]. বল্টু ভাই, dressed as Spec-Ops Rogue Recon Specialist, turns collar up, making an intense dramatic gaze directly into the camera lens with a subtle confident smirk. Lighting: High-contrast cyan and crimson neon rim light with metallic highlights. Atmosphere: light atmospheric mist and dust motes. Audio: deep cinematic bass pulse with ambient environmental sound. 24fps 4K."
+        },
+        "videoUrl": "",
+        "isTop10": true,
+        "rank": 1,
+        "createdAt": "2026-10-12T21:58:53.017Z"
+      },
       {
         "id": "cand-1791792314611",
         "characterName": "নীল চৌধুরী",
@@ -990,7 +1023,7 @@
           "veo10sPrompt": "Cinematic 10-second OTT character reveal. [Camera Move: slow dolly push-in transitioning to high-angle reveal]. Boltu Bhai, dressed in black silk kurta with gold buttons, turns his collar up as heavy monsoon rain pours down. He glares straight into the camera lens with a faint, lethal smirk. Volumetric amber rim lighting cutting through dense blue fog. Atmospheric audio: low bass drone, rain sound effects, 24fps 4K."
         },
         "videoUrl": "https://assets.toffeecon.live/dubs/sample.mp4",
-        "isTop10": true,
+        "isTop10": false,
         "rank": 1,
         "createdAt": "2026-10-11T20:16:43.550Z"
       },
@@ -1016,7 +1049,7 @@
           "veo10sPrompt": "Cinematic 10-second OTT character reveal. [Camera Move: dynamic 180-degree camera sweep]. Maya Sen holsters a tactical sidearm inside a neon-lit server room, then taps an ear communicator. She turns sharply to look into the lens, eyes narrowing with determination. Flickering blue server lights and lens flare. Audio: electric pulse and radio chirp, 24fps 4K."
         },
         "videoUrl": "https://assets.toffeecon.live/dubs/sample.mp4",
-        "isTop10": true,
+        "isTop10": false,
         "rank": 2,
         "createdAt": "2026-10-11T20:16:43.550Z"
       },
@@ -1042,15 +1075,13 @@
           "veo10sPrompt": "Cinematic 10-second OTT character reveal. [Camera Move: quick snap-zoom into low-angle hero shot]. Rockstar Rony points his retro mic at the camera, spins around with charismatic street energy, and drops his sunglasses to wink into the lens. Golden sunset flare and rooftop breeze blowing. Audio: punchy beat drop and crowd cheer, 24fps 4K."
         },
         "videoUrl": "https://assets.toffeecon.live/dubs/sample.mp4",
-        "isTop10": true,
+        "isTop10": false,
         "rank": 3,
         "createdAt": "2026-10-11T20:16:43.550Z"
       }
     ],
     "top10Ids": [
-      "cand-1",
-      "cand-2",
-      "cand-3"
+      "cand-1791842333017"
     ],
     "stagePlayback": {
       "status": "idle",
