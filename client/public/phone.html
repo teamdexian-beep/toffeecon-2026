@@ -233,17 +233,20 @@
             document.getElementById('nodeIdLabel').innerText = `NODE #${String(nodeId).padStart(2, '0')} [ROW ${nodeRow}, COL ${nodeCol}]`;
         }
 
-        // Multilingual Phrases Array (Matching Slide: Bangla, Chittagonian, Sylheti, English)
+        // Multilingual Regional Phrases Dictionary (Chittagonian, Sylheti, Dhakaiya, Noakhali & Standard Bangla)
         const phraseDictionary = [
-            { lang: 'BANGLA', text: 'খেলা হবে', sub: 'TOFFEE SPORTS HUB' },
-            { lang: 'CHITTAGONIAN', text: 'আইয়্যুন চা খাই', sub: 'REGIONAL ORIGINAL DIALECT' },
-            { lang: 'SYLHETI', text: 'কিতা খবর ভাই', sub: 'AUTHENTIC REGIONAL SCRIPT' },
-            { lang: 'ENGLISH', text: 'Toffee Live', sub: 'NEXT-GEN STREAMING' },
-            { lang: 'BANGLA', text: 'অনলাইন টিভি', sub: 'ULTRA HD BROADCAST' },
-            { lang: 'CHITTAGONIAN', text: 'হেব্বি খেলা', sub: 'SPORTS 60FPS' },
-            { lang: 'SYLHETI', text: 'শুদ্ধ বিনোদন', sub: 'ALL SCREENS CONNECTED' },
-            { lang: 'TECH SPEC', text: 'Zero Buffer', sub: 'HIGH-THROUGHPUT CDN' },
-            { lang: 'MILESTONE', text: '100M+ Users', sub: 'BANGLADESH MARKET LEADER' }
+            { lang: 'CHITTAGONIAN · চাটগাঁইয়া', text: 'আইয়্যুন চা খাই', sub: 'CHITTAGONG REGIONAL SCRIPT' },
+            { lang: 'SYLHETI · সিলেটি', text: 'কিতা খবর ভাই?', sub: 'SYLHET REGIONAL SCRIPT' },
+            { lang: 'DHAKAIYA · ঢাকাইয়া', text: 'কি খবর মামুর ব্যাটা!', sub: 'OLD DHAKA URBAN CULTURE' },
+            { lang: 'NOAKHALI · নোয়াখালী', text: 'হেরার লাই আঁর মন কান্দে', sub: 'NOAKHALI NATIVE EXPRESSION' },
+            { lang: 'CHITTAGONIAN · চাটগাঁইয়া', text: 'হেব্বি খেলা দেহার মন', sub: 'LIVE SPORTS PASSION' },
+            { lang: 'SYLHETI · সিলেটি', text: 'শুদ্ধ বিনোদন ঘরে ঘরে', sub: 'SYLHET OTT COMMUNITY' },
+            { lang: 'DHAKAIYA · ঢাকাইয়া', text: 'সিনেমার জোশ একটাই তফি!', sub: 'DHAKAIYA FILM NOSTALGIA' },
+            { lang: 'NOAKHALI · নোয়াখালী', text: 'তফির নাটক সেরা জিনিস', sub: 'NOAKHALI DRAMA FAVORITES' },
+            { lang: 'BANGLA · বাংলা', text: 'খেলা হবে', sub: 'TOFFEE SPORTS ARENA' },
+            { lang: 'BANGLA · বাংলা', text: 'অনলাইন টিভি', sub: 'ULTRA HD BROADCAST' },
+            { lang: 'TECH SPEC · প্রযুক্তি', text: 'Zero Buffer · 60fps', sub: 'HIGH-THROUGHPUT CLOUD CDN' },
+            { lang: 'MILESTONE · মাইলফলক', text: '100M+ Streamers', sub: 'BANGLADESH MARKET LEADER' }
         ];
 
         let phraseIndex = nodeId % phraseDictionary.length;
@@ -347,26 +350,56 @@
             animFrame = requestAnimationFrame(renderMasterSlice);
         }
 
-        // WebSocket Connection for Sub-Millisecond Wall Sync
+        // WebSocket Connection for Sub-Millisecond Wall Sync & Registration
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const ws = new WebSocket(`${protocol}//${window.location.host}`);
+        let ws;
 
-        ws.onmessage = (event) => {
-            const msg = JSON.parse(event.data);
-            if (msg.type === 'WALL_SYNC_TRIGGER') {
-                if (msg.data.mode === 'synced_logo') {
-                    // Activate Synchronized Canvas View
-                    copyView.classList.add('hidden');
-                    canvasView.classList.add('active');
-                    renderMasterSlice();
-                } else {
-                    // Return to Multilingual Independent Rotation
-                    canvasView.classList.remove('active');
-                    copyView.classList.remove('hidden');
-                    cancelAnimationFrame(animFrame);
+        function connectWallSocket() {
+            ws = new WebSocket(`${protocol}//${window.location.host}`);
+            ws.onopen = () => {
+                if (typeof nodeId === 'number' && !isNaN(nodeId)) {
+                    ws.send(JSON.stringify({
+                        type: 'REGISTER_PHONE',
+                        phoneId: `phone_${nodeId}`
+                    }));
                 }
-            }
-        };
+            };
+
+            ws.onmessage = (event) => {
+                try {
+                    const msg = JSON.parse(event.data);
+                    if (msg.type === 'WALL_SYNC_TRIGGER') {
+                        if (msg.data.mode === 'synced_logo') {
+                            // Activate Synchronized Canvas View
+                            copyView.classList.add('hidden');
+                            canvasView.classList.add('active');
+                            renderMasterSlice();
+                        } else {
+                            // Return to Multilingual Independent Rotation
+                            canvasView.classList.remove('active');
+                            copyView.classList.remove('hidden');
+                            cancelAnimationFrame(animFrame);
+                        }
+                    } else if (msg.type === 'WALL_MODE_CHANGE') {
+                        if (msg.data.mode === 'synced_logo') {
+                            copyView.classList.add('hidden');
+                            canvasView.classList.add('active');
+                            renderMasterSlice();
+                        } else {
+                            canvasView.classList.remove('active');
+                            copyView.classList.remove('hidden');
+                            cancelAnimationFrame(animFrame);
+                        }
+                    }
+                } catch(e) {}
+            };
+
+            ws.onclose = () => {
+                setTimeout(connectWallSocket, 2500);
+            };
+        }
+
+        connectWallSocket();
     </script>
 </body>
 </html>

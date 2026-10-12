@@ -245,16 +245,18 @@
 
     <script>
         const copyOptions = [
-            'খেলা হবে (Standard Bangla)',
             'আইয়্যুন চা খাই (Chittagonian Dialect)',
-            'কিতা খবর ভাই (Sylheti Dialect)',
-            'অনলাইন টিভি (Toffee Live)',
-            'ম্যাচ শুরু (Ultra HD)',
-            'বিয়ে বাড়ি (Bengali Drama)',
-            'গরম খবর (Live Satellite)',
-            'হেব্বি খেলা (Sports 60fps)',
-            'চাটগাঁইয়া সুর (Regional Beats)',
-            'সিলেটি নাটক (Original Drama)'
+            'কিতা খবর ভাই? (Sylheti Dialect)',
+            'কি খবর মামুর ব্যাটা! (Dhakaiya Dialect)',
+            'হেরার লাই আঁর মন কান্দে (Noakhali Dialect)',
+            'খেলা হবে (Standard Bangla)',
+            'হেব্বি খেলা দেহার মন (Chittagonian Dialect)',
+            'শুদ্ধ বিনোদন ঘরে ঘরে (Sylheti Dialect)',
+            'সিনেমার জোশ একটাই তফি! (Dhakaiya Dialect)',
+            'তফির নাটক সেরা জিনিস (Noakhali Dialect)',
+            'অনলাইন টিভি (Ultra HD Toffee)',
+            'Zero Buffer · 60fps (Cloud CDN)',
+            '100M+ Streamers (Market Leader)'
         ];
 
         const grid = document.getElementById('matrixGrid');
@@ -316,25 +318,39 @@
 
         // WebSocket Connection for Master Wall Visualizer
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const ws = new WebSocket(`${protocol}//${window.location.host}`);
+        let ws;
 
-        const overlay = document.getElementById('bigOverlay');
-        ws.onmessage = (event) => {
-            const msg = JSON.parse(event.data);
-            if (msg.type === 'WALL_SYNC_TRIGGER') {
-                if (msg.data.mode === 'synced_logo') {
-                    overlay.classList.add('active');
-                    for (let i = 0; i < 100; i++) {
-                        document.getElementById('slot-' + i).style.borderColor = '#FF6B00';
+        function connectMasterSocket() {
+            ws = new WebSocket(`${protocol}//${window.location.host}`);
+            const overlay = document.getElementById('bigOverlay');
+
+            ws.onmessage = (event) => {
+                try {
+                    const msg = JSON.parse(event.data);
+                    if (msg.type === 'WALL_SYNC_TRIGGER' || msg.type === 'WALL_MODE_CHANGE') {
+                        if (msg.data.mode === 'synced_logo') {
+                            overlay.classList.add('active');
+                            for (let i = 0; i < 100; i++) {
+                                const el = document.getElementById('slot-' + i);
+                                if (el) el.style.borderColor = '#FF6B00';
+                            }
+                        } else {
+                            overlay.classList.remove('active');
+                            for (let i = 0; i < 100; i++) {
+                                const el = document.getElementById('slot-' + i);
+                                if (el) el.style.borderColor = '#2f2154';
+                            }
+                        }
                     }
-                } else {
-                    overlay.classList.remove('active');
-                    for (let i = 0; i < 100; i++) {
-                        document.getElementById('slot-' + i).style.borderColor = '#2f2154';
-                    }
-                }
-            }
-        };
+                } catch(e) {}
+            };
+
+            ws.onclose = () => {
+                setTimeout(connectMasterSocket, 2500);
+            };
+        }
+
+        connectMasterSocket();
     </script>
 </body>
 </html>
