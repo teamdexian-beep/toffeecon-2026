@@ -13,7 +13,7 @@
     "options": {
       "red": {
         "label": "Sonic Alpha (Retro Dynamic)",
-        "votes": 313
+        "votes": 314
       },
       "blue": {
         "label": "Sonic Beta (Futuristic Pulse)",
@@ -23,7 +23,7 @@
     "status": "open"
   },
   "telemetry": {
-    "checkedInAttendees": 548,
+    "checkedInAttendees": 549,
     "totalRSVP": 600,
     "dubBoothsCompleted": 289,
     "adProposalsPrinted": 93
@@ -313,7 +313,7 @@
         "optionA": {
           "id": "drama",
           "label": "Gripping Drama & Suspense",
-          "votes": 240,
+          "votes": 241,
           "color": "#A855F7",
           "icon": "🎭"
         },

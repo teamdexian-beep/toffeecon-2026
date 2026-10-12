@@ -168,8 +168,14 @@
 </head>
 <body>
     <header>
-        <div style="display:flex; justify-content:center; margin-bottom:12px;">
-            <img src="/assets/toffeecon-logo.png" alt="ToffeeCon" style="height:32px; filter:drop-shadow(0 0 14px rgba(184,0,136,0.5));">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <a href="/portal" style="color:var(--text-dim); text-decoration:none; font-family:'Space Mono'; font-size:0.75rem; display:flex; align-items:center; gap:4px;">
+                <span>← Companion</span>
+            </a>
+            <img src="/assets/toffeecon-logo.png" alt="ToffeeCon" style="height:28px; filter:drop-shadow(0 0 14px rgba(184,0,136,0.5));">
+            <a href="/dashboard" style="color:var(--cyan); text-decoration:none; font-family:'Space Mono'; font-size:0.75rem; border:1px solid rgba(0,240,255,0.3); padding:3px 8px; border-radius:12px;">
+                This or That ↗
+            </a>
         </div>
         <div class="badge-live">● KEYNOTE ARENA INTERACTION</div>
         <h1 class="title">THE SONIC DILEMMA</h1>
@@ -316,6 +322,19 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
+                        option: option,
+                        voterToken: getVoterToken()
+                    })
+                });
+                const data = await res.json();
+                if (data.alreadyVoted) {
+                    applyLockedVote(option);
+                }
+            } catch (err) {
+                console.error('Vote submission error:', err);
+            }
+        }
+
         // ==========================================
         // WebSocket Real-Time Stage Synchronization
         // ==========================================
@@ -353,6 +372,16 @@
                             document.getElementById('cardRed').style.pointerEvents = 'none';
                             document.getElementById('cardBlue').style.pointerEvents = 'none';
                             document.getElementById('votePrompt').innerText = '🔒 Voting has been locked by showcaller.';
+                        }
+                    } else if (msg.type === 'VOTE_UPDATE') {
+                        // Live vote count sync
+                        if (msg.data && msg.data.options) {
+                            const opt = msg.data.options;
+                            const total = (opt.red ? opt.red.votes : 0) + (opt.blue ? opt.blue.votes : 0);
+                            const pmt = document.getElementById('votePrompt');
+                            if (pmt && !localStorage.getItem('tcon_user_vote')) {
+                                pmt.innerText = `Live Room Ballots: ${total} · Tap to cast your vote!`;
+                            }
                         }
                     }
                 } catch(e) {}
