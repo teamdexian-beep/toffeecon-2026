@@ -7,13 +7,31 @@
 const fs = require('fs');
 const path = require('path');
 
+// Auto-hydrate .env if not loaded by environment
+try {
+    const envPath = path.join(__dirname, '../../.env');
+    if (fs.existsSync(envPath)) {
+        const envContent = fs.readFileSync(envPath, 'utf-8');
+        envContent.split('\n').forEach(line => {
+            const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+            if (match) {
+                const key = match[1];
+                let value = (match[2] || '').trim();
+                if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
+                if (value.startsWith("'") && value.endsWith("'")) value = value.slice(1, -1);
+                if (!process.env[key]) process.env[key] = value;
+            }
+        });
+    }
+} catch(e) {}
+
 class AIProviderService {
     constructor() {
         this.config = {
-            provider: process.env.AI_IMAGE_PROVIDER || 'local_fallback', // 'gemini', 'replicate', 'fal', 'local_fallback'
-            apiKey: process.env.AI_IMAGE_API_KEY || '',
-            apiEndpoint: process.env.AI_IMAGE_ENDPOINT || '',
-            model: process.env.AI_IMAGE_MODEL || 'imagen-3.0'
+            provider: process.env.AI_IMAGE_PROVIDER || (process.env.PIAPI_KEY ? 'piapi' : 'local_fallback'),
+            apiKey: process.env.PIAPI_KEY || process.env.AI_IMAGE_API_KEY || '',
+            apiEndpoint: process.env.AI_IMAGE_ENDPOINT || 'https://api.piapi.ai/api/v1/task',
+            model: process.env.AI_IMAGE_MODEL || 'Qubico/image-toolkit'
         };
 
         // Pre-curated high-res retro-futuristic backdrop archetypes
@@ -447,6 +465,67 @@ Analyze this audition and output ONLY a valid JSON object with the following str
                 veo10sPrompt: `Cinematic 10-second OTT character reveal. [Camera Move: slow dolly push-in transitioning to high-angle hero reveal]. ${characterName}, dressed as ${config.roleTitle}, turns collar up, making an intense dramatic gaze directly into the camera lens with a subtle confident smirk. Lighting: ${config.lighting}. Atmosphere: light atmospheric mist and dust motes. Audio: deep cinematic bass pulse with ambient environmental sound. 24fps 4K.`
             }
         };
+    }
+
+    /**
+     * PiAPI Neural Face Swap Engine (Lowest Cost Identity-Preserving Cloud GenAI)
+     */
+    async callPiAPIFaceSwap({ swapImageBase64, targetImageUrl }) {
+        const apiKey = this.config.apiKey || process.env.PIAPI_KEY;
+        if (!apiKey) throw new Error('PiAPI Key not configured');
+
+        console.log('[PiAPI] Dispatching neural face-swap task...');
+        const createRes = await fetch('https://api.piapi.ai/api/v1/task', {
+            method: 'POST',
+            headers: {
+                'x-api-key': apiKey,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: 'Qubico/image-toolkit',
+                task_type: 'face-swap',
+                input: {
+                    target_image: targetImageUrl,
+                    swap_image: swapImageBase64
+                }
+            })
+        });
+
+        const createData = await createRes.json();
+        if (!createRes.ok || !createData.data?.task_id) {
+            throw new Error(`PiAPI task creation failed: ${createData.message || createRes.statusText}`);
+        }
+
+        const taskId = createData.data.task_id;
+        console.log(`[PiAPI] Task accepted: ${taskId}. Polling for completion...`);
+
+        // Poll task status (up to 15 seconds)
+        const startTime = Date.now();
+        while (Date.now() - startTime < 16000) {
+            await new Promise(r => setTimeout(r, 1500));
+            try {
+                const pollRes = await fetch(`https://api.piapi.ai/api/v1/task/${taskId}`, {
+                    headers: { 'x-api-key': apiKey }
+                });
+                const pollData = await pollRes.json();
+                const task = pollData.data;
+
+                if (task && task.status === 'completed' && task.output?.image_url) {
+                    console.log(`[PiAPI] Face swap completed in ${Date.now() - startTime}ms!`);
+                    return {
+                        success: true,
+                        imageUrl: task.output.image_url,
+                        durationMs: Date.now() - startTime
+                    };
+                } else if (task && task.status === 'failed') {
+                    throw new Error(`PiAPI task failed: ${task.error?.message || 'Unknown error'}`);
+                }
+            } catch (pollErr) {
+                console.warn('[PiAPI] Poll warning:', pollErr.message);
+            }
+        }
+
+        throw new Error('PiAPI task timeout after 16s');
     }
 }
 

@@ -211,12 +211,30 @@ module.exports = function(eventStore, broadcast, aiProvider) {
                 realName: realName || 'ToffeeCon Star'
             });
 
+            // Optional Neural AI Cloud Face-Swap via PiAPI (Lowest cost identity preservation)
+            let finalPosterBase64 = posterBase64;
+            if (aiProvider.config.apiKey && photoBase64 && aiResult.backdropUrl) {
+                try {
+                    console.log('[BoothRoutes] Invoking PiAPI neural face swap for attendee...');
+                    const swapRes = await aiProvider.callPiAPIFaceSwap({
+                        swapImageBase64: photoBase64,
+                        targetImageUrl: aiResult.backdropUrl
+                    });
+                    if (swapRes.success && swapRes.imageUrl) {
+                        finalPosterBase64 = swapRes.imageUrl;
+                        console.log('[BoothRoutes] Neural face swap successfully attached:', finalPosterBase64);
+                    }
+                } catch (swapErr) {
+                    console.warn('[BoothRoutes] PiAPI face swap failed, using composite poster fallback:', swapErr.message);
+                }
+            }
+
             const newCandidate = castingStore.addCandidate({
                 characterName: characterName || 'বল্টু ভাই',
                 realName: realName || 'অডিশন প্রার্থী',
                 genre: genre || 'thriller',
                 photoBase64,
-                posterBase64,
+                posterBase64: finalPosterBase64,
                 audioBase64,
                 roleTitle: aiResult.roleTitle,
                 seriesTitle: aiResult.seriesTitle,
