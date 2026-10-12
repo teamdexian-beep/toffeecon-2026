@@ -303,6 +303,16 @@ module.exports = function(eventStore, broadcast, aiProvider) {
         });
     });
 
+    // Get single audition candidate for public viral share page
+    router.get('/audition/candidate/:id', (req, res) => {
+        const ott = castingStore.getState();
+        const cand = ott.candidates.find(c => c.id === req.params.id);
+        if (!cand) {
+            return res.status(404).json({ success: false, error: 'Candidate not found' });
+        }
+        res.json({ success: true, candidate: cand });
+    });
+
     // Curate / Reorder Top 10 List
     router.post('/audition/curate', (req, res) => {
         const { top10Ids } = req.body;

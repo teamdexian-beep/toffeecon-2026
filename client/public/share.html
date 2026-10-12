@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Toffee OTT AI Casting Audition — Official Character Poster</title>
+    
+    <!-- OpenGraph & Social Media Meta Tags -->
+    <meta property="og:title" content="Toffee OTT AI Casting Audition 2026">
+    <meta property="og:description" content="যেমন খুশি তেমন সাজো — টফি ওটিটি অরিজিনাল কাস্টিং পোস্টার! দেখুন এবং শেয়ার করুন।">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/api/media/archetypes/drama.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --toffee-orange: #FF6600;
+            --toffee-gold: #FFB800;
+            --toffee-red: #FF2A2A;
+            --neon-cyan: #00F0FF;
+            --dark-bg: #07070C;
+            --panel-bg: rgba(18, 18, 28, 0.88);
+            --border-glow: rgba(255, 102, 0, 0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(255, 102, 0, 0.18) 0%, transparent 60%),
+                radial-gradient(circle at 10% 90%, rgba(0, 240, 255, 0.1) 0%, transparent 50%);
+            color: #FFFFFF;
+            font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem 1rem 3rem 1rem;
+        }
+
+        /* Top Brand Bar */
+        .brand-header {
+            width: 100%;
+            max-width: 520px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .brand-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            font-size: 1.05rem;
+            letter-spacing: 1px;
+            color: #FFF;
+        }
+
+        .brand-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--toffee-orange);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--toffee-orange);
+        }
+
+        .summit-pill {
+            font-size: 0.75rem;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(255, 184, 0, 0.12);
+            border: 1px solid rgba(255, 184, 0, 0.35);
+            color: var(--toffee-gold);
+            font-weight: 700;
+        }
+
+        /* Card Container */
+        .share-container {
+            width: 100%;
+            max-width: 520px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        /* Poster Display Frame */
+        .poster-frame-wrapper {
+            position: relative;
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(255, 102, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: #000;
+            aspect-ratio: 9 / 16;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .poster-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .poster-loading-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            color: #94A3B8;
+        }
+
+        .spinner {
+            width: 44px;
+            height: 44px;
+            border: 3px solid rgba(255, 255, 255, 0.15);
+            border-top-color: var(--toffee-orange);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Info Badge Bar */
+        .info-card {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 1.2rem;
+            backdrop-filter: blur(12px);
+            text-align: left;
+        }
+
+        .info-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .genre-tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 6px;
+            background: rgba(255, 102, 0, 0.18);
+            color: var(--toffee-orange);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ott-fit-tag {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--toffee-gold);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .char-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #FFF;
+            margin-bottom: 0.2rem;
+        }
+
+        .role-subtitle {
+            font-size: 0.95rem;
+            color: var(--toffee-gold);
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+        }
+
+        .tagline-quote {
+            font-size: 0.95rem;
+            color: #CBD5E1;
+            font-style: italic;
+            border-left: 2px solid var(--toffee-orange);
+            padding-left: 0.6rem;
+            margin-top: 0.5rem;
+            line-height: 1.4;
+        }
+
+        /* Virality Action Bar */
+        .action-card {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 102, 0, 0.3);
+            border-radius: 18px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .action-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #FFF;
+            text-align: center;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, #FF6600 0%, #FF2A2A 100%);
+            border: none;
+            color: #FFF;
+            padding: 1rem 1.25rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-radius: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 8px 25px rgba(255, 102, 0, 0.45);
+            transition: all 0.2s ease;
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-native-share {
+            width: 100%;
+            background: linear-gradient(135deg, #00F0FF 0%, #0070F3 100%);
+            border: none;
+            color: #07070C;
+            padding: 1rem 1.25rem;
+            font-size: 1.05rem;
+            font-weight: 800;
+            border-radius: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 8px 25px rgba(0, 240, 255, 0.35);
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .btn-native-share:active {
+            transform: scale(0.98);
+        }
+
+        /* Social Quick Grid */
+        .social-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.6rem;
+            margin-top: 0.2rem;
+        }
+
+        .social-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 0.75rem 0.5rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #FFF;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .social-btn:hover, .social-btn:active {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .social-btn.wa { border-color: rgba(37, 211, 102, 0.4); }
+        .social-btn.fb { border-color: rgba(24, 119, 242, 0.4); }
+        .social-btn.copy { border-color: rgba(255, 184, 0, 0.4); }
+
+        .social-icon {
+            font-size: 1.4rem;
+        }
+
+        /* Toast Notice */
+        .toast {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #10B981;
+            color: #FFF;
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Footer */
+        .share-footer {
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.4);
+            text-align: center;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="brand-header">
+        <div class="brand-badge">
+            <span class="brand-dot"></span>
+            TOFFEE OTT
+        </div>
+        <div class="summit-pill">TOFFEECON 2026</div>
+    </header>
+
+    <main class="share-container">
+
+        <!-- 4K Poster Frame -->
+        <div class="poster-frame-wrapper" id="posterWrapper">
+            <div class="poster-loading-placeholder" id="posterLoading">
+                <div class="spinner"></div>
+                <span>পোস্টার লোড হচ্ছে...</span>
+            </div>
+            <img class="poster-image" id="posterImg" src="" alt="Toffee OTT Poster" style="display: none;" onload="onPosterLoaded()">
+        </div>
+
+        <!-- Character & Performer Dossier -->
+        <div class="info-card" id="infoCard">
+            <div class="info-header-row">
+                <span class="genre-tag" id="genreTag">CRIME THRILLER</span>
+                <span class="ott-fit-tag">★ <span id="ottScore">95</span>% OTT FIT</span>
+            </div>
+            <h1 class="char-title" id="charName">চরিত্রের নাম</h1>
+            <div class="role-subtitle" id="roleTitle">Series Role</div>
+            <p class="tagline-quote" id="tagline">"অন্ধকার যখন নামে, তখন শুরু হয় আমার আসল খেলা।"</p>
+        </div>
+
+        <!-- Action / Instant Virality Bar -->
+        <div class="action-card">
+            <div class="action-title">
+                ⚡ আপনার পোস্টারটি ইনস্ট্যান্ট শেয়ার ও সেভ করুন
+            </div>
+
+            <!-- Native Share Button (Opens Instagram / WhatsApp / Facebook Share Sheet) -->
+            <button class="btn-native-share" id="nativeShareBtn" onclick="triggerNativeShare()">
+                <span>📲</span> ইনস্ট্যান্ট শেয়ার করুন (Stories / WhatsApp)
+            </button>
+
+            <!-- Direct Download Button -->
+            <button class="btn-primary" id="downloadBtn" onclick="downloadPoster()">
+                <span>📥</span> ফোনে সেভ করুন / Download HD
+            </button>
+
+            <!-- Quick Direct App Buttons -->
+            <div class="social-grid">
+                <a class="social-btn wa" id="waShareBtn" href="#" target="_blank" onclick="shareWhatsApp(event)">
+                    <span class="social-icon">💬</span>
+                    <span>WhatsApp</span>
+                </a>
+                <a class="social-btn fb" id="fbShareBtn" href="#" target="_blank" onclick="shareFacebook(event)">
+                    <span class="social-icon">📘</span>
+                    <span>Facebook</span>
+                </a>
+                <button class="social-btn copy" type="button" onclick="copyShareLink()">
+                    <span class="social-icon">🔗</span>
+                    <span>লিংক কপি</span>
+                </button>
+            </div>
+        </div>
+
+        <footer class="share-footer">
+            টফি ওটিটি অরিজিনাল কাস্টিং বুথ · ToffeeCon 2026<br>
+            Stream Exclusively on <strong>Toffee App & Web</strong>
+        </footer>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toastNotice">লিংক সফলভাবে কপি হয়েছে!</div>
+
+    <script>
+        let currentCandidate = null;
+        let currentPosterBlob = null;
+
+        function showToast(msg) {
+            const t = document.getElementById('toastNotice');
+            t.innerText = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        function onPosterLoaded() {
+            document.getElementById('posterLoading').style.display = 'none';
+            document.getElementById('posterImg').style.display = 'block';
+        }
+
+        async function fetchCandidate() {
+            const params = new URLSearchParams(window.location.search);
+            let candId = params.get('id') || params.get('candidateId') || params.get('highlight');
+
+            if (!candId) {
+                const pathParts = window.location.pathname.split('/');
+                candId = pathParts[pathParts.length - 1];
+            }
+
+            try {
+                // Fetch candidate data
+                let cand = null;
+                if (candId && candId !== 'share') {
+                    const res = await fetch(`/api/booth/audition/candidate/${candId}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.success && data.candidate) cand = data.candidate;
+                    }
+                }
+
+                // If not found by ID, get most recent candidate
+                if (!cand) {
+                    const allRes = await fetch('/api/booth/audition/candidates');
+                    if (allRes.ok) {
+                        const allData = await allRes.json();
+                        if (allData.candidates && allData.candidates.length > 0) {
+                            cand = allData.candidates[0];
+                        }
+                    }
+                }
+
+                if (cand) {
+                    currentCandidate = cand;
+                    renderCandidate(cand);
+                } else {
+                    document.getElementById('posterLoading').innerHTML = '<span>পোস্টার পাওয়া যায়নি।</span>';
+                }
+            } catch (err) {
+                console.error('Fetch error:', err);
+                document.getElementById('posterLoading').innerHTML = '<span>পোস্টার লোড হতে সমস্যা হয়েছে।</span>';
+            }
+        }
+
+        function renderCandidate(cand) {
+            document.getElementById('charName').innerText = cand.characterName || 'বল্টু ভাই';
+            if (cand.realName) {
+                document.getElementById('charName').innerText = `${cand.characterName} (${cand.realName})`;
+            }
+            document.getElementById('roleTitle').innerText = (cand.roleTitle || 'TOFFEE ORIGINAL STAR').toUpperCase();
+            document.getElementById('tagline').innerText = `"${cand.tagline || 'আমার লক্ষ্যে ভুল হতে পারে না।'}"`;
+            document.getElementById('genreTag').innerText = (cand.genre || 'ORIGINAL').toUpperCase();
+            document.getElementById('ottScore').innerText = cand.ottScore || 95;
+
+            const posterImg = document.getElementById('posterImg');
+            const posterSrc = cand.posterUrl || cand.portraitUrl || '/api/media/archetypes/drama.jpg';
+            posterImg.src = posterSrc;
+
+            // Pre-fetch blob for native file sharing
+            fetch(posterSrc)
+                .then(r => r.blob())
+                .then(blob => {
+                    currentPosterBlob = blob;
+                })
+                .catch(() => {});
+        }
+
+        async function triggerNativeShare() {
+            const cand = currentCandidate;
+            const title = cand ? `${cand.characterName} - Toffee OTT Audition` : 'Toffee OTT AI Casting Audition 2026';
+            const text = cand ? 
+                `🔥 আমি এখন টফি ওটিটি অরিজিনাল কাস্টিংয়ে! ${cand.characterName} চরিত্রে আমার কাস্টিং পোস্টারটি দেখুন: "${cand.tagline}" #ToffeeCon2026 #ToffeeOTT` :
+                'টফি ওটিটি অরিজিনাল কাস্টিংয়ে আমার ক্যারেক্টার পোস্টার! #ToffeeCon2026';
+            const shareUrl = window.location.href;
+
+            if (navigator.share) {
+                try {
+                    // Try sharing with image file if supported
+                    if (currentPosterBlob && navigator.canShare) {
+                        const file = new File([currentPosterBlob], `Toffee_Poster_${cand?.characterName || 'Star'}.jpg`, { type: 'image/jpeg' });
+                        if (navigator.canShare({ files: [file] })) {
+                            await navigator.share({
+                                title: title,
+                                text: text,
+                                files: [file]
+                            });
+                            showToast('শেয়ার সম্পন্ন হয়েছে!');
+                            return;
+                        }
+                    }
+
+                    // Fallback to URL/text native share
+                    await navigator.share({
+                        title: title,
+                        text: text,
+                        url: shareUrl
+                    });
+                    showToast('শেয়ার সম্পন্ন হয়েছে!');
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        copyShareLink();
+                    }
+                }
+            } else {
+                copyShareLink();
+            }
+        }
+
+        function downloadPoster() {
+            const cand = currentCandidate;
+            const imgSrc = document.getElementById('posterImg').src;
+            if (!imgSrc) return;
+
+            const a = document.createElement('a');
+            a.href = imgSrc;
+            a.download = `Toffee_OTT_Poster_${(cand?.characterName || 'Audition').replace(/\s+/g, '_')}.jpg`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast('📥 পোস্টার ডাউনলোড হচ্ছে...');
+        }
+
+        function shareWhatsApp(e) {
+            e.preventDefault();
+            const cand = currentCandidate;
+            const caption = `🔥 আমি এখন টফি ওটিটি অরিজিনাল কাস্টিংয়ে! ${cand?.characterName || ''} চরিত্রে আমার পোস্টার দেখুন: ${window.location.href} #ToffeeCon2026 #ToffeeOTT`;
+            const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(caption)}`;
+            window.open(waUrl, '_blank');
+        }
+
+        function shareFacebook(e) {
+            e.preventDefault();
+            const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+            window.open(fbUrl, '_blank');
+        }
+
+        function copyShareLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                showToast('🔗 পোস্টার লিংক কপি হয়েছে!');
+            }).catch(() => {
+                showToast('লিংক কপি করা যায়নি');
+            });
+        }
+
+        window.onload = fetchCandidate;
+    </script>
+</body>
+</html>

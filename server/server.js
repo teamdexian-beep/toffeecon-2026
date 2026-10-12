@@ -119,6 +119,8 @@ app.get('/casting', (req, res) => res.sendFile(path.join(clientPublic, 'casting-
 app.get('/curator', (req, res) => res.sendFile(path.join(clientPublic, 'casting-curator.html')));
 app.get('/presenter', (req, res) => res.sendFile(path.join(clientPublic, 'presenter-remote.html')));
 app.get('/mc', (req, res) => res.sendFile(path.join(clientPublic, 'presenter-remote.html')));
+app.get('/share', (req, res) => res.sendFile(path.join(clientPublic, 'share.html')));
+app.get('/share/:id', (req, res) => res.sendFile(path.join(clientPublic, 'share.html')));
 
 // Role-Based Architecture Aliases (EOS 2.0)
 app.get('/attendee/audition', (req, res) => res.sendFile(path.join(clientPublic, 'audition-booth.html')));

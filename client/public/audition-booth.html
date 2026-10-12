@@ -1332,8 +1332,8 @@
         <!-- SCREEN 7: Social Share QR Code, Poster Preview & Final Reset -->
         <section class="screen-view" id="screen7">
             <div class="glass-panel" style="max-width: 900px;">
-                <h1 class="title">পোস্টার ডাউনলোড ও শেয়ার</h1>
-                <p class="subtitle">আপনার ফোনের ক্যামেরা দিয়ে কিউআর কোড স্ক্যান করে পোস্টারটি সেভ করুন অথবা সরাসরি ডাউনলোড করুন।</p>
+                <h1 class="title">পোস্টার ডাউনলোড ও সোশ্যাল শেয়ার</h1>
+                <p class="subtitle">আপনার ফোনের ক্যামেরা দিয়ে কিউআর কোড স্ক্যান করে পোস্টারটি সরাসরি ফোনে সেভ করুন এবং সোশ্যাল মিডিয়ায় (WhatsApp / Instagram / Facebook) শেয়ার করুন।</p>
 
                 <div style="display: flex; gap: 2.5rem; align-items: center; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
                     <!-- Visual Poster Preview on Screen 7 -->
@@ -2412,8 +2412,8 @@
             document.getElementById('screen7CharName').innerText = cand.characterName;
             document.getElementById('screen7Tagline').innerText = `"${cand.tagline}"`;
 
-            // Bulletproof QR Code Generation
-            const shareUrl = `${window.location.origin}/curator?highlight=${cand.id || 'top10'}`;
+            // Bulletproof QR Code Generation (Attendee Viral Social Share Page)
+            const shareUrl = `${window.location.origin}/share?id=${cand.id || ''}`;
             const qrCanvas = document.getElementById('qrCanvas');
             const qrImg = document.getElementById('qrCodeImg');
 
