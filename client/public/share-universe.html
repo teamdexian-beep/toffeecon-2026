@@ -511,28 +511,64 @@
                 // Tagline
                 ctx.fillStyle = '#00F0FF';
                 ctx.font = 'bold 32px "Space Mono", monospace';
-                ctx.fillText((currentPoster.tagline || 'ENTERTAINMENT 2033').toUpperCase(), 70, 1480);
+                ctx.fillText((currentPoster.tagline || 'ENTERTAINMENT 2033').toUpperCase(), 70, 1420);
 
                 // Main Title
                 ctx.fillStyle = '#FFFFFF';
                 ctx.font = 'bold 64px "Syne", sans-serif';
-                wrapText(ctx, (currentPoster.genreLabel || 'CINEMATIC STAR').toUpperCase(), 70, 1560, 940, 75);
+                wrapText(ctx, (currentPoster.genreLabel || 'CINEMATIC STAR').toUpperCase(), 70, 1500, 940, 75);
 
                 // Starring credit
                 ctx.fillStyle = '#FFB800';
                 ctx.font = 'bold 44px "Plus Jakarta Sans", sans-serif';
-                ctx.fillText(`STARRING: ${(currentPoster.guestName || 'VIP GUEST').toUpperCase()}`, 70, 1720);
+                ctx.fillText(`STARRING: ${(currentPoster.guestName || 'VIP GUEST').toUpperCase()}`, 70, 1640);
 
-                // Summit watermark
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
-                ctx.font = '28px "Space Mono", monospace';
-                ctx.fillText(`ID: ${currentPoster.id} · toffeecon-2026.onrender.com`, 70, 1800);
+                // Authentic Cinema Billing Block
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+                ctx.font = 'bold 22px "Space Mono", monospace';
+                ctx.fillText('DIRECTED BY TOFFEECON · PRODUCED BY BANGLALINK · SHOT IN 4K 60FPS', 70, 1720);
+                ctx.fillText('DISTRIBUTED BY TOFFEE OTT PLATFORM · ALL RIGHTS RESERVED 2026', 70, 1755);
 
-                const link = document.createElement('a');
-                link.download = `toffeecon-universe-${currentPoster.id}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-                showToast('HD Multiverse Poster Saved!');
+                // Summit watermark & Hashtag
+                ctx.fillStyle = '#EC4899';
+                ctx.font = 'bold 26px "Space Mono", monospace';
+                ctx.fillText(`#ToffeeCon2026 #InAnotherUniverse · ID: ${currentPoster.id}`, 70, 1830);
+
+                // If raw guest photo exists, composite circular inset
+                if (currentPoster.rawGuestPhoto) {
+                    const faceImg = new Image();
+                    faceImg.onload = () => {
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.arc(880, 1580, 110, 0, Math.PI * 2);
+                        ctx.closePath();
+                        ctx.clip();
+                        ctx.drawImage(faceImg, 770, 1470, 220, 220);
+                        ctx.restore();
+
+                        // Border around face inset
+                        ctx.beginPath();
+                        ctx.arc(880, 1580, 110, 0, Math.PI * 2);
+                        ctx.lineWidth = 6;
+                        ctx.strokeStyle = '#00F0FF';
+                        ctx.stroke();
+
+                        triggerCanvasDownload();
+                    };
+                    faceImg.onerror = () => triggerCanvasDownload();
+                    faceImg.src = currentPoster.rawGuestPhoto;
+                    return;
+                }
+
+                triggerCanvasDownload();
+
+                function triggerCanvasDownload() {
+                    const link = document.createElement('a');
+                    link.download = `toffeecon-universe-${currentPoster.id}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    showToast('HD Multiverse Poster Saved!');
+                }
             };
 
             img.onerror = () => {

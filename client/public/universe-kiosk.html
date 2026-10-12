@@ -418,10 +418,30 @@
             background: #000;
         }
 
-        .poster-preview-box img {
+        .poster-preview-box img.backdrop-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        .attendee-hero-inset {
+            position: absolute;
+            bottom: 12%;
+            right: 8%;
+            width: 38%;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            border: 3px solid var(--cyan);
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.7);
+            background: #000;
+        }
+
+        .attendee-hero-inset img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
         }
 
         /* Screen 6: QR Code & Giant Wall Sync */
@@ -596,7 +616,10 @@
         <section class="screen-view" id="screen-5">
             <div class="reveal-grid">
                 <div class="poster-preview-box">
-                    <img id="revealPosterImg" src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1000&q=80" alt="Poster Reveal">
+                    <img id="revealPosterImg" class="backdrop-img" src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1000&q=80" alt="Poster Reveal">
+                    <div class="attendee-hero-inset" id="attendeeInsetBox" style="display:none;">
+                        <img id="revealAttendeePhoto" src="" alt="Attendee Inset">
+                    </div>
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 1.5rem;">
@@ -828,6 +851,15 @@
             document.getElementById('revealStarring').innerText = `STARRING: ${(poster.guestName || 'VIP GUEST').toUpperCase()}`;
             document.getElementById('revealGenreTag').innerText = (poster.genre || 'UNIVERSE').toUpperCase();
             document.getElementById('revealBadge').innerText = poster.badgeText || 'TOFFEECON 2026';
+
+            const insetBox = document.getElementById('attendeeInsetBox');
+            const insetImg = document.getElementById('revealAttendeePhoto');
+            if (capturedPhotoBase64) {
+                insetImg.src = capturedPhotoBase64;
+                insetBox.style.display = 'block';
+            } else {
+                insetBox.style.display = 'none';
+            }
         }
 
         function renderShareQRCode() {

@@ -25,7 +25,7 @@
   "telemetry": {
     "checkedInAttendees": 548,
     "totalRSVP": 600,
-    "dubBoothsCompleted": 284,
+    "dubBoothsCompleted": 289,
     "adProposalsPrinted": 92
   },
   "stageScene": "ambient",
@@ -240,8 +240,21 @@
   },
   "universeBooth": {
     "activeUniverse": "scifi",
-    "totalPortraitsRendered": 142,
-    "recentPosters": []
+    "totalPortraitsRendered": 143,
+    "recentPosters": [
+      {
+        "id": "UNIV-272164",
+        "guestName": "মেহজাবিন আলম",
+        "genre": "scifi",
+        "genreLabel": "SCI-FI: COSMIC NAVIGATOR",
+        "tagline": "INTERSTELLAR ODYSSEY",
+        "badgeText": "TOFFEECON 2033 · RETRO-FUTURISM",
+        "accentColor": "#EC4899",
+        "posterUrl": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80",
+        "rawGuestPhoto": null,
+        "timestamp": "2026-10-12T13:02:30.347Z"
+      }
+    ]
   },
   "tasteDuel": {
     "currentQuestionIndex": 0,
