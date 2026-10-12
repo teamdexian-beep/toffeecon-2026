@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toffee Mission Control // Verified Media Proposal Specification</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-magenta: #FF10F0;
+            --neon-cyan: #00F0FF;
+            --neon-green: #39FF14;
+            --gold: #FFB800;
+            --bg-void: #07040d;
+            --panel-bg: #110b22;
+            --border-purple: #2c1a4d;
+            --text-main: #f1f0f7;
+            --text-dim: #9d92b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 16px;
+        }
+
+        /* Top Bar */
+        .top-nav {
+            width: 100%;
+            max-width: 860px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-purple);
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #fff;
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+
+        .badge-live {
+            background: rgba(0, 240, 255, 0.15);
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* Certificate Container */
+        .cert-card {
+            width: 100%;
+            max-width: 860px;
+            background: var(--panel-bg);
+            border: 2px solid var(--border-purple);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(121, 19, 199, 0.2);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .cert-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta), var(--gold));
+        }
+
+        .cert-header {
+            padding: 32px 36px 24px;
+            border-bottom: 1px solid var(--border-purple);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .cert-title-group h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        .cert-title-group p {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            margin-top: 4px;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .ref-pill {
+            text-align: right;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .ref-id {
+            color: var(--neon-cyan);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .ref-date {
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            margin-top: 3px;
+        }
+
+        /* Reserved Partner Banner */
+        .partner-banner {
+            margin: 24px 36px;
+            padding: 20px 24px;
+            background: rgba(255, 16, 240, 0.08);
+            border: 1px solid rgba(255, 16, 240, 0.3);
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .partner-label {
+            font-size: 0.72rem;
+            color: var(--neon-magenta);
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .partner-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+            margin-top: 4px;
+        }
+
+        .budget-box {
+            text-align: right;
+        }
+
+        .budget-label {
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+        }
+
+        .budget-amount {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--gold);
+            font-family: 'Space Mono', monospace;
+        }
+
+        /* Metrics Row */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            padding: 0 36px 24px;
+        }
+
+        .metric-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-purple);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .metric-box-label {
+            font-size: 0.7rem;
+            font-family: 'Space Mono', monospace;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+        }
+
+        .metric-box-val {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--neon-cyan);
+            font-family: 'Space Mono', monospace;
+        }
+
+        /* Inventory Table */
+        .table-wrap {
+            padding: 0 36px 24px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-dim);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-purple);
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+        }
+
+        .fmt-name {
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .mono {
+            font-family: 'Space Mono', monospace;
+        }
+
+        /* Compliance Box */
+        .compliance-section {
+            margin: 0 36px 28px;
+            padding: 18px 22px;
+            background: rgba(0, 240, 255, 0.04);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .compliance-list {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        .compliance-list b {
+            color: var(--neon-green);
+        }
+
+        /* Verification Signature Footer */
+        .cert-footer {
+            padding: 24px 36px 32px;
+            border-top: 1px solid var(--border-purple);
+            background: rgba(0, 0, 0, 0.25);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .qr-block {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .qr-img {
+            width: 76px;
+            height: 76px;
+            background: #fff;
+            padding: 4px;
+            border-radius: 6px;
+            border: 1px solid var(--neon-cyan);
+            object-fit: contain;
+        }
+
+        .qr-meta {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        .seal-tag {
+            color: var(--neon-cyan);
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+        }
+
+        .sign-block {
+            text-align: right;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+        }
+
+        .sign-title {
+            color: var(--text-dim);
+            font-size: 0.68rem;
+            margin-bottom: 4px;
+        }
+
+        .sign-name {
+            color: var(--neon-magenta);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        /* Interactive Floating Action Bar */
+        .action-toolbar {
+            width: 100%;
+            max-width: 860px;
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn-act {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            font-family: 'Space Mono', monospace;
+            border: none;
+        }
+
+        .btn-print {
+            background: linear-gradient(135deg, var(--neon-cyan), #0099FF);
+            color: #07040d;
+        }
+        .btn-print:hover {
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-wa {
+            background: #25D366;
+            color: #fff;
+        }
+        .btn-wa:hover {
+            box-shadow: 0 0 25px rgba(37, 211, 102, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-deck {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border: 1px solid var(--border-purple);
+        }
+        .btn-deck:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Clean Print Stylesheet for Physical A4 */
+        @media print {
+            body {
+                background: #fff !important;
+                color: #111 !important;
+                padding: 0 !important;
+            }
+            .top-nav, .action-toolbar {
+                display: none !important;
+            }
+            .cert-card {
+                border: 2px solid #111 !important;
+                box-shadow: none !important;
+                background: #fff !important;
+                color: #111 !important;
+                max-width: 100% !important;
+                border-radius: 0 !important;
+            }
+            .cert-card::before {
+                background: #7913C7 !important;
+            }
+            .cert-header, .cert-footer, .partner-banner, .compliance-section {
+                background: #f9fafb !important;
+                border-color: #e5e7eb !important;
+                color: #111 !important;
+            }
+            .cert-title-group h1 { color: #7913C7 !important; }
+            .cert-title-group p, .ref-date, .partner-label, .budget-label, .metric-box-label, th, .compliance-list, .qr-meta, .sign-title {
+                color: #4b5563 !important;
+            }
+            .ref-id { color: #7913C7 !important; }
+            .partner-name, .fmt-name, td { color: #111827 !important; }
+            .budget-amount { color: #7913C7 !important; }
+            .metric-box {
+                background: #f9fafb !important;
+                border: 1px solid #e5e7eb !important;
+            }
+            .metric-box-val { color: #111827 !important; }
+            .compliance-list b { color: #059669 !important; }
+            .sign-name { color: #7913C7 !important; }
+            .seal-tag { color: #059669 !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Header -->
+    <header class="top-nav">
+        <a href="/mission-control" class="brand-link">
+            <span>🚀</span> TOFFEECON MISSION CONTROL
+        </a>
+        <div class="badge-live">● VERIFIED PROPOSAL DISPATCH</div>
+    </header>
+
+    <!-- Certificate Document Container -->
+    <main class="cert-card" id="proposalCert">
+        <div class="cert-header">
+            <div class="cert-title-group">
+                <h1>ADVERTISING MEDIA COMMITMENT SPECIFICATION</h1>
+                <p>BANGLADESH DIGITAL OTT ECOSYSTEM · 100+ LIVE CHANNELS</p>
+            </div>
+            <div class="ref-pill">
+                <div class="ref-id" id="dispId">PROP-2026-9481</div>
+                <div class="ref-date" id="dispDate">OCTOBER 2026 · FLIGHT DECK</div>
+            </div>
+        </div>
+
+        <div class="partner-banner">
+            <div>
+                <div class="partner-label">RESERVED ADVERTISER / AGENCY PARTNER</div>
+                <div class="partner-name" id="dispAdvertiser">Mindshare / Unilever Bangladesh</div>
+            </div>
+            <div class="budget-box">
+                <div class="budget-label">COMMITTED CAMPAIGN BUDGET</div>
+                <div class="budget-amount" id="dispBudget">৳ 2,500,000</div>
+            </div>
+        </div>
+
+        <!-- Metrics Overview -->
+        <div class="metrics-grid">
+            <div class="metric-box">
+                <div class="metric-box-label">ESTIMATED REACH</div>
+                <div class="metric-box-val" id="dispReach">17.80M</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-box-label">GUARANTEED IMPRESSIONS</div>
+                <div class="metric-box-val" id="dispImpressions">15.63M</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-box-label">EFFECTIVE CPM</div>
+                <div class="metric-box-val" id="dispCpm">৳ 160</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-box-label">VIEWABILITY SLA</div>
+                <div class="metric-box-val" style="color:var(--neon-green);" id="dispViewability">99.4%</div>
+            </div>
+        </div>
+
+        <!-- Allocation Table -->
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>MEDIA PLACEMENT FORMAT</th>
+                        <th>TARGETING CALIBRATION</th>
+                        <th>GUARANTEED IMPR.</th>
+                        <th>EST. CPM</th>
+                        <th style="text-align:right;">ALLOCATION</th>
+                    </tr>
+                </thead>
+                <tbody id="dispTableBody">
+                    <tr>
+                        <td class="fmt-name">Homepage Masthead Takeover (100% SOV)</td>
+                        <td style="font-size:0.75rem; color:var(--text-dim);">Dhaka & Chittagong · 18-34 Urban Mobile</td>
+                        <td class="mono" style="color:var(--neon-magenta); font-weight:700;">6.25M</td>
+                        <td class="mono">৳ 180</td>
+                        <td class="mono" style="text-align:right; font-weight:700; color:var(--gold);">৳ 1,125,000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Compliance Banner -->
+        <div class="compliance-section">
+            <div class="compliance-list">
+                <div>• <b>MRC Accredited Viewability:</b> Direct 1st-party carrier verified frame rendering.</div>
+                <div>• <b>Telco Device Fingerprinting:</b> 0% bot fraud verification on Banglalink network.</div>
+                <div>• <b>Real-Time Solari Pacing:</b> Campaign delivery tracked via Toffee Mission Control.</div>
+            </div>
+            <div style="font-family:'Space Mono', monospace; font-size:0.8rem; text-align:right;">
+                <div style="color:var(--neon-green); font-weight:700;">✓ INVENTORY SECURED</div>
+                <div style="color:var(--text-dim); font-size:0.7rem; margin-top:2px;">DAY-01 PRIORITY ACTIVATION</div>
+            </div>
+        </div>
+
+        <!-- Security Seal & QR Code -->
+        <div class="cert-footer">
+            <div class="qr-block">
+                <img id="dispQrCode" class="qr-img" src="" alt="Digital Verification QR">
+                <div class="qr-meta">
+                    <div class="seal-tag" id="dispToken">TFC-VERIFIED-9481</div>
+                    <div>Scan with smartphone camera to verify live digital ledger.</div>
+                    <div style="font-size:0.7rem; color:var(--text-dim); margin-top:2px;">Valid through Q4 2026 – Q1 2027</div>
+                </div>
+            </div>
+            <div class="sign-block">
+                <div class="sign-title">AUTHENTICATED BY FLIGHT DECK CONTROLLER</div>
+                <div class="sign-name">TOFFEE AD-OPERATIONS SUITE</div>
+                <div style="font-size:0.7rem; color:var(--text-dim); margin-top:2px;">MADCON EXPERIENTIAL ZONE 4</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Action Buttons -->
+    <div class="action-toolbar">
+        <button class="btn-act btn-print" onclick="window.print()">
+            <span>🖨️</span> PRINT 1-PAGE REPORT
+        </button>
+        <button class="btn-act btn-wa" id="btnShareWhatsapp" onclick="shareViaWhatsapp()">
+            <span>📲</span> SHARE VIA WHATSAPP
+        </button>
+        <a href="/mission-control" class="btn-act btn-deck">
+            <span>🚀</span> RETURN TO FLIGHT DECK
+        </a>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        let proposalId = urlParams.get('id') || window.location.pathname.split('/').pop();
+
+        async function loadProposal() {
+            try {
+                let res = null;
+                if (proposalId && proposalId !== 'proposal' && proposalId !== 'proposal-view.html') {
+                    res = await fetch(`/api/booth/proposal/${proposalId}`);
+                }
+                
+                let data = null;
+                if (res && res.ok) {
+                    const json = await res.json();
+                    if (json.success && json.proposal) {
+                        data = json.proposal;
+                    }
+                }
+
+                // If not found by ID, fetch latest proposal
+                if (!data) {
+                    const fallbackRes = await fetch('/api/booth/proposals');
+                    if (fallbackRes.ok) {
+                        const fbJson = await fallbackRes.json();
+                        if (fbJson.proposals && fbJson.proposals.length > 0) {
+                            data = fbJson.proposals[0];
+                        }
+                    }
+                }
+
+                if (data) {
+                    renderProposal(data);
+                }
+            } catch(e) {
+                console.warn('Using default demo proposal:', e);
+            }
+        }
+
+        function renderProposal(p) {
+            document.getElementById('dispId').innerText = p.id;
+            document.getElementById('dispAdvertiser').innerText = p.advertiser;
+            document.getElementById('dispBudget').innerText = '৳ ' + (p.budget).toLocaleString();
+            document.getElementById('dispReach').innerText = p.reach || '3.50M';
+            document.getElementById('dispImpressions').innerText = p.impressions || '4.20M';
+            document.getElementById('dispCpm').innerText = '৳ ' + (p.effectiveCpm || 160);
+            if (p.viewabilityGuarantee) {
+                document.getElementById('dispViewability').innerText = p.viewabilityGuarantee;
+            }
+            if (p.timestamp) {
+                const dt = new Date(p.timestamp);
+                document.getElementById('dispDate').innerText = dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' · FLIGHT DECK';
+            }
+            document.getElementById('dispToken').innerText = p.verificationToken || ('TFC-VERIFIED-' + p.id);
+
+            // Render QR Code
+            const currentUrl = window.location.origin + '/proposal/' + p.id;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(currentUrl)}&size=150x150`;
+            document.getElementById('dispQrCode').src = qrUrl;
+
+            // Render Table Rows
+            const tbody = document.getElementById('dispTableBody');
+            tbody.innerHTML = '';
+            if (Array.isArray(p.formats)) {
+                p.formats.forEach(f => {
+                    const tr = document.createElement('tr');
+                    const fmtName = typeof f === 'string' ? f : f.name;
+                    const bgt = typeof f === 'object' && f.budget ? ('৳ ' + f.budget.toLocaleString()) : 'Proportional';
+                    const imp = typeof f === 'object' && f.impressions ? f.impressions : 'Guaranteed';
+                    const cpm = typeof f === 'object' && f.cpm ? ('৳ ' + f.cpm) : '৳ 160';
+                    const targetStr = p.targeting && p.targeting.geo ? `${p.targeting.geo} · ${p.targeting.demographics || 'Broad'}` : 'High-Affinity Video Streamers';
+
+                    tr.innerHTML = `
+                        <td class="fmt-name">${fmtName}</td>
+                        <td style="font-size:0.75rem; color:var(--text-dim);">${targetStr}</td>
+                        <td class="mono" style="color:var(--neon-magenta); font-weight:700;">${imp}</td>
+                        <td class="mono">${cpm}</td>
+                        <td class="mono" style="text-align:right; font-weight:700; color:var(--gold);">${bgt}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+        function shareViaWhatsapp() {
+            const id = document.getElementById('dispId').innerText;
+            const brand = document.getElementById('dispAdvertiser').innerText;
+            const budget = document.getElementById('dispBudget').innerText;
+            const imp = document.getElementById('dispImpressions').innerText;
+            const shareUrl = window.location.origin + '/proposal/' + id;
+
+            const text = `🚀 *Toffee Mission Control // Official Media Commitment*\n\n` +
+                         `*Partner:* ${brand}\n` +
+                         `*Budget:* ${budget}\n` +
+                         `*Guaranteed Impressions:* ${imp}\n` +
+                         `*Ref:* ${id}\n\n` +
+                         `View verified 1-page transparency proposal:\n${shareUrl}`;
+
+            const waLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+            window.open(waLink, '_blank');
+        }
+
+        loadProposal();
+    </script>
+</body>
+</html>

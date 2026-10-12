@@ -1,0 +1,140 @@
+{
+  "status": "active",
+  "totalProposals": 93,
+  "totalCommittedSpendBDT": 150500000,
+  "totalGuaranteedImpressions": "940.6M",
+  "proposals": [
+    {
+      "id": "PROP-2026-8023",
+      "advertiser": "Zenith / BAT",
+      "budget": 2000000,
+      "reach": "10.25M",
+      "impressions": "12.50M",
+      "effectiveCpm": 160,
+      "viewabilityGuarantee": "99.2%",
+      "formats": [
+        {
+          "name": "Homepage Masthead Takeover (100% SOV)",
+          "budget": 1000000,
+          "cpm": 180,
+          "impressions": "5.56M"
+        },
+        {
+          "name": "Live Sports L-Band Overlay (Non-Intrusive)",
+          "budget": 700000,
+          "cpm": 150,
+          "impressions": "4.67M"
+        },
+        {
+          "name": "Contextual In-Stream Mid-Roll (70+ Channels)",
+          "budget": 300000,
+          "cpm": 140,
+          "impressions": "2.14M"
+        }
+      ],
+      "targeting": {
+        "geo": "Nationwide (Tier-1 Metro Weighted)",
+        "demographics": "18-35 Digital Video Audience",
+        "affinity": "Live Cricket, Premium Drama & FAST Channels"
+      },
+      "verificationToken": "TFC-VERIFIED-PROP-2026-8023",
+      "timestamp": "2026-10-12T19:09:59.902Z"
+    },
+    {
+      "id": "PROP-2026-9481",
+      "advertiser": "Mindshare / Unilever Bangladesh",
+      "budget": 2500000,
+      "reach": "17.8M",
+      "impressions": "15.6M",
+      "effectiveCpm": 160,
+      "viewabilityGuarantee": "99.4%",
+      "formats": [
+        {
+          "name": "Homepage Masthead Takeover (100% SOV)",
+          "budget": 1125000,
+          "cpm": 180,
+          "impressions": "6.25M"
+        },
+        {
+          "name": "Live Sports L-Band Overlay (Non-Intrusive)",
+          "budget": 875000,
+          "cpm": 150,
+          "impressions": "5.83M"
+        },
+        {
+          "name": "Contextual In-Stream Mid-Roll (70+ Channels)",
+          "budget": 500000,
+          "cpm": 140,
+          "impressions": "3.57M"
+        }
+      ],
+      "targeting": {
+        "geo": "Dhaka & Chittagong Metro (Priority Tier-1)",
+        "demographics": "18-34 Urban Mobile Video Consumers",
+        "affinity": "Sports, FMCG & Daily Entertainment"
+      },
+      "verificationToken": "TFC-VERIFIED-MS-UNI-9481",
+      "timestamp": "2026-10-12T18:34:42.394Z"
+    },
+    {
+      "id": "PROP-2026-8812",
+      "advertiser": "Wavemaker / bKash Fintech",
+      "budget": 1800000,
+      "reach": "12.4M",
+      "impressions": "11.2M",
+      "effectiveCpm": 160,
+      "viewabilityGuarantee": "99.2%",
+      "formats": [
+        {
+          "name": "Live Sports L-Band Overlay (Non-Intrusive)",
+          "budget": 1080000,
+          "cpm": 150,
+          "impressions": "7.20M"
+        },
+        {
+          "name": "Contextual In-Stream Mid-Roll (70+ Channels)",
+          "budget": 720000,
+          "cpm": 140,
+          "impressions": "5.14M"
+        }
+      ],
+      "targeting": {
+        "geo": "Nationwide All-Bangladesh 64 Districts",
+        "demographics": "21-45 Digital Payment Active Users",
+        "affinity": "Cricket, News & Live Streaming"
+      },
+      "verificationToken": "TFC-VERIFIED-WM-BK-8812",
+      "timestamp": "2026-10-12T17:54:42.394Z"
+    },
+    {
+      "id": "PROP-2026-7340",
+      "advertiser": "Starcom / Marico Parachute",
+      "budget": 1200000,
+      "reach": "8.5M",
+      "impressions": "7.5M",
+      "effectiveCpm": 160,
+      "viewabilityGuarantee": "99.1%",
+      "formats": [
+        {
+          "name": "Homepage Masthead Takeover (100% SOV)",
+          "budget": 720000,
+          "cpm": 180,
+          "impressions": "4.00M"
+        },
+        {
+          "name": "Contextual In-Stream Mid-Roll (70+ Channels)",
+          "budget": 480000,
+          "cpm": 140,
+          "impressions": "3.42M"
+        }
+      ],
+      "targeting": {
+        "geo": "Dhaka, Sylhet, Chittagong & Rajshahi",
+        "demographics": "Female & Co-Viewing Households (18-40)",
+        "affinity": "Mega Drama Series & Lifestyle Channels"
+      },
+      "verificationToken": "TFC-VERIFIED-ST-MC-7340",
+      "timestamp": "2026-10-12T17:09:42.394Z"
+    }
+  ]
+}

@@ -105,6 +105,12 @@ app.get('/phone', (req, res) => res.sendFile(path.join(clientPublic, 'phone.html
 // Experiential Venue Booth Activations (9 Activations)
 app.get('/booth/mission-control', (req, res) => res.sendFile(path.join(clientPublic, 'mission-control.html')));
 app.get('/mission-control', (req, res) => res.sendFile(path.join(clientPublic, 'mission-control.html')));
+app.get('/flight-deck', (req, res) => res.sendFile(path.join(clientPublic, 'mission-control.html')));
+app.get('/cockpit', (req, res) => res.sendFile(path.join(clientPublic, 'mission-control.html')));
+app.get('/advertiser', (req, res) => res.sendFile(path.join(clientPublic, 'mission-control.html')));
+app.get('/proposal', (req, res) => res.sendFile(path.join(clientPublic, 'proposal-view.html')));
+app.get('/proposal/:id', (req, res) => res.sendFile(path.join(clientPublic, 'proposal-view.html')));
+app.get('/verify-proposal', (req, res) => res.sendFile(path.join(clientPublic, 'proposal-view.html')));
 app.get('/booth/dub', (req, res) => res.sendFile(path.join(clientPublic, 'dub-booth.html')));
 app.get('/dub', (req, res) => res.sendFile(path.join(clientPublic, 'dub-booth.html')));
 app.get('/booth/screen-relay', (req, res) => res.sendFile(path.join(clientPublic, 'screen-relay.html')));

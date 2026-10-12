@@ -6,33 +6,66 @@ const { aiRateLimiter } = require('../middleware/security');
 const dubStore = require('../stores/dubStore');
 const universeStore = require('../stores/universeStore');
 const spaceStore = require('../stores/spaceStore');
+const proposalStore = require('../stores/proposalStore');
 
 module.exports = function(eventStore, broadcast, aiProvider) {
-    // 1. Mission Control Proposal Generator
+    // 1. Mission Control Proposal Generator (MADCON p. 12)
     router.post('/proposal', (req, res) => {
-        const { advertiser, budget, reach, impressions, formats } = req.body;
+        try {
+            const { advertiser, budget, reach, impressions, formats, targeting, effectiveCpm } = req.body;
 
-        eventStore.update(st => {
-            st.telemetry.adProposalsPrinted += 1;
+            const proposal = proposalStore.addProposal({
+                advertiser,
+                budget,
+                reach,
+                impressions,
+                formats,
+                targeting,
+                effectiveCpm
+            });
+
+            eventStore.update(st => {
+                st.telemetry.adProposalsPrinted = proposalStore.getState().totalProposals;
+            });
+
+            broadcast('BOOTH_UPDATE', {
+                type: 'PROPOSAL_PRINTED',
+                telemetry: eventStore.getState().telemetry,
+                proposalStore: proposalStore.getState(),
+                proposal
+            });
+
+            res.json({
+                success: true,
+                proposal,
+                telemetry: eventStore.getState().telemetry,
+                storeStats: {
+                    totalProposals: proposalStore.getState().totalProposals,
+                    totalCommittedSpendBDT: proposalStore.getState().totalCommittedSpendBDT
+                }
+            });
+        } catch (err) {
+            console.error('[MissionControl] Proposal creation error:', err);
+            res.status(500).json({ success: false, error: err.message });
+        }
+    });
+
+    // Get all proposals & flight-deck summary
+    router.get('/proposals', (req, res) => {
+        res.json({
+            success: true,
+            ...proposalStore.getState(),
+            telemetry: eventStore.getState().telemetry
         });
+    });
 
-        const proposal = {
-            id: 'PROP-' + Math.floor(1000 + Math.random() * 9000),
-            advertiser: advertiser || 'Media Partner',
-            budget: budget || 500000,
-            reach: reach || '3.5M',
-            impressions: impressions || '4.2M',
-            formats: formats || ['Sports L-Band Overlay'],
-            timestamp: new Date().toISOString()
-        };
-
-        broadcast('BOOTH_UPDATE', {
-            type: 'PROPOSAL_PRINTED',
-            telemetry: eventStore.getState().telemetry,
-            proposal
-        });
-
-        res.json({ success: true, proposal, telemetry: eventStore.getState().telemetry });
+    // Get individual verified proposal by ID or Verification Token
+    router.get('/proposal/:id', (req, res) => {
+        const proposal = proposalStore.getProposal(req.params.id);
+        if (!proposal) {
+            return res.status(404).json({ success: false, error: 'Advertiser proposal not found' });
+        }
+        res.json({ success: true, proposal });
     });
 
     // 2. The Dub Booth Basic Asset & History

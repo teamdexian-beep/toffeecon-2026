@@ -1086,10 +1086,16 @@
 
                     <!-- 9 Booth Launch Cards -->
                     <div class="booths-card-grid">
-                        <div class="booth-mini-card">
-                            <div class="booth-mini-head"><span>🚀 Mission Control</span><span style="color:var(--emerald); font-size:0.7rem;">● LIVE</span></div>
-                            <p style="font-size:0.78rem; color:var(--text-dim);">Flight deck for advertisers with Solari board.</p>
-                            <a href="/booth/mission-control" target="_blank" class="btn-action magenta" style="justify-content:center;">Launch Flight Deck ↗</a>
+                        <div class="booth-mini-card" style="border-color: #00F0FF; background: rgba(0, 240, 255, 0.04);">
+                            <div class="booth-mini-head">
+                                <span style="color:#00F0FF;">🚀 Mission Control (Advertiser)</span>
+                                <span style="color:var(--emerald); font-size:0.7rem;" id="hubMissionControlBadge">● <span id="hubProposalsCount">14</span> PRINTED</span>
+                            </div>
+                            <p style="font-size:0.78rem; color:var(--text-dim);">Flight deck for media buyers with Solari board & instant 1-page reports (MADCON p.12).</p>
+                            <div style="display:flex; gap:6px; margin-top:4px;">
+                                <a href="/booth/mission-control" target="_blank" class="btn-action magenta" style="flex:1; justify-content:center; font-size:0.75rem;">Flight Deck ↗</a>
+                                <a href="/proposal" target="_blank" class="btn-action cyan" style="flex:1; justify-content:center; font-size:0.75rem; background:linear-gradient(135deg, #00F0FF, #0284C7); color:#000;">Spec 📄</a>
+                            </div>
                         </div>
                         <div class="booth-mini-card" style="border-color: #FF10F0; background: rgba(255, 16, 240, 0.06);">
                             <div class="booth-mini-head"><span style="color:#FF10F0;">🎙️ The Dub Booth (AI Voice)</span><span style="color:#00F0FF; font-size:0.7rem;" id="hubDubCountBadge">● 6-STEP KIOSK</span></div>
@@ -1510,6 +1516,14 @@
                     updateMarathonLanes(msg.data);
                 } else if (msg.type === 'ATTENDEE_CHECKED_IN') {
                     appendCheckinTicker(msg.data.ticket);
+                } else if (msg.type === 'BOOTH_UPDATE' || (msg.type === 'PROPOSAL_PRINTED')) {
+                    if (msg.proposal) {
+                        showToast(`New Ad Proposal Printed: ${msg.proposal.advertiser}`, '📜');
+                    }
+                    if (msg.telemetry && msg.telemetry.adProposalsPrinted) {
+                        const cnt = document.getElementById('hubProposalsCount');
+                        if (cnt) cnt.innerText = msg.telemetry.adProposalsPrinted;
+                    }
                 }
             } catch(e) {}
         };
@@ -1671,6 +1685,11 @@
                 document.getElementById('statCheckinRate').innerText = text;
                 const badge = document.getElementById('checkinRateBadge');
                 if (badge) badge.innerText = `${text} Checked In`;
+
+                if (data.eventState && data.eventState.telemetry && data.eventState.telemetry.adProposalsPrinted !== undefined) {
+                    const proposalsCount = document.getElementById('hubProposalsCount');
+                    if (proposalsCount) proposalsCount.innerText = data.eventState.telemetry.adProposalsPrinted;
+                }
             } catch(e) {}
         }
         setInterval(pollDiagnostics, 4000);

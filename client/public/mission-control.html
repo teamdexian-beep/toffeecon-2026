@@ -600,6 +600,121 @@
             box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
         }
 
+        .btn-wa-report {
+            background: #25D366;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .btn-wa-report:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+        }
+
+        .btn-verify-spec {
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .btn-verify-spec:hover {
+            background: rgba(0, 240, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+        }
+
+        .brand-pills-row {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .brand-pill {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #3d2a6a;
+            color: #b3a5d8;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.68rem;
+            padding: 4px 9px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .brand-pill:hover {
+            background: rgba(255, 16, 240, 0.15);
+            border-color: var(--neon-pink);
+            color: #fff;
+        }
+
+        .hotkey-legend-bar {
+            background: #090616;
+            border-top: 1px solid #281a4b;
+            padding: 8px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: #7d6fa6;
+            margin-top: 12px;
+            border-radius: 6px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .hotkey-legend-bar kbd {
+            background: #1c133a;
+            color: var(--neon-cyan);
+            padding: 2px 5px;
+            border-radius: 3px;
+            border: 1px solid #372561;
+        }
+
+        /* Dispatch HUD Toast */
+        .hud-dispatch-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0f0926;
+            border: 2px solid var(--neon-pink);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8), 0 0 30px rgba(255,16,240,0.3);
+            border-radius: 12px;
+            padding: 16px 20px;
+            max-width: 440px;
+            z-index: 9999;
+            transform: translateY(140px);
+            opacity: 0;
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+        .hud-dispatch-toast.active {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         /* Printable One-Page Transparency Guarantee Sheet (A4 / Thermal Format) */
         #printSheet {
             display: none;
@@ -633,7 +748,10 @@
                 <!-- Dynamically populated character flaps -->
             </div>
         </div>
-        <div style="display:flex; align-items:center; gap:24px;">
+        <div style="display:flex; align-items:center; gap:20px;">
+            <div id="missionControlProposalsBadge" style="background:rgba(255,16,240,0.12); border:1px solid #FF10F0; color:#FF10F0; padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:700; font-family:'Space Mono', monospace; display:flex; align-items:center; gap:6px;">
+                <span>📜</span> <span id="counterPrintedProposals">14</span> PROPOSALS PRINTED
+            </div>
             <div class="hud-status-led">
                 <div class="led-dot"></div>
                 <span>CONSOLE READY · FLIGHT DECK ENGAGED</span>
@@ -888,16 +1006,37 @@
 
             <!-- Instant 1-Page Report Printer Row (Step 4 of Slide) -->
             <div>
-                <div class="panel-section-title" style="margin-bottom:10px;">
+                <div class="panel-section-title" style="margin-bottom:8px;">
                     <span>STEP 4: INSTANT TRANSPARENCY REPORT</span>
                     <span style="color:var(--neon-green);">1-PAGE GUARANTEE</span>
                 </div>
-                <div class="action-row">
+                <div class="action-row" style="flex-wrap:wrap;">
                     <input type="text" id="agencyInput" class="advertiser-input" value="Mindshare / Unilever" placeholder="Brand / Agency Partner Name">
                     <button class="btn-print-report" onclick="triggerInstantReport()">
                         <span>🖨️</span> PRINT 1-PAGE REPORT
                     </button>
+                    <button class="btn-wa-report" onclick="shareProposalViaWhatsapp()">
+                        <span>📲</span> WA SPEC
+                    </button>
+                    <a id="btnViewVerifiedSpec" href="/proposal" target="_blank" class="btn-verify-spec">
+                        <span>🌐</span> VIEW SPEC
+                    </a>
                 </div>
+                <!-- Brand Quick Select Pills -->
+                <div class="brand-pills-row">
+                    <span style="font-size:0.68rem; color:#786ba1; font-family:'Space Mono'; align-self:center;">PARTNERS:</span>
+                    <button type="button" class="brand-pill" onclick="setBrandName('Mindshare / Unilever')">Unilever</button>
+                    <button type="button" class="brand-pill" onclick="setBrandName('Wavemaker / bKash')">bKash</button>
+                    <button type="button" class="brand-pill" onclick="setBrandName('Starcom / Marico')">Marico</button>
+                    <button type="button" class="brand-pill" onclick="setBrandName('Zenith / BAT')">BAT</button>
+                    <button type="button" class="brand-pill" onclick="setBrandName('GroupM / Grameenphone')">Grameenphone</button>
+                </div>
+            </div>
+
+            <!-- Hardware Encoders & Keymap Guide -->
+            <div class="hotkey-legend-bar">
+                <div><span>CONSOLE SHORTCUTS:</span> <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> Modes · <kbd>SPACE</kbd> Masthead · <kbd>L</kbd> L-Band · <kbd>M</kbd> Mid-Roll</div>
+                <div><kbd>P</kbd> Print · <kbd>↑</kbd> <kbd>↓</kbd> Budget · <kbd>G</kbd> Geo · <kbd>D</kbd> Demo · <kbd>B</kbd> Affinity</div>
             </div>
         </div>
     </div>
@@ -952,8 +1091,9 @@
 
         <div style="margin-top:40px; border-top:1px dashed #d1d5db; padding-top:20px; display:flex; justify-content:space-between; align-items:center;">
             <div style="display:flex; align-items:center; gap:16px;">
-                <div style="width:60px; height:60px; border:2px solid #111; display:flex; align-items:center; justify-content:center; font-family:'Space Mono', monospace; font-size:9px; text-align:center;">
-                    [QR SEAL]<br>VERIFIED
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <img id="pQrCodeImg" src="" style="width:68px; height:68px; border:1px solid #111; padding:2px; background:#fff; object-fit:contain;" alt="Digital QR Seal">
+                    <span id="pVerifyHash" style="font-family:'Space Mono', monospace; font-size:8px; color:#555; margin-top:2px;">TFC-VERIFIED</span>
                 </div>
                 <div style="font-size:11px; color:#6b7280;">
                     Digitally signed by Toffee Ad-Operations Mission Control Engine.<br>
@@ -963,6 +1103,27 @@
             <div style="text-align:right; font-family:'Space Mono', monospace; font-size:11px;">
                 AUTHORIZED SIGNATURE: <b style="color:#7913C7;">TOFFEE AD NETWORK</b>
             </div>
+        </div>
+    </div>
+
+    <!-- Dispatch HUD Toast Notification -->
+    <div class="hud-dispatch-toast" id="hudDispatchToast">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+            <div style="font-family:'Space Mono'; font-weight:700; color:var(--neon-green); font-size:0.85rem; display:flex; align-items:center; gap:6px;">
+                <span>⚡</span> PROPOSAL DISPATCHED TO LOCAL PRINTER
+            </div>
+            <button onclick="dismissToast()" style="background:none; border:none; color:#786ba1; cursor:pointer; font-size:1rem;">✕</button>
+        </div>
+        <div style="font-size:0.8rem; color:#d1c7eb; line-height:1.4;" id="toastDetails">
+            Official media commitment ref <b id="toastRef" style="color:var(--neon-cyan);">PROP-2026-9481</b> spooled to on-site thermal printer and synced to Executive Hub.
+        </div>
+        <div style="display:flex; gap:8px; margin-top:12px;">
+            <button onclick="shareProposalViaWhatsapp()" class="btn-wa-report" style="padding:6px 12px; font-size:0.75rem;">
+                <span>📲</span> WhatsApp Share
+            </button>
+            <a id="toastViewLink" href="/proposal" target="_blank" class="btn-verify-spec" style="padding:6px 12px; font-size:0.75rem;">
+                <span>🌐</span> Digital Spec
+            </a>
         </div>
     </div>
 
@@ -1282,65 +1443,264 @@
             renderWave();
         }
 
-        // Instant One-Page Transparency Report Trigger (Step 4 of Slide)
-        function triggerInstantReport() {
+        // Thermal / Dot-Matrix Mechanical Printer Audio Synthesizer
+        function playPrinterMotorSound() {
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                // Motor stepper pulse sequence
+                for (let i = 0; i < 8; i++) {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = i % 2 === 0 ? 'square' : 'sawtooth';
+                    osc.frequency.setValueAtTime(440 + (i * 80), now + (i * 0.04));
+                    gain.gain.setValueAtTime(0.08, now + (i * 0.04));
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + (i * 0.04) + 0.03);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + (i * 0.04));
+                    osc.stop(now + (i * 0.04) + 0.035);
+                }
+            } catch(e) {}
+        }
+
+        // Quick Select Partner Brand Name
+        function setBrandName(name) {
             playRelayClickSound(true);
-            const agency = document.getElementById('agencyInput').value.trim() || 'Mindshare / Partner';
+            document.getElementById('agencyInput').value = name;
+        }
+
+        // Store last active proposal
+        let lastProposal = null;
+
+        // Instant One-Page Transparency Report Trigger (Step 4 of MADCON Brief p.12)
+        async function triggerInstantReport() {
+            playRelayClickSound(true);
+            playPrinterMotorSound();
+
+            const agency = document.getElementById('agencyInput').value.trim() || 'Mindshare / Unilever';
             document.getElementById('pAgencyName').innerText = agency;
             document.getElementById('pTotalBudget').innerText = '৳ ' + (state.budget).toLocaleString();
-            document.getElementById('pDocNum').innerText = 'REF: TFC-2026-MC-' + Math.floor(1000 + Math.random() * 9000);
 
             // Populate Table
             const tbody = document.getElementById('pTableBody');
             tbody.innerHTML = '';
 
             const activeFormats = [];
-            if (state.placements.masthead) activeFormats.push({ name: 'Homepage Masthead Takeover (100% SOV)', share: 0.45 });
-            if (state.placements.lband) activeFormats.push({ name: 'Live Sports L-Band Overlay (Non-Intrusive)', share: 0.35 });
-            if (state.placements.midroll) activeFormats.push({ name: 'Contextual In-Stream Mid-Roll (70+ Channels)', share: 0.20 });
+            if (state.placements.masthead) activeFormats.push({ name: 'Homepage Masthead Takeover (100% SOV)', share: 0.45, cpm: 180 });
+            if (state.placements.lband) activeFormats.push({ name: 'Live Sports L-Band Overlay (Non-Intrusive)', share: 0.35, cpm: 150 });
+            if (state.placements.midroll) activeFormats.push({ name: 'Contextual In-Stream Mid-Roll (70+ Channels)', share: 0.20, cpm: 140 });
 
             if (activeFormats.length === 0) {
-                activeFormats.push({ name: 'Default Multi-Channel Run of Network', share: 1.0 });
+                activeFormats.push({ name: 'Default Multi-Channel Run of Network', share: 1.0, cpm: 160 });
             }
 
             const totalShare = activeFormats.reduce((acc, f) => acc + f.share, 0);
+            const formatsPayload = [];
 
             activeFormats.forEach(fmt => {
                 const normShare = fmt.share / totalShare;
                 const fmtBudget = Math.round(state.budget * normShare);
-                const cpm = 160;
+                const cpm = fmt.cpm || 160;
                 const imp = Math.round((fmtBudget / cpm) * 1000);
+                const impStr = (imp / 1000000).toFixed(2) + 'M';
+
+                formatsPayload.push({
+                    name: fmt.name,
+                    budget: fmtBudget,
+                    cpm: cpm,
+                    impressions: impStr
+                });
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td style="padding:10px; border-bottom:1px solid #f3f4f6; font-weight:700;">${fmt.name}</td>
                     <td style="padding:10px; border-bottom:1px solid #f3f4f6; font-size:11px; color:#4b5563;">
-                        ${state.targeting.geo ? 'Geo-Fenced' : 'Open'} · ${state.targeting.demo ? '18-34' : 'All'} · ${state.targeting.behavior ? 'Stream Affinity' : 'Standard'}
+                        ${state.targeting.geo ? 'Geo-Fenced Tier-1' : 'Nationwide Open'} · ${state.targeting.demo ? '18-34 Core' : 'Broad'} · ${state.targeting.behavior ? 'Stream Affinity' : 'Standard'}
                     </td>
-                    <td style="padding:10px; border-bottom:1px solid #f3f4f6; font-family:'Space Mono'; font-weight:700; color:#7913C7;">${(imp / 1000000).toFixed(2)}M</td>
+                    <td style="padding:10px; border-bottom:1px solid #f3f4f6; font-family:'Space Mono'; font-weight:700; color:#7913C7;">${impStr}</td>
                     <td style="padding:10px; border-bottom:1px solid #f3f4f6; font-family:'Space Mono';">৳ ${cpm}</td>
                     <td style="padding:10px; border-bottom:1px solid #f3f4f6; text-align:right; font-family:'Space Mono'; font-weight:700;">৳ ${fmtBudget.toLocaleString()}</td>
                 `;
                 tbody.appendChild(tr);
             });
 
-            // Trigger window print dialog
+            // Target multiplier & impression totals
+            let targetMultiplier = 1.0;
+            if (state.targeting.geo) targetMultiplier += 0.25;
+            if (state.targeting.demo) targetMultiplier += 0.35;
+            if (state.targeting.behavior) targetMultiplier += 0.40;
+            const cpmBase = 140 * targetMultiplier;
+            const totalImpressions = Math.round((state.budget / cpmBase) * 1000);
+            const totalImpStr = (totalImpressions / 1000000).toFixed(2) + 'M';
+            const reachStr = ((totalImpressions * 0.82) / 1000000).toFixed(2) + 'M';
+
+            // Server API Telemetry Dispatch
+            let propId = 'PROP-2026-' + Math.floor(1000 + Math.random() * 9000);
+            try {
+                const res = await fetch('/api/booth/proposal', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        advertiser: agency,
+                        budget: state.budget,
+                        reach: reachStr,
+                        impressions: totalImpStr,
+                        effectiveCpm: Math.round(cpmBase),
+                        formats: formatsPayload,
+                        targeting: {
+                            geo: state.targeting.geo ? 'Dhaka & Chittagong Priority Tier-1' : 'Nationwide Open',
+                            demographics: state.targeting.demo ? '18-34 Urban Mobile Streamers' : 'All Demographics',
+                            affinity: state.targeting.behavior ? 'High Affinity OTT & Live Sports' : 'General Video Viewers'
+                        }
+                    })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.proposal) {
+                        propId = data.proposal.id;
+                        lastProposal = data.proposal;
+                    }
+                    if (data.storeStats && data.storeStats.totalProposals) {
+                        updateProposalCounter(data.storeStats.totalProposals);
+                    }
+                }
+            } catch (err) {
+                console.warn('[MissionControl] Offline proposal dispatch fallback:', err);
+                lastProposal = {
+                    id: propId,
+                    advertiser: agency,
+                    budget: state.budget,
+                    impressions: totalImpStr,
+                    reach: reachStr
+                };
+            }
+
+            // Update Print Sheet Document & QR Seal
+            document.getElementById('pDocNum').innerText = 'REF: ' + propId;
+            document.getElementById('pVerifyHash').innerText = 'TFC-VERIFIED-' + propId;
+
+            const verifyUrl = window.location.origin + '/proposal/' + propId;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(verifyUrl)}&size=150x150`;
+            document.getElementById('pQrCodeImg').src = qrUrl;
+
+            // Update View Spec Button and Toast
+            document.getElementById('btnViewVerifiedSpec').href = '/proposal/' + propId;
+            document.getElementById('toastRef').innerText = propId;
+            document.getElementById('toastViewLink').href = '/proposal/' + propId;
+            showDispatchToast(propId, agency);
+
+            // Spool to Physical/Thermal Print Dialog
             setTimeout(() => {
                 window.print();
-            }, 200);
+            }, 250);
         }
+
+        // WhatsApp Share Generator
+        function shareProposalViaWhatsapp() {
+            playRelayClickSound(true);
+            const agency = document.getElementById('agencyInput').value.trim() || 'Mindshare / Unilever';
+            const propId = lastProposal ? lastProposal.id : 'PROP-2026-9481';
+            const budget = '৳ ' + (state.budget).toLocaleString();
+            const imp = document.getElementById('metricImpressions').innerText;
+            const verifyUrl = window.location.origin + '/proposal/' + propId;
+
+            const text = `🚀 *Toffee Mission Control // Media Commitment Proposal*\n\n` +
+                         `*Partner:* ${agency}\n` +
+                         `*Committed Budget:* ${budget}\n` +
+                         `*Guaranteed Impressions:* ${imp}\n` +
+                         `*Ref ID:* ${propId}\n` +
+                         `*MRC Viewability SLA:* 99.2% Guarantee\n\n` +
+                         `Explore verified 1-page digital spec:\n${verifyUrl}`;
+
+            const waLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+            window.open(waLink, '_blank');
+        }
+
+        // HUD Toast Helpers
+        let toastTimeout = null;
+        function showDispatchToast(id, agency) {
+            const toast = document.getElementById('hudDispatchToast');
+            toast.classList.add('active');
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('active');
+            }, 8000);
+        }
+
+        function dismissToast() {
+            document.getElementById('hudDispatchToast').classList.remove('active');
+        }
+
+        function updateProposalCounter(count) {
+            const el = document.getElementById('counterPrintedProposals');
+            if (el) el.innerText = count;
+        }
+
+        // Fetch initial proposals state
+        async function fetchInitialProposals() {
+            try {
+                const res = await fetch('/api/booth/proposals');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.totalProposals) {
+                        updateProposalCounter(data.totalProposals);
+                    }
+                }
+            } catch(e) {}
+        }
+        fetchInitialProposals();
+
+        // Live WebSocket Telemetry Sync
+        try {
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const ws = new WebSocket(`${wsProtocol}//${window.location.host}`);
+            ws.onmessage = (evt) => {
+                try {
+                    const msg = JSON.parse(evt.data);
+                    if (msg.type === 'BOOTH_UPDATE' && msg.proposalStore) {
+                        updateProposalCounter(msg.proposalStore.totalProposals);
+                    }
+                } catch(e) {}
+            };
+        } catch(e) {}
 
         // Hardware HID / Keyboard Shortcuts for Event Physical Encoders
         window.addEventListener('keydown', (e) => {
+            // Mode buttons
             if (e.key === '1') switchDashboardTab(1);
             if (e.key === '2') switchDashboardTab(2);
             if (e.key === '3') switchDashboardTab(3);
+
+            // Placement toggles
             if (e.key === ' ' || e.code === 'Space') {
                 e.preventDefault();
                 togglePlacement('masthead');
             }
             if (e.key === 'l' || e.key === 'L') togglePlacement('lband');
             if (e.key === 'm' || e.key === 'M') togglePlacement('midroll');
+
+            // Targeting toggles
+            if (e.key === 'g' || e.key === 'G') toggleTargeting('geo');
+            if (e.key === 'd' || e.key === 'D') toggleTargeting('demo');
+            if (e.key === 'b' || e.key === 'B') toggleTargeting('behavior');
+
+            // Budget throttle rotary encoder
+            if (e.key === 'ArrowUp' || e.key === ']') {
+                e.preventDefault();
+                const nextVal = Math.min(5000000, state.budget + 100000);
+                document.getElementById('budgetThrottle').value = nextVal;
+                onBudgetChange(nextVal);
+            }
+            if (e.key === 'ArrowDown' || e.key === '[') {
+                e.preventDefault();
+                const nextVal = Math.max(200000, state.budget - 100000);
+                document.getElementById('budgetThrottle').value = nextVal;
+                onBudgetChange(nextVal);
+            }
+
+            // Print report
             if (e.key === 'p' || e.key === 'P') triggerInstantReport();
         });
 
