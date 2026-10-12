@@ -485,6 +485,329 @@
         }
         .btn-enter-summit:hover { transform: scale(1.04); }
 
+        /* ========================================================
+           ATTENDEE COMPANION WEB APP (PWA / EOS 2.0 MOBILE CLIENT)
+           ======================================================== */
+        .companion-app-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #06030e;
+            color: #fff;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .companion-app-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.98);
+        }
+
+        .companion-header {
+            padding: 14px 20px;
+            background: #0d0822;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .companion-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .companion-brand img {
+            height: 24px;
+        }
+
+        .companion-badge-pill {
+            background: linear-gradient(135deg, var(--orange), var(--magenta));
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .companion-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 16px 20px 85px;
+            max-width: 680px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .companion-tab-panel {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .companion-tab-panel.active {
+            display: block;
+        }
+
+        /* Bottom Tab Navigation Bar */
+        .companion-bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(14, 8, 30, 0.95);
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 12px;
+            z-index: 110;
+        }
+
+        .nav-item-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-item-btn .nav-icon {
+            font-size: 1.25rem;
+        }
+
+        .nav-item-btn.active {
+            color: var(--cyan);
+            background: rgba(0, 240, 255, 0.08);
+            font-weight: 700;
+        }
+
+        /* Tab 1: Digital Pass Card */
+        .pass-card-container {
+            background: #0f0a24;
+            border: 2px solid var(--purple);
+            border-radius: 20px;
+            padding: 24px 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(147, 51, 234, 0.25);
+            text-align: center;
+            position: relative;
+            margin-bottom: 20px;
+            background-image: radial-gradient(circle at 80% 20%, rgba(255, 107, 0, 0.12) 0%, transparent 60%);
+        }
+
+        .pass-role-badge {
+            display: inline-block;
+            background: var(--orange);
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+
+        .pass-guest-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.9rem;
+            font-weight: 800;
+            margin: 14px 0 4px;
+            color: #fff;
+        }
+
+        .pass-company-name {
+            font-family: 'Space Mono', monospace;
+            color: var(--cyan);
+            font-size: 0.95rem;
+        }
+
+        .pass-qr-box {
+            background: #fff;
+            padding: 10px;
+            border-radius: 12px;
+            display: inline-block;
+            margin: 20px auto 14px;
+        }
+
+        .pass-id-display {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--orange);
+            letter-spacing: 2px;
+        }
+
+        /* Tab 2: Agenda Items */
+        .agenda-session-card {
+            background: #110c26;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+
+        .agenda-session-card.is-live {
+            border-color: #22c55e;
+            background: rgba(34, 197, 94, 0.08);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+        }
+
+        .session-time-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--cyan);
+            margin-bottom: 6px;
+        }
+
+        .session-live-pill {
+            background: #22c55e;
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            animation: pulse-dot 1s infinite alternate;
+        }
+
+        .session-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .session-speaker {
+            font-size: 0.82rem;
+            color: var(--text-dim);
+        }
+
+        /* Tab 3: Booth Guide Directory */
+        .booth-guide-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .booth-guide-item {
+            background: #110c26;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .booth-guide-info h4 {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.95rem;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .booth-guide-info p {
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            line-height: 1.4;
+        }
+
+        .booth-tag-pill {
+            display: inline-block;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 8px;
+            margin-top: 4px;
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--cyan);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+        }
+
+        .btn-booth-link {
+            background: linear-gradient(135deg, var(--orange), var(--magenta));
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Tab 4: Live Voting Widget */
+        .vote-card-box {
+            background: #110c26;
+            border: 1px solid var(--border-machined);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .vote-btn-choice {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 800;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .vote-btn-choice.red {
+            background: rgba(255, 8, 68, 0.15);
+            border-color: #FF0844;
+            color: #FF0844;
+        }
+
+        .vote-btn-choice.red:hover, .vote-btn-choice.red.voted {
+            background: #FF0844;
+            color: #fff;
+            box-shadow: 0 0 25px rgba(255, 8, 68, 0.6);
+        }
+
+        .vote-btn-choice.blue {
+            background: rgba(0, 114, 255, 0.15);
+            border-color: #0072FF;
+            color: #0072FF;
+        }
+
+        .vote-btn-choice.blue:hover, .vote-btn-choice.blue.voted {
+            background: #0072FF;
+            color: #fff;
+            box-shadow: 0 0 25px rgba(0, 114, 255, 0.6);
+        }
+
         /* Hidden video element for live video textures */
         #hero-video-source {
             display: none;
@@ -513,6 +836,10 @@
             </div>
         </div>
         <div class="hud-right">
+            <button class="hud-btn" id="btn-toggle-companion" onclick="toggleCompanionView()" style="background:linear-gradient(135deg, rgba(255,107,0,0.3), rgba(255,0,119,0.4)); border-color:var(--magenta); color:#fff; font-weight:700;">
+                <span>📱</span>
+                <span>Attendee Companion</span>
+            </button>
             <button class="hud-btn" id="btn-audio" title="Toggle Ambience Sound">
                 <span id="audio-icon">🔇</span>
                 <span>Spatial Sound: Muted</span>
@@ -525,6 +852,234 @@
                 <span>←</span>
                 <span>Summit Home</span>
             </a>
+        </div>
+    </div>
+
+    <!-- ========================================================
+         ATTENDEE COMPANION WEB APP (PWA / EOS 2.0 MOBILE CLIENT)
+         ======================================================== -->
+    <div class="companion-app-overlay hidden" id="companionOverlay">
+        <!-- Top App Bar -->
+        <div class="companion-header">
+            <div class="companion-brand">
+                <img src="/assets/toffeecon-logo.png" alt="ToffeeCon 2026">
+                <div>
+                    <div style="font-family:'Syne', sans-serif; font-weight:800; font-size:0.95rem; line-height:1;">TOFFEECON '26</div>
+                    <div style="font-family:'Space Mono', monospace; font-size:0.65rem; color:var(--cyan); margin-top:2px;">ATTENDEE COMPANION</div>
+                </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <span class="companion-badge-pill" id="appLiveSessionTag">NOW: AMBIENT WALK-IN</span>
+                <button class="hud-btn" onclick="toggleCompanionView()" style="padding:6px 12px; font-size:0.75rem;">
+                    <span>✕</span> <span>3D Tunnel</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Scrollable Tab Content Container -->
+        <div class="companion-content">
+            <!-- TAB 1: DIGITAL PASS -->
+            <div class="companion-tab-panel active" id="cpanel-pass">
+                <div class="pass-card-container">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-family:'Space Mono'; font-size:0.7rem; color:var(--text-dim);">SUMMIT ACCREDITATION</span>
+                        <span style="font-family:'Space Mono'; font-size:0.7rem; color:var(--green);">● VERIFIED IN-VENUE</span>
+                    </div>
+
+                    <div class="pass-role-badge" id="appPassRole">KEYNOTE SPEAKER</div>
+                    <div class="pass-guest-name" id="appPassName">Taimur Rahman</div>
+                    <div class="pass-company-name" id="appPassCompany">Banglalink · CCRO</div>
+                    <div style="font-family:'Space Mono'; font-size:0.75rem; color:var(--text-dim); margin-top:4px;" id="appPassGate">ASSIGNED GATE: Gate 1 (VIP North)</div>
+
+                    <!-- Dynamic QR Code -->
+                    <div class="pass-qr-box">
+                        <img id="appPassQr" src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://toffeecon.live/programme?id=TCON-3089" width="130" height="130" alt="Personal Digital Pass QR">
+                    </div>
+                    <div class="pass-id-display" id="appPassId">TCON-3089</div>
+
+                    <!-- 1D Barcode Graphic -->
+                    <div class="barcode-strip" style="margin-top:14px; height:34px; background:#fff; display:flex; gap:2px; padding:3px 8px; border-radius:4px; justify-content:center; overflow:hidden;" id="appPassBarcode">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <div style="display:flex; gap:8px; margin-top:18px; justify-content:center;">
+                        <button class="hud-btn" onclick="window.print()" style="padding:8px 16px; font-size:0.75rem;">🖨️ Print Physical Badge</button>
+                        <a href="/gate" class="hud-btn" style="padding:8px 16px; font-size:0.75rem; border-color:var(--cyan); color:var(--cyan);">Speed-Gate ↗</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: SCHEDULE & LIVE AGENDA TRACKER -->
+            <div class="companion-tab-panel" id="cpanel-agenda">
+                <div style="margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-family:'Space Mono'; font-size:0.75rem; color:var(--text-dim);">MAINSTAGE RUN OF SHOW</span>
+                    <span style="font-family:'Space Mono'; font-size:0.72rem; color:var(--green);">● LIVE SYNC ACTIVE</span>
+                </div>
+
+                <div id="companionAgendaList">
+                    <!-- Populated dynamically with live scene highlight -->
+                </div>
+            </div>
+
+            <!-- TAB 3: BOOTH GUIDE DIRECTORY (ALL 9 BOOTHS) -->
+            <div class="companion-tab-panel" id="cpanel-booths">
+                <div style="margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-family:'Space Mono'; font-size:0.75rem; color:var(--text-dim);">EXPERIENTIAL ACTIVATIONS (9 BOOTHS)</span>
+                    <span style="font-family:'Space Mono'; font-size:0.72rem; color:var(--cyan);">RADISSON BLU FOYER</span>
+                </div>
+
+                <div class="booth-guide-grid">
+                    <!-- 1. Mission Control -->
+                    <div class="booth-guide-item">
+                        <div class="booth-guide-info">
+                            <h4>🚀 1. Mission Control (Advertiser Flight Deck)</h4>
+                            <p>Retro flight-deck console for advertisers with physical toggles, Solari board, and instant 1-page reports.</p>
+                            <span class="booth-tag-pill">ADVERTISERS · FOYER ZONE A</span>
+                        </div>
+                        <a href="/booth/mission-control" target="_blank" class="btn-booth-link">Launch ↗</a>
+                    </div>
+
+                    <!-- 2. The Dub Booth -->
+                    <div class="booth-guide-item">
+                        <div class="booth-guide-info">
+                            <h4>🎙️ 2. The Dub Booth (Global AI Voice)</h4>
+                            <p>Global OTT voice morphing studio with 5 regional dialects and 9:16 vertical lip-sync reel generator.</p>
+                            <span class="booth-tag-pill">INTERACTIVE · FOYER ZONE B</span>
+                        </div>
+                        <a href="/dub" target="_blank" class="btn-booth-link">Launch ↗</a>
+                    </div>
+
+                    <!-- 3. Screen Relay -->
+                    <div class="booth-guide-item">
+                        <div class="booth-guide-info">
+                            <h4>📱 3. Screen Relay</h4>
+                            <p>Seamless triple-screen migration: move your 4K stream across phone, tablet, and big screen with sub-second handoff.</p>
+                            <span class="booth-tag-pill">TECH DEMO · FOYER ZONE C</span>
+                        </div>
+                        <a href="/booth/screen-relay" target="_blank" class="btn-booth-link">Launch ↗</a>
+                    </div>
+
+                    <!-- 4. The Space Window -->
+                    <div class="booth-guide-item">
+                        <div class="booth-guide-info">
+                            <h4>🛰️ 4. The Space Window</h4>
+                            <p>Ceiling-mounted LED starfield simulator and illuminated 104-channel catalogue wall with B2B advertiser media kit.</p>
+                            <span class="booth-tag-pill">PR & ADVERTISERS · CEILING LED</span>
+                        </div>
+                        <a href="/space-window" target="_blank" class="btn-booth-link">Launch ↗</a>
+                    </div>
+
+                    <!-- 5. Capsule Cabin -->
+                    <div class="booth-guide-item">
+                        <div class="booth-guide-info">
+                            <h4>📼 5. Capsule Cabin (2033 Archive)</h4>
+                            <p>Retro CRT prediction cabin where attendees record 2033 entertainment forecasts, summarized by Gemini AI.</p>
+                            <span class="booth-tag-pill">EXPERIENTIAL · ZONE D</span>
+                        </div>
+                        <a href="/booth/capsule-booth" target="_blank" class="btn-booth-link">Launch ↗</a>
+                    </div>
+
+                    <!-- 6. In Another Universe -->
+                    <div class="booth-guide-item">
+                        <div class="booth-guide-info">
+                            <h4>🌌 6. In Another Universe</h4>
+                            <p>Retro-futuristic photobooth transforming attendees into Sports, Adventure, Drama, and Action movie worlds.</p>
+                            <span class="booth-tag-pill">PHOTO ACTIVATION · ZONE E</span>
+                        </div>
+                        <a href="/universe" target="_blank" class="btn-booth-link">Launch ↗</a>
+                    </div>
+
+                    <!-- 7. OTT Casting Audition -->
+                    <div class="booth-guide-item">
+                        <div class="booth-guide-info">
+                            <h4>🎭 7. OTT Casting Audition</h4>
+                            <p>Audition as Boltu Bhai or Maya Sen with real-time AI critique, OTT readiness score, and movie posters.</p>
+                            <span class="booth-tag-pill">TALENT HUB · ZONE F</span>
+                        </div>
+                        <a href="/booth/audition" target="_blank" class="btn-booth-link">Launch ↗</a>
+                    </div>
+
+                    <!-- 8. Memory Marathon -->
+                    <div class="booth-guide-item">
+                        <div class="booth-guide-info">
+                            <h4>🏃 8. Memory Marathon (Audience Race)</h4>
+                            <p>Live 8-lane crowd trivia battle synced to keynote topics on the 3-screen panoramic LED mainstage.</p>
+                            <span class="booth-tag-pill">ON-STAGE CROWD · LIVE SHOW</span>
+                        </div>
+                        <a href="/marathon" target="_blank" class="btn-booth-link">Racer 📱</a>
+                    </div>
+
+                    <!-- 9. Taste Duel -->
+                    <div class="booth-guide-item">
+                        <div class="booth-guide-info">
+                            <h4>🥊 9. Taste Duel (Codec A/B)</h4>
+                            <p>Blind streaming challenge putting AV1 vs HEVC head-to-head under high network latency simulations.</p>
+                            <span class="booth-tag-pill">TECH CHALLENGE · ZONE G</span>
+                        </div>
+                        <a href="/booth/taste-duel" target="_blank" class="btn-booth-link">Launch ↗</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: LIVE ON-STAGE AUDIENCE VOTING -->
+            <div class="companion-tab-panel" id="cpanel-vote">
+                <div class="vote-card-box">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <span style="font-family:'Space Mono'; font-size:0.75rem; color:var(--magenta);">⚔️ LIVE MAINSTAGE POLL</span>
+                        <span class="session-live-pill">OPEN FOR VOTING</span>
+                    </div>
+                    <h3 style="font-family:'Syne', sans-serif; font-size:1.25rem; font-weight:800; margin-bottom:6px;">
+                        The Sonic Dilemma: Official Toffee Brand Sound
+                    </h3>
+                    <p style="font-size:0.82rem; color:var(--text-dim); margin-bottom:16px;">
+                        Cast your vote directly from your seat. Results stream in real-time to the 3-screen mainstage LED wall!
+                    </p>
+
+                    <button type="button" class="vote-btn-choice red" id="appVoteRedBtn" onclick="castAppVote('red')">
+                        <span>🔴 Sonic Alpha (Retro Dynamic)</span>
+                        <span id="appPctRed">52%</span>
+                    </button>
+
+                    <button type="button" class="vote-btn-choice blue" id="appVoteBlueBtn" onclick="castAppVote('blue')">
+                        <span>🔵 Sonic Beta (Futuristic Pulse)</span>
+                        <span id="appPctBlue">48%</span>
+                    </button>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; font-family:'Space Mono'; font-size:0.75rem; color:var(--text-dim);">
+                        <span id="appTotalVotes">600 Total Votes</span>
+                        <a href="/vote" target="_blank" style="color:var(--cyan); text-decoration:none;">Full Vote Deck ↗</a>
+                    </div>
+                </div>
+
+                <!-- Memory Marathon Racer Quick Link -->
+                <div class="agenda-session-card" style="border-color:var(--green); background:rgba(34, 197, 94, 0.05); display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <div style="font-family:'Syne'; font-weight:700; font-size:0.95rem; color:#fff;">🏃 Memory Marathon Trivia Race</div>
+                        <div style="font-size:0.78rem; color:var(--text-dim);">Participate in the 8-lane trivia showdown on stage</div>
+                    </div>
+                    <a href="/marathon" target="_blank" class="btn-booth-link" style="background:linear-gradient(135deg, #10B981, #059669);">Join Race 🏎️</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Segmented Tab Navigation Bar -->
+        <div class="companion-bottom-bar">
+            <button class="nav-item-btn active" id="cnav-pass" onclick="switchCompanionTab('pass')">
+                <span class="nav-icon">🎫</span>
+                <span>Pass</span>
+            </button>
+            <button class="nav-item-btn" id="cnav-agenda" onclick="switchCompanionTab('agenda')">
+                <span class="nav-icon">📅</span>
+                <span>Agenda</span>
+            </button>
+            <button class="nav-item-btn" id="cnav-booths" onclick="switchCompanionTab('booths')">
+                <span class="nav-icon">🎪</span>
+                <span>Booths</span>
+            </button>
+            <button class="nav-item-btn" id="cnav-vote" onclick="switchCompanionTab('vote')">
+                <span class="nav-icon">⚡</span>
+                <span>Live Vote</span>
+            </button>
         </div>
     </div>
 
@@ -1490,6 +2045,198 @@
 
             renderer.render(scene, camera);
         }
+        /* =============================================================
+           8. Attendee Companion PWA Controller Logic
+           ============================================================= */
+        let isCompanionActive = false;
+        let currentCompanionTab = 'pass';
+        let currentLiveSceneId = 'ambient';
+
+        const AGENDA_SCHEDULE = [
+            { id: 'ambient', time: '6:30 PM', title: 'Arrival & Ambient Walk-In', speaker: 'Foyer Panoramic LED Particles', tag: 'NETWORKING' },
+            { id: 'opening_film', time: '7:00 PM', title: 'Opening AV Film & Countdown', speaker: 'Summit Opener & Sonic Riser', tag: 'FILM' },
+            { id: 'speaker_portal', time: '7:05 PM', title: 'Speaker Portal Reveal', speaker: 'Taimur Rahman (CCO Banglalink)', tag: 'KEYNOTE 1' },
+            { id: 'sonic_battle', time: '7:30 PM', title: 'The Sonic Battle (Live Poll)', speaker: 'Audience Showdown (Alpha vs Beta)', tag: 'VOTING' },
+            { id: 'keynote', time: '7:45 PM', title: 'Platform Roadmap & Advertiser Keynote', speaker: 'Modasser Ahmed & Leadership', tag: 'KEYNOTE 2' },
+            { id: 'marathon_race', time: '8:15 PM', title: 'Memory Marathon Trivia Race', speaker: '8-Lane Crowd Interactive Showdown', tag: 'RACE' },
+            { id: 'personal_dashboard', time: '8:35 PM', title: 'Personal Dashboard & This/That', speaker: 'Audience Curated Reel & Duel', tag: 'SHOWCASE' },
+            { id: 'wrapped_capsule', time: '8:55 PM', title: 'ToffeeCon Wrapped & 2033 Capsule', speaker: 'Erik Aas (CEO) & Finale Seal', tag: 'FINALE' }
+        ];
+
+        function toggleCompanionView() {
+            const overlay = document.getElementById('companionOverlay');
+            isCompanionActive = !isCompanionActive;
+            if (isCompanionActive) {
+                overlay.classList.remove('hidden');
+                renderCompanionAgenda();
+                renderCompanionBarcode();
+            } else {
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function switchCompanionTab(tabId) {
+            currentCompanionTab = tabId;
+            document.querySelectorAll('.nav-item-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.companion-tab-panel').forEach(p => p.classList.remove('active'));
+
+            const navBtn = document.getElementById(`cnav-${tabId}`);
+            const panel = document.getElementById(`cpanel-${tabId}`);
+            if (navBtn) navBtn.classList.add('active');
+            if (panel) panel.classList.add('active');
+        }
+
+        function renderCompanionAgenda() {
+            const list = document.getElementById('companionAgendaList');
+            if (!list) return;
+            list.innerHTML = '';
+
+            AGENDA_SCHEDULE.forEach(item => {
+                const card = document.createElement('div');
+                const isLive = (item.id === currentLiveSceneId);
+                card.className = 'agenda-session-card' + (isLive ? ' is-live' : '');
+
+                card.innerHTML = `
+                    <div class="session-time-row">
+                        <span>${item.time} &middot; ${item.tag}</span>
+                        ${isLive ? '<span class="session-live-pill">● LIVE ON STAGE</span>' : ''}
+                    </div>
+                    <div class="session-title">${item.title}</div>
+                    <div class="session-speaker">${item.speaker}</div>
+                `;
+                list.appendChild(card);
+            });
+
+            // Update header badge
+            const currentObj = AGENDA_SCHEDULE.find(s => s.id === currentLiveSceneId);
+            const tagEl = document.getElementById('appLiveSessionTag');
+            if (tagEl && currentObj) {
+                tagEl.innerText = `NOW: ${currentObj.title.toUpperCase()}`;
+            }
+        }
+
+        function renderCompanionBarcode(code) {
+            const container = document.getElementById('appPassBarcode');
+            if (!container) return;
+            container.innerHTML = '';
+            const str = (code || 'TCON-3089').toUpperCase();
+            for (let i = 0; i < str.length * 3; i++) {
+                const charCode = str.charCodeAt(i % str.length);
+                const width = ((charCode + i) % 4) + 1;
+                const bar = document.createElement('div');
+                bar.style.background = '#000';
+                bar.style.height = '100%';
+                bar.style.width = `${width}px`;
+                container.appendChild(bar);
+            }
+        }
+
+        // Live Voting directly from Companion Web App
+        async function castAppVote(option) {
+            const redBtn = document.getElementById('appVoteRedBtn');
+            const blueBtn = document.getElementById('appVoteBlueBtn');
+
+            if (option === 'red') {
+                redBtn.classList.add('voted');
+                blueBtn.classList.remove('voted');
+            } else {
+                blueBtn.classList.add('voted');
+                redBtn.classList.remove('voted');
+            }
+
+            try {
+                const res = await fetch('/api/vote', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ option })
+                });
+                const data = await res.json();
+                updateAppVotePercentages(data.voting || data);
+            } catch(e) {}
+        }
+
+        function updateAppVotePercentages(voting) {
+            if (!voting || !voting.options) return;
+            const red = voting.options.red ? voting.options.red.votes : 0;
+            const blue = voting.options.blue ? voting.options.blue.votes : 0;
+            const total = red + blue || 1;
+            const pctRed = Math.round((red / total) * 100);
+            const pctBlue = 100 - pctRed;
+
+            const elRed = document.getElementById('appPctRed');
+            const elBlue = document.getElementById('appPctBlue');
+            const totalEl = document.getElementById('appTotalVotes');
+
+            if (elRed) elRed.innerText = `${pctRed}%`;
+            if (elBlue) elBlue.innerText = `${pctBlue}%`;
+            if (totalEl) totalEl.innerText = `${red + blue} Total Votes`;
+        }
+
+        // Hydrate Attendee Profile from URL (e.g. /portal?id=TCON-3089 or /app?id=TCON-4001)
+        function hydrateAttendeeProfile() {
+            const params = new URLSearchParams(window.location.search);
+            const queryId = params.get('id') || 'TCON-3089';
+            const queryName = params.get('name');
+            const queryRole = params.get('role');
+            const queryCompany = params.get('company');
+
+            if (queryName) {
+                applyAttendeeData({
+                    id: queryId,
+                    name: queryName,
+                    role: queryRole || 'VIP Delegate',
+                    company: queryCompany || 'Banglalink Partner',
+                    gate: 'Gate 1 (VIP North)'
+                });
+            } else {
+                fetch(`/api/gate/search?q=${encodeURIComponent(queryId)}`)
+                    .then(r => r.json())
+                    .then(results => {
+                        if (results && results.length > 0) {
+                            applyAttendeeData(results[0]);
+                        }
+                    })
+                    .catch(() => {});
+            }
+
+            // If user opens directly with /app or ?view=app, open Companion immediately
+            if (window.location.pathname === '/app' || window.location.pathname === '/companion' || params.get('view') === 'app') {
+                toggleCompanionView();
+            }
+        }
+
+        function applyAttendeeData(attendee) {
+            if (!attendee) return;
+            document.getElementById('appPassName').innerText = attendee.name || 'VIP Delegate';
+            document.getElementById('appPassCompany').innerText = attendee.company || 'Banglalink';
+            document.getElementById('appPassRole').innerText = (attendee.role || 'ATTENDEE').toUpperCase();
+            document.getElementById('appPassId').innerText = attendee.id || 'TCON-2026';
+            document.getElementById('appPassGate').innerText = `ASSIGNED GATE: ${attendee.gate || 'Gate 1 (VIP North)'}`;
+            document.getElementById('appPassQr').src = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://toffeecon.live/programme?id=${attendee.id || 'TCON-2026'}`;
+            renderCompanionBarcode(attendee.id);
+        }
+
+        // Initialize state on load
+        hydrateAttendeeProfile();
+        renderCompanionAgenda();
+
+        // WebSocket Listener for Stage Agenda and Poll Sync
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const portalWs = new WebSocket(`${wsProtocol}//${window.location.host}`);
+        portalWs.onmessage = (event) => {
+            try {
+                const msg = JSON.parse(event.data);
+                if (msg.type === 'STAGE_SCENE_CHANGE') {
+                    if (msg.data && msg.data.scene) {
+                        currentLiveSceneId = msg.data.scene;
+                        renderCompanionAgenda();
+                    }
+                } else if (msg.type === 'VOTE_UPDATE' || msg.type === 'INIT_STATE') {
+                    updateAppVotePercentages(msg.data.voting || msg.data);
+                }
+            } catch(e) {}
+        };
+
         animate();
     </script>
 </body>

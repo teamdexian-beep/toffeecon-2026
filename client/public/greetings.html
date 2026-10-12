@@ -234,6 +234,84 @@
             100% { transform: scaleY(1); opacity: 1; }
         }
 
+        /* VIP Red Carpet Welcome Overlay & Dignitary Selector */
+        .vip-carpet-banner {
+            position: absolute;
+            top: 76px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(14, 8, 30, 0.92);
+            border: 1px solid rgba(255, 184, 0, 0.6);
+            padding: 8px 18px;
+            border-radius: 40px;
+            z-index: 28;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 0 25px rgba(255, 184, 0, 0.25);
+            max-width: 90vw;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .vip-name-badge {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #FFB800;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 12px rgba(255, 184, 0, 0.5);
+        }
+
+        .vip-role-tag {
+            background: linear-gradient(135deg, var(--orange), var(--purple));
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .vip-fast-chips {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        .btn-vip-chip {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #CBD5E1;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s;
+        }
+
+        .btn-vip-chip:hover {
+            border-color: var(--cyan);
+            color: #fff;
+            background: rgba(0, 240, 255, 0.15);
+        }
+
+        .flash-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #fff;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+            transition: opacity 0.08s ease-out;
+        }
+
         /* 7. Bottom Transmission HUD */
         .hud-bottom {
             position: absolute;
@@ -415,6 +493,9 @@
     <!-- Scanline Texture Overlay -->
     <div class="ar-overlay"></div>
 
+    <!-- Camera Flash Effect for VIP Arrivals -->
+    <div class="flash-overlay" id="flashOverlay"></div>
+
     <!-- Alignment Target Reticle for Physical Card -->
     <div class="card-target-guide" id="target-guide">
         <div class="target-corner tc-tl"></div>
@@ -428,22 +509,43 @@
     <div class="hud-top">
         <div class="brand-badge">
             <img src="/assets/toffeecon-logo.png" alt="ToffeeCon 2026">
-            <span>GREETINGS.EXE</span>
+            <span>VIP RED CARPET · GREETINGS</span>
         </div>
         <div class="controls-right">
             <button class="mode-btn" id="btn-toggle-cam" title="Toggle Real Camera Feed">
                 <span>📹</span>
                 <span id="cam-btn-text">Enable WebAR</span>
             </button>
-            <a href="/" class="mode-btn" style="text-decoration:none;">
-                <span>🌐</span>
+            <a href="/portal" class="mode-btn" style="text-decoration:none; border-color:var(--magenta); color:#fff;" title="Open Attendee Companion">
+                <span>📱</span>
+                <span>Companion App</span>
+            </a>
+            <a href="/hub" class="mode-btn" style="text-decoration:none;">
+                <span>🎛️</span>
                 <span>Hub</span>
             </a>
         </div>
     </div>
 
+    <!-- VIP Personalized Red Carpet Arrival Banner -->
+    <div class="vip-carpet-banner" id="vipCarpetBanner">
+        <span style="font-size:1.1rem;">👑</span>
+        <div class="vip-name-badge" id="vipHeroName">WELCOME, ERIK AAS</div>
+        <div class="vip-role-tag" id="vipHeroRole">CHIEF EXECUTIVE OFFICER</div>
+        <div style="font-family:'Space Mono'; font-size:0.75rem; color:var(--cyan);" id="vipHeroCompany">BANGLALINK</div>
+        
+        <!-- Fast VIP Selector for Testing & Red Carpet Operators -->
+        <div class="vip-fast-chips">
+            <span style="font-size:0.65rem; color:var(--text-dim); margin-left:8px;">VIPs:</span>
+            <button type="button" class="btn-vip-chip" onclick="setVipArrival('Erik Aas', 'Chief Executive Officer', 'Banglalink', 'TCON-2001')">E. Aas (CEO)</button>
+            <button type="button" class="btn-vip-chip" onclick="setVipArrival('Taimur Rahman', 'Chief Commercial Officer', 'Banglalink', 'TCON-3089')">T. Rahman (CCO)</button>
+            <button type="button" class="btn-vip-chip" onclick="setVipArrival('Ananya Roy', 'Chief Marketing Officer', 'Unilever Bangladesh', 'TCON-4001')">A. Roy (Unilever)</button>
+            <button type="button" class="btn-vip-chip" onclick="setVipArrival('Kabir Chowdhury', 'Managing Director', 'Mindshare', 'TCON-1001')">K. Chowdhury (Mindshare)</button>
+        </div>
+    </div>
+
     <div class="ar-hint" id="hint-banner">
-        ✦ DRAG OR TILT PHONE TO EXPLORE 3D CG HOLOGRAPHIC OVERLAY ✦
+        ✦ LIVE RED CARPET MODE: WAITING FOR VIP GATE CHECK-INS OR TAP CHIP ABOVE ✦
     </div>
 
     <!-- 3D Three.js WebGL Container -->
@@ -889,7 +991,7 @@
         /* -------------------------------------------------------------
            5. Typewriter Transmission & Sound Sequence
            ------------------------------------------------------------- */
-        const transmissionScript = [
+        let transmissionScript = [
             "VIP ACCREDITATION DETECTED // GREETINGS RECOGNIZED.",
             "WELCOME TO TOFFEECON 2026: THE SCREEN OF TOMORROW.",
             "OCT 10, 2026 · RADISSON BLU WATER GARDEN, DHAKA.",
@@ -906,7 +1008,7 @@
                 if (charIndex < currentLine.length) {
                     typewriterElem.textContent += currentLine.charAt(charIndex);
                     charIndex++;
-                    setTimeout(typeTransmission, 28);
+                    setTimeout(typeTransmission, 24);
                 } else {
                     setTimeout(() => {
                         lineIndex++;
@@ -920,11 +1022,148 @@
             }
         }
 
-        // Start typewriter on load
-        setTimeout(() => {
-            typeTransmission();
+        // Trigger VIP Arrival Display on Red Carpet Screen
+        function setVipArrival(name, role, company, ticketId) {
+            initAudio();
             playHologramChime();
-        }, 600);
+
+            // Camera Flash Effect
+            const flash = document.getElementById('flashOverlay');
+            if (flash) {
+                flash.style.opacity = '0.9';
+                setTimeout(() => flash.style.opacity = '0', 120);
+                setTimeout(() => {
+                    flash.style.opacity = '0.6';
+                    setTimeout(() => flash.style.opacity = '0', 100);
+                }, 220);
+            }
+
+            // Update VIP Banner
+            document.getElementById('vipHeroName').textContent = `WELCOME, ${name.toUpperCase()}`;
+            document.getElementById('vipHeroRole').textContent = role.toUpperCase();
+            document.getElementById('vipHeroCompany').textContent = (company || 'BANGLALINK').toUpperCase();
+            
+            // Update CTA Button Link to their personal pass
+            const ctaBtn = document.getElementById('cta-pass-btn');
+            if (ctaBtn) {
+                ctaBtn.href = `/gate?id=${encodeURIComponent(ticketId || '')}`;
+                ctaBtn.innerHTML = `<span>⚡ Digital Pass Verified: ${name.split(' ')[0]}</span> <span>→</span>`;
+            }
+
+            // Reset typewriter with custom VIP transmission
+            transmissionScript = [
+                `VIP ARRIVAL DETECTED // ${name.toUpperCase()} HAS ENTERED.`,
+                `AFFILIATION: ${(company || 'HONORED GUEST').toUpperCase()} · ROLE: ${role.toUpperCase()}`,
+                `WELCOME TO THE SCREEN OF TOMORROW · RED CARPET ACCREDITED.`,
+                `PROCEED TO VIP LOUNGE OR KEYNOTE MAINSTAGE SEAT.`
+            ];
+            lineIndex = 0;
+            charIndex = 0;
+            typewriterElem.textContent = "";
+            typeTransmission();
+
+            // Update acrylic card etched canvas
+            renderEtchedArtworkWithName(name, company, role, ticketId);
+        }
+
+        function renderEtchedArtworkWithName(name, company, role, ticketId) {
+            gCtx.clearRect(0, 0, 1024, 1024);
+
+            // Subtle laser-etched border
+            gCtx.strokeStyle = 'rgba(0, 240, 255, 0.7)';
+            gCtx.lineWidth = 6;
+            gCtx.strokeRect(40, 40, 944, 944);
+
+            // Corner registration reticles
+            gCtx.strokeStyle = 'rgba(255, 107, 0, 0.8)';
+            gCtx.lineWidth = 10;
+            gCtx.beginPath();
+            gCtx.moveTo(40, 120); gCtx.lineTo(40, 40); gCtx.lineTo(120, 40);
+            gCtx.moveTo(984, 120); gCtx.lineTo(984, 40); gCtx.lineTo(904, 40);
+            gCtx.moveTo(40, 904); gCtx.lineTo(40, 984); gCtx.lineTo(120, 984);
+            gCtx.moveTo(984, 904); gCtx.lineTo(984, 984); gCtx.lineTo(904, 984);
+            gCtx.stroke();
+
+            // Draw Official Logo
+            const logoImg = new Image();
+            logoImg.src = '/assets/toffeecon-logo.png';
+            logoImg.onload = () => {
+                const targetW = 680;
+                const aspect = logoImg.height / logoImg.width;
+                const targetH = targetW * aspect;
+                gCtx.drawImage(logoImg, (1024 - targetW) / 2, 200, targetW, targetH);
+                if (etchedTexture) etchedTexture.needsUpdate = true;
+            };
+
+            // Etched typography with attendee details
+            gCtx.fillStyle = '#00F0FF';
+            gCtx.font = 'bold 42px "Syne", sans-serif';
+            gCtx.textAlign = 'center';
+            gCtx.fillText((name || 'VIP DELEGATE').toUpperCase(), 512, 510);
+
+            gCtx.fillStyle = '#FFB800';
+            gCtx.font = 'bold 26px "Space Mono", monospace';
+            gCtx.fillText((role || 'HONORED GUEST').toUpperCase(), 512, 570);
+
+            gCtx.fillStyle = '#CBD5E1';
+            gCtx.font = '24px "Space Mono", monospace';
+            gCtx.fillText((company || 'BANGLALINK').toUpperCase(), 512, 620);
+
+            gCtx.fillStyle = 'rgba(255, 184, 0, 0.9)';
+            gCtx.font = 'bold 22px "Space Mono", monospace';
+            gCtx.fillText(`PASS ID: ${ticketId || 'TCON-2026'} · RADISSON BLU`, 512, 680);
+
+            // Simulated laser printed QR code pattern
+            gCtx.fillStyle = '#FFFFFF';
+            gCtx.fillRect(442, 730, 140, 140);
+            gCtx.fillStyle = '#05020a';
+            gCtx.fillRect(452, 740, 120, 120);
+            gCtx.fillStyle = '#00F0FF';
+            gCtx.fillRect(472, 760, 80, 80);
+
+            if (etchedTexture) etchedTexture.needsUpdate = true;
+        }
+
+        // Parse URL Query Parameters on Load (e.g. /invite?id=TCON-3089 or /greetings?name=Erik+Aas)
+        const urlParams = new URLSearchParams(window.location.search);
+        const qName = urlParams.get('name');
+        const qRole = urlParams.get('role');
+        const qCompany = urlParams.get('company');
+        const qId = urlParams.get('id');
+
+        if (qName) {
+            setVipArrival(qName, qRole || 'Keynote Speaker', qCompany || 'Banglalink', qId || 'TCON-3089');
+        } else if (qId) {
+            fetch(`/api/gate/search?q=${encodeURIComponent(qId)}`)
+                .then(r => r.json())
+                .then(guests => {
+                    if (guests && guests.length > 0) {
+                        const g = guests[0];
+                        setVipArrival(g.name, g.role, g.company, g.id);
+                    } else {
+                        setVipArrival('Erik Aas', 'Chief Executive Officer', 'Banglalink', 'TCON-2001');
+                    }
+                })
+                .catch(() => {
+                    setVipArrival('Erik Aas', 'Chief Executive Officer', 'Banglalink', 'TCON-2001');
+                });
+        } else {
+            // Default dignitary arrival
+            setVipArrival('Erik Aas', 'Chief Executive Officer', 'Banglalink', 'TCON-2001');
+        }
+
+        // Live WebSocket Synchronization with Venue Gate (/gate) Check-ins
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${protocol}//${window.location.host}`);
+        ws.onmessage = (event) => {
+            try {
+                const msg = JSON.parse(event.data);
+                if (msg.type === 'ATTENDEE_CHECKED_IN' && msg.data && msg.data.ticket) {
+                    const ticket = msg.data.ticket;
+                    setVipArrival(ticket.name, ticket.role, ticket.company, ticket.id);
+                }
+            } catch(e) {}
+        };
 
         /* -------------------------------------------------------------
            6. Render & Animation Loop

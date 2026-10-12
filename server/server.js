@@ -82,9 +82,12 @@ app.get('/', (req, res) => res.sendFile(path.join(clientPublic, 'landing.html'))
 app.get('/hub', (req, res) => res.sendFile(path.join(clientPublic, 'hub.html')));
 app.get('/stage', (req, res) => res.sendFile(path.join(clientPublic, 'stage.html')));
 app.get('/portal', (req, res) => res.sendFile(path.join(clientPublic, 'portal.html')));
+app.get('/app', (req, res) => res.sendFile(path.join(clientPublic, 'portal.html')));
+app.get('/companion', (req, res) => res.sendFile(path.join(clientPublic, 'portal.html')));
 app.get('/gate', (req, res) => res.sendFile(path.join(clientPublic, 'gate.html')));
 app.get('/invite', (req, res) => res.sendFile(path.join(clientPublic, 'greetings.html')));
 app.get('/greetings', (req, res) => res.sendFile(path.join(clientPublic, 'greetings.html')));
+app.get('/welcome', (req, res) => res.sendFile(path.join(clientPublic, 'greetings.html')));
 
 // Mobile Audience Keynote Interaction Surfaces
 app.get('/vote', (req, res) => res.sendFile(path.join(clientPublic, 'vote.html')));
