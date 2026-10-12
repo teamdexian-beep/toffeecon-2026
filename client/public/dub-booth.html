@@ -771,6 +771,15 @@
                     <!-- Populated by JS -->
                 </div>
 
+                <!-- Language Toggle for Speech Recognition -->
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-family:'Space Mono'; font-size:0.75rem; color:var(--neon-pink);">INPUT SPEECH LANGUAGE:</span>
+                    <div style="display:flex; gap:8px;">
+                        <button type="button" id="btnDubLangBn" onclick="setDubSpeechLang('bn-BD')" style="background:var(--neon-pink); border:1px solid var(--neon-pink); color:#fff; font-family:'Space Mono'; font-weight:700; font-size:0.75rem; padding:4px 10px; border-radius:6px; cursor:pointer;">🇧🇩 বাংলা</button>
+                        <button type="button" id="btnDubLangEn" onclick="setDubSpeechLang('en-US')" style="background:#1A0F2E; border:1px solid rgba(255,255,255,0.2); color:#ccc; font-family:'Space Mono'; font-size:0.75rem; padding:4px 10px; border-radius:6px; cursor:pointer;">🇬🇧 English</button>
+                    </div>
+                </div>
+
                 <!-- Text box -->
                 <div class="speech-box-wrapper">
                     <textarea id="dialogueInput" class="speech-box" placeholder="আপনার সংলাপ এখানে বলুন বা লিখুন...">ছু মন্তর ছু কালিপুত্তের গু! মামা খেলা হবে!</textarea>
@@ -1068,19 +1077,45 @@
             goToScreen(3);
         }
 
+        let dubSpeechLang = 'bn-BD';
+
+        function setDubSpeechLang(lang) {
+            dubSpeechLang = lang;
+            const btnBn = document.getElementById('btnDubLangBn');
+            const btnEn = document.getElementById('btnDubLangEn');
+            if (lang === 'bn-BD') {
+                btnBn.style.background = 'var(--neon-pink)';
+                btnBn.style.color = '#fff';
+                btnBn.style.fontWeight = '700';
+                btnEn.style.background = '#1A0F2E';
+                btnEn.style.color = '#ccc';
+                btnEn.style.fontWeight = '400';
+            } else {
+                btnEn.style.background = 'var(--neon-pink)';
+                btnEn.style.color = '#fff';
+                btnEn.style.fontWeight = '700';
+                btnBn.style.background = '#1A0F2E';
+                btnBn.style.color = '#ccc';
+                btnBn.style.fontWeight = '400';
+            }
+            if (recognition) {
+                recognition.lang = lang;
+            }
+        }
+
         // Speech Recognition Setup
         function initSpeechRecognition() {
             const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (SpeechRec) {
                 recognition = new SpeechRec();
-                recognition.lang = 'bn-BD';
+                recognition.lang = dubSpeechLang;
                 recognition.continuous = false;
                 recognition.interimResults = true;
 
                 recognition.onstart = () => {
                     isRecording = true;
                     document.getElementById('btnMicRecord').classList.add('recording');
-                    document.getElementById('micStatusText').innerText = 'LISTENING TO YOUR BENGALI VOICE...';
+                    document.getElementById('micStatusText').innerText = dubSpeechLang === 'bn-BD' ? 'LISTENING TO BENGALI VOICE...' : 'LISTENING TO ENGLISH VOICE...';
                 };
 
                 recognition.onresult = (event) => {

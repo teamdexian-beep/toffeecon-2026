@@ -302,16 +302,34 @@
 
             <!-- Cabin Inputs -->
             <div class="cabin-form">
+                <!-- Language Selector -->
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-family:'Space Mono'; font-size:0.75rem; color:var(--neon-amber);">VOICE INPUT RECOGNITION:</span>
+                    <div style="display:flex; gap:8px;">
+                        <button type="button" id="btnLangBn" onclick="setSpeechLang('bn-BD')" style="background:#221338; border:1px solid #78490a; color:#fff; font-family:'Space Mono'; font-size:0.75rem; padding:4px 10px; border-radius:6px; cursor:pointer;">🇧🇩 বাংলা</button>
+                        <button type="button" id="btnLangEn" onclick="setSpeechLang('en-US')" style="background:var(--neon-amber); border:1px solid var(--neon-amber); color:#000; font-family:'Space Mono'; font-weight:700; font-size:0.75rem; padding:4px 10px; border-radius:6px; cursor:pointer;">🇬🇧 English</button>
+                    </div>
+                </div>
+
                 <div class="input-row">
                     <input type="text" id="authorName" class="cabin-input" value="Nabila Hasan" placeholder="Your Name">
                     <input type="text" id="authorCompany" class="cabin-input" value="Dentsu X" placeholder="Organization / Media">
                 </div>
-                <textarea id="predictionText" class="cabin-input" rows="3" placeholder="State your bold prediction for streaming & entertainment in 2033...">By 2033, Toffee will beam interactive 360 holographic cricket matches directly to consumer neural interfaces.</textarea>
+                
+                <textarea id="predictionText" class="cabin-input" rows="3" placeholder="Speak into mic or type your bold 2033 prediction...">By 2033, Toffee will beam interactive 360 holographic cricket matches directly to consumer neural interfaces.</textarea>
 
-                <button class="btn-record-capsule" id="btnRecordCapsule" onclick="recordAndSubmitPrediction()">
-                    <span>🎙️</span>
-                    <span id="recCapLabel">RECORD PREDICTION & SEAL (3s)</span>
-                </button>
+                <!-- Voice Audio Visualizer Canvas -->
+                <canvas id="capsuleAudioCanvas" width="400" height="30" style="width:100%; height:30px; border-radius:6px; background:#080310; border:1px solid #331f08; margin-top:4px; display:none;"></canvas>
+
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button class="btn-record-capsule" id="btnRecordCapsule" onclick="toggleCapsuleVoiceRecording()" style="flex:1;">
+                        <span id="recCapIcon">🎙️</span>
+                        <span id="recCapLabel">START VOICE RECORDING (MIC)</span>
+                    </button>
+                    <button type="button" onclick="submitCapsulePrediction()" style="background:#221338; border:1px solid var(--neon-amber); color:var(--neon-amber); font-family:'Space Mono'; font-weight:700; font-size:0.8rem; padding:0 16px; border-radius:8px; cursor:pointer;">
+                        SEAL 2033
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -363,40 +381,179 @@
     </div>
 
     <script>
-        function recordAndSubmitPrediction() {
+        let currentSpeechLang = 'en-US';
+        let speechRecognizer = null;
+        let isVoiceRecording = false;
+        let audioAnimId = null;
+
+        function setSpeechLang(lang) {
+            currentSpeechLang = lang;
+            const btnBn = document.getElementById('btnLangBn');
+            const btnEn = document.getElementById('btnLangEn');
+            if (lang === 'bn-BD') {
+                btnBn.style.background = 'var(--neon-amber)';
+                btnBn.style.color = '#000';
+                btnBn.style.fontWeight = '700';
+                btnEn.style.background = '#221338';
+                btnEn.style.color = '#fff';
+                btnEn.style.fontWeight = '400';
+            } else {
+                btnEn.style.background = 'var(--neon-amber)';
+                btnEn.style.color = '#000';
+                btnEn.style.fontWeight = '700';
+                btnBn.style.background = '#221338';
+                btnBn.style.color = '#fff';
+                btnBn.style.fontWeight = '400';
+            }
+            if (isVoiceRecording && speechRecognizer) {
+                speechRecognizer.stop();
+            }
+        }
+
+        function toggleCapsuleVoiceRecording() {
+            if (isVoiceRecording) {
+                stopCapsuleVoiceRecording();
+            } else {
+                startCapsuleVoiceRecording();
+            }
+        }
+
+        function startCapsuleVoiceRecording() {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
             const btn = document.getElementById('btnRecordCapsule');
             const lbl = document.getElementById('recCapLabel');
-            btn.classList.add('active');
-            lbl.innerText = 'ENCODING VOCAL PREDICTION... (3s)';
+            const canvas = document.getElementById('capsuleAudioCanvas');
 
+            if (!SpeechRec) {
+                alert('Web Speech API is not supported in this browser. Please type directly into the prediction box.');
+                return;
+            }
+
+            try {
+                speechRecognizer = new SpeechRec();
+                speechRecognizer.continuous = true;
+                speechRecognizer.interimResults = true;
+                speechRecognizer.lang = currentSpeechLang;
+
+                speechRecognizer.onstart = () => {
+                    isVoiceRecording = true;
+                    btn.classList.add('active');
+                    lbl.innerText = 'LISTENING... TAP TO STOP & SEAL';
+                    document.getElementById('recCapIcon').innerText = '🔴';
+                    canvas.style.display = 'block';
+                    startVisualizerSimulation();
+                };
+
+                speechRecognizer.onresult = (e) => {
+                    let fullText = '';
+                    for (let i = 0; i < e.results.length; ++i) {
+                        fullText += e.results[i][0].transcript;
+                    }
+                    if (fullText.trim()) {
+                        document.getElementById('predictionText').value = fullText;
+                        document.getElementById('crtLiveText').innerText = `"${fullText}"`;
+                    }
+                };
+
+                speechRecognizer.onerror = (e) => {
+                    console.warn('Capsule speech error:', e.error);
+                };
+
+                speechRecognizer.onend = () => {
+                    if (isVoiceRecording) {
+                        stopCapsuleVoiceRecording();
+                    }
+                };
+
+                speechRecognizer.start();
+            } catch(e) {
+                console.error('Speech init error:', e);
+                // Fallback to manual
+                btn.classList.remove('active');
+            }
+        }
+
+        function stopCapsuleVoiceRecording() {
+            isVoiceRecording = false;
+            const btn = document.getElementById('btnRecordCapsule');
+            const lbl = document.getElementById('recCapLabel');
+            btn.classList.remove('active');
+            lbl.innerText = 'VOICE RECORDED · TAP TO RE-RECORD';
+            document.getElementById('recCapIcon').innerText = '🎙️';
+            
+            if (speechRecognizer) {
+                try { speechRecognizer.stop(); } catch(e) {}
+                speechRecognizer = null;
+            }
+
+            if (audioAnimId) {
+                cancelAnimationFrame(audioAnimId);
+                audioAnimId = null;
+            }
+            document.getElementById('capsuleAudioCanvas').style.display = 'none';
+
+            // Auto-submit after voice input
+            submitCapsulePrediction();
+        }
+
+        function startVisualizerSimulation() {
+            const canvas = document.getElementById('capsuleAudioCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth || 350;
+            canvas.height = 30;
+
+            function draw() {
+                if (!isVoiceRecording) return;
+                audioAnimId = requestAnimationFrame(draw);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const bars = 36;
+                const barWidth = canvas.width / bars;
+                for (let i = 0; i < bars; i++) {
+                    const h = Math.random() * 24 + 4;
+                    ctx.fillStyle = '#ffaa00';
+                    ctx.fillRect(i * barWidth + 2, (canvas.height - h) / 2, barWidth - 4, h);
+                }
+            }
+            draw();
+        }
+
+        async function submitCapsulePrediction() {
             const author = document.getElementById('authorName').value;
             const company = document.getElementById('authorCompany').value;
             const text = document.getElementById('predictionText').value;
 
             document.getElementById('crtLiveText').innerText = `"${text}"`;
 
-            setTimeout(async () => {
-                btn.classList.remove('active');
-                lbl.innerText = 'PREDICTION ARCHIVED · CLICK TO RE-RECORD';
-
-                // Call AI Prediction Expander Endpoint
-                try {
-                    const res = await fetch('/api/booth/capsule-ai', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ author, company, predictionText: text })
-                    });
-                    const data = await res.json();
-                    if (data.success) {
-                        document.getElementById('dispAuthorHeader').innerText = `${author.toUpperCase()} · ${company.toUpperCase()}`;
-                        document.getElementById('dispQuoteText').innerText = `"${data.prediction.editorialHeadline || text}"`;
-                        document.getElementById('predCertId').innerText = '#' + data.prediction.predId;
-                        document.getElementById('qrCap').src = `https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=${encodeURIComponent('https://toffeecon.live/capsule/' + data.prediction.predId)}`;
-                    }
-                } catch(e) {
-                    console.error('Prediction API error:', e);
+            try {
+                const res = await fetch('/api/booth/capsule-ai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ author, company, predictionText: text })
+                });
+                const data = await res.json();
+                if (data.success && data.prediction) {
+                    const pred = data.prediction;
+                    document.getElementById('dispAuthorHeader').innerText = `${author.toUpperCase()} · ${company.toUpperCase()}`;
+                    document.getElementById('dispQuoteText').innerText = `"${pred.editorialHeadline || text}"`;
+                    document.getElementById('predCertId').innerText = '#' + pred.predId;
+                    document.getElementById('qrCap').src = `https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=${encodeURIComponent('https://toffeecon.live/capsule/' + pred.predId)}`;
+                    
+                    // Voice synthesis confirmation readout
+                    speakAnnouncement(`Prediction archived for year 2033. Feasibility rating: ${pred.feasibilityScore} percent.`);
                 }
-            }, 3000);
+            } catch(e) {
+                console.error('Prediction API error:', e);
+            }
+        }
+
+        function speakAnnouncement(msg) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utter = new SpeechSynthesisUtterance(msg);
+                utter.rate = 1.05;
+                utter.pitch = 0.95;
+                window.speechSynthesis.speak(utter);
+            }
         }
 
         async function sendToStageTimeCapsule() {
@@ -410,6 +567,7 @@
                 body: JSON.stringify({ author, company, prediction: text })
             });
 
+            speakAnnouncement('Prediction transmitted to main stage deck.');
             alert('Prediction transmitted! It is now loaded into the stage time capsule for the Keynote Closing Ceremony.');
         }
     </script>

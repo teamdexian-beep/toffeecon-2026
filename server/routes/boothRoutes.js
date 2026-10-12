@@ -259,23 +259,16 @@ module.exports = function(eventStore, broadcast, aiProvider) {
 
             const qCount = d.questions.length;
             if (d.guestAnswers.length >= qCount && d.friendGuesses.length >= qCount) {
-                let aiMatches = 0;
-                let friendMatches = 0;
-
-                for (let i = 0; i < qCount; i++) {
-                    const guestAns = d.guestAnswers[i];
-                    const friendGuess = d.friendGuesses[i];
-                    if (guestAns === 'A' || Math.random() > 0.25) aiMatches += 1;
-                    if (friendGuess === guestAns) friendMatches += 1;
-                }
-
-                const aiMatchPct = Math.round((aiMatches / qCount) * 100);
-                const friendMatchPct = Math.round((friendMatches / qCount) * 100);
+                const profileResult = aiProvider.evaluateTasteProfile({
+                    guestAnswers: d.guestAnswers,
+                    friendGuesses: d.friendGuesses
+                });
 
                 d.duelOutcome = {
-                    aiMatchPct: Math.max(75, aiMatchPct),
-                    friendMatchPct,
-                    winner: aiMatchPct >= friendMatchPct ? 'TOFFEE ALGORITHM' : 'FRIEND'
+                    aiMatchPct: profileResult.aiMatchPct,
+                    friendMatchPct: profileResult.friendMatchPct,
+                    winner: profileResult.winner,
+                    persona: profileResult.persona
                 };
             }
         });

@@ -1123,6 +1123,11 @@
         </div>
 
         <div class="hud-right">
+            <button class="btn-header" id="btnVoiceShowcaller" onclick="toggleVoiceShowcaller()" style="border-color:var(--cyan); color:var(--cyan);" title="Voice-controlled Showcaller commands">
+                <span id="voiceShowcallerIcon">🎙️</span>
+                <span id="voiceShowcallerText">Voice Command: OFF</span>
+            </button>
+
             <button class="btn-header" id="btnAudioToggle" onclick="toggleAudioEngine()">
                 <span id="sfxIcon">🔊</span>
                 <span id="sfxStatus">Sound: ON</span>
@@ -2330,6 +2335,106 @@
         // Initial Render
         renderTimeline();
         renderPhoneWallGrid();
+
+        /* ================= HANDS-FREE SHOWCALLER VOICE COMMANDS ================= */
+        let voiceShowcallerActive = false;
+        let showcallerRecognition = null;
+
+        function toggleVoiceShowcaller() {
+            if (voiceShowcallerActive) {
+                stopVoiceShowcaller();
+            } else {
+                startVoiceShowcaller();
+            }
+        }
+
+        function startVoiceShowcaller() {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRec) {
+                alert('Web Speech API is not supported in this browser.');
+                return;
+            }
+            try {
+                showcallerRecognition = new SpeechRec();
+                showcallerRecognition.continuous = true;
+                showcallerRecognition.interimResults = false;
+                showcallerRecognition.lang = 'en-US';
+
+                showcallerRecognition.onstart = () => {
+                    voiceShowcallerActive = true;
+                    document.getElementById('voiceShowcallerIcon').innerText = '🔴';
+                    document.getElementById('voiceShowcallerText').innerText = 'Voice: LISTENING';
+                    document.getElementById('btnVoiceShowcaller').style.background = 'rgba(0, 240, 255, 0.2)';
+                    announceShowcallerFeedback('Voice showcaller active.');
+                };
+
+                showcallerRecognition.onresult = (e) => {
+                    const lastResult = e.results[e.results.length - 1];
+                    const cmd = lastResult[0].transcript.toLowerCase().trim();
+                    console.log('[Showcaller Voice Command]:', cmd);
+
+                    if (cmd.includes('battle') || cmd.includes('sonic') || cmd.includes('voting')) {
+                        switchTab('audience');
+                        announceShowcallerFeedback('Switching to Keynote Battles.');
+                    } else if (cmd.includes('audition') || cmd.includes('booth') || cmd.includes('casting')) {
+                        switchTab('booths');
+                        announceShowcallerFeedback('Switching to Experiential Booths.');
+                    } else if (cmd.includes('rundown') || cmd.includes('timeline') || cmd.includes('scene')) {
+                        switchTab('rundown');
+                        announceShowcallerFeedback('Switching to Stage Rundown.');
+                    } else if (cmd.includes('blackout') || cmd.includes('panic')) {
+                        triggerPanic('blackout');
+                        announceShowcallerFeedback('Triggering stage blackout.');
+                    } else if (cmd.includes('ambient') || cmd.includes('walk in')) {
+                        triggerPanic('ambient');
+                        announceShowcallerFeedback('Resetting to ambient walk-in.');
+                    } else if (cmd.includes('mute') || cmd.includes('sound off')) {
+                        if (audioEnabled) toggleAudioEngine();
+                        announceShowcallerFeedback('Sound muted.');
+                    } else if (cmd.includes('unmute') || cmd.includes('sound on')) {
+                        if (!audioEnabled) toggleAudioEngine();
+                        announceShowcallerFeedback('Sound unmuted.');
+                    }
+                };
+
+                showcallerRecognition.onerror = (e) => {
+                    console.warn('[Showcaller Speech error]:', e.error);
+                };
+
+                showcallerRecognition.onend = () => {
+                    if (voiceShowcallerActive) {
+                        try { showcallerRecognition.start(); } catch(e) {}
+                    }
+                };
+
+                showcallerRecognition.start();
+            } catch(err) {
+                console.error('Showcaller init error:', err);
+            }
+        }
+
+        function stopVoiceShowcaller() {
+            voiceShowcallerActive = false;
+            if (showcallerRecognition) {
+                try { showcallerRecognition.stop(); } catch(e) {}
+                showcallerRecognition = null;
+            }
+            document.getElementById('voiceShowcallerIcon').innerText = '🎙️';
+            document.getElementById('voiceShowcallerText').innerText = 'Voice Command: OFF';
+            document.getElementById('btnVoiceShowcaller').style.background = '';
+            announceShowcallerFeedback('Voice showcaller disabled.');
+        }
+
+        function announceShowcallerFeedback(msg) {
+            if ('speechSynthesis' in window) {
+                try {
+                    window.speechSynthesis.cancel();
+                    const u = new SpeechSynthesisUtterance(msg);
+                    u.rate = 1.1;
+                    window.speechSynthesis.speak(u);
+                } catch(e) {}
+            }
+        }
     </script>
 </body>
 </html>

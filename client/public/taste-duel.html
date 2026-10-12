@@ -404,11 +404,33 @@
 
             document.getElementById('scoreAi').textContent = `${outcome.aiMatchPct}%`;
             document.getElementById('scoreFriend').textContent = `${outcome.friendMatchPct}%`;
+            
+            if (outcome.persona) {
+                document.getElementById('verdictWinnerTitle').textContent = outcome.persona.title.toUpperCase();
+                const descEl = document.querySelector('#verdictOverlay p');
+                if (descEl) {
+                    descEl.textContent = `${outcome.persona.summary} Pipeline: ${outcome.persona.recommendedPipeline}.`;
+                }
+            }
+
             document.getElementById('verdictOverlay').classList.add('active');
+
+            // Speech Synthesis Announcement
+            if ('speechSynthesis' in window) {
+                try {
+                    window.speechSynthesis.cancel();
+                    const personaName = outcome.persona ? outcome.persona.title : 'Streaming Titan';
+                    const utter = new SpeechSynthesisUtterance(`Toffee algorithm showdown complete. Your streaming persona is: ${personaName}. Algorithm match confidence: ${outcome.aiMatchPct} percent.`);
+                    utter.rate = 1.05;
+                    utter.pitch = 1.0;
+                    window.speechSynthesis.speak(utter);
+                } catch(e) {}
+            }
         }
 
         async function resetDuel() {
             currentQIndex = 0;
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
             document.getElementById('verdictOverlay').classList.remove('active');
             await fetch('/api/booth/duel/reset', { method: 'POST' });
             renderQuestion();

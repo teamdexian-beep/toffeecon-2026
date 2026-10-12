@@ -259,7 +259,7 @@ class AIProviderService {
     }
 
     /**
-     * Slide 10: In Another Universe GenAI portrait transformation
+     * Slide 10: In Another Universe GenAI portrait transformation (PiAPI Neural Face Swap)
      */
     async transformPortrait({ guestName, guestPhotoBase64, genre = 'sports' }) {
         let cleanGenre = (genre || 'sports').toLowerCase();
@@ -269,13 +269,12 @@ class AIProviderService {
         const timestamp = new Date().toISOString();
         const posterId = 'UNIV-' + Math.floor(1000 + Math.random() * 9000);
 
-        if (this.config.apiKey && this.config.provider !== 'local_fallback') {
+        if (this.config.apiKey && this.config.provider !== 'local_fallback' && guestPhotoBase64) {
             try {
-                console.log(`[AI Provider] Attempting external image gen via ${this.config.provider}...`);
-                const externalResult = await this.callExternalAIProvider({
-                    guestPhotoBase64,
-                    genre: selectedGenre,
-                    template
+                console.log(`[AI Provider] Attempting PiAPI neural face-swap for universe archetype: ${selectedGenre}...`);
+                const externalResult = await this.callPiAPIFaceSwap({
+                    swapImageBase64: guestPhotoBase64,
+                    targetImageUrl: template.backdropUrl
                 });
                 if (externalResult && externalResult.imageUrl) {
                     return {
@@ -285,13 +284,14 @@ class AIProviderService {
                         genre: selectedGenre,
                         template,
                         posterUrl: externalResult.imageUrl,
-                        providerUsed: this.config.provider,
+                        rawGuestPhoto: guestPhotoBase64,
+                        providerUsed: 'piapi_neural_face_swap',
                         generationTimeMs: externalResult.durationMs || 1850,
                         timestamp
                     };
                 }
             } catch (err) {
-                console.warn(`[AI Provider] External call failed: ${err.message}. Falling back to edge compositor.`);
+                console.warn(`[AI Provider] PiAPI neural call failed: ${err.message}. Falling back to edge compositor.`);
             }
         }
 
@@ -311,6 +311,13 @@ class AIProviderService {
             generationTimeMs: simulatedLatency,
             timestamp
         };
+    }
+
+    async callExternalAIProvider(params) {
+        return this.callPiAPIFaceSwap({
+            swapImageBase64: params.guestPhotoBase64,
+            targetImageUrl: params.template ? params.template.backdropUrl : params.targetImageUrl
+        });
     }
 
     /**
@@ -337,7 +344,7 @@ Return a strict JSON object with two fields:
   "translation": "<translated dialogue in target script/characters with cinematic excitement and emotion>",
   "phonetic": "<phonetic romanized guide for subtitles>"
 }`;
-                const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
+                const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${geminiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -430,26 +437,82 @@ Return a strict JSON object with two fields:
     }
 
     /**
-     * Slide 17: Capsule 2033 AI Future Prediction Expander
+     * Slide 17: Capsule 2033 AI Future Prediction Expander (Gemini 3.8 Flash + Deep Domain Heuristic)
      */
     async expandFuturePrediction({ author, company, predictionText }) {
         const predId = 'PRED-' + Math.floor(10000 + Math.random() * 90000);
-        const text = predictionText || 'By 2033, video streaming will be embedded in holographic ambient walls.';
-        
-        // Generate AI editorial summary and 2033 Feasibility Index
-        const keywords = text.toLowerCase();
-        let feasibilityScore = 88;
-        let domain = 'Ambient Computing';
+        const text = (predictionText || 'By 2033, video streaming will be embedded in holographic ambient walls.').trim();
+        const geminiKey = process.env.GEMINI_API_KEY;
 
-        if (keywords.includes('cricket') || keywords.includes('sport')) {
+        if (geminiKey) {
+            try {
+                const prompt = `You are a visionary Media & Telecommunications Futurist for Toffee OTT in Bangladesh, predicting the state of entertainment in 2033.
+Attendee: "${author || 'VIP Guest'}" (${company || 'Industry Leader'})
+Prediction: "${text}"
+
+Analyze this prediction and output ONLY a valid JSON object (no markdown, pure JSON):
+{
+  "editorialHeadline": "Short punchy uppercase futuristic headline under 80 characters",
+  "domain": "One of: Volumetric Holographic Sports | Real-time Generative Storytelling | Neural Direct Streaming | Ambient Edge Computing | AI Autonomous OTT | 16K Ultra-Low Latency",
+  "feasibilityScore": 92,
+  "visionaryAnalysis": "1-2 sentence sharp futurist editorial breakdown of how this changes media in Bangladesh by 2033."
+}`;
+                const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${geminiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { responseMimeType: 'application/json', temperature: 0.7 }
+                    })
+                });
+                if (geminiRes.ok) {
+                    const geminiJson = await geminiRes.json();
+                    const raw = geminiJson.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (raw) {
+                        const parsed = JSON.parse(raw.trim());
+                        return {
+                            success: true,
+                            predId,
+                            author: author || 'ToffeeCon VIP',
+                            company: company || 'Industry Leader',
+                            rawPrediction: text,
+                            editorialHeadline: parsed.editorialHeadline || `[2033 OUTLOOK] ${text.slice(0, 65)}...`,
+                            domain: parsed.domain || 'Ambient Computing',
+                            feasibilityScore: parsed.feasibilityScore || 88,
+                            visionaryAnalysis: parsed.visionaryAnalysis || 'Emerging next-gen delivery matrix across Bangladesh.',
+                            targetYear: 2033,
+                            source: 'gemini-3.8-flash',
+                            archivedTimestamp: new Date().toISOString()
+                        };
+                    }
+                }
+            } catch(e) {
+                console.warn('[CapsuleAI] Gemini API error, applying intelligent heuristic engine:', e.message);
+            }
+        }
+
+        // Deep Domain Heuristic Analysis Engine
+        const lower = text.toLowerCase();
+        let domain = 'Ambient Computing & Holographic UI';
+        let feasibilityScore = 89;
+        let visionaryAnalysis = 'Pervasive 6G infrastructure across Bangladesh transforms static screen displays into room-scale shared interactive surfaces.';
+
+        if (lower.includes('cricket') || lower.includes('sport') || lower.includes('stadium') || lower.includes('match')) {
             domain = 'Volumetric Holographic Sports';
-            feasibilityScore = 94;
-        } else if (keywords.includes('ai') || keywords.includes('generative')) {
+            feasibilityScore = 95;
+            visionaryAnalysis = 'Direct edge-rendered volumetric multi-angle stadium broadcasts allow fans in Dhaka to step onto the virtual pitch in real-time.';
+        } else if (lower.includes('ai') || lower.includes('generative') || lower.includes('actor') || lower.includes('story')) {
             domain = 'Real-time Autonomous Storytelling';
-            feasibilityScore = 96;
-        } else if (keywords.includes('brain') || keywords.includes('neural')) {
+            feasibilityScore = 94;
+            visionaryAnalysis = 'Generative OTT pipelines allow viewer decisions and biometric arousal to dynamically direct plotlines and cinematography on the fly.';
+        } else if (lower.includes('brain') || lower.includes('neural') || lower.includes('mind') || lower.includes('bci')) {
             domain = 'Neural Interface Direct Streaming';
-            feasibilityScore = 78;
+            feasibilityScore = 81;
+            visionaryAnalysis = 'Sub-sensory neural streaming bypasses physical screens entirely, transmitting rich audiovisual narratives directly to consciousness.';
+        } else if (lower.includes('fast') || lower.includes('speed') || lower.includes('latency') || lower.includes('buffer')) {
+            domain = 'Zero-Buffer Photonic Streaming';
+            feasibilityScore = 96;
+            visionaryAnalysis = 'National fiber backbones and localized LEO satellite meshes deliver sub-5ms latency across all 64 districts in Bangladesh.';
         }
 
         const editorialHeadline = `[2033 OUTLOOK] ${domain.toUpperCase()}: "${text.slice(0, 75)}${text.length > 75 ? '...' : ''}"`;
@@ -463,8 +526,59 @@ Return a strict JSON object with two fields:
             editorialHeadline,
             domain,
             feasibilityScore,
+            visionaryAnalysis,
             targetYear: 2033,
+            source: 'domain_heuristic_engine',
             archivedTimestamp: new Date().toISOString()
+        };
+    }
+
+    /**
+     * Slide 20: Taste Duel Streaming Algorithmic Profiler
+     */
+    evaluateTasteProfile({ guestAnswers = [], friendGuesses = [] }) {
+        const total = Math.max(1, guestAnswers.length);
+        let friendMatches = 0;
+        let av1Score = 0;
+        let lowLatencyScore = 0;
+        let highBitrateScore = 0;
+
+        guestAnswers.forEach((ans, idx) => {
+            if (friendGuesses[idx] === ans) friendMatches++;
+            if (idx === 0 && ans === 'A') av1Score += 30; // AV1 vs HEVC
+            if (idx === 1 && ans === 'B') lowLatencyScore += 35; // Sub-second LL-HLS vs 4K Buffer
+            if (idx === 2 && ans === 'A') highBitrateScore += 35; // 60fps Ultra HDR vs Standard
+        });
+
+        const friendMatchPct = Math.round((friendMatches / total) * 100);
+        const algoConfidence = Math.min(98, Math.max(76, 84 + (guestAnswers.length * 3)));
+
+        let personaTitle = 'Dynamic Adaptive Streamer';
+        let personaSummary = 'Balances high throughput with resilient packet delivery across mobile edge nodes.';
+
+        if (av1Score >= 25 && highBitrateScore >= 25) {
+            personaTitle = 'Cinematic 4K AV1 Purist';
+            personaSummary = 'Demands maximum pixel fidelity and next-gen compression efficiency for lossless OTT playback.';
+        } else if (lowLatencyScore >= 30) {
+            personaTitle = 'Sub-Second Live Sports Titan';
+            personaSummary = 'Prioritizes zero-delay real-time stadium sync over buffering depth. Born for live World Cup showdowns.';
+        } else if (highBitrateScore >= 25) {
+            personaTitle = '60 FPS High-Dynamism Cinephile';
+            personaSummary = 'Tunes video pipelines for motion smoothness and volumetric color richness.';
+        }
+
+        return {
+            success: true,
+            aiMatchPct: algoConfidence,
+            friendMatchPct,
+            winner: algoConfidence >= friendMatchPct ? 'TOFFEE ALGORITHM' : 'FRIEND',
+            persona: {
+                title: personaTitle,
+                summary: personaSummary,
+                av1Affinity: Math.min(99, 70 + av1Score),
+                latencyToleranceMs: lowLatencyScore > 20 ? 450 : 2200,
+                recommendedPipeline: av1Score > 20 ? 'AV1 / WebRTC Ultra-Low Latency' : 'HEVC / CMAF Adaptive'
+            }
         };
     }
 
@@ -503,11 +617,24 @@ Analyze this audition and output ONLY a valid JSON object with the following str
   }
 }`;
 
+                const requestParts = [];
+                if (photoBase64 && typeof photoBase64 === 'string' && photoBase64.includes(';base64,')) {
+                    const [mimePart, dataPart] = photoBase64.split(';base64,');
+                    const mimeType = mimePart.replace('data:', '') || 'image/jpeg';
+                    requestParts.push({
+                        inlineData: {
+                            mimeType,
+                            data: dataPart
+                        }
+                    });
+                }
+                requestParts.push({ text: prompt });
+
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
+                        contents: [{ parts: requestParts }],
                         generationConfig: {
                             temperature: 0.7,
                             responseMimeType: 'application/json'

@@ -1027,6 +1027,17 @@
             initAudio();
             playHologramChime();
 
+            // Audible VIP Red Carpet Welcome Announcement
+            if ('speechSynthesis' in window) {
+                try {
+                    window.speechSynthesis.cancel();
+                    const utter = new SpeechSynthesisUtterance(`Welcome to ToffeeCon 2026, ${name}. ${company || 'Honored Guest'}.`);
+                    utter.rate = 1.0;
+                    utter.pitch = 1.05;
+                    window.speechSynthesis.speak(utter);
+                } catch(e) {}
+            }
+
             // Camera Flash Effect
             const flash = document.getElementById('flashOverlay');
             if (flash) {
