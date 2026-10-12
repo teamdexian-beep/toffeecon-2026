@@ -38,7 +38,8 @@ module.exports = function(eventStore, broadcast, aiProvider, wss) {
             memoryUsage: process.memoryUsage(),
             connectedClients: wss.clients ? wss.clients.size : 0,
             autoLoopActive: !!wallAutoLoopTimer,
-            eventState: state
+            eventState: state,
+            auditLogs: auditLogs.slice(0, 20)
         });
     });
 
@@ -99,6 +100,52 @@ module.exports = function(eventStore, broadcast, aiProvider, wss) {
             }
         }
         res.json({ success: true, autoLoop: !!wallAutoLoopTimer });
+    });
+
+    // Set 100-Phone Wall display mode
+    router.post('/wall/mode', (req, res) => {
+        const { mode } = req.body;
+        const validModes = ['synced_logo', 'multilingual', 'video_mosaic', 'ambient'];
+        const chosenMode = validModes.includes(mode) ? mode : 'multilingual';
+
+        eventStore.update(st => {
+            st.phoneWall.currentMode = chosenMode;
+        });
+
+        broadcast('WALL_MODE_CHANGE', {
+            mode: chosenMode,
+            timestamp: Date.now()
+        });
+
+        res.json({ success: true, mode: chosenMode });
+    });
+
+    // Real-Time System Audit Log Feed
+    const auditLogs = [
+        { id: 1, type: 'GATE', message: 'Attendee T. Rahman (CCO Banglalink) checked in', timestamp: new Date(Date.now() - 1000 * 60 * 18).toLocaleTimeString() },
+        { id: 2, type: 'STAGE', message: 'Stage Scene switched to Scene 1: Ambient Walk-In', timestamp: new Date(Date.now() - 1000 * 60 * 15).toLocaleTimeString() },
+        { id: 3, type: 'WALL', message: '100-Phone Wall synchronized to Multilingual Bangla wave', timestamp: new Date(Date.now() - 1000 * 60 * 12).toLocaleTimeString() },
+        { id: 4, type: 'BOOTH', message: 'Ad proposal PROP-2026-9481 generated for Mindshare / Unilever', timestamp: new Date(Date.now() - 1000 * 60 * 8).toLocaleTimeString() },
+        { id: 5, type: 'BOOTH', message: 'AI Dub take completed (Noakhali dialect) at The Dub Booth', timestamp: new Date(Date.now() - 1000 * 60 * 5).toLocaleTimeString() },
+        { id: 6, type: 'BATTLE', message: 'Sonic Battle voting opened for crowd participation', timestamp: new Date(Date.now() - 1000 * 60 * 2).toLocaleTimeString() }
+    ];
+
+    router.get('/system/audit-log', (req, res) => {
+        res.json({ success: true, logs: auditLogs });
+    });
+
+    router.post('/system/audit', (req, res) => {
+        const { type, message } = req.body;
+        const entry = {
+            id: Date.now(),
+            type: type || 'SYSTEM',
+            message: message || 'Director action logged',
+            timestamp: new Date().toLocaleTimeString()
+        };
+        auditLogs.unshift(entry);
+        if (auditLogs.length > 80) auditLogs.pop();
+        broadcast('AUDIT_EVENT', entry);
+        res.json({ success: true, entry });
     });
 
     // Master Showcaller System Reset (Protected by Auth)

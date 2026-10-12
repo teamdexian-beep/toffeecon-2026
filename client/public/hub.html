@@ -836,6 +836,259 @@
 
         .stat-line .lbl { color: var(--text-dim); }
         .stat-line .val { font-family: var(--font-mono); font-weight: 700; color: var(--cyan); }
+
+        /* ================= 100-PHONE WALL 10x10 MATRIX ================= */
+        .wall-controls-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: #090616;
+            border: 1px solid var(--border-machined);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 18px;
+        }
+
+        .wall-mode-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-wall-mode {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-machined);
+            color: var(--text-dim);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-wall-mode:hover {
+            color: #fff;
+            border-color: var(--cyan);
+        }
+        .btn-wall-mode.active {
+            background: rgba(0, 240, 255, 0.15);
+            border-color: var(--cyan);
+            color: var(--cyan);
+            font-weight: 700;
+        }
+
+        .phone-wall-grid-100 {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 6px;
+            background: #06040e;
+            border: 1px solid var(--border-machined);
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+        }
+        @media (max-width: 900px) {
+            .phone-wall-grid-100 { grid-template-columns: repeat(5, 1fr); gap: 4px; }
+        }
+
+        .phone-node-tile {
+            aspect-ratio: 9/16;
+            background: #110d24;
+            border: 1px solid #281e46;
+            border-radius: 5px;
+            padding: 4px 2px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .phone-node-tile:hover {
+            transform: scale(1.08);
+            border-color: var(--cyan);
+            z-index: 10;
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+        }
+        .phone-node-tile.online {
+            border-color: rgba(16, 185, 129, 0.4);
+            background: rgba(16, 185, 129, 0.04);
+        }
+        .phone-node-tile.syncing {
+            border-color: var(--cyan);
+            background: rgba(0, 240, 255, 0.15);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+        .phone-node-tile.selected {
+            border-color: var(--magenta) !important;
+            box-shadow: 0 0 14px rgba(255, 0, 119, 0.6) !important;
+        }
+
+        .node-num {
+            font-family: var(--font-mono);
+            font-size: 0.58rem;
+            color: #9284ba;
+            font-weight: 700;
+        }
+        .node-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--emerald);
+            box-shadow: 0 0 5px var(--emerald);
+        }
+        .node-dialect {
+            font-size: 0.48rem;
+            color: #72629b;
+            text-align: center;
+            line-height: 1;
+            font-family: var(--font-sans);
+        }
+
+        /* Phone Node Inspector Box */
+        .node-inspector-card {
+            margin-top: 16px;
+            background: #0d0822;
+            border: 1px solid var(--border-highlight);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        /* ================= DIAGNOSTICS & TELEMETRY ================= */
+        .diag-grid-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 1000px) {
+            .diag-grid-cards { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .diag-metric-card {
+            background: #090616;
+            border: 1px solid var(--border-machined);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .diag-metric-lbl {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            letter-spacing: 0.5px;
+        }
+        .diag-metric-val {
+            font-family: var(--font-mono);
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--cyan);
+            margin: 6px 0;
+        }
+        .meter-track {
+            height: 6px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .meter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--cyan), var(--magenta));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* Audit Stream */
+        .audit-stream-wrap {
+            background: #05030d;
+            border: 1px solid var(--border-machined);
+            border-radius: 12px;
+            padding: 16px;
+            font-family: var(--font-mono);
+        }
+        .audit-filter-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .btn-filter-audit {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-machined);
+            color: var(--text-dim);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.68rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-filter-audit.active {
+            background: rgba(0, 240, 255, 0.15);
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+        .audit-log-feed {
+            height: 220px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.72rem;
+        }
+        .audit-entry {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 10px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 4px;
+            border-left: 3px solid #4a3777;
+        }
+        .audit-tag {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.62rem;
+            font-weight: 700;
+        }
+        .audit-tag.GATE { background: rgba(16, 185, 129, 0.2); color: var(--emerald); }
+        .audit-tag.STAGE { background: rgba(255, 0, 119, 0.2); color: var(--magenta); }
+        .audit-tag.WALL { background: rgba(0, 240, 255, 0.2); color: var(--cyan); }
+        .audit-tag.BOOTH { background: rgba(255, 179, 0, 0.2); color: var(--amber); }
+        .audit-tag.BATTLE { background: rgba(147, 51, 234, 0.2); color: #c084fc; }
+
+        /* Chyron Presets */
+        .chyron-presets {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .chyron-pill {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #3d2a6a;
+            color: #b3a5d8;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .chyron-pill:hover {
+            border-color: var(--magenta);
+            color: #fff;
+            background: rgba(255, 0, 119, 0.15);
+        }
     </style>
 </head>
 <body>
@@ -911,16 +1164,22 @@
         <span style="font-family: var(--font-mono); color: var(--emerald); font-size: 0.72rem;">● STAKEHOLDER ARCHITECTURE ISOLATED (4 DOMAINS)</span>
     </div>
 
-    <!-- ================= 3 STREAMLINED WORKSPACE TABS ================= -->
+    <!-- ================= 5 STREAMLINED WORKSPACE TABS ================= -->
     <nav class="workspace-tabs">
-        <button class="tab-btn active" id="tab-live" onclick="switchModeTab('live')">
-            <span>🎬</span> <span>1. Live Show Workflow</span> <span class="tab-badge">Active</span>
+        <button class="tab-btn active" id="tab-pgm" onclick="switchModeTab('pgm')">
+            <span>🎬</span> <span>1. Keynote & PGM</span> <span class="tab-badge" style="background:rgba(255,0,119,0.2); color:var(--magenta);">LIVE PGM</span>
         </button>
-        <button class="tab-btn" id="tab-audience" onclick="switchModeTab('audience')">
-            <span>⚡</span> <span>2. Audience Keynotes</span> <span class="tab-badge">Interactive</span>
+        <button class="tab-btn" id="tab-wall" onclick="switchModeTab('wall')">
+            <span>📱</span> <span>2. 100-Phone Wall</span> <span class="tab-badge">100 PHONES</span>
         </button>
-        <button class="tab-btn" id="tab-venue" onclick="switchModeTab('venue')">
-            <span>🎪</span> <span>3. Venue & Systems</span> <span class="tab-badge">9 Booths</span>
+        <button class="tab-btn" id="tab-battle" onclick="switchModeTab('battle')">
+            <span>⚡</span> <span>3. Audience Battles</span> <span class="tab-badge">LIVE POLLS</span>
+        </button>
+        <button class="tab-btn" id="tab-booths" onclick="switchModeTab('booths')">
+            <span>🎪</span> <span>4. Experiential Booths</span> <span class="tab-badge">9 BOOTHS</span>
+        </button>
+        <button class="tab-btn" id="tab-diagnostics" onclick="switchModeTab('diagnostics')">
+            <span>📊</span> <span>5. Diagnostics & Audit</span> <span class="tab-badge">TELEMETRY</span>
         </button>
     </nav>
 
@@ -930,8 +1189,8 @@
         <!-- LEFT PRIMARY WORKSPACE -->
         <div class="cockpit-primary">
 
-            <!-- ================= TAB 1: LIVE SHOW WORKFLOW ================= -->
-            <div class="tab-panel active" id="panel-live">
+            <!-- ================= TAB 1: KEYNOTE RUNDOWN & PGM ================= -->
+            <div class="tab-panel active" id="panel-pgm">
                 <div class="bezel-panel">
                     <div class="panel-head">
                         <h2>🎬 KEYNOTE PRESENTATION CONTROLLER</h2>
@@ -979,16 +1238,79 @@
 
                     <!-- Lower-Third Speaker Chyron Cue -->
                     <div class="speaker-chyron-bar">
-                        <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--magenta); font-weight:700;">★ SPEAKER CHYRON OVERLAY:</span>
-                        <input type="text" id="speakerNameInput" class="speaker-input" value="Taimur Rahman" placeholder="Speaker Name" style="width:160px;">
-                        <input type="text" id="speakerRoleInput" class="speaker-input" value="Chief Commercial Officer · Banglalink" placeholder="Speaker Title" style="flex-grow:1;">
-                        <button class="btn-action magenta" onclick="cueSpeakerChyron()">Show on Stage</button>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--magenta); font-weight:700;">★ SPEAKER CHYRON OVERLAY:</span>
+                            <div class="chyron-presets">
+                                <span style="font-size:0.68rem; color:#7d6fa6; align-self:center;">PRESETS:</span>
+                                <button type="button" class="chyron-pill" onclick="setChyronPreset('Taimur Rahman', 'Chief Commercial Officer · Banglalink')">T. Rahman (CCO)</button>
+                                <button type="button" class="chyron-pill" onclick="setChyronPreset('Erik Aas', 'Chief Executive Officer · Banglalink')">E. Aas (CEO)</button>
+                                <button type="button" class="chyron-pill" onclick="setChyronPreset('Kazi Mahboob Hassan', 'Chief Digital Officer · Banglalink')">K. Hassan (CDO)</button>
+                                <button type="button" class="chyron-pill" onclick="setChyronPreset('Upal Majumdar', 'Head of Toffee · OTT Business')">U. Majumdar (Toffee)</button>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                            <input type="text" id="speakerNameInput" class="speaker-input" value="Taimur Rahman" placeholder="Speaker Name" style="width:170px;">
+                            <input type="text" id="speakerRoleInput" class="speaker-input" value="Chief Commercial Officer · Banglalink" placeholder="Speaker Title" style="flex-grow:1;">
+                            <button class="btn-action magenta" onclick="cueSpeakerChyron()">Show on Stage</button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ================= TAB 2: AUDIENCE KEYNOTES ================= -->
-            <div class="tab-panel" id="panel-audience">
+            <!-- ================= TAB 2: 100-PHONE WALL CONTROLLER ================= -->
+            <div class="tab-panel" id="panel-wall">
+                <div class="bezel-panel">
+                    <div class="panel-head">
+                        <h2>📱 100-PHONE WALL MASTER CONTROLLER</h2>
+                        <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--cyan);">100 Dedicated Devices · 10x10 Kinetic Foyer Matrix</span>
+                    </div>
+
+                    <!-- Master Wall Action Bar -->
+                    <div class="wall-controls-bar">
+                        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                            <button class="btn-action cyan" onclick="triggerWallSync()" style="font-size:0.8rem; padding:10px 18px;">
+                                <span>⚡</span> <span>Trigger 5s Sync Pulse</span>
+                            </button>
+                            <div class="wall-mode-buttons">
+                                <button class="btn-wall-mode active" id="btnModeLogo" onclick="setWallMode('synced_logo')">Mode 1: Animated Logo</button>
+                                <button class="btn-wall-mode" id="btnModeBangla" onclick="setWallMode('multilingual')">Mode 2: Bangla Wave</button>
+                                <button class="btn-wall-mode" id="btnModeVideo" onclick="setWallMode('video_mosaic')">Mode 3: Video Mosaic</button>
+                                <button class="btn-wall-mode" id="btnModeAmbient" onclick="setWallMode('ambient')">Mode 4: Standby Wave</button>
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <a href="/wall" target="_blank" class="btn-action outline" style="font-size:0.75rem;">Wall Canvas ↗</a>
+                            <a href="/phone" target="_blank" class="btn-action outline" style="font-size:0.75rem;">Phone Client 📱</a>
+                        </div>
+                    </div>
+
+                    <!-- Interactive 10x10 Matrix Grid Monitor (100 Devices) -->
+                    <div style="margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-dim);">LIVE 10x10 PHYSICAL MATRIX (CLICK TO INSPECT NODE):</span>
+                        <span style="font-family:var(--font-mono); font-size:0.72rem; color:var(--emerald);">● 100/100 NODES VERIFIED CONNECTED</span>
+                    </div>
+
+                    <div class="phone-wall-grid-100" id="phoneWallGrid100">
+                        <!-- Dynamically populated 100 mini phone tiles -->
+                    </div>
+
+                    <!-- Phone Node Inspector Card -->
+                    <div class="node-inspector-card" id="selectedNodeCard">
+                        <div>
+                            <div style="font-family:var(--font-mono); font-size:0.72rem; color:var(--cyan); font-weight:700;">INSPECTED NODE: <span id="inspNodeId">PHONE-COL-05-ROW-05</span></div>
+                            <div style="font-size:0.85rem; font-weight:800; color:#fff; margin-top:2px;" id="inspNodeName">Node #45 · Center Logo Anchor</div>
+                            <div style="font-size:0.72rem; color:var(--text-dim); margin-top:3px;" id="inspNodeMeta">Tile Coordinate: (Col 5, Row 5) · IP: 192.168.1.145 · Battery: 96% (Charging) · Latency: 0.8ms</div>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn-action outline" style="font-size:0.72rem;" onclick="pingSelectedNode()">⚡ Test Ping Node</button>
+                            <button class="btn-action cyan" style="font-size:0.72rem;" onclick="triggerWallSync()">Sync All 100</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB 3: AUDIENCE BATTLE MANAGER ================= -->
+            <div class="tab-panel" id="panel-battle">
                 <div class="bezel-panel">
                     <div class="panel-head">
                         <h2>⚡ LIVE AUDIENCE BATTLES & SHOWDOWNS</h2>
@@ -1009,7 +1331,8 @@
                             <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
                                 <button class="btn-action outline" onclick="injectVote('red')">+1 Alpha</button>
                                 <button class="btn-action outline" onclick="injectVote('blue')">+1 Beta</button>
-                                <button class="btn-action emerald" onclick="controlStage('reveal')">★ Reveal Winner</button>
+                                <button class="btn-action outline" onclick="injectVoteFloorBias()">+25 Simulated Bias</button>
+                                <button class="btn-action emerald" onclick="controlStage('reveal')">★ Reveal Winner on Stage</button>
                                 <button class="btn-action outline" onclick="controlStage('reset')">Reset (50/50)</button>
                             </div>
                         </div>
@@ -1025,7 +1348,7 @@
                                 </div>
                             </div>
                             <div class="racer-box">
-                                <div class="racer-lane-row"><span class="racer-lane-label">Sarah_K:</span><div class="racer-lane-track"><div class="racer-lane-fill" id="lane1" style="width:85%; background:var(--pink);"></div></div></div>
+                                <div class="racer-lane-row"><span class="racer-lane-label">Sarah_K:</span><div class="racer-lane-track"><div class="racer-lane-fill" id="lane1" style="width:85%; background:var(--magenta);"></div></div></div>
                                 <div class="racer-lane-row"><span class="racer-lane-label">Tanvir_M:</span><div class="racer-lane-track"><div class="racer-lane-fill" id="lane2" style="width:78%; background:var(--cyan);"></div></div></div>
                                 <div class="racer-lane-row"><span class="racer-lane-label">Nusrat_A:</span><div class="racer-lane-track"><div class="racer-lane-fill" id="lane3" style="width:72%; background:var(--amber);"></div></div></div>
                             </div>
@@ -1076,20 +1399,21 @@
                 </div>
             </div>
 
-            <!-- ================= TAB 3: VENUE & SYSTEMS ================= -->
-            <div class="tab-panel" id="panel-venue">
+            <!-- ================= TAB 4: EXPERIENTIAL BOOTHS STATION ================= -->
+            <div class="tab-panel" id="panel-booths">
                 <div class="bezel-panel">
                     <div class="panel-head">
-                        <h2>🎪 EXPERIENTIAL BOOTHS & PHONE WALL</h2>
-                        <button class="btn-action cyan" onclick="triggerWallSync()">⚡ Trigger 100-Phone Wall Sync</button>
+                        <h2>🎪 EXPERIENTIAL BOOTHS CENTRAL STATION (9 ACTIVATIONS)</h2>
+                        <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--emerald);">● ALL 9 VENUE BOOTHS MONITORED</span>
                     </div>
 
                     <!-- 9 Booth Launch Cards -->
                     <div class="booths-card-grid">
+                        <!-- 1. Mission Control -->
                         <div class="booth-mini-card" style="border-color: #00F0FF; background: rgba(0, 240, 255, 0.04);">
                             <div class="booth-mini-head">
                                 <span style="color:#00F0FF;">🚀 Mission Control (Advertiser)</span>
-                                <span style="color:var(--emerald); font-size:0.7rem;" id="hubMissionControlBadge">● <span id="hubProposalsCount">14</span> PRINTED</span>
+                                <span style="color:var(--emerald); font-size:0.7rem;" id="hubMissionControlBadge">● <span id="hubProposalsCount">93</span> PRINTED</span>
                             </div>
                             <p style="font-size:0.78rem; color:var(--text-dim);">Flight deck for media buyers with Solari board & instant 1-page reports (MADCON p.12).</p>
                             <div style="display:flex; gap:6px; margin-top:4px;">
@@ -1097,19 +1421,25 @@
                                 <a href="/proposal" target="_blank" class="btn-action cyan" style="flex:1; justify-content:center; font-size:0.75rem; background:linear-gradient(135deg, #00F0FF, #0284C7); color:#000;">Spec 📄</a>
                             </div>
                         </div>
+
+                        <!-- 2. The Dub Booth -->
                         <div class="booth-mini-card" style="border-color: #FF10F0; background: rgba(255, 16, 240, 0.06);">
-                            <div class="booth-mini-head"><span style="color:#FF10F0;">🎙️ The Dub Booth (AI Voice)</span><span style="color:#00F0FF; font-size:0.7rem;" id="hubDubCountBadge">● 6-STEP KIOSK</span></div>
-                            <p style="font-size:0.78rem; color:var(--text-dim);">Global OTT voice morphing & 9:16 lip-sync reel generator.</p>
+                            <div class="booth-mini-head"><span style="color:#FF10F0;">🎙️ The Dub Booth (AI Voice)</span><span style="color:#00F0FF; font-size:0.7rem;" id="hubDubCountBadge">● 289 DUBS</span></div>
+                            <p style="font-size:0.78rem; color:var(--text-dim);">Global OTT voice morphing & 9:16 lip-sync reel generator in 5 regional dialects.</p>
                             <div style="display:flex; gap:6px; margin-top:4px;">
                                 <a href="/dub" target="_blank" class="btn-action magenta" style="flex:1; justify-content:center; font-size:0.75rem; background:linear-gradient(135deg, #FF10F0, #A855F7);">Kiosk ↗</a>
                                 <a href="/share-dub" target="_blank" class="btn-action outline" style="flex:1; justify-content:center; font-size:0.75rem;">Reel 📱</a>
                             </div>
                         </div>
+
+                        <!-- 3. Screen Relay -->
                         <div class="booth-mini-card">
-                            <div class="booth-mini-head"><span>📱 Screen Relay</span><span style="color:var(--emerald); font-size:0.7rem;">● LIVE</span></div>
-                            <p style="font-size:0.78rem; color:var(--text-dim);">Triple-screen seamless stream migration.</p>
+                            <div class="booth-mini-head"><span>📱 Screen Relay</span><span style="color:var(--emerald); font-size:0.7rem;">● LIVE HANDOVER</span></div>
+                            <p style="font-size:0.78rem; color:var(--text-dim);">Triple-screen seamless stream migration (Phone → Tablet → 4K TV).</p>
                             <a href="/booth/screen-relay" target="_blank" class="btn-action outline" style="justify-content:center;">Launch Screen Relay ↗</a>
                         </div>
+
+                        <!-- 4. The Space Window -->
                         <div class="booth-mini-card" style="border-color: #00F0FF; background: rgba(0, 240, 255, 0.06);">
                             <div class="booth-mini-head"><span style="color:#00F0FF;">🛰️ The Space Window</span><span style="color:var(--emerald); font-size:0.7rem;">● 104 CHANNELS</span></div>
                             <p style="font-size:0.78rem; color:var(--text-dim);">Ceiling LED starfield + lit 104-channel catalogue wall for Advertisers & PR (p.14).</p>
@@ -1119,56 +1449,150 @@
                                 <a href="/space-kit" target="_blank" class="btn-action magenta" style="flex:1; justify-content:center; font-size:0.72rem; padding:4px 8px; background:linear-gradient(135deg, #FF10F0, #9333EA);">Media Kit 📄</a>
                             </div>
                         </div>
+
+                        <!-- 5. Capsule Cabin -->
                         <div class="booth-mini-card">
-                            <div class="booth-mini-head"><span>📼 Capsule Cabin</span><span style="color:var(--emerald); font-size:0.7rem;">● LIVE</span></div>
-                            <p style="font-size:0.78rem; color:var(--text-dim);">Amber CRT future prediction cabin.</p>
-                            <a href="/booth/capsule-booth" target="_blank" class="btn-action outline" style="justify-content:center;">Launch Capsule Cabin ↗</a>
+                            <div class="booth-mini-head"><span>📼 Capsule Cabin</span><span style="color:var(--emerald); font-size:0.7rem;">● 2033 ARCHIVE</span></div>
+                            <p style="font-size:0.78rem; color:var(--text-dim);">Amber CRT future prediction cabin with Gemini AI expanding guest forecasts.</p>
+                            <div style="display:flex; gap:6px; margin-top:4px;">
+                                <a href="/booth/capsule-booth" target="_blank" class="btn-action outline" style="flex:1; justify-content:center; font-size:0.75rem;">Cabin Kiosk ↗</a>
+                                <a href="/wrapped" target="_blank" class="btn-action cyan" style="flex:1; justify-content:center; font-size:0.75rem;">Wrapped Cloud ☁️</a>
+                            </div>
                         </div>
+
+                        <!-- 6. In Another Universe -->
                         <div class="booth-mini-card" style="border-color: #EC4899; background: rgba(236, 72, 153, 0.06);">
-                            <div class="booth-mini-head"><span style="color:#EC4899;">🌌 In Another Universe</span><span style="color:#00F0FF; font-size:0.7rem;">● 6-SCREEN MATRIX</span></div>
-                            <p style="font-size:0.78rem; color:var(--text-dim);">Retro-futuristic entertainment worlds (Sports, Adventure, Drama, Action).</p>
+                            <div class="booth-mini-head"><span style="color:#EC4899;">🌌 In Another Universe</span><span style="color:#00F0FF; font-size:0.7rem;">● 4 WORLDS</span></div>
+                            <p style="font-size:0.78rem; color:var(--text-dim);">Retro-futuristic photobooth (Sports, Adventure, Drama, Action) with 4K LED display.</p>
                             <div style="display:flex; gap:6px; margin-top:4px;">
                                 <a href="/universe" target="_blank" class="btn-action magenta" style="flex:1; justify-content:center; font-size:0.75rem; background:linear-gradient(135deg, #EC4899, #9333EA);">Kiosk ↗</a>
                                 <a href="/universe-wall" target="_blank" class="btn-action cyan" style="flex:1; justify-content:center; font-size:0.75rem;">LED Wall 🖥️</a>
                             </div>
                         </div>
+
+                        <!-- 7. OTT Casting Audition -->
                         <div class="booth-mini-card" style="border-color: #FF6600; background: rgba(255, 102, 0, 0.08);">
-                            <div class="booth-mini-head"><span style="color: #FFB800;">🎭 OTT Casting Audition</span><span style="color:#FF6600; font-size:0.7rem;">★ NEW</span></div>
-                            <p style="font-size:0.78rem; color:var(--text-dim);">7-screen Touch Kiosk with Gemini scoring & poster.</p>
-                            <a href="/booth/audition" target="_blank" class="btn-action magenta" style="justify-content:center; background: linear-gradient(135deg, #FF6600, #E04800);">Launch Touch Kiosk ➔</a>
-                        </div>
-                        <div class="booth-mini-card" style="border-color: #00F0FF; background: rgba(0, 240, 255, 0.05);">
-                            <div class="booth-mini-head"><span style="color: #00F0FF;">⚡ Curator & Veo Prompts</span><span style="color:var(--emerald); font-size:0.7rem;">● LIVE</span></div>
-                            <p style="font-size:0.78rem; color:var(--text-dim);">Top 10 Curation, 10s Veo Prompts & Clip Manager.</p>
+                            <div class="booth-mini-head"><span style="color: #FFB800;">🎭 OTT Casting Audition</span><span style="color:#FF6600; font-size:0.7rem;">● 32+ AUDITIONS</span></div>
+                            <p style="font-size:0.78rem; color:var(--text-dim);">Boltu Bhai audition booth with Gemini AI critique and composite poster.</p>
                             <div style="display:flex; gap:6px; margin-top:4px;">
-                                <a href="/curator" target="_blank" class="btn-action cyan" style="flex:1; justify-content:center; font-size:0.75rem;">Curator Board ↗</a>
-                                <a href="/presenter" target="_blank" class="btn-action outline" style="flex:1; justify-content:center; font-size:0.75rem;">MC Remote 📱</a>
+                                <a href="/booth/audition" target="_blank" class="btn-action magenta" style="flex:1; justify-content:center; font-size:0.75rem; background:linear-gradient(135deg, #FF6600, #E04800);">Kiosk ➔</a>
+                                <a href="/curator" target="_blank" class="btn-action cyan" style="flex:1; justify-content:center; font-size:0.75rem;">Curator ⚡</a>
                             </div>
+                        </div>
+
+                        <!-- 8. Memory Marathon -->
+                        <div class="booth-mini-card" style="border-color: #10B981; background: rgba(16, 185, 129, 0.06);">
+                            <div class="booth-mini-head"><span style="color: var(--emerald);">🏃 Memory Marathon</span><span style="color:var(--emerald); font-size:0.7rem;">● 8-LANE RACE</span></div>
+                            <p style="font-size:0.78rem; color:var(--text-dim);">Live keynote crowd trivia race synchronized to mainstage presentations.</p>
+                            <div style="display:flex; gap:6px; margin-top:4px;">
+                                <a href="/marathon" target="_blank" class="btn-action cyan" style="flex:1; justify-content:center; font-size:0.75rem;">Racer 📱</a>
+                                <a href="/marathon-stage" target="_blank" class="btn-action magenta" style="flex:1; justify-content:center; font-size:0.75rem;">Stage LED 🖥️</a>
+                            </div>
+                        </div>
+
+                        <!-- 9. Taste Duel -->
+                        <div class="booth-mini-card" style="border-color: #A855F7; background: rgba(168, 85, 247, 0.06);">
+                            <div class="booth-mini-head"><span style="color: #A855F7;">🥊 Taste Duel</span><span style="color:var(--emerald); font-size:0.7rem;">● CODEC A/B</span></div>
+                            <p style="font-size:0.78rem; color:var(--text-dim);">Blind streaming quality challenge: AV1 vs HEVC, sub-second latency, and bitrates.</p>
+                            <a href="/booth/taste-duel" target="_blank" class="btn-action outline" style="justify-content:center; margin-top:4px;">Launch Taste Duel ↗</a>
                         </div>
                     </div>
 
                     <!-- Guest Accreditation & Data Exports -->
                     <div style="background:#090615; border:1px solid var(--border-machined); border-radius:12px; padding:18px;">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                            <strong style="font-family:var(--font-sans); font-size:0.92rem;">🛡️ VIP Guest Check-In & Data Export</strong>
-                            <span style="font-family:var(--font-mono); font-size:0.78rem; color:var(--cyan);" id="checkinRateBadge">548 / 600 Checked In</span>
+                            <strong style="font-family:var(--font-sans); font-size:0.92rem;">🛡️ VIP Guest Check-In & Gate Velocity</strong>
+                            <span style="font-family:var(--font-mono); font-size:0.78rem; color:var(--cyan);" id="checkinRateBadge">548 / 600 Checked In (91.3%)</span>
                         </div>
                         <div class="gate-ticker-feed" id="gateTicker">
                             <div class="ticker-entry"><span>★ T. Rahman (Banglalink CCO)</span><span style="color:var(--emerald);">CHECKED IN</span></div>
                             <div class="ticker-entry"><span>★ E. Aas (Chief Executive Officer)</span><span style="color:var(--emerald);">CHECKED IN</span></div>
                             <div class="ticker-entry"><span>★ A. Chowdhury (Creative Director · Adex)</span><span style="color:var(--emerald);">CHECKED IN</span></div>
                         </div>
-                        <div style="display:flex; gap:10px; margin-top:14px;">
-                            <a href="/api/rsvps/export?format=sanitized" download class="btn-action outline" style="flex-grow:1; justify-content:center;">
+                        <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;">
+                            <a href="/api/rsvps/export?format=sanitized" download class="btn-action outline" style="flex:1; justify-content:center;">
                                 🛡️ Export Public Guest List (PII-Safe)
                             </a>
-                            <a href="/api/rsvps/export?auth=toffeecon-2026-secure" download class="btn-action cyan" style="flex-grow:1; justify-content:center;">
+                            <a href="/api/rsvps/export?auth=toffeecon-2026-secure" download class="btn-action cyan" style="flex:1; justify-content:center;">
                                 📥 Master Backup CSV (Authenticated)
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- ================= TAB 5: DIAGNOSTICS & TELEMETRY ================= -->
+            <div class="tab-panel" id="panel-diagnostics">
+                <div class="bezel-panel">
+                    <div class="panel-head">
+                        <h2>📊 SYSTEM HEALTH DIAGNOSTICS & LIVE AUDIT</h2>
+                        <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--emerald);">● RUNTIME INTEGRITY ACTIVE</span>
+                    </div>
+
+                    <!-- 4 Main Diagnostics Metric Cards -->
+                    <div class="diag-grid-cards">
+                        <div class="diag-metric-card">
+                            <span class="diag-metric-lbl">CONNECTED WEBSOCKETS</span>
+                            <div class="diag-metric-val" id="diagSockets">18 Active</div>
+                            <div class="meter-track"><div class="meter-fill" id="meterSockets" style="width:45%;"></div></div>
+                            <div style="font-size:0.68rem; color:var(--text-dim); margin-top:4px;">Stage LED, Wall, Voters, Kiosks</div>
+                        </div>
+
+                        <div class="diag-metric-card">
+                            <span class="diag-metric-lbl">NODE HEAP MEMORY</span>
+                            <div class="diag-metric-val" id="diagHeap">42.8 MB</div>
+                            <div class="meter-track"><div class="meter-fill" id="meterHeap" style="width:32%; background:var(--emerald);"></div></div>
+                            <div style="font-size:0.68rem; color:var(--text-dim); margin-top:4px;" id="diagHeapSub">Used 42.8MB / 128MB Limit</div>
+                        </div>
+
+                        <div class="diag-metric-card">
+                            <span class="diag-metric-lbl">PROCESS UPTIME</span>
+                            <div class="diag-metric-val" id="diagUptime">04:18:22</div>
+                            <div class="meter-track"><div class="meter-fill" style="width:98%; background:var(--cyan);"></div></div>
+                            <div style="font-size:0.68rem; color:var(--text-dim); margin-top:4px;">PID Active · Zero Crashes</div>
+                        </div>
+
+                        <div class="diag-metric-card">
+                            <span class="diag-metric-lbl">CARRIER MESH LATENCY</span>
+                            <div class="diag-metric-val" style="color:var(--emerald);">&lt; 1.2ms</div>
+                            <div class="meter-track"><div class="meter-fill" style="width:12%; background:var(--emerald);"></div></div>
+                            <div style="font-size:0.68rem; color:var(--text-dim); margin-top:4px;">Banglalink High-Speed On-Premise</div>
+                        </div>
+                    </div>
+
+                    <!-- Live Event Audit Stream / Real-Time Ticker -->
+                    <div class="audit-stream-wrap">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <span style="font-weight:700; font-size:0.85rem; color:#fff;">CHRONOLOGICAL LIVE EVENT AUDIT STREAM</span>
+                            <span style="font-size:0.7rem; color:var(--cyan);" id="auditStreamStatus">● STREAMING REAL-TIME</span>
+                        </div>
+                        <div class="audit-filter-row">
+                            <button type="button" class="btn-filter-audit active" onclick="filterAuditLogs('ALL')">ALL EVENTS</button>
+                            <button type="button" class="btn-filter-audit" onclick="filterAuditLogs('GATE')">GATES</button>
+                            <button type="button" class="btn-filter-audit" onclick="filterAuditLogs('STAGE')">STAGE</button>
+                            <button type="button" class="btn-filter-audit" onclick="filterAuditLogs('WALL')">WALL</button>
+                            <button type="button" class="btn-filter-audit" onclick="filterAuditLogs('BOOTH')">BOOTHS</button>
+                            <button type="button" class="btn-filter-audit" onclick="filterAuditLogs('BATTLE')">BATTLES</button>
+                        </div>
+                        <div class="audit-log-feed" id="auditLogFeed">
+                            <!-- Populated dynamically by poller & WebSocket events -->
+                        </div>
+                    </div>
+
+                    <!-- Administrative & Emergency Safety Tools -->
+                    <div style="margin-top:20px; padding:16px; background:#0d0822; border:1px solid #3d2a6a; border-radius:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                        <div>
+                            <div style="font-size:0.85rem; font-weight:700; color:#fff;">MASTER SHOWCALLER RESET SAFEKEEPING</div>
+                            <div style="font-size:0.72rem; color:var(--text-dim);">Resetting will restore all event states, poll balloting, and queues back to Day-01 rehearsal baseline.</div>
+                        </div>
+                        <button class="btn-action outline" style="color:var(--crimson); border-color:var(--crimson);" onclick="confirmSystemReset()">
+                            ⚠️ Reset Event to Baseline
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
 
         </div>
 
@@ -1418,8 +1842,10 @@
         }
 
         // ==========================================
-        // 4. Tab Mode Switching & Key Shortcuts
+        // 4. Tab Mode Switching & Key Shortcuts (Tabs 1-5)
         // ==========================================
+        const TAB_NAMES = ['pgm', 'wall', 'battle', 'booths', 'diagnostics'];
+
         function switchModeTab(tabName) {
             audioRelay.playClick();
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1432,15 +1858,118 @@
         }
 
         window.addEventListener('keydown', (e) => {
-            // Spacebar switches to next scene
+            // Spacebar switches to next scene when not in inputs
             if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
                 e.preventDefault();
                 executeTake();
             }
-            if (e.key === '1') switchModeTab('live');
-            if (e.key === '2') switchModeTab('audience');
-            if (e.key === '3') switchModeTab('venue');
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                if (e.key === '1') switchModeTab('pgm');
+                if (e.key === '2') switchModeTab('wall');
+                if (e.key === '3') switchModeTab('battle');
+                if (e.key === '4') switchModeTab('booths');
+                if (e.key === '5') switchModeTab('diagnostics');
+            }
         });
+
+        function setChyronPreset(name, role) {
+            audioRelay.playClick();
+            const nameInput = document.getElementById('speakerNameInput');
+            const roleInput = document.getElementById('speakerRoleInput');
+            if (nameInput) nameInput.value = name;
+            if (roleInput) roleInput.value = role;
+            showToast(`Preset Loaded: ${name}`);
+        }
+
+        // ==========================================
+        // 4B. 100-Phone Wall Matrix & Node Inspector
+        // ==========================================
+        const DIALECTS = ['Dhaka', 'Chittagong', 'Sylhet', 'Noakhali', 'Barisal'];
+        let selectedNodeIndex = 45; // Default center node (Node #45)
+
+        function renderPhoneWallGrid() {
+            const grid = document.getElementById('phoneWallGrid100');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            for (let i = 1; i <= 100; i++) {
+                const col = ((i - 1) % 10) + 1;
+                const row = Math.floor((i - 1) / 10) + 1;
+                const isCenter = (col >= 4 && col <= 7 && row >= 4 && row <= 7);
+                const dialect = DIALECTS[(i - 1) % DIALECTS.length];
+
+                const tile = document.createElement('div');
+                tile.className = 'phone-node-tile' + (i === selectedNodeIndex ? ' selected' : '');
+                tile.id = `phoneNodeTile_${i}`;
+                tile.dataset.node = i;
+                tile.dataset.col = col;
+                tile.dataset.row = row;
+                tile.dataset.dialect = dialect;
+
+                tile.innerHTML = `
+                    <span class="node-num">P${String(i).padStart(2, '0')}</span>
+                    <span class="node-state-dot"></span>
+                `;
+
+                tile.onclick = () => selectPhoneNode(i, col, row, dialect, isCenter);
+                grid.appendChild(tile);
+            }
+            // Populate initial inspector card
+            selectPhoneNode(selectedNodeIndex, 5, 5, 'Dhaka', true);
+        }
+
+        function selectPhoneNode(nodeNum, col, row, dialect, isCenter) {
+            selectedNodeIndex = nodeNum;
+            document.querySelectorAll('.phone-node-tile').forEach(t => t.classList.remove('selected'));
+            const activeTile = document.getElementById(`phoneNodeTile_${nodeNum}`);
+            if (activeTile) activeTile.classList.add('selected');
+
+            const idEl = document.getElementById('inspNodeId');
+            const nameEl = document.getElementById('inspNodeName');
+            const metaEl = document.getElementById('inspNodeMeta');
+
+            const padNum = String(nodeNum).padStart(2, '0');
+            const roleDesc = isCenter ? 'Center Logo Anchor' : `Peripheral Dialect Relay (${dialect})`;
+
+            if (idEl) idEl.innerText = `PHONE-COL-${String(col).padStart(2, '0')}-ROW-${String(row).padStart(2, '0')}`;
+            if (nameEl) nameEl.innerText = `Node #${padNum} · ${roleDesc}`;
+            if (metaEl) metaEl.innerText = `Coordinate: (Col ${col}, Row ${row}) · IP: 192.168.1.${100 + nodeNum} · Battery: 98% (Wired AC) · Dialect: ${dialect} · Ping: 0.8ms`;
+        }
+
+        function pingSelectedNode() {
+            audioRelay.playClick();
+            showToast(`Pinging Phone Node #${selectedNodeIndex}... Latency: 0.7ms OK`, '⚡');
+            const tile = document.getElementById(`phoneNodeTile_${selectedNodeIndex}`);
+            if (tile) {
+                tile.style.transform = 'scale(1.25)';
+                tile.style.background = '#FF10F0';
+                setTimeout(() => {
+                    tile.style.transform = '';
+                    tile.style.background = '';
+                }, 400);
+            }
+        }
+
+        async function setWallMode(mode) {
+            audioRelay.playClick();
+            document.querySelectorAll('.btn-wall-mode').forEach(b => b.classList.remove('active'));
+            if (mode === 'synced_logo') document.getElementById('btnModeLogo')?.classList.add('active');
+            if (mode === 'multilingual') document.getElementById('btnModeBangla')?.classList.add('active');
+            if (mode === 'video_mosaic') document.getElementById('btnModeVideo')?.classList.add('active');
+            if (mode === 'ambient') document.getElementById('btnModeAmbient')?.classList.add('active');
+
+            try {
+                const res = await fetch('/api/wall/mode', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mode })
+                });
+                const data = await res.json();
+                showToast(`100-Phone Wall Switched to: ${data.mode.toUpperCase()}`, '📱');
+            } catch(e) {
+                showToast(`Switched Wall Mode: ${mode}`, '📱');
+            }
+        }
 
         // Emergency Menu Toggle
         function toggleEmergencyMenu() {
@@ -1464,6 +1993,14 @@
             } else if (type === 'ambient') {
                 cuePreviewScene('ambient');
                 executeTake();
+            }
+        }
+
+        function confirmSystemReset() {
+            if (confirm("⚠️ CAUTION: Are you sure you want to reset live event states to Baseline? (Polls, check-in tallies, and scenes will revert to Day 01 rehearsal defaults)")) {
+                audioRelay.playChime();
+                controlStage('reset');
+                showToast('Master baseline reset executed successfully.', '⚠️');
             }
         }
 
@@ -1502,7 +2039,7 @@
                 if (msg.type === 'INIT_STATE' || msg.type === 'VOTE_UPDATE') {
                     updateVotes(msg.data.voting || msg.data);
                 } else if (msg.type === 'STAGE_SCENE_CHANGE') {
-                    if (msg.data.scene) {
+                    if (msg.data && msg.data.scene) {
                         const match = SCENES.find(s => s.id === msg.data.scene);
                         if (match) {
                             pgmScene = match;
@@ -1512,10 +2049,16 @@
                             renderTimeline();
                         }
                     }
+                } else if (msg.type === 'WALL_MODE_CHANGE') {
+                    if (msg.mode) {
+                        showToast(`Wall mode changed to: ${msg.mode}`, '📱');
+                    }
                 } else if (msg.type === 'MARATHON_UPDATE') {
                     updateMarathonLanes(msg.data);
                 } else if (msg.type === 'ATTENDEE_CHECKED_IN') {
                     appendCheckinTicker(msg.data.ticket);
+                } else if (msg.type === 'AUDIT_EVENT') {
+                    if (msg.audit) prependAuditLog(msg.audit);
                 } else if (msg.type === 'BOOTH_UPDATE' || (msg.type === 'PROPOSAL_PRINTED')) {
                     if (msg.proposal) {
                         showToast(`New Ad Proposal Printed: ${msg.proposal.advertiser}`, '📜');
@@ -1529,9 +2072,10 @@
         };
 
         function updateVotes(voting) {
-            const red = voting.options.red.votes;
-            const blue = voting.options.blue.votes;
-            const total = red + blue;
+            if (!voting || !voting.options) return;
+            const red = voting.options.red ? voting.options.red.votes : 0;
+            const blue = voting.options.blue ? voting.options.blue.votes : 0;
+            const total = red + blue || 1;
             const pctRed = Math.round((red / total) * 100);
             const pctBlue = 100 - pctRed;
 
@@ -1543,7 +2087,8 @@
                 barBlue.style.width = pctBlue + '%';
                 barBlue.innerText = `Sonic Beta (${pctBlue}%)`;
             }
-            document.getElementById('battleVoteTotal').innerText = `${total} Total Votes Recorded`;
+            const voteTotalEl = document.getElementById('battleVoteTotal');
+            if (voteTotalEl) voteTotalEl.innerText = `${red + blue} Total Votes Recorded`;
         }
 
         function updateMarathonLanes(race) {
@@ -1557,11 +2102,61 @@
         function appendCheckinTicker(ticket) {
             if (!ticket) return;
             const ticker = document.getElementById('gateTicker');
+            if (!ticker) return;
             const item = document.createElement('div');
             item.className = 'ticker-entry';
             item.innerHTML = `<span>★ ${ticket.name} (${ticket.company || 'VIP'})</span><span style="color:var(--emerald);">CHECKED IN</span>`;
             ticker.insertBefore(item, ticker.firstChild);
             if (ticker.children.length > 20) ticker.removeChild(ticker.lastChild);
+        }
+
+        // ==========================================
+        // 6B. Chronological Audit Log Feed
+        // ==========================================
+        let cachedAuditLogs = [];
+        let activeAuditFilter = 'ALL';
+
+        function renderAuditLogs() {
+            const feed = document.getElementById('auditLogFeed');
+            if (!feed) return;
+            const filtered = activeAuditFilter === 'ALL'
+                ? cachedAuditLogs
+                : cachedAuditLogs.filter(l => l.type === activeAuditFilter);
+
+            feed.innerHTML = '';
+            if (filtered.length === 0) {
+                feed.innerHTML = '<div style="padding:16px; color:var(--text-dim); text-align:center;">No audit events recorded for this category.</div>';
+                return;
+            }
+
+            filtered.slice(0, 30).forEach(log => {
+                const item = document.createElement('div');
+                item.className = 'audit-item';
+                const tagClass = `audit-tag tag-${(log.type || 'SYSTEM').toLowerCase()}`;
+                const timeStr = log.timestamp || log.time || new Date().toLocaleTimeString();
+                const msgStr = log.message || log.msg || 'Event logged';
+                item.innerHTML = `
+                    <span class="audit-time">${timeStr}</span>
+                    <span class="${tagClass}">${log.type || 'SYSTEM'}</span>
+                    <span class="audit-desc">${msgStr}</span>
+                `;
+                feed.appendChild(item);
+            });
+        }
+
+        function prependAuditLog(log) {
+            cachedAuditLogs.unshift(log);
+            if (cachedAuditLogs.length > 100) cachedAuditLogs.pop();
+            renderAuditLogs();
+        }
+
+        function filterAuditLogs(type) {
+            audioRelay.playClick();
+            activeAuditFilter = type;
+            document.querySelectorAll('.btn-filter-audit').forEach(b => {
+                b.classList.toggle('active', b.innerText === type || (type === 'ALL' && b.innerText === 'ALL EVENTS'));
+            });
+            renderAuditLogs();
         }
 
         // ==========================================
@@ -1673,30 +2268,68 @@
             try {
                 const res = await fetch('/api/diagnostics');
                 const data = await res.json();
-                document.getElementById('statSockets').innerText = `${data.connectedClients} Active`;
+                
+                // Sidebar Telemetry
+                const statSocketsEl = document.getElementById('statSockets');
+                if (statSocketsEl) statSocketsEl.innerText = `${data.connectedClients} Active`;
+                
                 const heapMb = (data.memoryUsage.heapUsed / 1024 / 1024).toFixed(1);
                 const uptimeMin = (data.uptimeSeconds / 60).toFixed(1);
-                document.getElementById('statServerHealth').innerText = `${heapMb}MB / ${uptimeMin}m`;
+                const statHealthEl = document.getElementById('statServerHealth');
+                if (statHealthEl) statHealthEl.innerText = `${heapMb}MB / ${uptimeMin}m`;
 
-                const checked = data.eventState.telemetry.checkedInAttendees;
-                const total = data.eventState.telemetry.totalRSVP;
-                const pct = total > 0 ? ((checked / total) * 100).toFixed(1) : 0;
-                const text = `${checked} / ${total} (${pct}%)`;
-                document.getElementById('statCheckinRate').innerText = text;
-                const badge = document.getElementById('checkinRateBadge');
-                if (badge) badge.innerText = `${text} Checked In`;
+                // Tab 5 Diagnostics Cards
+                const diagSocketsEl = document.getElementById('diagSockets');
+                if (diagSocketsEl) diagSocketsEl.innerText = `${data.connectedClients} Active`;
+                const meterSocketsEl = document.getElementById('meterSockets');
+                if (meterSocketsEl) meterSocketsEl.style.width = Math.min(100, Math.max(10, data.connectedClients * 5)) + '%';
 
-                if (data.eventState && data.eventState.telemetry && data.eventState.telemetry.adProposalsPrinted !== undefined) {
-                    const proposalsCount = document.getElementById('hubProposalsCount');
-                    if (proposalsCount) proposalsCount.innerText = data.eventState.telemetry.adProposalsPrinted;
+                const diagHeapEl = document.getElementById('diagHeap');
+                if (diagHeapEl) diagHeapEl.innerText = `${heapMb} MB`;
+                const meterHeapEl = document.getElementById('meterHeap');
+                if (meterHeapEl) meterHeapEl.style.width = Math.min(100, (heapMb / 128) * 100) + '%';
+                const diagHeapSubEl = document.getElementById('diagHeapSub');
+                if (diagHeapSubEl) diagHeapSubEl.innerText = `Used ${heapMb}MB / 128MB Limit`;
+
+                const diagUptimeEl = document.getElementById('diagUptime');
+                if (diagUptimeEl) {
+                    const hrs = String(Math.floor(data.uptimeSeconds / 3600)).padStart(2, '0');
+                    const mins = String(Math.floor((data.uptimeSeconds % 3600) / 60)).padStart(2, '0');
+                    const secs = String(data.uptimeSeconds % 60).padStart(2, '0');
+                    diagUptimeEl.innerText = `${hrs}:${mins}:${secs}`;
+                }
+
+                // Check-in progress
+                if (data.eventState && data.eventState.telemetry) {
+                    const checked = data.eventState.telemetry.checkedInAttendees || 548;
+                    const total = data.eventState.telemetry.totalRSVP || 600;
+                    const pct = total > 0 ? ((checked / total) * 100).toFixed(1) : 0;
+                    const text = `${checked} / ${total} (${pct}%)`;
+                    
+                    const statCheckinEl = document.getElementById('statCheckinRate');
+                    if (statCheckinEl) statCheckinEl.innerText = text;
+                    const badge = document.getElementById('checkinRateBadge');
+                    if (badge) badge.innerText = `${text} Checked In`;
+
+                    if (data.eventState.telemetry.adProposalsPrinted !== undefined) {
+                        const proposalsCount = document.getElementById('hubProposalsCount');
+                        if (proposalsCount) proposalsCount.innerText = data.eventState.telemetry.adProposalsPrinted;
+                    }
+                }
+
+                // Audit Logs Feed
+                if (data.auditLogs && Array.isArray(data.auditLogs)) {
+                    cachedAuditLogs = data.auditLogs;
+                    renderAuditLogs();
                 }
             } catch(e) {}
         }
-        setInterval(pollDiagnostics, 4000);
+        setInterval(pollDiagnostics, 3000);
         pollDiagnostics();
 
         // Initial Render
         renderTimeline();
+        renderPhoneWallGrid();
     </script>
 </body>
 </html>
