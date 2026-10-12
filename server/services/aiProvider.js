@@ -505,9 +505,9 @@ Analyze this audition and output ONLY a valid JSON object with the following str
         const taskId = createData.data.task_id;
         console.log(`[PiAPI] Task accepted: ${taskId}. Polling for completion...`);
 
-        // Poll task status (up to 35 seconds)
+        // Poll task status (up to 60 seconds for GPU queue resilience)
         const startTime = Date.now();
-        while (Date.now() - startTime < 35000) {
+        while (Date.now() - startTime < 60000) {
             await new Promise(r => setTimeout(r, 1800));
             try {
                 const pollRes = await fetch(`https://api.piapi.ai/api/v1/task/${taskId}`, {
@@ -534,7 +534,7 @@ Analyze this audition and output ONLY a valid JSON object with the following str
             }
         }
 
-        throw new Error('PiAPI task timeout after 35s');
+        throw new Error('PiAPI task timeout after 60s');
     }
 }
 

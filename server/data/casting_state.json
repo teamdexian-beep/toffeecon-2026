@@ -1,7 +1,41 @@
 {
   "status": "active",
-  "totalAuditions": 12,
+  "totalAuditions": 13,
   "candidates": [
+    {
+      "id": "cand-1791790947303",
+      "characterName": "Chunnu Mama",
+      "realName": "Rafsan",
+      "genre": "thriller",
+      "roleTitle": "Old Dhaka Syndicate Enforcer",
+      "seriesTitle": "ঢাকার শেষ মাস্তান",
+      "englishTitle": "THE LAST DON OF DHAKA",
+      "tagline": "অন্ধকার যখন নামে, তখন শুরু হয় আমার আসল খেলা।",
+      "summary": "পুরান ঢাকার বুড়িগঙ্গা তীর ঘেঁষে গড়ে ওঠা গোপন নেটওয়ার্কের মূল চাবিকাঠি তার হাতে। শহরের পুলিশ প্রশাসন যাকে হন্যে হয়ে খুঁজছে কিন্তু প্রতিবার সে অদৃশ্য হয়ে যায়।",
+      "thematicBackdropUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1000&q=80",
+      "accentColor": "#FF6B00",
+      "colorGrade": "teal-orange",
+      "actingCritique": "স্ক্রিন প্রেজেন্স: ৯৬% — অসাধারণ গ্যাংস্টার গ্রিট এবং ভিলেনের ঠান্ডা চাহনি। টফি ওটিটি ক্রাইম থ্রিলার লিড রোলে পারফেক্ট কাস্টিং!",
+      "portraitUrl": "/api/media/cand-1791790947303.jpg",
+      "posterUrl": "/api/media/cand-1791790947303-poster.jpg",
+      "audioUrl": "/api/media/cand-1791790947303-voice.webm",
+      "ottScore": 95,
+      "scoreBreakdown": {
+        "screenPresence": 95,
+        "dramaticGrit": 93,
+        "dialoguePunch": 98,
+        "originality": 96
+      },
+      "prompts": {
+        "portraitPrompt": "Cinematic 8K character poster for Chunnu Mama, playing as Old Dhaka Syndicate Enforcer in \"THE LAST DON OF DHAKA\", 35mm film still, intense penetrating gaze, Moody noir with amber sodium streetlamp glow and atmospheric river fog, fine Dhaka textures, authentic Bengali persona, Toffee Original aesthetic, depth of field --ar 9:16",
+        "fullBodyPrompt": "Full body cinematic action hero still of Chunnu Mama in authentic stylized costume for Old Dhaka Syndicate Enforcer, atmospheric set reflecting thriller, standing with confident posture, Moody noir with amber sodium streetlamp glow and atmospheric river fog, 8k photorealistic",
+        "veo10sPrompt": "Cinematic 10-second OTT character reveal. [Camera Move: slow dolly push-in transitioning to high-angle hero reveal]. Chunnu Mama, dressed as Old Dhaka Syndicate Enforcer, turns collar up, making an intense dramatic gaze directly into the camera lens with a subtle confident smirk. Lighting: Moody noir with amber sodium streetlamp glow and atmospheric river fog. Atmosphere: light atmospheric mist and dust motes. Audio: deep cinematic bass pulse with ambient environmental sound. 24fps 4K."
+      },
+      "videoUrl": "",
+      "isTop10": false,
+      "rank": 5,
+      "createdAt": "2026-10-12T07:42:27.414Z"
+    },
     {
       "id": "cand-1791790525133",
       "characterName": "বল্টু ভাই",

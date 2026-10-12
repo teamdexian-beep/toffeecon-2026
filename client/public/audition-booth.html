@@ -1004,8 +1004,16 @@
                 <h1 class="title">আপনার Character এর নাম</h1>
                 <p class="subtitle">আপনি আজ কী চরিত্রে রূপ নিতে চান? নাম ও ধরণ নির্ধারণ করুন।</p>
                 
-                <input type="text" id="characterNameInput" class="custom-input" placeholder="যেমন: বল্টু ভাই / মায়া সেন / ডন রফিক" value="বল্টু ভাই">
-                <input type="text" id="realNameInput" class="custom-input" placeholder="আপনার নিজের নাম (অভিনয়শিল্পী)" style="max-width: 450px; font-size: 1.1rem; padding: 0.9rem;" value="তানভীর আহমেদ">
+                <div style="width: 100%; max-width: 520px; margin: 0 auto 1.2rem auto;">
+                    <label style="display:block; text-align:left; font-size: 0.9rem; color: #94A3B8; margin-bottom: 0.4rem; font-weight: 500;">চরিত্রের নাম (Character Name):</label>
+                    <input type="text" id="characterNameInput" class="custom-input" style="width: 100%; max-width: 100%; margin: 0;" placeholder="যেমন: ডন রফিক / ক্যাপ্টেন রায়হান" value="ডন রফিক" oninput="userEditedCharName = true">
+                    <div id="charSuggestions" style="display:flex; gap:0.5rem; justify-content:flex-start; margin-top:0.6rem; flex-wrap:wrap;"></div>
+                </div>
+
+                <div style="width: 100%; max-width: 520px; margin: 0 auto 1.8rem auto;">
+                    <label style="display:block; text-align:left; font-size: 0.9rem; color: #94A3B8; margin-bottom: 0.4rem; font-weight: 500;">আপনার নাম (Actor / Performer Name):</label>
+                    <input type="text" id="realNameInput" class="custom-input" style="width: 100%; max-width: 100%; font-size: 1.1rem; padding: 0.85rem; margin: 0;" placeholder="আপনার নিজের নাম (পোস্টারে STARRING হিসেবে থাকবে)">
+                </div>
 
                 <div class="genre-grid">
                     <div class="genre-card selected" onclick="selectGenre('thriller', this)">
@@ -1394,6 +1402,8 @@
         // Genre Archetypes configuration on client side
         const genreArchetypes = {
             thriller: {
+                defaultCharacterName: 'ডন রফিক',
+                characterSuggestions: ['ডন রফিক', 'কালা জাহাঙ্গীর', 'সুলতান ভাই'],
                 roleTitle: 'Old Dhaka Syndicate Enforcer',
                 seriesTitle: 'ঢাকার শেষ মাস্তান',
                 englishTitle: 'THE LAST DON OF DHAKA',
@@ -1410,6 +1420,8 @@
                 ]
             },
             action: {
+                defaultCharacterName: 'ক্যাপ্টেন রায়হান',
+                characterSuggestions: ['ক্যাপ্টেন রায়হান', 'কমান্ডো রুবেল', 'এজেন্ট নির্ভীক'],
                 roleTitle: 'Spec-Ops Rogue Recon Specialist',
                 seriesTitle: 'সাইবার স্ট্রাইক ২০২৬',
                 englishTitle: 'CYBER STRIKE: SPEC-OPS',
@@ -1426,6 +1438,8 @@
                 ]
             },
             comedy: {
+                defaultCharacterName: 'বল্টু ভাই',
+                characterSuggestions: ['বল্টু ভাই', 'ঘটেক মজিদ', 'স্মার্ট কালাম'],
                 roleTitle: 'Dhaka Neighborhood Hustler & Matchmaker',
                 seriesTitle: 'মহল্লার রাজা বল্টু',
                 englishTitle: 'THE NEIGHBORHOOD HUSTLER',
@@ -1442,6 +1456,8 @@
                 ]
             },
             romance: {
+                defaultCharacterName: 'নীল চৌধুরী',
+                characterSuggestions: ['নীল চৌধুরী', 'আবির হাসান', 'শ্রাবণ'],
                 roleTitle: 'Melancholic Metro Songwriter',
                 seriesTitle: 'বৃষ্টিভেজা মেট্রো',
                 englishTitle: 'METRO AT BLUE HOUR',
@@ -1458,6 +1474,8 @@
                 ]
             },
             scifi: {
+                defaultCharacterName: 'সাইফার-৭',
+                characterSuggestions: ['সাইফার-৭', 'ডাটা হ্যাকার নিয়ন', 'প্রোটোকল শূন্য'],
                 roleTitle: 'Dhaka 2033 Quantum Grid Navigator',
                 seriesTitle: 'কোয়ান্টাম ঢাকা ২০৩৩',
                 englishTitle: 'QUANTUM DHAKA 2033',
@@ -1474,6 +1492,8 @@
                 ]
             },
             drama: {
+                defaultCharacterName: 'ফারহান কবীর',
+                characterSuggestions: ['ফারহান কবীর', 'ব্যারিস্টার জামান', 'শেহজাদ খান'],
                 roleTitle: 'Underground Heist Mastermind',
                 seriesTitle: 'মুখোশের আড়ালে',
                 englishTitle: 'BEHIND THE MASK',
@@ -1575,10 +1595,52 @@
             }
         }
 
+        let userEditedCharName = false;
+
+        function renderCharacterSuggestions() {
+            const container = document.getElementById('charSuggestions');
+            if (!container) return;
+            const archetype = genreArchetypes[selectedGenre] || genreArchetypes.thriller;
+            container.innerHTML = '';
+
+            const label = document.createElement('span');
+            label.style.fontSize = '0.8rem';
+            label.style.color = '#94A3B8';
+            label.style.alignSelf = 'center';
+            label.style.marginRight = '0.3rem';
+            label.innerText = 'জনপ্রিয় নাম:';
+            container.appendChild(label);
+
+            (archetype.characterSuggestions || [archetype.defaultCharacterName]).forEach(name => {
+                const pill = document.createElement('button');
+                pill.type = 'button';
+                pill.style.cssText = 'background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.18); border-radius: 999px; padding: 0.28rem 0.8rem; color: #E2E8F0; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; font-family: inherit;';
+                pill.innerText = name;
+                pill.onclick = () => {
+                    document.getElementById('characterNameInput').value = name;
+                    userEditedCharName = true;
+                    document.querySelectorAll('#charSuggestions button').forEach(b => {
+                        b.style.borderColor = 'rgba(255,255,255,0.18)';
+                        b.style.background = 'rgba(255,255,255,0.06)';
+                        b.style.color = '#E2E8F0';
+                    });
+                    pill.style.borderColor = 'var(--toffee-gold)';
+                    pill.style.background = 'rgba(255, 184, 0, 0.22)';
+                    pill.style.color = '#FFD54F';
+                };
+                container.appendChild(pill);
+            });
+        }
+
         function selectGenre(genre, elem) {
             selectedGenre = genre;
             document.querySelectorAll('.genre-card').forEach(c => c.classList.remove('selected'));
             elem.classList.add('selected');
+            const archetype = genreArchetypes[selectedGenre] || genreArchetypes.thriller;
+            if (!userEditedCharName) {
+                document.getElementById('characterNameInput').value = archetype.defaultCharacterName;
+            }
+            renderCharacterSuggestions();
             renderDialogueChips();
         }
 
@@ -1938,20 +2000,6 @@
                     ctx.fillStyle = '#08080C';
                     ctx.fillRect(0, 0, 900, 1600);
                 }
-
-                // Fallback composite: blend attendee portrait with soft feathered vignette
-                if (photoBase64) {
-                    const portraitImg = await loadImage(photoBase64);
-                    if (portraitImg) {
-                        ctx.save();
-                        ctx.beginPath();
-                        ctx.ellipse(450, 620, 300, 380, 0, 0, Math.PI * 2);
-                        ctx.clip();
-                        ctx.globalAlpha = 0.94;
-                        drawCover(portraitImg, 150, 240, 600, 760);
-                        ctx.restore();
-                    }
-                }
             }
 
             // 2. Cinematic Color Grading LUT Overlay
@@ -2057,10 +2105,10 @@
             ctx.fillText(characterName, 50, 1375);
             ctx.restore();
 
-            // Real Performer Name
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            // Real Performer Name (Clean single-mention credit)
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
             ctx.font = '600 24px "Plus Jakarta Sans", "Hind Siliguri", sans-serif';
-            ctx.fillText(`Starring: ${realName || 'Audition Guest'} as ${characterName}`, 50, 1420);
+            ctx.fillText(`STARRING: ${(realName || 'AUDITION GUEST').toUpperCase()}`, 50, 1420);
 
             // Tagline in Quotes
             ctx.fillStyle = '#CBD5E1';
@@ -2462,13 +2510,21 @@
             compositePosterBase64 = '';
             capturedAudioBase64 = '';
             activeCandidateData = null;
-            document.getElementById('characterNameInput').value = 'বল্টু ভাই';
+            userEditedCharName = false;
+            selectedGenre = 'thriller';
+            document.querySelectorAll('.genre-card').forEach(c => c.classList.remove('selected'));
+            const firstGenre = document.querySelector('.genre-card');
+            if (firstGenre) firstGenre.classList.add('selected');
+            document.getElementById('characterNameInput').value = genreArchetypes.thriller.defaultCharacterName;
             document.getElementById('realNameInput').value = '';
             document.getElementById('speechTranscriptInput').value = '';
+            renderCharacterSuggestions();
+            renderDialogueChips();
             goToScreen(1);
         }
 
         window.onload = () => {
+            renderCharacterSuggestions();
             renderDialogueChips();
             drawFlatVisualizer();
         };
