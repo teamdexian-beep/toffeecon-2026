@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Toffee OTT The Dub Booth — Official Dubbed Reel</title>
+    
+    <!-- OpenGraph & Social Media Meta Tags -->
+    <meta property="og:title" content="Toffee OTT The Dub Booth 2026">
+    <meta property="og:description" content="বাংলা ডায়ালগ এখন ইন্টারন্যাশনাল ওটিটি স্টাইলে! আমার ডাবিং শুনুন এবং ট্রাই করুন।">
+    <meta property="og:type" content="video.other">
+    <meta property="og:image" content="/api/media/dub_avatars/japanese.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@400;600;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --toffee-orange: #FF6600;
+            --neon-pink: #FF10F0;
+            --neon-purple: #A855F7;
+            --neon-cyan: #00F0FF;
+            --neon-gold: #FFB800;
+            --dark-bg: #07060E;
+            --card-bg: rgba(18, 12, 34, 0.88);
+            --border-glow: rgba(255, 16, 240, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(255, 16, 240, 0.18) 0%, transparent 60%),
+                radial-gradient(circle at 10% 90%, rgba(0, 240, 255, 0.12) 0%, transparent 50%),
+                linear-gradient(to bottom, #090615 0%, #05040A 100%);
+            color: #FFFFFF;
+            font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem 1rem 3rem 1rem;
+        }
+
+        /* Top Brand Bar */
+        .brand-header {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .brand-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            font-size: 1.05rem;
+            letter-spacing: 1px;
+            color: #FFF;
+        }
+
+        .brand-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--neon-pink);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        .booth-tag {
+            font-size: 0.72rem;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(255, 16, 240, 0.15);
+            border: 1px solid rgba(255, 16, 240, 0.4);
+            color: var(--neon-pink);
+            font-weight: 700;
+        }
+
+        /* Main Reel Container (9:16 Aspect Ratio) */
+        .reel-container {
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            background: #0E0820;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 16, 240, 0.35);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(255, 16, 240, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .media-viewport {
+            position: relative;
+            width: 100%;
+            padding-top: 133%; /* 3:4 / 9:12 compact mobile reel ratio */
+            background: #000;
+            overflow: hidden;
+        }
+
+        .avatar-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform-origin: center 65%;
+            transition: transform 0.08s linear;
+        }
+
+        /* Animated Mouth Overlay */
+        .mouth-animator {
+            position: absolute;
+            top: 48%;
+            left: 45%;
+            width: 10%;
+            height: 4%;
+            background: rgba(40, 10, 10, 0.75);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            transform: scale(0.6);
+            transition: transform 0.08s ease, opacity 0.15s ease;
+            box-shadow: 0 0 8px rgba(0,0,0,0.8);
+        }
+
+        .media-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(14, 8, 32, 0.4) 0%, transparent 30%, transparent 65%, rgba(14, 8, 32, 0.95) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 18px;
+            pointer-events: none;
+        }
+
+        .top-chips {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lang-badge {
+            background: rgba(0, 0, 0, 0.75);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 999px;
+            letter-spacing: 1px;
+            backdrop-filter: blur(8px);
+        }
+
+        .sound-wave-indicator {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 18px;
+        }
+
+        .sound-bar {
+            width: 3px;
+            height: 4px;
+            background: var(--neon-pink);
+            border-radius: 2px;
+            transition: height 0.1s ease;
+        }
+
+        /* Dual Subtitles in Viewport */
+        .subtitles-box {
+            background: rgba(0, 0, 0, 0.75);
+            border-left: 3px solid var(--neon-pink);
+            padding: 12px 14px;
+            border-radius: 0 12px 12px 0;
+            backdrop-filter: blur(10px);
+            margin-bottom: 6px;
+        }
+
+        .sub-foreign {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.35;
+            margin-bottom: 4px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .sub-bangla {
+            font-size: 0.85rem;
+            color: var(--neon-cyan);
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        /* Reel Controls & Details */
+        .reel-details {
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            background: #110A24;
+        }
+
+        .speaker-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .speaker-name {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #FFF;
+        }
+
+        .character-role {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .play-button-bar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn-play-audio {
+            flex: 1;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            border: none;
+            border-radius: 12px;
+            color: #FFF;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 6px 20px rgba(255, 16, 240, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .btn-play-audio:active {
+            transform: scale(0.97);
+        }
+
+        /* Action Buttons Grid */
+        .actions-grid {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: #FFFFFF;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
+            text-decoration: none;
+            transition: transform 0.15s ease;
+        }
+
+        .btn-whatsapp:active {
+            transform: scale(0.98);
+        }
+
+        .secondary-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn-social {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #FFF;
+            padding: 13px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .btn-social:hover {
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(0, 240, 255, 0.05));
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+
+        /* Footer Prompt */
+        .booth-cta-box {
+            width: 100%;
+            max-width: 480px;
+            margin-top: 24px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 18px;
+            text-align: center;
+        }
+
+        .booth-cta-box h4 {
+            font-size: 0.95rem;
+            color: #FFF;
+            margin-bottom: 6px;
+        }
+
+        .booth-cta-box p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 12px;
+        }
+
+        .btn-try-booth {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid var(--neon-pink);
+            color: var(--neon-pink);
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            background: rgba(14, 8, 32, 0.95);
+            border: 1px solid var(--neon-cyan);
+            color: #FFF;
+            padding: 12px 24px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            display: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Brand Header -->
+    <header class="brand-header">
+        <div class="brand-badge">
+            <span class="brand-dot"></span>
+            <span>TOFFEE CON</span>
+        </div>
+        <div class="booth-tag">THE DUB BOOTH · 2026</div>
+    </header>
+
+    <!-- Main Reel Card -->
+    <div class="reel-container" id="reelContainer">
+        <div class="media-viewport">
+            <img id="avatarImage" class="avatar-img" src="/api/media/dub_avatars/japanese.jpg" alt="Dubbed Character">
+            <div id="mouthAnimator" class="mouth-animator"></div>
+            
+            <div class="media-overlay">
+                <div class="top-chips">
+                    <span id="langBadge" class="lang-badge">🇯🇵 JAPANESE ANIME</span>
+                    <div class="sound-wave-indicator" id="soundWaves">
+                        <span class="sound-bar"></span>
+                        <span class="sound-bar"></span>
+                        <span class="sound-bar"></span>
+                        <span class="sound-bar"></span>
+                    </div>
+                </div>
+
+                <div class="subtitles-box">
+                    <div id="subForeign" class="sub-foreign">チュモントル・チュ・カリプッテル・グ！おじさん、勝負だ！</div>
+                    <div id="subBangla" class="sub-bangla">“ছু মন্তর ছু কালিপুত্তের গু! মামা খেলা হবে!”</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reel-details">
+            <div class="speaker-row">
+                <div>
+                    <div id="speakerName" class="speaker-name">আরাফাত চৌধুরী</div>
+                    <div id="characterRole" class="character-role">Tokyo Anime Samurai · Ren Kayato</div>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-family: 'Space Mono', monospace; font-size: 0.75rem; color: rgba(255,255,255,0.4);" id="dubIdText">DUB-1001</span>
+                </div>
+            </div>
+
+            <div class="play-button-bar">
+                <button class="btn-play-audio" id="btnPlayAudio" onclick="playDubbedVoice()">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    <span>Play Dubbed Voice</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Viral Sharing Buttons -->
+    <div class="actions-grid">
+        <a id="btnWhatsApp" class="btn-whatsapp" href="#" target="_blank" onclick="trackShare('whatsapp')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.699c.974.554 1.761.814 2.796.814 3.183 0 5.768-2.587 5.768-5.766 0-3.18-2.585-5.768-5.768-5.768zm7.985 5.767c0 4.408-3.585 7.993-7.985 7.993-1.408 0-2.729-.374-3.878-1.026l-4.153 1.089 1.107-4.045c-.714-1.189-1.076-2.56-1.076-4.011 0-4.408 3.585-7.993 7.985-7.993 4.4 0 7.985 3.585 7.985 7.993z"/>
+            </svg>
+            <span>Share to WhatsApp Status</span>
+        </a>
+
+        <div class="secondary-actions">
+            <button class="btn-social btn-download" onclick="downloadPosterCard()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>Save Poster</span>
+            </button>
+
+            <button class="btn-social" onclick="copyReelLink()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                <span>Copy Link</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Venue Kiosk CTA -->
+    <div class="booth-cta-box">
+        <h4>Are you at ToffeeCon 2026?</h4>
+        <p>Step inside The Dub Booth at the venue to record your own dialogue in real-time!</p>
+        <a href="/dub" class="btn-try-booth">Open Kiosk Display</a>
+    </div>
+
+    <div id="toast" class="toast">Link copied to clipboard!</div>
+
+    <script>
+        let currentDub = null;
+        let isSpeaking = false;
+        let mouthInterval = null;
+
+        // Extract ID from query param (?id=DUB-XXXX) or path (/share/dub/DUB-XXXX)
+        function getDubId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryId = urlParams.get('id');
+            if (queryId) return queryId;
+
+            const pathParts = window.location.pathname.split('/');
+            const lastPart = pathParts[pathParts.length - 1];
+            if (lastPart && lastPart.startsWith('DUB-')) return lastPart;
+            return 'DUB-1001';
+        }
+
+        async function loadDubData() {
+            const dubId = getDubId();
+            try {
+                const res = await fetch(`/api/booth/dub/candidate/${dubId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.dub) {
+                        currentDub = data.dub;
+                        renderDub(currentDub);
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.warn('Using fallback dub data:', e);
+            }
+
+            // Fallback sample
+            currentDub = {
+                id: dubId,
+                guestName: 'আরাফাত চৌধুরী',
+                originalText: 'ছু মন্তর ছু কালিপুত্তের গু! মামা খেলা হবে!',
+                language: 'japanese',
+                languageLabel: 'Japanese Anime (জাপানিজ)',
+                characterRole: 'Tokyo Anime Samurai',
+                characterName: 'রেন কায়াতো (Ren Kayato)',
+                translatedText: 'チュモントル・チュ・カリプッテル・グ！おじさん、勝負だ！',
+                phoneticText: 'Chu montoru chu kariputteru gu! Ojisan, shōbu da!',
+                avatarImage: '/api/media/dub_avatars/japanese.jpg',
+                audioVoiceCode: 'ja-JP'
+            };
+            renderDub(currentDub);
+        }
+
+        function renderDub(dub) {
+            document.getElementById('dubIdText').innerText = dub.id;
+            document.getElementById('speakerName').innerText = dub.guestName || 'VIP Creator';
+            document.getElementById('characterRole').innerText = `${dub.characterRole || ''} · ${dub.characterName || ''}`;
+            document.getElementById('avatarImage').src = dub.avatarImage || '/api/media/dub_avatars/japanese.jpg';
+            document.getElementById('subForeign').innerText = dub.translatedText || '';
+            document.getElementById('subBangla').innerText = `“${dub.originalText || ''}”`;
+            
+            const flagMap = {
+                japanese: '🇯🇵 JAPANESE',
+                russian: '🇷🇺 RUSSIAN',
+                spanish: '🇪🇸 SPANISH',
+                french: '🇫🇷 FRENCH',
+                korean: '🇰🇷 KOREAN',
+                arabic: '🇸🇦 ARABIC',
+                sylheti: '🇧🇩 SYLHETI DIALECT',
+                noakhali: '🇧🇩 NOAKHALI DIALECT'
+            };
+            document.getElementById('langBadge').innerText = flagMap[dub.language] || (dub.languageLabel || 'GLOBAL DUB');
+
+            // Build WhatsApp share URL
+            const shareUrl = encodeURIComponent(window.location.origin + `/share-dub?id=${dub.id}`);
+            const text = encodeURIComponent(`🔥 টফি কন ২০২৬ এর ডাব বুথে আমার বাংলা ডায়ালগ ওটিটি স্টাইলে কনভার্ট করলাম!\n\n🎙️ “${dub.originalText}”\n🌐 ${dub.languageLabel || dub.language}: “${dub.translatedText}”\n\nশুনুন এবং আপনারটাও তৈরি করুন:\n${window.location.origin}/share-dub?id=${dub.id}`);
+            document.getElementById('btnWhatsApp').href = `https://api.whatsapp.com/send?text=${text}`;
+        }
+
+        function playDubbedVoice() {
+            if (!currentDub) return;
+
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(currentDub.translatedText);
+                utterance.lang = currentDub.audioVoiceCode || 'ja-JP';
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+
+                // Sync mouth animation & wave indicators
+                utterance.onstart = () => {
+                    startVoiceAnimation();
+                };
+                utterance.onend = () => {
+                    stopVoiceAnimation();
+                };
+                utterance.onerror = () => {
+                    stopVoiceAnimation();
+                };
+
+                window.speechSynthesis.speak(utterance);
+            } else {
+                startVoiceAnimation();
+                setTimeout(stopVoiceAnimation, 3000);
+            }
+        }
+
+        function startVoiceAnimation() {
+            const avatar = document.getElementById('avatarImage');
+            const mouth = document.getElementById('mouthAnimator');
+            const waves = document.querySelectorAll('.sound-bar');
+
+            if (mouthInterval) clearInterval(mouthInterval);
+            mouth.style.opacity = '0.9';
+
+            let count = 0;
+            mouthInterval = setInterval(() => {
+                count++;
+                const scaleMouth = 0.6 + Math.random() * 0.9;
+                const scaleHead = 1.0 + (Math.random() * 0.02);
+                avatar.style.transform = `scale(${scaleHead})`;
+                mouth.style.transform = `scaleY(${scaleMouth}) scaleX(${1.0 + Math.random() * 0.2})`;
+
+                waves.forEach(bar => {
+                    bar.style.height = (4 + Math.random() * 14) + 'px';
+                });
+            }, 90);
+        }
+
+        function stopVoiceAnimation() {
+            if (mouthInterval) clearInterval(mouthInterval);
+            mouthInterval = null;
+            const avatar = document.getElementById('avatarImage');
+            const mouth = document.getElementById('mouthAnimator');
+            const waves = document.querySelectorAll('.sound-bar');
+
+            avatar.style.transform = 'scale(1)';
+            mouth.style.opacity = '0';
+            mouth.style.transform = 'scale(0.6)';
+            waves.forEach(bar => bar.style.height = '4px');
+        }
+
+        function copyReelLink() {
+            const link = window.location.origin + `/share-dub?id=${currentDub ? currentDub.id : 'DUB-1001'}`;
+            navigator.clipboard.writeText(link).then(() => {
+                showToast('Reel link copied to clipboard!');
+            }).catch(() => {
+                showToast('Link copied!');
+            });
+        }
+
+        function downloadPosterCard() {
+            if (!currentDub || !currentDub.avatarImage) return;
+            const a = document.createElement('a');
+            a.href = currentDub.avatarImage;
+            a.download = `toffeecon-dub-${currentDub.id}.jpg`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast('Character poster saved!');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2600);
+        }
+
+        function trackShare(channel) {
+            console.log(`Shared to ${channel} for ${currentDub?.id}`);
+        }
+
+        document.addEventListener('DOMContentLoaded', loadDubData);
+    </script>
+</body>
+</html>

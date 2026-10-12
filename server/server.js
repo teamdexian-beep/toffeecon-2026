@@ -104,6 +104,7 @@ app.get('/phone', (req, res) => res.sendFile(path.join(clientPublic, 'phone.html
 app.get('/booth/mission-control', (req, res) => res.sendFile(path.join(clientPublic, 'mission-control.html')));
 app.get('/mission-control', (req, res) => res.sendFile(path.join(clientPublic, 'mission-control.html')));
 app.get('/booth/dub', (req, res) => res.sendFile(path.join(clientPublic, 'dub-booth.html')));
+app.get('/dub', (req, res) => res.sendFile(path.join(clientPublic, 'dub-booth.html')));
 app.get('/booth/screen-relay', (req, res) => res.sendFile(path.join(clientPublic, 'screen-relay.html')));
 app.get('/booth/space-window', (req, res) => res.sendFile(path.join(clientPublic, 'space-window.html')));
 app.get('/booth/capsule-booth', (req, res) => res.sendFile(path.join(clientPublic, 'capsule-booth.html')));
@@ -121,6 +122,8 @@ app.get('/presenter', (req, res) => res.sendFile(path.join(clientPublic, 'presen
 app.get('/mc', (req, res) => res.sendFile(path.join(clientPublic, 'presenter-remote.html')));
 app.get('/share', (req, res) => res.sendFile(path.join(clientPublic, 'share.html')));
 app.get('/share/:id', (req, res) => res.sendFile(path.join(clientPublic, 'share.html')));
+app.get('/share-dub', (req, res) => res.sendFile(path.join(clientPublic, 'share-dub.html')));
+app.get('/share/dub/:id', (req, res) => res.sendFile(path.join(clientPublic, 'share-dub.html')));
 
 // Role-Based Architecture Aliases (EOS 2.0)
 app.get('/attendee/audition', (req, res) => res.sendFile(path.join(clientPublic, 'audition-booth.html')));

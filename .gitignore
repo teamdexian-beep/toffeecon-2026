@@ -24,5 +24,7 @@ server/data/media/*
 !server/data/media/.gitkeep
 !server/data/media/archetypes/
 !server/data/media/archetypes/*
+!server/data/media/dub_avatars/
+!server/data/media/dub_avatars/*
 .system_generated/
 scratch/

@@ -1,0 +1,52 @@
+{
+  "status": "active",
+  "totalDubs": 3,
+  "takes": [
+    {
+      "id": "DUB-4012",
+      "guestName": "আরাফাত",
+      "originalText": "ছু মন্তর ছু কালিপুত্তের গু! মামা খেলা হবে!",
+      "language": "japanese",
+      "targetDialect": "japanese",
+      "languageLabel": "Japanese Anime (জাপানিজ)",
+      "characterRole": "Tokyo Anime Samurai",
+      "characterName": "রেন কায়াতো (Ren Kayato)",
+      "translatedText": "チュモントル・チュ・カリプッテル・グ！さあ、闇の呪文が発動する！",
+      "phoneticText": "チュモントル・チュ・カリプッテル・グ！さあ、闇の呪文が発動する！",
+      "avatarImage": "/api/media/dub_avatars/japanese.jpg",
+      "audioVoiceCode": "ja-JP",
+      "audioUrl": null,
+      "createdAt": "2026-10-12T11:28:55.514Z"
+    },
+    {
+      "id": "DUB-1001",
+      "guestName": "আরাফাত চৌধুরী",
+      "originalText": "ছু মন্তর ছু কালিপুত্তের গু! মামা খেলা হবে!",
+      "language": "japanese",
+      "targetDialect": "japanese",
+      "languageLabel": "Japanese Anime (জাপানিজ)",
+      "characterRole": "Tokyo Anime Samurai",
+      "characterName": "রেন কায়াতো (Ren Kayato)",
+      "translatedText": "チュモントル・チュ・カリプッテル・グ！おじさん、勝負だ！",
+      "phoneticText": "Chu montoru chu kariputteru gu! Ojisan, shōbu da!",
+      "avatarImage": "/api/media/dub_avatars/japanese.jpg",
+      "audioVoiceCode": "ja-JP",
+      "createdAt": "2026-10-12T11:28:03.111Z"
+    },
+    {
+      "id": "DUB-1002",
+      "guestName": "মেহজাবিন আলম",
+      "originalText": "আইন দিয়ে আদালত চলে, আর এই মহল্লা চলে আমার কথায়!",
+      "language": "russian",
+      "targetDialect": "russian",
+      "languageLabel": "Russian Cold War (রাশিয়ান)",
+      "characterRole": "Moscow Underworld Boss",
+      "characterName": "ভিক্টর সোবোলভ (Viktor Sobolev)",
+      "translatedText": "Закон правит судом, а этот район слушает только меня!",
+      "phoneticText": "Zakon pravit sudom, a etot rayon slushayet tolko menya!",
+      "avatarImage": "/api/media/dub_avatars/russian.jpg",
+      "audioVoiceCode": "ru-RU",
+      "createdAt": "2026-10-12T11:28:03.133Z"
+    }
+  ]
+}

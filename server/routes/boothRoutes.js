@@ -3,6 +3,7 @@ const router = express.Router();
 const fs = require('fs');
 const path = require('path');
 const { aiRateLimiter } = require('../middleware/security');
+const dubStore = require('../stores/dubStore');
 
 module.exports = function(eventStore, broadcast, aiProvider) {
     // 1. Mission Control Proposal Generator
@@ -32,7 +33,7 @@ module.exports = function(eventStore, broadcast, aiProvider) {
         res.json({ success: true, proposal, telemetry: eventStore.getState().telemetry });
     });
 
-    // 2. The Dub Booth Basic Asset
+    // 2. The Dub Booth Basic Asset & History
     router.post('/dub', (req, res) => {
         const { guestName, sceneId, dialect } = req.body;
 
@@ -58,21 +59,56 @@ module.exports = function(eventStore, broadcast, aiProvider) {
         res.json({ success: true, dubAsset, telemetry: eventStore.getState().telemetry });
     });
 
-    // 3. AI Dub Booth Voice Engine
+    // 3. AI Dub Booth Voice & Performance Engine
     router.post('/dub-ai', aiRateLimiter, async (req, res) => {
         try {
-            const { speakerName, text, targetDialect } = req.body;
-            const result = await aiProvider.translateAndDubVoice({ speakerName, text, targetDialect });
+            const { speakerName, text, targetDialect, audioSampleBase64 } = req.body;
+            const result = await aiProvider.translateAndDubVoice({ speakerName, text, targetDialect, audioSampleBase64 });
+
+            // Persist into dubStore
+            const savedTake = dubStore.addTake({
+                id: result.dubId,
+                guestName: speakerName || 'VIP Creator',
+                originalText: result.originalText,
+                language: result.dialectKey,
+                languageLabel: result.dialect,
+                characterRole: result.characterRole,
+                characterName: result.characterName,
+                translatedText: result.translatedText,
+                phoneticText: result.phoneticText,
+                avatarImage: result.avatarImage,
+                audioVoiceCode: result.voiceCode,
+                audioUrl: result.audioUrl || null
+            });
 
             eventStore.update(st => {
                 st.telemetry.dubBoothsCompleted += 1;
             });
 
-            broadcast('DUB_AI_PROCESSED', result);
-            res.json({ success: true, dub: result });
+            broadcast('DUB_AI_PROCESSED', savedTake);
+            res.json({ success: true, dub: savedTake });
         } catch(err) {
+            console.error('[DubAI] Error:', err);
             res.status(500).json({ error: err.message });
         }
+    });
+
+    // Dub Session Lookup by ID (for QR Code & Mobile Viral Share Page)
+    router.get('/dub/candidate/:id', (req, res) => {
+        const take = dubStore.getTake(req.params.id);
+        if (!take) {
+            return res.status(404).json({ success: false, error: 'Dub session not found' });
+        }
+        res.json({ success: true, dub: take });
+    });
+
+    // Dub Booth Catalog of Archetypes & Sessions
+    router.get('/dub/state', (req, res) => {
+        res.json({
+            success: true,
+            archetypes: aiProvider.dialectDictionaries,
+            recentTakes: dubStore.getState().takes
+        });
     });
 
     // 4. AI Capsule Prediction Expander
