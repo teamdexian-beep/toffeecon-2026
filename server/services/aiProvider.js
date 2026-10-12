@@ -480,30 +480,52 @@ Analyze this audition and output ONLY a valid JSON object with the following str
         const apiKey = this.config.apiKey || process.env.PIAPI_KEY;
         if (!apiKey) throw new Error('PiAPI Key not configured');
 
-        console.log('[PiAPI] Dispatching neural face-swap task...');
-        const createRes = await fetch('https://api.piapi.ai/api/v1/task', {
-            method: 'POST',
-            headers: {
-                'x-api-key': apiKey,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: 'Qubico/image-toolkit',
-                task_type: 'face-swap',
-                input: {
-                    target_image: targetImageUrl,
-                    swap_image: swapImageBase64
-                }
-            })
-        });
+        let taskId = null;
+        let lastErr = null;
 
-        const createData = await createRes.json();
-        if (!createRes.ok || !createData.data?.task_id) {
-            throw new Error(`PiAPI task creation failed: ${createData.message || createRes.statusText}`);
+        // Task dispatch with 3 automatic retries for resilient network socket handling
+        for (let attempt = 1; attempt <= 3; attempt++) {
+            try {
+                console.log(`[PiAPI] Dispatching neural face-swap task (attempt ${attempt}/3)...`);
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+                const createRes = await fetch('https://api.piapi.ai/api/v1/task', {
+                    method: 'POST',
+                    headers: {
+                        'x-api-key': apiKey,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: 'Qubico/image-toolkit',
+                        task_type: 'face-swap',
+                        input: {
+                            target_image: targetImageUrl,
+                            swap_image: swapImageBase64
+                        }
+                    }),
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                const createData = await createRes.json();
+                if (createRes.ok && createData.data?.task_id) {
+                    taskId = createData.data.task_id;
+                    console.log(`[PiAPI] Task accepted: ${taskId}. Polling for completion...`);
+                    break;
+                } else {
+                    lastErr = new Error(`PiAPI task creation rejected: ${createData.message || createRes.statusText}`);
+                }
+            } catch (dispatchErr) {
+                lastErr = dispatchErr;
+                console.warn(`[PiAPI] Dispatch attempt ${attempt} failed:`, dispatchErr.message, dispatchErr.cause || '');
+                if (attempt < 3) await new Promise(r => setTimeout(r, 1500));
+            }
         }
 
-        const taskId = createData.data.task_id;
-        console.log(`[PiAPI] Task accepted: ${taskId}. Polling for completion...`);
+        if (!taskId) {
+            throw new Error(`PiAPI task creation failed after 3 attempts: ${lastErr?.message}`);
+        }
 
         // Poll task status (up to 60 seconds for GPU queue resilience)
         const startTime = Date.now();

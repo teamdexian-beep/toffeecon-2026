@@ -1,7 +1,109 @@
 {
   "status": "active",
-  "totalAuditions": 13,
+  "totalAuditions": 16,
   "candidates": [
+    {
+      "id": "cand-1791791951875",
+      "characterName": "এজেন্ট নির্ভীক",
+      "realName": "Rafsan",
+      "genre": "action",
+      "roleTitle": "Spec-Ops Rogue Recon Specialist",
+      "seriesTitle": "সাইবার স্ট্রাইক ২০২৬",
+      "englishTitle": "CYBER STRIKE: SPEC-OPS",
+      "tagline": "মিশন যখন শেষ হবে, তখন কেবল আমার পায়ের ছাপ বাকি থাকবে।",
+      "summary": "কঠিন ট্রেনিংপ্রাপ্ত সাবেক সামরিক স্পেশালিস্ট, যিনি এখন ঢাকার সাইবার আন্ডারগ্রাউন্ডের সাথে এক অসম লড়াইয়ে নেমেছেন। যার লক্ষ্য কেবল সত্য উন্মোচন করা।",
+      "thematicBackdropUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=80",
+      "accentColor": "#00F0FF",
+      "colorGrade": "cyber-neon",
+      "actingCritique": "অ্যাকশন এনার্জি: ৯৩% — ক্ষিপ্র শারীরিক ভাষা ও তীক্ষ্ণ চোখ। ব্লকব্লাস্টার অ্যাকশন থ্রিলারের জন্য উপযোগী।",
+      "portraitUrl": "/api/media/cand-1791791951875.jpg",
+      "posterUrl": "/api/media/cand-1791791951875-poster.jpg",
+      "audioUrl": "",
+      "ottScore": 94,
+      "scoreBreakdown": {
+        "screenPresence": 93,
+        "dramaticGrit": 93,
+        "dialoguePunch": 97,
+        "originality": 95
+      },
+      "prompts": {
+        "portraitPrompt": "Cinematic 8K character poster for এজেন্ট নির্ভীক, playing as Spec-Ops Rogue Recon Specialist in \"CYBER STRIKE: SPEC-OPS\", 35mm film still, intense penetrating gaze, High-contrast cyan and crimson neon rim light with metallic highlights, fine Dhaka textures, authentic Bengali persona, Toffee Original aesthetic, depth of field --ar 9:16",
+        "fullBodyPrompt": "Full body cinematic action hero still of এজেন্ট নির্ভীক in authentic stylized costume for Spec-Ops Rogue Recon Specialist, atmospheric set reflecting action, standing with confident posture, High-contrast cyan and crimson neon rim light with metallic highlights, 8k photorealistic",
+        "veo10sPrompt": "Cinematic 10-second OTT character reveal. [Camera Move: slow dolly push-in transitioning to high-angle hero reveal]. এজেন্ট নির্ভীক, dressed as Spec-Ops Rogue Recon Specialist, turns collar up, making an intense dramatic gaze directly into the camera lens with a subtle confident smirk. Lighting: High-contrast cyan and crimson neon rim light with metallic highlights. Atmosphere: light atmospheric mist and dust motes. Audio: deep cinematic bass pulse with ambient environmental sound. 24fps 4K."
+      },
+      "videoUrl": "",
+      "isTop10": false,
+      "rank": 7,
+      "createdAt": "2026-10-12T07:59:11.886Z"
+    },
+    {
+      "id": "cand-1791791899672",
+      "characterName": "Barrister Janet",
+      "realName": "Jane Alam",
+      "genre": "drama",
+      "roleTitle": "Underground Heist Mastermind",
+      "seriesTitle": "মুখোশের আড়ালে",
+      "englishTitle": "BEHIND THE MASK",
+      "tagline": "আইনের চোখ অন্ধ হতে পারে, কিন্তু আমার পরিকল্পনা নিখুঁত।",
+      "summary": "ঢাকার অভিজাত সমাজের অন্তরালে পরিচালিত এক দুর্ধর্ষ মাস্টারমাইন্ড। যার প্রতিটি পদক্ষেপের পেছনে থাকে দাবা খেলার চালের মতো জটিল পরিকল্পনা।",
+      "thematicBackdropUrl": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=1000&q=80",
+      "accentColor": "#EF4444",
+      "colorGrade": "noir-mono",
+      "actingCritique": "নাটকীয় গভীরতা: ৯৫% — শান্ত কিন্তু ধ্বংসাত্মক বুদ্ধিমত্তার বহিঃপ্রকাশ। তুখোড় ক্রিমিনাল ড্রামার মুখ্য চরিত্র।",
+      "portraitUrl": "/api/media/cand-1791791899672.jpg",
+      "posterUrl": "/api/media/cand-1791791899672-poster.jpg",
+      "audioUrl": "",
+      "ottScore": 94,
+      "scoreBreakdown": {
+        "screenPresence": 95,
+        "dramaticGrit": 92,
+        "dialoguePunch": 95,
+        "originality": 95
+      },
+      "prompts": {
+        "portraitPrompt": "Cinematic 8K character poster for Barrister Janet, playing as Underground Heist Mastermind in \"BEHIND THE MASK\", 35mm film still, intense penetrating gaze, Dramatic single keylight with deep noir shadow slits and smoke, fine Dhaka textures, authentic Bengali persona, Toffee Original aesthetic, depth of field --ar 9:16",
+        "fullBodyPrompt": "Full body cinematic action hero still of Barrister Janet in authentic stylized costume for Underground Heist Mastermind, atmospheric set reflecting drama, standing with confident posture, Dramatic single keylight with deep noir shadow slits and smoke, 8k photorealistic",
+        "veo10sPrompt": "Cinematic 10-second OTT character reveal. [Camera Move: slow dolly push-in transitioning to high-angle hero reveal]. Barrister Janet, dressed as Underground Heist Mastermind, turns collar up, making an intense dramatic gaze directly into the camera lens with a subtle confident smirk. Lighting: Dramatic single keylight with deep noir shadow slits and smoke. Atmosphere: light atmospheric mist and dust motes. Audio: deep cinematic bass pulse with ambient environmental sound. 24fps 4K."
+      },
+      "videoUrl": "",
+      "isTop10": false,
+      "rank": 7,
+      "createdAt": "2026-10-12T07:58:19.776Z"
+    },
+    {
+      "id": "cand-1791791488610",
+      "characterName": "এজেন্ট নির্ভীক",
+      "realName": "Rafsan",
+      "genre": "action",
+      "roleTitle": "Spec-Ops Rogue Recon Specialist",
+      "seriesTitle": "সাইবার স্ট্রাইক ২০২৬",
+      "englishTitle": "CYBER STRIKE: SPEC-OPS",
+      "tagline": "মিশন যখন শেষ হবে, তখন কেবল আমার পায়ের ছাপ বাকি থাকবে।",
+      "summary": "কঠিন ট্রেনিংপ্রাপ্ত সাবেক সামরিক স্পেশালিস্ট, যিনি এখন ঢাকার সাইবার আন্ডারগ্রাউন্ডের সাথে এক অসম লড়াইয়ে নেমেছেন। যার লক্ষ্য কেবল সত্য উন্মোচন করা।",
+      "thematicBackdropUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=80",
+      "accentColor": "#00F0FF",
+      "colorGrade": "cyber-neon",
+      "actingCritique": "অ্যাকশন এনার্জি: ৯৩% — ক্ষিপ্র শারীরিক ভাষা ও তীক্ষ্ণ চোখ। ব্লকব্লাস্টার অ্যাকশন থ্রিলারের জন্য উপযোগী।",
+      "portraitUrl": "/api/media/cand-1791791488610.jpg",
+      "posterUrl": "/api/media/cand-1791791488610-poster.jpg",
+      "audioUrl": "",
+      "ottScore": 94,
+      "scoreBreakdown": {
+        "screenPresence": 93,
+        "dramaticGrit": 94,
+        "dialoguePunch": 96,
+        "originality": 95
+      },
+      "prompts": {
+        "portraitPrompt": "Cinematic 8K character poster for এজেন্ট নির্ভীক, playing as Spec-Ops Rogue Recon Specialist in \"CYBER STRIKE: SPEC-OPS\", 35mm film still, intense penetrating gaze, High-contrast cyan and crimson neon rim light with metallic highlights, fine Dhaka textures, authentic Bengali persona, Toffee Original aesthetic, depth of field --ar 9:16",
+        "fullBodyPrompt": "Full body cinematic action hero still of এজেন্ট নির্ভীক in authentic stylized costume for Spec-Ops Rogue Recon Specialist, atmospheric set reflecting action, standing with confident posture, High-contrast cyan and crimson neon rim light with metallic highlights, 8k photorealistic",
+        "veo10sPrompt": "Cinematic 10-second OTT character reveal. [Camera Move: slow dolly push-in transitioning to high-angle hero reveal]. এজেন্ট নির্ভীক, dressed as Spec-Ops Rogue Recon Specialist, turns collar up, making an intense dramatic gaze directly into the camera lens with a subtle confident smirk. Lighting: High-contrast cyan and crimson neon rim light with metallic highlights. Atmosphere: light atmospheric mist and dust motes. Audio: deep cinematic bass pulse with ambient environmental sound. 24fps 4K."
+      },
+      "videoUrl": "",
+      "isTop10": false,
+      "rank": 7,
+      "createdAt": "2026-10-12T07:51:28.621Z"
+    },
     {
       "id": "cand-1791790947303",
       "characterName": "Chunnu Mama",
