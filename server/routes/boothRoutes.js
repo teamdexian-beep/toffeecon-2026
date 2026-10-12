@@ -236,6 +236,14 @@ module.exports = function(eventStore, broadcast, aiProvider) {
     });
 
     // 6. Taste Duel TV APIs
+    router.get('/duel/state', (req, res) => {
+        res.json(eventStore.getState().tasteDuel);
+    });
+
+    router.get('/taste-duel/state', (req, res) => {
+        res.json(eventStore.getState().tasteDuel);
+    });
+
     router.post('/duel/answer', (req, res) => {
         const { isGuest, questionIndex, answer } = req.body;
         const state = eventStore.getState();

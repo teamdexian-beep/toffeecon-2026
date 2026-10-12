@@ -124,7 +124,12 @@ app.get('/space-ceiling', (req, res) => res.sendFile(path.join(clientPublic, 'sp
 app.get('/space-wall', (req, res) => res.sendFile(path.join(clientPublic, 'space-wall.html')));
 app.get('/space-kit', (req, res) => res.sendFile(path.join(clientPublic, 'space-kit.html')));
 app.get('/booth/capsule-booth', (req, res) => res.sendFile(path.join(clientPublic, 'capsule-booth.html')));
+app.get('/capsule-booth', (req, res) => res.sendFile(path.join(clientPublic, 'capsule-booth.html')));
+app.get('/capsule/cabin', (req, res) => res.sendFile(path.join(clientPublic, 'capsule-booth.html')));
+app.get('/booth/screen-relay', (req, res) => res.sendFile(path.join(clientPublic, 'screen-relay.html')));
+app.get('/screen-relay', (req, res) => res.sendFile(path.join(clientPublic, 'screen-relay.html')));
 app.get('/booth/fringe', (req, res) => res.sendFile(path.join(clientPublic, 'fringe-hub.html')));
+app.get('/fringe', (req, res) => res.sendFile(path.join(clientPublic, 'fringe-hub.html')));
 app.get('/booth/universe', (req, res) => res.sendFile(path.join(clientPublic, 'universe-kiosk.html')));
 app.get('/universe', (req, res) => res.sendFile(path.join(clientPublic, 'universe-kiosk.html')));
 app.get('/booth/universe-wall', (req, res) => res.sendFile(path.join(clientPublic, 'universe-wall.html')));
@@ -133,6 +138,8 @@ app.get('/wall/universe', (req, res) => res.sendFile(path.join(clientPublic, 'un
 app.get('/share-universe', (req, res) => res.sendFile(path.join(clientPublic, 'share-universe.html')));
 app.get('/share/universe/:id', (req, res) => res.sendFile(path.join(clientPublic, 'share-universe.html')));
 app.get('/booth/taste-duel', (req, res) => res.sendFile(path.join(clientPublic, 'taste-duel.html')));
+app.get('/taste-duel', (req, res) => res.sendFile(path.join(clientPublic, 'taste-duel.html')));
+app.get('/duel', (req, res) => res.sendFile(path.join(clientPublic, 'taste-duel.html')));
 
 // Toffee OTT AI Casting Audition Activations
 app.get('/booth/audition', (req, res) => res.sendFile(path.join(clientPublic, 'audition-booth.html')));

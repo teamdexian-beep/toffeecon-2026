@@ -5,7 +5,7 @@
     "activePhones": {},
     "cycleDurationSec": 30,
     "currentMode": "multilingual",
-    "lastSyncTimestamp": 1791841946224
+    "lastSyncTimestamp": 1791842126243
   },
   "votingEngine": {
     "activePoll": "sonic_dilemma",
@@ -375,6 +375,14 @@
     "recapTitle": "ToffeeCon 2026: 7 Years of Screenovation",
     "recapSignoff": "See you in 7 years.",
     "predictions": [
+      {
+        "id": "pred_1791842154590",
+        "author": "Test Guest",
+        "company": "Test Agency",
+        "text": "In 2033, Toffee will stream holographic matches in ultra-low latency.",
+        "timestamp": "03:55",
+        "createdAt": "2026-10-12T21:55:54.590Z"
+      },
       {
         "id": "pred_1",
         "author": "Erik Aas",
