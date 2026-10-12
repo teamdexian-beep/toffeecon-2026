@@ -261,11 +261,13 @@ class AIProviderService {
     /**
      * Slide 10: In Another Universe GenAI portrait transformation
      */
-    async transformPortrait({ guestName, guestPhotoBase64, genre = 'scifi' }) {
-        const selectedGenre = this.universeTemplates[genre.toLowerCase()] ? genre.toLowerCase() : 'scifi';
+    async transformPortrait({ guestName, guestPhotoBase64, genre = 'sports' }) {
+        let cleanGenre = (genre || 'sports').toLowerCase();
+        if (cleanGenre === 'sports') cleanGenre = 'football';
+        const selectedGenre = this.universeTemplates[cleanGenre] ? cleanGenre : 'football';
         const template = this.universeTemplates[selectedGenre];
         const timestamp = new Date().toISOString();
-        const posterId = 'UNIV-' + Math.floor(100000 + Math.random() * 900000);
+        const posterId = 'UNIV-' + Math.floor(1000 + Math.random() * 9000);
 
         if (this.config.apiKey && this.config.provider !== 'local_fallback') {
             try {

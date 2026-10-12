@@ -1,0 +1,62 @@
+{
+  "status": "active",
+  "totalTransformations": 5,
+  "posters": [
+    {
+      "id": "UNIV-272164",
+      "guestName": "মেহজাবিন আলম",
+      "genre": "scifi",
+      "genreLabel": "SCI-FI: COSMIC NAVIGATOR",
+      "tagline": "INTERSTELLAR ODYSSEY",
+      "badgeText": "TOFFEECON 2033 · RETRO-FUTURISM",
+      "accentColor": "#EC4899",
+      "posterUrl": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80",
+      "rawGuestPhoto": null,
+      "timestamp": "2026-10-12T13:02:30.347Z"
+    },
+    {
+      "id": "UNIV-1001",
+      "guestName": "তানভীর আহমেদ",
+      "genre": "action",
+      "genreLabel": "Action: Cyberpunk Commando",
+      "tagline": "WARFARE IN 2033",
+      "badgeText": "TOFFEECON ORIGINAL · ACTION LEADER",
+      "accentColor": "#FF6B00",
+      "posterUrl": "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1000&q=80",
+      "timestamp": "2026-10-12T13:02:01.010Z"
+    },
+    {
+      "id": "UNIV-1002",
+      "guestName": "আসিফ জামান",
+      "genre": "sports",
+      "genreLabel": "Sports: Stadium Titan",
+      "tagline": "FIFA WORLD STAGE",
+      "badgeText": "TOFFEECON SPORTS · LIVE 60FPS",
+      "accentColor": "#00F0FF",
+      "posterUrl": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1000&q=80",
+      "timestamp": "2026-10-12T13:02:01.010Z"
+    },
+    {
+      "id": "UNIV-1003",
+      "guestName": "মেহজাবিন চৌধুরী",
+      "genre": "adventure",
+      "genreLabel": "Adventure: Peak Conqueror",
+      "tagline": "SUMMIT EXPEDITION",
+      "badgeText": "TOFFEECON WILD · 4K EXPEDITIONS",
+      "accentColor": "#10B981",
+      "posterUrl": "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1000&q=80",
+      "timestamp": "2026-10-12T13:02:01.010Z"
+    },
+    {
+      "id": "UNIV-1004",
+      "guestName": "সাকিবা হক",
+      "genre": "drama",
+      "genreLabel": "Drama: Cinematic Noir",
+      "tagline": "PSYCHOLOGICAL THRILLER",
+      "badgeText": "TOFFEECON DRAMA · CRITIC ACCLAIM",
+      "accentColor": "#A855F7",
+      "posterUrl": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1000&q=80",
+      "timestamp": "2026-10-12T13:02:01.010Z"
+    }
+  ]
+}

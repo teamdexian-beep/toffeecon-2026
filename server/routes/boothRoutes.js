@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { aiRateLimiter } = require('../middleware/security');
 const dubStore = require('../stores/dubStore');
+const universeStore = require('../stores/universeStore');
 
 module.exports = function(eventStore, broadcast, aiProvider) {
     // 1. Mission Control Proposal Generator
@@ -140,8 +141,17 @@ module.exports = function(eventStore, broadcast, aiProvider) {
     router.get('/universe/state', (req, res) => {
         res.json({
             ...eventStore.getState().universeBooth,
-            aiStatus: aiProvider.getStatus()
+            aiStatus: aiProvider.getStatus(),
+            universeStore: universeStore.getState()
         });
+    });
+
+    router.get('/universe/poster/:id', (req, res) => {
+        const poster = universeStore.getPoster(req.params.id);
+        if (!poster) {
+            return res.status(404).json({ success: false, error: 'Poster not found' });
+        }
+        res.json({ success: true, poster });
     });
 
     router.post('/universe/transform', aiRateLimiter, async (req, res) => {
@@ -154,21 +164,34 @@ module.exports = function(eventStore, broadcast, aiProvider) {
             });
 
             if (result.success) {
+                // Save to universeStore for persistent mobile share link
+                const savedPoster = universeStore.addPoster({
+                    id: result.posterId,
+                    guestName: result.guestName,
+                    genre: result.genre,
+                    genreLabel: result.template.title,
+                    tagline: result.template.tag,
+                    badgeText: result.template.badgeText,
+                    accentColor: result.template.accentColor,
+                    posterUrl: result.posterUrl,
+                    rawGuestPhoto: result.rawGuestPhoto
+                });
+
                 eventStore.update(st => {
                     st.universeBooth.activeUniverse = result.genre;
                     st.universeBooth.totalPortraitsRendered += 1;
-                    st.universeBooth.recentPosters.unshift(result);
+                    st.universeBooth.recentPosters.unshift(savedPoster);
                     if (st.universeBooth.recentPosters.length > 20) {
                         st.universeBooth.recentPosters.pop();
                     }
                 });
 
                 broadcast('UNIVERSE_POSTER_RENDERED', {
-                    poster: result,
+                    poster: savedPoster,
                     booth: eventStore.getState().universeBooth
                 });
 
-                return res.json({ success: true, poster: result });
+                return res.json({ success: true, poster: savedPoster });
             } else {
                 return res.status(500).json({ error: 'Transformation failed' });
             }

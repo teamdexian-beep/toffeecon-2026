@@ -282,10 +282,12 @@
         };
 
         function highlightPoster(poster) {
-            const genre = poster.genre.toLowerCase();
-            const tile = document.getElementById(`tile-${genre}`);
-            const img = document.getElementById(`img-${genre}`);
-            const star = document.getElementById(`star-${genre}`);
+            let genre = (poster.genre || 'sports').toLowerCase();
+            if (genre === 'sports') genre = 'football';
+
+            const tile = document.getElementById(`tile-${genre}`) || document.getElementById(`tile-action`);
+            const img = document.getElementById(`img-${genre}`) || document.getElementById(`img-action`);
+            const star = document.getElementById(`star-${genre}`) || document.getElementById(`star-action`);
 
             if (tile && img && star) {
                 // Remove active classes
@@ -294,10 +296,10 @@
                 // Flash new poster
                 tile.classList.add('active-transform');
                 img.src = poster.posterUrl;
-                star.textContent = `STARRING: ${poster.guestName.toUpperCase()}`;
+                star.textContent = `STARRING: ${(poster.guestName || 'VIP GUEST').toUpperCase()}`;
 
                 const badge = document.getElementById('wallStatusBadge');
-                badge.textContent = `⚡ NEW TRANSFORM: ${genre.toUpperCase()}`;
+                badge.textContent = `⚡ NEW TRANSFORM: ${poster.genre.toUpperCase()}`;
                 badge.style.borderColor = '#00F0FF';
                 badge.style.color = '#00F0FF';
 

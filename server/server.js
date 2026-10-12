@@ -110,7 +110,12 @@ app.get('/booth/space-window', (req, res) => res.sendFile(path.join(clientPublic
 app.get('/booth/capsule-booth', (req, res) => res.sendFile(path.join(clientPublic, 'capsule-booth.html')));
 app.get('/booth/fringe', (req, res) => res.sendFile(path.join(clientPublic, 'fringe-hub.html')));
 app.get('/booth/universe', (req, res) => res.sendFile(path.join(clientPublic, 'universe-kiosk.html')));
+app.get('/universe', (req, res) => res.sendFile(path.join(clientPublic, 'universe-kiosk.html')));
 app.get('/booth/universe-wall', (req, res) => res.sendFile(path.join(clientPublic, 'universe-wall.html')));
+app.get('/universe-wall', (req, res) => res.sendFile(path.join(clientPublic, 'universe-wall.html')));
+app.get('/wall/universe', (req, res) => res.sendFile(path.join(clientPublic, 'universe-wall.html')));
+app.get('/share-universe', (req, res) => res.sendFile(path.join(clientPublic, 'share-universe.html')));
+app.get('/share/universe/:id', (req, res) => res.sendFile(path.join(clientPublic, 'share-universe.html')));
 app.get('/booth/taste-duel', (req, res) => res.sendFile(path.join(clientPublic, 'taste-duel.html')));
 
 // Toffee OTT AI Casting Audition Activations

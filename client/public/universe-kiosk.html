@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>In Another Universe · GenAI Photobooth · ToffeeCon 2026</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <style>
         :root {
             --bg-dark: #070312;
@@ -14,158 +15,307 @@
             --cyan: #00F0FF;
             --orange: #FF6B00;
             --emerald: #10B981;
-            --text-main: #FFFFFF;
+            --gold: #FFB800;
+            --panel-bg: rgba(14, 7, 28, 0.88);
+            --border-glow: rgba(236, 72, 153, 0.35);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: var(--bg-dark);
-            color: var(--text-main);
+            color: #FFFFFF;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            padding: 24px 20px;
             position: relative;
             overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 50% 10%, rgba(236, 72, 153, 0.18) 0%, transparent 60%),
+                radial-gradient(circle at 10% 85%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 90% 85%, rgba(0, 240, 255, 0.12) 0%, transparent 50%),
+                linear-gradient(to bottom, #090314 0%, #040108 100%);
         }
 
-        .ambient-glow {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at 50% 10%, rgba(236, 72, 153, 0.25) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 1;
+        /* Top Kiosk Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 2.5rem;
+            background: rgba(10, 4, 20, 0.85);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            z-index: 50;
         }
 
-        header {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            margin-bottom: 20px;
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
 
         .brand-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(236, 72, 153, 0.15);
-            border: 1px solid rgba(236, 72, 153, 0.35);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.72rem;
-            color: #F472B6;
-            letter-spacing: 1.5px;
-            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--pink), var(--purple));
+            color: #FFF;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 1.15rem;
+            letter-spacing: 2px;
+            box-shadow: 0 0 25px rgba(236, 72, 153, 0.6);
         }
 
-        .brand-title {
+        .brand-tag {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .step-indicators {
+            display: flex;
+            gap: 10px;
+        }
+
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .step-dot.active {
+            background: var(--pink);
+            box-shadow: 0 0 12px var(--pink);
+            transform: scale(1.3);
+        }
+
+        /* Main Kiosk Container */
+        .kiosk-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem;
+            position: relative;
+        }
+
+        .screen-view {
+            display: none;
+            width: 100%;
+            max-width: 980px;
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .screen-view.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(14px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Screen 1: Welcome */
+        .welcome-card {
+            background: var(--panel-bg);
+            border: 2px solid var(--border-glow);
+            border-radius: 28px;
+            padding: 3.5rem 3rem;
+            text-align: center;
+            max-width: 800px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(236, 72, 153, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-title {
             font-family: 'Syne', sans-serif;
-            font-size: 2.2rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #FFF 20%, #F472B6 100%);
+            font-size: 2.8rem;
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #FFFFFF 30%, var(--pink) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .brand-subtitle {
-            font-size: 0.95rem;
-            color: #94A3B8;
-            margin-top: 4px;
-            max-width: 600px;
+        .welcome-desc {
+            font-size: 1.15rem;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+            max-width: 640px;
             margin-left: auto;
             margin-right: auto;
-            line-height: 1.5;
         }
 
-        .kiosk-grid {
+        .btn-kiosk-primary {
+            background: linear-gradient(135deg, var(--pink), var(--purple));
+            color: #FFFFFF;
+            border: none;
+            padding: 1.15rem 3.5rem;
+            border-radius: 16px;
+            font-size: 1.25rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(236, 72, 153, 0.5);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .btn-kiosk-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(236, 72, 153, 0.7);
+        }
+
+        .btn-kiosk-primary:active { transform: scale(0.98); }
+
+        /* Screen 2: World Matrix Selection */
+        .card-panel {
+            width: 100%;
+            background: var(--panel-bg);
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            border-radius: 28px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .header-center { text-align: center; }
+        .header-center h2 { font-size: 2rem; font-weight: 800; color: #FFF; margin-bottom: 6px; }
+        .header-center p { color: rgba(255, 255, 255, 0.65); font-size: 1rem; }
+
+        .universe-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            width: 100%;
+            margin: 1rem 0;
+        }
+
+        @media (max-width: 860px) {
+            .universe-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .world-card {
+            background: rgba(18, 9, 36, 0.85);
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.25s ease;
             position: relative;
-            z-index: 10;
+            overflow: hidden;
+        }
+
+        .world-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(236, 72, 153, 0.6);
+            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.25);
+        }
+
+        .world-card.selected {
+            border-color: var(--pink);
+            background: rgba(45, 14, 68, 0.9);
+            box-shadow: 0 0 35px rgba(236, 72, 153, 0.5);
+        }
+
+        .world-card.selected::after {
+            content: '✓ CHOSEN';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--pink);
+            color: #FFF;
+            font-size: 0.65rem;
+            font-weight: 800;
+            font-family: 'Orbitron', sans-serif;
+            padding: 3px 8px;
+            border-radius: 999px;
+            letter-spacing: 1px;
+        }
+
+        .world-thumb {
+            width: 100%;
+            aspect-ratio: 9/12;
+            border-radius: 14px;
+            object-fit: cover;
+            background: #000;
+        }
+
+        .world-info h4 {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #FFF;
+            margin-bottom: 2px;
+        }
+
+        .world-info p {
+            font-size: 0.78rem;
+            color: var(--cyan);
+            font-family: 'Space Mono', monospace;
+        }
+
+        /* Screen 3: Studio Camera Capture */
+        .camera-viewport-card {
             display: grid;
             grid-template-columns: 1.2fr 1fr;
-            gap: 28px;
-            max-width: 1040px;
-            margin: 0 auto;
+            gap: 30px;
             width: 100%;
-            align-items: start;
+            align-items: center;
         }
 
         @media (max-width: 820px) {
-            .kiosk-grid { grid-template-columns: 1fr; }
+            .camera-viewport-card { grid-template-columns: 1fr; }
         }
 
-        /* Camera Pod */
-        .camera-pod {
-            background: rgba(14, 8, 30, 0.9);
-            border: 2px solid rgba(236, 72, 153, 0.35);
-            border-radius: 24px;
-            padding: 20px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+        .viewfinder-frame {
             position: relative;
-            overflow: hidden;
-        }
-
-        .viewfinder-box {
-            position: relative;
-            width: 100%;
-            height: 380px;
-            border-radius: 18px;
-            overflow: hidden;
+            aspect-ratio: 9/12;
             background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 3px solid var(--pink);
+            box-shadow: 0 0 40px rgba(236, 72, 153, 0.4);
         }
 
-        #cameraFeed {
+        .viewfinder-frame video, .viewfinder-frame img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transform: scaleX(-1);
         }
 
-        #capturedPreview {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: none;
-        }
-
-        .viewfinder-guides {
-            position: absolute;
-            inset: 20px;
-            border: 1px dashed rgba(0, 240, 255, 0.4);
-            border-radius: 14px;
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
         .viewfinder-crosshair {
-            width: 30px;
-            height: 30px;
-            position: relative;
-        }
-        .viewfinder-crosshair::before, .viewfinder-crosshair::after {
-            content: '';
             position: absolute;
-            background: rgba(0, 240, 255, 0.7);
+            inset: 30px;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            pointer-events: none;
         }
-        .viewfinder-crosshair::before { top: 14px; left: 0; right: 0; height: 2px; }
-        .viewfinder-crosshair::after { left: 14px; top: 0; bottom: 0; width: 2px; }
 
         .countdown-overlay {
             position: absolute;
@@ -175,406 +325,463 @@
             display: none;
             align-items: center;
             justify-content: center;
-            font-family: 'Space Mono', monospace;
+            font-family: 'Orbitron', monospace;
             font-size: 6rem;
             font-weight: 900;
-            color: #00F0FF;
-            text-shadow: 0 0 30px #00F0FF;
+            color: var(--cyan);
+            text-shadow: 0 0 35px var(--cyan);
             z-index: 20;
         }
 
-        .camera-actions {
+        .input-pod {
             display: flex;
-            gap: 12px;
-            margin-top: 18px;
+            flex-direction: column;
+            gap: 18px;
         }
 
-        .btn-snap {
-            flex-grow: 1;
-            background: linear-gradient(135deg, #EC4899 0%, #B80088 100%);
-            border: none;
-            color: #fff;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.95rem;
-            font-weight: 800;
-            padding: 14px;
-            border-radius: 14px;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-retake {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            padding: 14px 20px;
-            border-radius: 14px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
-            cursor: pointer;
-        }
-
-        /* Universe Selector & Preview Panel */
-        .controls-pod {
-            background: rgba(14, 8, 30, 0.9);
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            border-radius: 24px;
-            padding: 24px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
-        }
-
-        .section-label {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--cyan);
-            letter-spacing: 1.5px;
-            margin-bottom: 12px;
-            display: block;
-        }
-
-        .genre-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .genre-pill-btn {
-            background: #090412;
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            border-radius: 14px;
-            padding: 12px 14px;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #E2E8F0;
-        }
-
-        .genre-pill-btn:hover {
-            border-color: rgba(236, 72, 153, 0.6);
-        }
-
-        .genre-pill-btn.active {
-            border-color: #EC4899;
-            background: rgba(236, 72, 153, 0.15);
-            box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
-            color: #fff;
-        }
-
-        .genre-icon { font-size: 1.4rem; }
-        .genre-name { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 800; }
-
-        .name-input-group {
-            margin-bottom: 20px;
-        }
-
-        .name-input {
+        .guest-input {
             width: 100%;
-            background: #090412;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 12px 16px;
-            color: #fff;
-            font-size: 0.95rem;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            padding: 14px 18px;
+            color: #FFF;
+            font-size: 1.1rem;
             outline: none;
         }
-        .name-input:focus { border-color: var(--cyan); }
 
-        .btn-generate {
-            width: 100%;
-            background: linear-gradient(135deg, #00F0FF 0%, #3B82F6 100%);
-            border: none;
-            color: #000;
-            font-family: 'Space Mono', monospace;
-            font-size: 1rem;
-            font-weight: 800;
-            padding: 16px;
-            border-radius: 14px;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.35);
-            transition: all 0.2s;
+        .guest-input:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
         }
 
-        .btn-generate:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Resulting Poster Preview Card */
-        .poster-result-card {
-            display: none;
-            background: rgba(14, 8, 30, 0.95);
-            border: 2px solid #EC4899;
-            border-radius: 20px;
-            padding: 20px;
-            margin-top: 20px;
+        /* Screen 4: Portal Warp Animation */
+        .portal-warp-card {
+            background: var(--panel-bg);
+            border: 2px solid var(--pink);
+            border-radius: 28px;
+            padding: 3.5rem 3rem;
             text-align: center;
-            box-shadow: 0 0 40px rgba(236, 72, 153, 0.4);
-            animation: slideUp 0.4s ease;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .poster-img-frame {
+            max-width: 680px;
             width: 100%;
-            height: 280px;
-            border-radius: 14px;
-            overflow: hidden;
-            margin-bottom: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 50px rgba(236, 72, 153, 0.35);
         }
 
-        .poster-img-frame img {
+        .spinner-warp {
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 2rem auto;
+            position: relative;
+        }
+
+        .warp-ring-1 {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: var(--pink);
+            border-right-color: var(--cyan);
+            animation: spinWarp 1s linear infinite;
+        }
+
+        .warp-ring-2 {
+            position: absolute;
+            inset: 16px;
+            border-radius: 50%;
+            border: 2px dashed rgba(255, 255, 255, 0.4);
+            animation: spinWarpRev 2.2s linear infinite;
+        }
+
+        @keyframes spinWarp { to { transform: rotate(360deg); } }
+        @keyframes spinWarpRev { to { transform: rotate(-360deg); } }
+
+        /* Screen 5: Theatrical Reveal */
+        .reveal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 36px;
+            width: 100%;
+            align-items: center;
+        }
+
+        @media (max-width: 820px) {
+            .reveal-grid { grid-template-columns: 1fr; }
+        }
+
+        .poster-preview-box {
+            position: relative;
+            aspect-ratio: 9/13;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 3px solid var(--pink);
+            box-shadow: 0 0 45px rgba(236, 72, 153, 0.4);
+            background: #000;
+        }
+
+        .poster-preview-box img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        footer {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            margin-top: 20px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.72rem;
-            color: #64748B;
+        /* Screen 6: QR Code & Giant Wall Sync */
+        .share-card-wrap {
+            background: var(--panel-bg);
+            border: 2px solid var(--pink);
+            border-radius: 28px;
+            padding: 3rem;
+            display: flex;
+            gap: 40px;
+            max-width: 900px;
+            align-items: center;
+            box-shadow: 0 0 60px rgba(236, 72, 153, 0.35);
+        }
+
+        @media (max-width: 768px) {
+            .share-card-wrap { flex-direction: column; text-align: center; }
+        }
+
+        .qr-box {
+            background: #FFFFFF;
+            padding: 16px;
+            border-radius: 20px;
+            box-shadow: 0 0 35px rgba(255, 255, 255, 0.3);
+            display: inline-flex;
+            flex-shrink: 0;
+        }
+
+        .auto-reset-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .auto-reset-progress {
+            background: var(--pink);
+            height: 100%;
+            width: 100%;
+            transition: width 1s linear;
         }
     </style>
 </head>
 <body>
-    <div class="ambient-glow"></div>
 
-    <header>
-        <div class="brand-badge">
-            <span>●</span> IN AN ENTIRELY DIFFERENT WORLD · TOFFEECON 2026
+    <!-- Kiosk Top Bar -->
+    <header class="top-bar">
+        <div class="brand-logo">
+            <div class="brand-badge">TOFFEE CON</div>
+            <div class="brand-tag">IN ANOTHER UNIVERSE · GENAI PHOTOBOOTH</div>
         </div>
-        <h1 class="brand-title">In Another Universe</h1>
-        <p class="brand-subtitle">
-            Take a portrait and watch yourself transform across giant venue screens into retro-futuristic Toffee entertainment worlds.
-        </p>
+        <div class="step-indicators">
+            <div class="step-dot active" id="dot-1"></div>
+            <div class="step-dot" id="dot-2"></div>
+            <div class="step-dot" id="dot-3"></div>
+            <div class="step-dot" id="dot-4"></div>
+            <div class="step-dot" id="dot-5"></div>
+            <div class="step-dot" id="dot-6"></div>
+        </div>
     </header>
 
-    <div class="kiosk-grid">
-        <!-- 1. Live Camera Pod -->
-        <div class="camera-pod">
-            <span class="section-label">01 // LIVE VIEWPORT</span>
-            <div class="viewfinder-box">
-                <video id="cameraFeed" autoplay playsinline muted></video>
-                <img id="capturedPreview" alt="Snapshot Preview">
-                <div class="viewfinder-guides">
-                    <div class="viewfinder-crosshair"></div>
-                </div>
-                <div class="countdown-overlay" id="countdownOverlay">3</div>
-            </div>
+    <!-- Kiosk Stage Viewport -->
+    <main class="kiosk-container">
 
-            <div class="camera-actions">
-                <button class="btn-snap" id="btnSnap" onclick="startPhotoCountdown()">
-                    <span>📸</span> <span>CAPTURE PORTRAIT</span>
-                </button>
-                <button class="btn-retake" id="btnRetake" style="display:none;" onclick="retakePhoto()">
-                    ↺ RETAKE
+        <!-- SCREEN 1: WELCOME SCREEN -->
+        <section class="screen-view active" id="screen-1">
+            <div class="welcome-card">
+                <div style="font-size: 3.5rem; margin-bottom: 1rem;">🌌</div>
+                <h1 class="welcome-title">IN ANOTHER UNIVERSE</h1>
+                <p class="welcome-desc">
+                    রেট্রো-ফিউচারিস্টিক এন্টারটেইনমেন্ট জগতে নিজেকে দেখুন! পোর্ট্রেট তুলুন এবং মুহূর্তের মধ্যে ভেন্যুর বিশাল স্ক্রিনে রূপান্তরিত হোন স্পোর্টস, অ্যাডভেঞ্চার, ড্রামা বা অ্যাকশন সিনেমার পোস্টার লিড হিসেবে!
+                </p>
+                <button class="btn-kiosk-primary" onclick="goToScreen(2)">
+                    <span>ENTER MULTIVERSE</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
                 </button>
             </div>
-        </div>
+        </section>
 
-        <!-- 2. Universe Selection & Generation Controls -->
-        <div class="controls-pod">
-            <span class="section-label">02 // SELECT ENTERTAINMENT UNIVERSE</span>
-            
-            <div class="genre-grid">
-                <button class="genre-pill-btn active" onclick="selectGenre('scifi', this)">
-                    <span class="genre-icon">🚀</span>
-                    <div>
-                        <div class="genre-name">Sci-Fi</div>
-                        <div style="font-family:'Space Mono'; font-size:0.65rem; color:#94A3B8;">Cosmic Pilot</div>
-                    </div>
-                </button>
-
-                <button class="genre-pill-btn" onclick="selectGenre('action', this)">
-                    <span class="genre-icon">💥</span>
-                    <div>
-                        <div class="genre-name">Action</div>
-                        <div style="font-family:'Space Mono'; font-size:0.65rem; color:#94A3B8;">Commando</div>
-                    </div>
-                </button>
-
-                <button class="genre-pill-btn" onclick="selectGenre('drama', this)">
-                    <span class="genre-icon">🎭</span>
-                    <div>
-                        <div class="genre-name">Drama</div>
-                        <div style="font-family:'Space Mono'; font-size:0.65rem; color:#94A3B8;">Noir Lead</div>
-                    </div>
-                </button>
-
-                <button class="genre-pill-btn" onclick="selectGenre('football', this)">
-                    <span class="genre-icon">⚽</span>
-                    <div>
-                        <div class="genre-name">Football</div>
-                        <div style="font-family:'Space Mono'; font-size:0.65rem; color:#94A3B8;">Stadium Titan</div>
-                    </div>
-                </button>
-
-                <button class="genre-pill-btn" onclick="selectGenre('adventure', this)">
-                    <span class="genre-icon">🏔️</span>
-                    <div>
-                        <div class="genre-name">Adventure</div>
-                        <div style="font-family:'Space Mono'; font-size:0.65rem; color:#94A3B8;">Explorer</div>
-                    </div>
-                </button>
-
-                <button class="genre-pill-btn" onclick="selectGenre('race', this)">
-                    <span class="genre-icon">🏎️</span>
-                    <div>
-                        <div class="genre-name">Race</div>
-                        <div style="font-family:'Space Mono'; font-size:0.65rem; color:#94A3B8;">Motorsport</div>
-                    </div>
-                </button>
-            </div>
-
-            <div class="name-input-group">
-                <label class="section-label">03 // GUEST IDENTIFIER</label>
-                <input type="text" id="guestNameInput" class="name-input" placeholder="Enter name for poster credit (e.g. Asif Rahman)">
-            </div>
-
-            <button class="btn-generate" id="btnGenerate" onclick="triggerTransformation()">
-                ⚡ TRANSFORM ACROSS VENUE WALL SCREENS
-            </button>
-
-            <!-- Transformed Poster Card -->
-            <div class="poster-result-card" id="posterResultCard">
-                <div class="poster-img-frame">
-                    <img id="resultPosterImg" src="" alt="Transformed Poster">
+        <!-- SCREEN 2: CHOOSE ENTERTAINMENT UNIVERSE -->
+        <section class="screen-view" id="screen-2">
+            <div class="card-panel">
+                <div class="header-center">
+                    <h2>Select Entertainment World</h2>
+                    <p>কোন সিনেমায় নিজেকে প্রধান চরিত্রে দেখতে চান?</p>
                 </div>
-                <div style="font-family:'Syne'; font-size:1.3rem; font-weight:800;" id="resultTitle">
-                    SCI-FI: COSMIC NAVIGATOR
+
+                <div class="universe-grid" id="worldsGrid">
+                    <!-- Populated by JS -->
                 </div>
-                <div style="font-family:'Space Mono'; font-size:0.75rem; color:var(--cyan); margin:6px 0;" id="resultCredit">
-                    STARPING: ASIF RAHMAN · TOFFEECON 2026
-                </div>
-                <div style="font-family:'Space Mono'; font-size:0.72rem; color:#10B981; margin-top:8px;">
-                    ✓ STREAMING LIVE ON SURROUNDING VENUE SCREENS
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                    <button style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #FFF; padding: 12px 24px; border-radius: 12px; cursor: pointer;" onclick="goToScreen(1)">
+                        ← BACK
+                    </button>
+                    <button class="btn-kiosk-primary" onclick="goToScreen(3)">
+                        <span>NEXT: TAKE PORTRAIT</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <footer>
-        <div>TOFFEECON 2026 EVENT OPERATING SYSTEM</div>
-        <div style="margin-top:4px; color:var(--pink);">YOUR STORY, TRANSFORMED BY TOFFEE</div>
-    </footer>
+        <!-- SCREEN 3: STUDIO CAMERA CAPTURE -->
+        <section class="screen-view" id="screen-3">
+            <div class="card-panel">
+                <div class="header-center">
+                    <h2>Studio Portrait Camera</h2>
+                    <p>ক্যামেরার দিকে তাকান এবং পোজ দিন</p>
+                </div>
 
-    <!-- Hidden Canvas for frame snapshot -->
+                <div class="camera-viewport-card">
+                    <div class="viewfinder-frame">
+                        <video id="videoFeed" autoplay playsinline muted></video>
+                        <img id="capturedImg" style="display:none;" alt="Captured Selfie">
+                        <div class="viewfinder-crosshair"></div>
+                        <div class="countdown-overlay" id="countdownOverlay">3</div>
+                    </div>
+
+                    <div class="input-pod">
+                        <div>
+                            <label style="font-family:'Space Mono'; font-size:0.8rem; color:var(--cyan); margin-bottom:8px; display:block;">
+                                GUEST STAR NAME
+                            </label>
+                            <input type="text" id="guestNameInput" class="guest-input" placeholder="আপনার নাম লিখুন..." value="Tanvir Ahmed">
+                        </div>
+
+                        <div style="display: flex; gap: 12px;">
+                            <button id="btnSnap" class="btn-kiosk-primary" style="flex:1;" onclick="startCountdown()">
+                                <span>📸 SNAP PHOTO</span>
+                            </button>
+                            <button id="btnRetake" style="display:none; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); color:#FFF; padding:14px 20px; border-radius:14px; cursor:pointer;" onclick="retakePhoto()">
+                                ↺ RETAKE
+                            </button>
+                        </div>
+
+                        <button id="btnTransform" class="btn-kiosk-primary" style="display:none; background:linear-gradient(135deg, var(--cyan), #0077AA); box-shadow:0 0 25px rgba(0,240,255,0.4);" onclick="triggerUniverseTransform()">
+                            <span>⚡ BROADCAST TO VENUE WALL</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-start; margin-top: 10px;">
+                    <button style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #FFF; padding: 12px 24px; border-radius: 12px; cursor: pointer;" onclick="goToScreen(2)">
+                        ← BACK TO WORLDS
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 4: MULTIVERSE TRANSFORMATION LAB -->
+        <section class="screen-view" id="screen-4">
+            <div class="portal-warp-card">
+                <div class="spinner-warp">
+                    <div class="warp-ring-1"></div>
+                    <div class="warp-ring-2"></div>
+                </div>
+                <h2 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 8px;">Multiverse Warp Active</h2>
+                <p style="color: var(--cyan); font-family: 'Space Mono', monospace;">TRANSMITTING TO 6-SCREEN VENUE MATRIX...</p>
+                <div style="margin-top: 1.5rem; color: rgba(255,255,255,0.6); font-size: 0.95rem;">
+                    Generating retro-futuristic movie lighting & digital grading
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 5: THEATRICAL REVEAL -->
+        <section class="screen-view" id="screen-5">
+            <div class="reveal-grid">
+                <div class="poster-preview-box">
+                    <img id="revealPosterImg" src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1000&q=80" alt="Poster Reveal">
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div style="background: var(--panel-bg); border: 2px solid rgba(255,255,255,0.12); border-radius: 24px; padding: 2rem;">
+                        <span id="revealGenreTag" style="color: var(--pink); font-family: 'Space Mono', monospace; font-size: 0.85rem; font-weight: 700;">
+                            01 // ACTION
+                        </span>
+                        <h2 id="revealPosterTitle" style="font-family: 'Syne', sans-serif; font-size: 2.2rem; font-weight: 900; margin: 8px 0;">
+                            CYBERPUNK COMMANDO
+                        </h2>
+                        <div id="revealStarring" style="font-size: 1.25rem; font-weight: 800; color: var(--gold); margin-bottom: 12px;">
+                            STARRING: TANVIR AHMED
+                        </div>
+                        <p id="revealBadge" style="color: rgba(255,255,255,0.65); font-size: 0.95rem;">
+                            TOFFEECON ORIGINAL · ACTION LEADER
+                        </p>
+                    </div>
+
+                    <div style="display: flex; gap: 14px;">
+                        <button class="btn-kiosk-primary" style="flex:1;" onclick="goToScreen(6)">
+                            <span>GET QR KEESPAKE</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 6: QR CODE & VIRAL SHARE -->
+        <section class="screen-view" id="screen-6">
+            <div class="share-card-wrap">
+                <div class="qr-box">
+                    <canvas id="qrCodeCanvas"></canvas>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <h3 style="font-size: 2rem; font-weight: 800;">Scan to Keep Your Poster!</h3>
+                    <p style="color: rgba(255,255,255,0.7); font-size: 1.05rem; line-height: 1.5;">
+                        আপনার মোবাইলে স্ক্যান করে 1080x1920 HD সিনেমা পোস্টার সেভ করুন এবং ইনস্টাগ্রাম স্টোরি ও হোয়াটসঅ্যাপে শেয়ার করুন!
+                    </p>
+
+                    <button class="btn-kiosk-primary" style="align-self: flex-start; margin-top: 10px;" onclick="resetToWelcome()">
+                        <span>NEXT GUEST</span>
+                    </button>
+
+                    <div class="auto-reset-bar">
+                        <div id="resetProgressBar" class="auto-reset-progress"></div>
+                    </div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4); font-family: 'Space Mono', monospace;">
+                        AUTO-RESETTING IN <span id="resetSeconds">35</span> SECONDS
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
     <canvas id="snapshotCanvas" style="display:none;"></canvas>
 
     <script>
-        let currentStream = null;
+        // Entertainment Worlds (From MADCON Brief p.10)
+        const WORLDS = [
+            { id: 'sports', name: 'Sports', title: 'STADIUM TITAN', tag: 'FIFA WORLD STAGE', icon: '⚽', img: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1000&q=80', color: '#00F0FF' },
+            { id: 'adventure', name: 'Adventure', title: 'PEAK CONQUEROR', tag: 'SUMMIT EXPEDITION', icon: '🏔️', img: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1000&q=80', color: '#10B981' },
+            { id: 'drama', name: 'Drama', title: 'CINEMATIC NOIR', tag: 'PSYCHOLOGICAL THRILLER', icon: '🎭', img: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1000&q=80', color: '#A855F7' },
+            { id: 'action', name: 'Action', title: 'CYBERPUNK COMMANDO', tag: 'WARFARE IN 2033', icon: '💥', img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1000&q=80', color: '#FF6B00' }
+        ];
+
+        let selectedWorld = 'sports';
+        let currentScreen = 1;
         let capturedPhotoBase64 = null;
-        let selectedGenre = 'scifi';
+        let activePoster = null;
+        let autoResetInterval = null;
 
-        const video = document.getElementById('cameraFeed');
-        const capturedImg = document.getElementById('capturedPreview');
-        const countdownEl = document.getElementById('countdownOverlay');
-        const btnSnap = document.getElementById('btnSnap');
-        const btnRetake = document.getElementById('btnRetake');
-        const btnGenerate = document.getElementById('btnGenerate');
+        function initKiosk() {
+            renderWorldsGrid();
+            initWebcam();
+        }
 
-        // Initialize WebCam
-        async function initCamera() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' },
-                    audio: false
-                });
-                currentStream = stream;
-                video.srcObject = stream;
-            } catch (err) {
-                console.warn('WebCam not accessible. Using virtual studio mode.');
-                useVirtualStudioFallback();
+        function renderWorldsGrid() {
+            const grid = document.getElementById('worldsGrid');
+            grid.innerHTML = WORLDS.map(w => `
+                <div class="world-card ${w.id === selectedWorld ? 'selected' : ''}" onclick="selectWorld('${w.id}')">
+                    <img class="world-thumb" src="${w.img}" alt="${w.name}">
+                    <div class="world-info">
+                        <h4>${w.icon} ${w.name}</h4>
+                        <p>${w.title}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectWorld(id) {
+            selectedWorld = id;
+            renderWorldsGrid();
+        }
+
+        function goToScreen(screenNum) {
+            currentScreen = screenNum;
+            document.querySelectorAll('.screen-view').forEach(s => s.classList.remove('active'));
+            document.getElementById(`screen-${screenNum}`).classList.add('active');
+
+            for (let i = 1; i <= 6; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                if (dot) {
+                    if (i <= screenNum) dot.classList.add('active');
+                    else dot.classList.remove('active');
+                }
+            }
+
+            if (screenNum === 6) {
+                renderShareQRCode();
+                startAutoResetCountdown();
+            } else {
+                stopAutoResetCountdown();
             }
         }
 
-        function useVirtualStudioFallback() {
-            // Generates a mock cyber portrait if camera permission denied or unavailable
-            const canvas = document.getElementById('snapshotCanvas');
-            canvas.width = 640;
-            canvas.height = 480;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#1A0E2E';
-            ctx.fillRect(0, 0, 640, 480);
-            ctx.fillStyle = '#EC4899';
-            ctx.font = 'bold 24px "Space Mono", monospace';
-            ctx.textAlign = 'center';
-            ctx.fillText('VIP GUEST PORTRAIT STANDBY', 320, 240);
-            capturedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.85);
+        async function initWebcam() {
+            const video = document.getElementById('videoFeed');
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: { ideal: 1280 }, height: { ideal: 960 }, facingMode: 'user' },
+                    audio: false
+                });
+                video.srcObject = stream;
+            } catch (e) {
+                console.warn('Webcam fallback enabled:', e);
+            }
         }
 
-        initCamera();
-
-        function selectGenre(genre, btn) {
-            selectedGenre = genre;
-            document.querySelectorAll('.genre-pill-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
-
-        function startPhotoCountdown() {
+        function startCountdown() {
             let count = 3;
-            countdownEl.style.display = 'flex';
-            countdownEl.textContent = count;
+            const overlay = document.getElementById('countdownOverlay');
+            overlay.style.display = 'flex';
+            overlay.textContent = count;
 
             const timer = setInterval(() => {
-                count -= 1;
+                count--;
                 if (count > 0) {
-                    countdownEl.textContent = count;
+                    overlay.textContent = count;
                 } else {
                     clearInterval(timer);
-                    countdownEl.style.display = 'none';
-                    takePhoto();
+                    overlay.style.display = 'none';
+                    snapPhoto();
                 }
             }, 800);
         }
 
-        function takePhoto() {
+        function snapPhoto() {
+            const video = document.getElementById('videoFeed');
             const canvas = document.getElementById('snapshotCanvas');
             canvas.width = video.videoWidth || 640;
             canvas.height = video.videoHeight || 480;
             const ctx = canvas.getContext('2d');
-            
-            // Mirror flip
+
             ctx.translate(canvas.width, 0);
             ctx.scale(-1, 1);
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            capturedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.85);
-            capturedImg.src = capturedPhotoBase64;
-            capturedImg.style.display = 'block';
+
+            capturedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.88);
+            const img = document.getElementById('capturedImg');
+            img.src = capturedPhotoBase64;
+            img.style.display = 'block';
             video.style.display = 'none';
 
-            btnSnap.style.display = 'none';
-            btnRetake.style.display = 'block';
+            document.getElementById('btnSnap').style.display = 'none';
+            document.getElementById('btnRetake').style.display = 'block';
+            document.getElementById('btnTransform').style.display = 'flex';
         }
 
         function retakePhoto() {
             capturedPhotoBase64 = null;
-            capturedImg.style.display = 'none';
-            video.style.display = 'block';
-            btnSnap.style.display = 'flex';
-            btnRetake.style.display = 'none';
+            document.getElementById('capturedImg').style.display = 'none';
+            document.getElementById('videoFeed').style.display = 'block';
+            document.getElementById('btnSnap').style.display = 'flex';
+            document.getElementById('btnRetake').style.display = 'none';
+            document.getElementById('btnTransform').style.display = 'none';
         }
 
-        async function triggerTransformation() {
-            const guestName = document.getElementById('guestNameInput').value || 'VIP Delegate';
-            btnGenerate.disabled = true;
-            btnGenerate.textContent = 'GENERATING AI UNIVERSE...';
+        async function triggerUniverseTransform() {
+            const guestName = (document.getElementById('guestNameInput').value || '').trim() || 'VIP Guest';
+            goToScreen(4);
 
             try {
                 const res = await fetch('/api/booth/universe/transform', {
@@ -583,26 +790,92 @@
                     body: JSON.stringify({
                         guestName,
                         guestPhotoBase64: capturedPhotoBase64,
-                        genre: selectedGenre
+                        genre: selectedWorld
                     })
                 });
 
-                const data = await res.json();
-                if (data.success) {
-                    const poster = data.poster;
-                    document.getElementById('resultPosterImg').src = poster.posterUrl;
-                    document.getElementById('resultTitle').textContent = poster.template.title;
-                    document.getElementById('resultTitle').style.color = poster.template.accentColor;
-                    document.getElementById('resultCredit').textContent = `STARRING: ${poster.guestName.toUpperCase()} · ${poster.template.badgeText}`;
-                    document.getElementById('posterResultCard').style.display = 'block';
+                if (res.ok) {
+                    const data = await res.json();
+                    activePoster = data.poster;
                 }
             } catch (err) {
-                console.error(err);
-            } finally {
-                btnGenerate.disabled = false;
-                btnGenerate.textContent = '⚡ TRANSFORM ACROSS VENUE WALL SCREENS';
+                console.warn('Using client fallback poster:', err);
+            }
+
+            if (!activePoster) {
+                const world = WORLDS.find(w => w.id === selectedWorld) || WORLDS[0];
+                activePoster = {
+                    id: 'UNIV-' + Math.floor(1000 + Math.random() * 9000),
+                    guestName: guestName,
+                    genre: selectedWorld,
+                    genreLabel: `${world.name.toUpperCase()}: ${world.title}`,
+                    tagline: world.tag,
+                    badgeText: 'TOFFEECON ORIGINAL · ' + world.title,
+                    posterUrl: world.img,
+                    accentColor: world.color
+                };
+            }
+
+            setTimeout(() => {
+                renderRevealScreen(activePoster);
+                goToScreen(5);
+            }, 2200);
+        }
+
+        function renderRevealScreen(poster) {
+            document.getElementById('revealPosterImg').src = poster.posterUrl;
+            document.getElementById('revealPosterTitle').innerText = poster.genreLabel || 'CINEMATIC HERO';
+            document.getElementById('revealStarring').innerText = `STARRING: ${(poster.guestName || 'VIP GUEST').toUpperCase()}`;
+            document.getElementById('revealGenreTag').innerText = (poster.genre || 'UNIVERSE').toUpperCase();
+            document.getElementById('revealBadge').innerText = poster.badgeText || 'TOFFEECON 2026';
+        }
+
+        function renderShareQRCode() {
+            const id = activePoster ? activePoster.id : 'UNIV-1001';
+            const shareUrl = `${window.location.origin}/share-universe?id=${id}`;
+            const canvas = document.getElementById('qrCodeCanvas');
+
+            if (window.QRCode) {
+                QRCode.toCanvas(canvas, shareUrl, {
+                    width: 250,
+                    margin: 1,
+                    color: { dark: '#000000', light: '#FFFFFF' }
+                });
             }
         }
+
+        function startAutoResetCountdown() {
+            stopAutoResetCountdown();
+            let remaining = 35;
+            document.getElementById('resetSeconds').innerText = remaining;
+            const bar = document.getElementById('resetProgressBar');
+            bar.style.width = '100%';
+
+            autoResetInterval = setInterval(() => {
+                remaining--;
+                document.getElementById('resetSeconds').innerText = remaining;
+                bar.style.width = `${(remaining / 35) * 100}%`;
+                if (remaining <= 0) {
+                    resetToWelcome();
+                }
+            }, 1000);
+        }
+
+        function stopAutoResetCountdown() {
+            if (autoResetInterval) clearInterval(autoResetInterval);
+            autoResetInterval = null;
+        }
+
+        function resetToWelcome() {
+            stopAutoResetCountdown();
+            activePoster = null;
+            retakePhoto();
+            selectedWorld = 'sports';
+            renderWorldsGrid();
+            goToScreen(1);
+        }
+
+        document.addEventListener('DOMContentLoaded', initKiosk);
     </script>
 </body>
 </html>
