@@ -630,15 +630,144 @@
             });
         }
 
-        function downloadPosterCard() {
+        async function downloadPosterCard() {
             if (!currentDub || !currentDub.avatarImage) return;
-            const a = document.createElement('a');
-            a.href = currentDub.avatarImage;
-            a.download = `toffeecon-dub-${currentDub.id}.jpg`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            showToast('Character poster saved!');
+            showToast('Generating HD poster card...');
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 1080;
+            canvas.height = 1920;
+            const ctx = canvas.getContext('2d');
+
+            // 1. Load avatar image
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.src = currentDub.avatarImage;
+
+            img.onload = () => {
+                // Background cover
+                ctx.fillStyle = '#070512';
+                ctx.fillRect(0, 0, 1080, 1920);
+
+                // Draw Avatar Image centered & scaled
+                const imgAspect = img.width / img.height;
+                const canvasAspect = 1080 / 1920;
+                let drawW, drawH, drawX, drawY;
+
+                if (imgAspect > canvasAspect) {
+                    drawH = 1920;
+                    drawW = 1920 * imgAspect;
+                    drawX = (1080 - drawW) / 2;
+                    drawY = 0;
+                } else {
+                    drawW = 1080;
+                    drawH = 1080 / imgAspect;
+                    drawX = 0;
+                    drawY = (1920 - drawH) / 2;
+                }
+                ctx.drawImage(img, drawX, drawY, drawW, drawH);
+
+                // Dark cinematic gradient overlay
+                const grad = ctx.createLinearGradient(0, 0, 0, 1920);
+                grad.addColorStop(0, 'rgba(7, 5, 18, 0.7)');
+                grad.addColorStop(0.3, 'rgba(7, 5, 18, 0.15)');
+                grad.addColorStop(0.65, 'rgba(7, 5, 18, 0.4)');
+                grad.addColorStop(0.85, 'rgba(7, 5, 18, 0.95)');
+                grad.addColorStop(1, 'rgba(7, 5, 18, 1)');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, 1080, 1920);
+
+                // Top Header Badge
+                ctx.fillStyle = '#FF10F0';
+                ctx.shadowColor = '#FF10F0';
+                ctx.shadowBlur = 20;
+                ctx.font = 'bold 36px "Space Mono", monospace';
+                ctx.fillText('TOFFEECON 2026 · THE DUB BOOTH', 70, 110);
+                ctx.shadowBlur = 0;
+
+                // Guest Name & Role Badge
+                ctx.fillStyle = '#00F0FF';
+                ctx.font = 'bold 42px "Plus Jakarta Sans", sans-serif';
+                ctx.fillText(currentDub.guestName || 'VIP Creator', 70, 180);
+
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+                ctx.font = '32px "Plus Jakarta Sans", sans-serif';
+                ctx.fillText(`${currentDub.characterRole || ''} · ${currentDub.characterName || ''}`, 70, 230);
+
+                // Language Chip
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
+                ctx.beginPath();
+                ctx.roundRect(70, 270, 420, 60, 30);
+                ctx.fill();
+                ctx.strokeStyle = '#00F0FF';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.fillStyle = '#00F0FF';
+                ctx.font = 'bold 26px "Space Mono", monospace';
+                ctx.fillText((currentDub.languageLabel || currentDub.language).toUpperCase(), 100, 310);
+
+                // Subtitle Card at bottom
+                ctx.fillStyle = 'rgba(12, 8, 24, 0.88)';
+                ctx.beginPath();
+                ctx.roundRect(60, 1340, 960, 440, 28);
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255, 16, 240, 0.6)';
+                ctx.lineWidth = 4;
+                ctx.stroke();
+
+                // Foreign Subtitle Text (Wrapped)
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = 'bold 50px "Plus Jakarta Sans", sans-serif';
+                wrapText(ctx, currentDub.translatedText, 100, 1430, 880, 64);
+
+                // Bengali Subtitle
+                ctx.fillStyle = '#00F0FF';
+                ctx.font = '38px "Hind Siliguri", sans-serif';
+                wrapText(ctx, `“${currentDub.originalText}”`, 100, 1620, 880, 52);
+
+                // Footer Watermark & ID
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.font = '28px "Space Mono", monospace';
+                ctx.fillText(`ID: ${currentDub.id} · toffeecon-2026.onrender.com`, 100, 1740);
+
+                // Trigger Download
+                const link = document.createElement('a');
+                link.download = `toffeecon-dub-${currentDub.id}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                showToast('HD Character Poster Saved!');
+            };
+
+            img.onerror = () => {
+                // Fallback to direct avatar file if crossOrigin issues
+                const a = document.createElement('a');
+                a.href = currentDub.avatarImage;
+                a.download = `toffeecon-dub-${currentDub.id}.jpg`;
+                a.click();
+                showToast('Poster saved!');
+            };
+        }
+
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+            if (!text) return;
+            const words = text.split(' ');
+            let line = '';
+            let currentY = y;
+
+            for (let n = 0; n < words.length; n++) {
+                const testLine = line + words[n] + ' ';
+                const metrics = ctx.measureText(testLine);
+                const testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    ctx.fillText(line, x, currentY);
+                    line = words[n] + ' ';
+                    currentY += lineHeight;
+                } else {
+                    line = testLine;
+                }
+            }
+            ctx.fillText(line, x, currentY);
         }
 
         function showToast(msg) {

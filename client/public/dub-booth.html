@@ -252,13 +252,41 @@
             font-size: 1rem;
         }
 
-        /* Preset Dialogue Pills */
+        /* Preset Dialogue Tabs & Pills */
+        .preset-tabs-bar {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .preset-tab-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .preset-tab-btn.active {
+            background: rgba(255, 16, 240, 0.15);
+            color: var(--neon-pink);
+            border: 1px solid rgba(255, 16, 240, 0.35);
+        }
+
         .presets-bar {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             justify-content: center;
             margin: 0.5rem 0;
+            min-height: 48px;
         }
 
         .preset-pill {
@@ -278,6 +306,31 @@
             color: #FFF;
             box-shadow: 0 0 15px rgba(255, 16, 240, 0.4);
             transform: translateY(-1px);
+        }
+
+        /* Speaker Name Input */
+        .speaker-name-bar {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 8px 14px;
+            gap: 10px;
+        }
+
+        .speaker-name-input {
+            background: transparent;
+            border: none;
+            color: #FFF;
+            font-size: 1rem;
+            font-weight: 600;
+            width: 100%;
+            outline: none;
+        }
+
+        .speaker-name-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
         }
 
         /* Text Input & Live Speech box */
@@ -699,20 +752,23 @@
                     <p>মাইক্রোফোনে আপনার কথা বলুন অথবা নিচের কোনো ডায়ালগে ক্লিক করুন</p>
                 </div>
 
-                <!-- Presets -->
-                <div class="presets-bar">
-                    <button class="preset-pill active" onclick="selectPreset('ছু মন্তর ছু কালিপুত্তের গু! মামা খেলা হবে!')">
-                        ✨ “ছু মন্তর ছু কালিপুত্তের গু!”
-                    </button>
-                    <button class="preset-pill" onclick="selectPreset('মামা খেলা হবে! তোমারে মাঠ ছাড়তে দিমু না!')">
-                        ⚽ “মামা খেলা হবে!”
-                    </button>
-                    <button class="preset-pill" onclick="selectPreset('আইন দিয়ে আদালত চলে, আর এই মহল্লা চলে আমার কথায়!')">
-                        🕶️ “আইন দিয়ে আদালত চলে...”
-                    </button>
-                    <button class="preset-pill" onclick="selectPreset('চা-টা খাও আগে, তারপর বুঝাইয়া কইতাছি!')">
-                        ☕ “চা-টা খাও আগে...”
-                    </button>
+                <!-- Optional Speaker Name -->
+                <div class="speaker-name-bar">
+                    <span style="font-size: 1.1rem;">👤</span>
+                    <input type="text" id="speakerNameInput" class="speaker-name-input" placeholder="আপনার নাম লিখুন (ঐচ্ছিক — পোস্টারে থাকবে)" maxlength="30" value="VIP Creator">
+                </div>
+
+                <!-- Genre Tabs for Presets -->
+                <div class="preset-tabs-bar">
+                    <button class="preset-tab-btn active" onclick="switchPresetCategory('classics', event)">🎬 Cinema Classics</button>
+                    <button class="preset-tab-btn" onclick="switchPresetCategory('sports', event)">⚽ Sports & Hype</button>
+                    <button class="preset-tab-btn" onclick="switchPresetCategory('adda', event)">☕ Dhaka Adda</button>
+                    <button class="preset-tab-btn" onclick="switchPresetCategory('drama', event)">🕶️ Underworld Noir</button>
+                </div>
+
+                <!-- Presets Container (Dynamic) -->
+                <div class="presets-bar" id="presetsBar">
+                    <!-- Populated by JS -->
                 </div>
 
                 <!-- Text box -->
@@ -899,10 +955,57 @@
             { id: 'noakhali', name: 'Noakhali Dialect', flag: '🇧🇩', role: 'Char-anchal Don', hero: 'সুবেদার বশির (Subedar Bashir)', img: '/api/media/dub_avatars/noakhali.jpg', code: 'bn-BD' }
         ];
 
+        // Presets by Category
+        const PRESETS_BY_CATEGORY = {
+            classics: [
+                'ছু মন্তর ছু কালিপুত্তের গু! মামা খেলা হবে!',
+                'আইন দিয়ে আদালত চলে, আর এই মহল্লা চলে আমার কথায়!',
+                'আমার নাম বল্টু, শহরের প্রতিটা গলিতে আমার নিঃশ্বাসের শব্দ বাজে!',
+                'চা-টা খাও আগে, তারপর বুঝাইয়া কইতাছি!'
+            ],
+            sports: [
+                'মামা খেলা হবে! তোমারে মাঠ ছাড়তে দিমু না!',
+                'টফি স্ক্রিনে বিশ্বকাপ রোমাঞ্চ, ইতিহাস রচিত হলো ঢাকা থেকে দোহা!',
+                'আজকের ম্যাচে কোনো কম্প্রোমাইজ নাই! শেষ বাঁশি পর্যন্ত লড়াই!'
+            ],
+            adda: [
+                'দোস্ত, ধানমন্ডি যাবা না পুরান ঢাকা? বিরিয়ানি খাওন লাগব!',
+                'অল্প শোকে কাতর, অধিক শোকে পাথর — কিন্তু আমরা সবসময় চিল!',
+                'আরে মামা এত টেনশন কইরো না, সবকিছু ঠিক হয়ে যাবে!'
+            ],
+            drama: [
+                'ফায়ারওয়াল ভাঙা সহজ, কিন্তু আমার নজর ফাঁকি দেওয়া অসম্ভব!',
+                'এই শহর কাউকে মাফ করে না, আর আমি তো ভুলিই না!',
+                'অন্ধকারেরও একটা ভাষা আছে, সেটা সবাই বুঝতে পারে না।'
+            ]
+        };
+
+        let currentPresetCategory = 'classics';
+
         function initKiosk() {
             renderArchetypesGrid();
+            renderPresets(currentPresetCategory);
             initSpeechRecognition();
             initCanvasWaveform();
+        }
+
+        function switchPresetCategory(category, event) {
+            currentPresetCategory = category;
+            document.querySelectorAll('.preset-tab-btn').forEach(btn => btn.classList.remove('active'));
+            if (event && event.target) event.target.classList.add('active');
+            renderPresets(category);
+        }
+
+        function renderPresets(category) {
+            const list = PRESETS_BY_CATEGORY[category] || PRESETS_BY_CATEGORY.classics;
+            const container = document.getElementById('presetsBar');
+            const currentVal = document.getElementById('dialogueInput').value.trim();
+
+            container.innerHTML = list.map((text, idx) => `
+                <button class="preset-pill ${currentVal === text ? 'active' : ''}" onclick="selectPreset('${text.replace(/'/g, "\\'")}')">
+                    “${text.length > 32 ? text.substring(0, 30) + '...' : text}”
+                </button>
+            `).join('');
         }
 
         function renderArchetypesGrid() {
@@ -1023,6 +1126,7 @@
         // Morphing Lab & Synthesis Trigger
         async function startVoiceMorphing() {
             const dialogue = document.getElementById('dialogueInput').value.trim() || 'ছু মন্তর ছু কালিপুত্তের গু! মামা খেলা হবে!';
+            const speakerName = (document.getElementById('speakerNameInput')?.value || '').trim() || 'VIP Creator';
             goToScreen(4);
 
             // Step animation HUD
@@ -1041,7 +1145,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        speakerName: 'VIP Creator',
+                        speakerName: speakerName,
                         text: dialogue,
                         targetDialect: selectedDialect
                     })
@@ -1059,7 +1163,7 @@
                 const arch = ARCHETYPES.find(a => a.id === selectedDialect) || ARCHETYPES[0];
                 activeDubSession = {
                     id: 'DUB-' + Math.floor(1000 + Math.random() * 9000),
-                    guestName: 'VIP Creator',
+                    guestName: speakerName,
                     originalText: dialogue,
                     language: selectedDialect,
                     languageLabel: arch.name,
@@ -1163,7 +1267,7 @@
 
         function startAutoResetCountdown() {
             stopAutoResetCountdown();
-            let remaining = 45;
+            let remaining = 35;
             document.getElementById('resetSeconds').innerText = remaining;
             const bar = document.getElementById('resetProgressBar');
             bar.style.width = '100%';
@@ -1171,7 +1275,7 @@
             autoResetProgressInterval = setInterval(() => {
                 remaining--;
                 document.getElementById('resetSeconds').innerText = remaining;
-                bar.style.width = `${(remaining / 45) * 100}%`;
+                bar.style.width = `${(remaining / 35) * 100}%`;
                 if (remaining <= 0) {
                     resetToWelcome();
                 }
