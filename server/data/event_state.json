@@ -271,8 +271,76 @@
   },
   "ottAudition": {
     "status": "active",
-    "totalAuditions": 16,
+    "totalAuditions": 18,
     "candidates": [
+      {
+        "id": "cand-1791792314611",
+        "characterName": "নীল চৌধুরী",
+        "realName": "Dewan Saki",
+        "genre": "romance",
+        "roleTitle": "Melancholic Metro Songwriter",
+        "seriesTitle": "বৃষ্টিভেজা মেট্রো",
+        "englishTitle": "METRO AT BLUE HOUR",
+        "tagline": "তোমার চোখের বৃষ্টিতে আমার শেষ সুর ভিজে যায়।",
+        "summary": "ঢাকা শহরের ছাদ আর বৃষ্টির রাতে হারানো ভালোবাসার খোঁজে সুর বুনে চলে। যার প্রতিটি সৃষ্টি এক অদ্ভুত বেদনাময় প্রেমের গল্প বলে।",
+        "thematicBackdropUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1000&q=80",
+        "accentColor": "#EC4899",
+        "colorGrade": "blue-hour",
+        "actingCritique": "আবেগ ও রোম্যান্স: ৯৪% — চোখের গভীরতায় তীব্র বিষাদ ও রোমান্টিক আবহ। ওটিটি মিউজিক্যাল ড্রামার প্রাণ।",
+        "portraitUrl": "/api/media/cand-1791792314611.jpg",
+        "posterUrl": "/api/media/cand-1791792314611-poster.jpg",
+        "audioUrl": "",
+        "ottScore": 92,
+        "scoreBreakdown": {
+          "screenPresence": 91,
+          "dramaticGrit": 93,
+          "dialoguePunch": 93,
+          "originality": 93
+        },
+        "prompts": {
+          "portraitPrompt": "Cinematic 8K character poster for নীল চৌধুরী, playing as Melancholic Metro Songwriter in \"METRO AT BLUE HOUR\", 35mm film still, intense penetrating gaze, Soft diffused blue hour illumination with warm cafe fairy lights, fine Dhaka textures, authentic Bengali persona, Toffee Original aesthetic, depth of field --ar 9:16",
+          "fullBodyPrompt": "Full body cinematic action hero still of নীল চৌধুরী in authentic stylized costume for Melancholic Metro Songwriter, atmospheric set reflecting romance, standing with confident posture, Soft diffused blue hour illumination with warm cafe fairy lights, 8k photorealistic",
+          "veo10sPrompt": "Cinematic 10-second OTT character reveal. [Camera Move: slow dolly push-in transitioning to high-angle hero reveal]. নীল চৌধুরী, dressed as Melancholic Metro Songwriter, turns collar up, making an intense dramatic gaze directly into the camera lens with a subtle confident smirk. Lighting: Soft diffused blue hour illumination with warm cafe fairy lights. Atmosphere: light atmospheric mist and dust motes. Audio: deep cinematic bass pulse with ambient environmental sound. 24fps 4K."
+        },
+        "videoUrl": "",
+        "isTop10": false,
+        "rank": 13,
+        "createdAt": "2026-10-12T08:05:14.962Z"
+      },
+      {
+        "id": "cand-1791792199698",
+        "characterName": "কমান্ডো রুবেল",
+        "realName": "Dewan Saki",
+        "genre": "action",
+        "roleTitle": "Spec-Ops Rogue Recon Specialist",
+        "seriesTitle": "সাইবার স্ট্রাইক ২০২৬",
+        "englishTitle": "CYBER STRIKE: SPEC-OPS",
+        "tagline": "মিশন যখন শেষ হবে, তখন কেবল আমার পায়ের ছাপ বাকি থাকবে।",
+        "summary": "কঠিন ট্রেনিংপ্রাপ্ত সাবেক সামরিক স্পেশালিস্ট, যিনি এখন ঢাকার সাইবার আন্ডারগ্রাউন্ডের সাথে এক অসম লড়াইয়ে নেমেছেন। যার লক্ষ্য কেবল সত্য উন্মোচন করা।",
+        "thematicBackdropUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=80",
+        "accentColor": "#00F0FF",
+        "colorGrade": "cyber-neon",
+        "actingCritique": "অ্যাকশন এনার্জি: ৯৩% — ক্ষিপ্র শারীরিক ভাষা ও তীক্ষ্ণ চোখ। ব্লকব্লাস্টার অ্যাকশন থ্রিলারের জন্য উপযোগী।",
+        "portraitUrl": "/api/media/cand-1791792199698.jpg",
+        "posterUrl": "/api/media/cand-1791792199698-poster.jpg",
+        "audioUrl": "",
+        "ottScore": 92,
+        "scoreBreakdown": {
+          "screenPresence": 91,
+          "dramaticGrit": 93,
+          "dialoguePunch": 94,
+          "originality": 93
+        },
+        "prompts": {
+          "portraitPrompt": "Cinematic 8K character poster for কমান্ডো রুবেল, playing as Spec-Ops Rogue Recon Specialist in \"CYBER STRIKE: SPEC-OPS\", 35mm film still, intense penetrating gaze, High-contrast cyan and crimson neon rim light with metallic highlights, fine Dhaka textures, authentic Bengali persona, Toffee Original aesthetic, depth of field --ar 9:16",
+          "fullBodyPrompt": "Full body cinematic action hero still of কমান্ডো রুবেল in authentic stylized costume for Spec-Ops Rogue Recon Specialist, atmospheric set reflecting action, standing with confident posture, High-contrast cyan and crimson neon rim light with metallic highlights, 8k photorealistic",
+          "veo10sPrompt": "Cinematic 10-second OTT character reveal. [Camera Move: slow dolly push-in transitioning to high-angle hero reveal]. কমান্ডো রুবেল, dressed as Spec-Ops Rogue Recon Specialist, turns collar up, making an intense dramatic gaze directly into the camera lens with a subtle confident smirk. Lighting: High-contrast cyan and crimson neon rim light with metallic highlights. Atmosphere: light atmospheric mist and dust motes. Audio: deep cinematic bass pulse with ambient environmental sound. 24fps 4K."
+        },
+        "videoUrl": "",
+        "isTop10": false,
+        "rank": 13,
+        "createdAt": "2026-10-12T08:03:20.019Z"
+      },
       {
         "id": "cand-1791791951875",
         "characterName": "এজেন্ট নির্ভীক",

@@ -26,8 +26,18 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Universal XSS Sanitizer Middleware on all request bodies
 app.use(sanitizeBody);
 
-// Serve static assets from client/public (without auto-shadowing landing.html)
-app.use(express.static(path.join(__dirname, '../client/public'), { index: false }));
+// Serve static assets from client/public (with strict no-cache for HTML files to prevent stale browser caching)
+app.use(express.static(path.join(__dirname, '../client/public'), {
+    index: false,
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.html')) {
+            res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+            res.setHeader('Pragma', 'no-cache');
+            res.setHeader('Expires', '0');
+            res.setHeader('Surrogate-Control', 'no-store');
+        }
+    }
+}));
 
 // Serve local media uploads (posters & video clips)
 app.use('/api/media', express.static(path.join(__dirname, 'data/media')));
