@@ -340,51 +340,100 @@ Analyze this audition and output ONLY a valid JSON object with the following str
         const archetypeMap = {
             thriller: {
                 roleTitle: 'Old Dhaka Syndicate Enforcer',
+                seriesTitle: 'ঢাকার শেষ মাস্তান',
+                englishTitle: 'THE LAST DON OF DHAKA',
                 tagline: 'অন্ধকার যখন নামে, তখন শুরু হয় আমার আসল খেলা।',
-                summary: 'বুড়িগঙ্গার তীর ঘেঁষে গড়ে ওঠা গোপন নেটওয়ার্কের মূল চাবিকাঠি তার হাতে। শহরের পুলিশ প্রশাসন যাকে হন্যে হয়ে খুঁজছে কিন্তু প্রতিবার সে অদৃশ্য হয়ে যায়।',
+                summary: 'পুরান ঢাকার বুড়িগঙ্গা তীর ঘেঁষে গড়ে ওঠা গোপন নেটওয়ার্কের মূল চাবিকাঠি তার হাতে। শহরের পুলিশ প্রশাসন যাকে হন্যে হয়ে খুঁজছে কিন্তু প্রতিবার সে অদৃশ্য হয়ে যায়।',
                 baseScore: 93,
-                lighting: 'Moody noir with amber streetlamp glow and atmospheric river fog'
+                accentColor: '#FF6B00',
+                colorGrade: 'teal-orange',
+                backdropUrl: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1200&q=80',
+                lighting: 'Moody noir with amber sodium streetlamp glow and atmospheric river fog',
+                actingCritique: 'স্ক্রিন প্রেজেন্স: ৯৬% — অসাধারণ গ্যাংস্টার গ্রিট এবং ভিলেনের ঠান্ডা চাহনি। টফি ওটিটি ক্রাইম থ্রিলার লিড রোলে পারফেক্ট কাস্টিং!'
             },
             action: {
                 roleTitle: 'Spec-Ops Rogue Recon Specialist',
+                seriesTitle: 'সাইবার স্ট্রাইক ২০২৬',
+                englishTitle: 'CYBER STRIKE: SPEC-OPS',
                 tagline: 'মিশন যখন শেষ হবে, তখন কেবল আমার পায়ের ছাপ বাকি থাকবে।',
                 summary: 'কঠিন ট্রেনিংপ্রাপ্ত সাবেক সামরিক স্পেশালিস্ট, যিনি এখন ঢাকার সাইবার আন্ডারগ্রাউন্ডের সাথে এক অসম লড়াইয়ে নেমেছেন। যার লক্ষ্য কেবল সত্য উন্মোচন করা।',
                 baseScore: 91,
-                lighting: 'High-contrast cyan and crimson neon rim light with metallic highlights'
+                accentColor: '#00F0FF',
+                colorGrade: 'cyber-neon',
+                backdropUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
+                lighting: 'High-contrast cyan and crimson neon rim light with metallic highlights',
+                actingCritique: 'অ্যাকশন এনার্জি: ৯৩% — ক্ষিপ্র শারীরিক ভাষা ও তীক্ষ্ণ চোখ। ব্লকব্লাস্টার অ্যাকশন থ্রিলারের জন্য উপযোগী।'
             },
             comedy: {
                 roleTitle: 'Dhaka Neighborhood Hustler & Matchmaker',
+                seriesTitle: 'মহল্লার রাজা বল্টু',
+                englishTitle: 'THE NEIGHBORHOOD HUSTLER',
                 tagline: 'সমস্যা যেটাই হোক, সমাধানের একটাই নাম—আমি!',
                 summary: 'পুরো মহল্লার মানুষ যাকে ভালোবাসে কিন্তু তার ফাঁদে পড়ে নাকানি-চুবানি খায়। কথার জাদুতে চোরকেও সাধু বানিয়ে দেওয়ার অদ্ভুত ক্ষমতা তার।',
                 baseScore: 89,
-                lighting: 'Warm saturated golden hour light with vibrant street market background'
+                accentColor: '#F59E0B',
+                colorGrade: 'warm-golden',
+                backdropUrl: 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&w=1200&q=80',
+                lighting: 'Warm saturated golden hour light with vibrant street market background',
+                actingCritique: 'কমিক টাইমিং: ৯৫% — স্বতঃস্ফূর্ত বডি ল্যাঙ্গুয়েজ এবং আঞ্চলিক ডায়লগ পাঞ্চ। দর্শকদের হাসিয়ে কাঁপিয়ে দেওয়ার ক্ষমতা।'
             },
             romance: {
                 roleTitle: 'Melancholic Metro Songwriter',
+                seriesTitle: 'বৃষ্টিভেজা মেট্রো',
+                englishTitle: 'METRO AT BLUE HOUR',
                 tagline: 'তোমার চোখের বৃষ্টিতে আমার শেষ সুর ভিজে যায়।',
                 summary: 'ঢাকা শহরের ছাদ আর বৃষ্টির রাতে হারানো ভালোবাসার খোঁজে সুর বুনে চলে। যার প্রতিটি সৃষ্টি এক অদ্ভুত বেদনাময় প্রেমের গল্প বলে।',
                 baseScore: 92,
-                lighting: 'Soft diffused blue hour illumination with warm cafe fairy lights'
+                accentColor: '#EC4899',
+                colorGrade: 'blue-hour',
+                backdropUrl: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=1200&q=80',
+                lighting: 'Soft diffused blue hour illumination with warm cafe fairy lights',
+                actingCritique: 'আবেগ ও রোম্যান্স: ৯৪% — চোখের গভীরতায় তীব্র বিষাদ ও রোমান্টিক আবহ। ওটিটি মিউজিক্যাল ড্রামার প্রাণ।'
             },
             scifi: {
                 roleTitle: 'Dhaka 2033 Quantum Grid Navigator',
+                seriesTitle: 'কোয়ান্টাম ঢাকা ২০৩৩',
+                englishTitle: 'QUANTUM DHAKA 2033',
                 tagline: 'ভবিষ্যৎ কেবল দেখা যায় না, তাকে নিজের হাতে বানাতে হয়।',
                 summary: 'ঢাকার ভবিষ্যৎ ডিজিটাল নেটওয়ার্কের শীর্ষ ডেটাহ্যাকার। যার নিউরাল ইন্টারফেসের ভেতর লুকিয়ে আছে গোটা শহরের ভবিষ্যৎ শক্তির চাবিকাঠি।',
                 baseScore: 95,
-                lighting: 'Deep indigo and electric violet volumetric lasers with holographic glints'
+                accentColor: '#A855F7',
+                colorGrade: 'neon-violet',
+                backdropUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
+                lighting: 'Deep indigo and electric violet volumetric lasers with holographic glints',
+                actingCritique: 'ফিউচারিস্টিক লুক: ৯৭% — অনন্য সাই-ফাই স্ক্রিন প্রেজেন্স ও ভবিষ্যৎ দৃষ্টি। গ্লোবাল স্ট্যান্ডার্ড কনসেপ্ট।'
+            },
+            drama: {
+                roleTitle: 'Underground Heist Mastermind',
+                seriesTitle: 'মুখোশের আড়ালে',
+                englishTitle: 'BEHIND THE MASK',
+                tagline: 'আইনের চোখ অন্ধ হতে পারে, কিন্তু আমার পরিকল্পনা নিখুঁত।',
+                summary: 'ঢাকার অভিজাত সমাজের অন্তরালে পরিচালিত এক দুর্ধর্ষ মাস্টারমাইন্ড। যার প্রতিটি পদক্ষেপের পেছনে থাকে দাবা খেলার চালের মতো জটিল পরিকল্পনা।',
+                baseScore: 94,
+                accentColor: '#EF4444',
+                colorGrade: 'noir-mono',
+                backdropUrl: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80',
+                lighting: 'Dramatic single keylight with deep noir shadow slits and smoke',
+                actingCritique: 'নাটকীয় গভীরতা: ৯৫% — শান্ত কিন্তু ধ্বংসাত্মক বুদ্ধিমত্তার বহিঃপ্রকাশ। তুখোড় ক্রিমিনাল ড্রামার মুখ্য চরিত্র।'
             }
         };
 
         const config = archetypeMap[genre.toLowerCase()] || archetypeMap.thriller;
-        const jitter = Math.floor(Math.random() * 5);
+        const jitter = Math.floor(Math.random() * 4);
         const ottScore = Math.min(97, config.baseScore + jitter);
 
         return {
             success: true,
             source: 'procedural_fallback',
             roleTitle: config.roleTitle,
+            seriesTitle: config.seriesTitle,
+            englishTitle: config.englishTitle,
             tagline: config.tagline,
             summary: config.summary,
+            backdropUrl: config.backdropUrl,
+            accentColor: config.accentColor,
+            colorGrade: config.colorGrade,
+            actingCritique: config.actingCritique,
             ottScore,
             scoreBreakdown: {
                 screenPresence: Math.min(98, ottScore + Math.floor(Math.random() * 3) - 1),
@@ -393,7 +442,7 @@ Analyze this audition and output ONLY a valid JSON object with the following str
                 originality: Math.min(98, ottScore + Math.floor(Math.random() * 2))
             },
             prompts: {
-                portraitPrompt: `Cinematic 8K character poster for ${characterName}, playing as ${config.roleTitle}, 35mm film still, intense penetrating gaze, ${config.lighting}, fine Dhaka textures, authentic Bengali persona, Toffee Original aesthetic, depth of field --ar 9:16`,
+                portraitPrompt: `Cinematic 8K character poster for ${characterName}, playing as ${config.roleTitle} in "${config.englishTitle}", 35mm film still, intense penetrating gaze, ${config.lighting}, fine Dhaka textures, authentic Bengali persona, Toffee Original aesthetic, depth of field --ar 9:16`,
                 fullBodyPrompt: `Full body cinematic action hero still of ${characterName} in authentic stylized costume for ${config.roleTitle}, atmospheric set reflecting ${genre}, standing with confident posture, ${config.lighting}, 8k photorealistic`,
                 veo10sPrompt: `Cinematic 10-second OTT character reveal. [Camera Move: slow dolly push-in transitioning to high-angle hero reveal]. ${characterName}, dressed as ${config.roleTitle}, turns collar up, making an intense dramatic gaze directly into the camera lens with a subtle confident smirk. Lighting: ${config.lighting}. Atmosphere: light atmospheric mist and dust motes. Audio: deep cinematic bass pulse with ambient environmental sound. 24fps 4K.`
             }

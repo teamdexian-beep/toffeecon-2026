@@ -454,9 +454,10 @@
             </div>
 
             <div class="detail-view" id="detailView">
-                <!-- Hero Banner -->
+                <!-- Hero Banner with Dual Posters (Composite & Raw) -->
                 <div class="hero-banner">
-                    <img id="detailPortrait" class="hero-poster" src="" alt="Portrait">
+                    <img id="detailPoster" class="hero-poster" src="" alt="Composite Poster" title="Thematic Composite Poster">
+                    <img id="detailPortrait" class="hero-poster" style="display: none; width: 100px; height: 145px; border-color: rgba(255,255,255,0.3);" src="" alt="Raw Portrait" title="Raw Studio Capture">
                     <div class="hero-meta">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                             <div>
@@ -466,16 +467,37 @@
                             <span class="score-pill" style="font-size: 1.1rem; padding: 4px 10px;" id="detailScore">94%</span>
                         </div>
                         <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-top: 4px;" id="detailRealName">Actor: তানভীর আহমেদ</p>
-                        <p style="font-size: 0.9rem; font-style: italic; color: #EEE; margin-top: 10px; border-left: 2px solid var(--toffee-orange); padding-left: 8px;" id="detailTagline">
+                        <p style="font-size: 0.9rem; font-style: italic; color: #EEE; margin-top: 8px; border-left: 2px solid var(--toffee-orange); padding-left: 8px;" id="detailTagline">
                             "শহরের প্রতিটা গলিতে আমার নিঃশ্বাসের শব্দ বাজে।"
                         </p>
+
+                        <!-- Attendee Audition Voice Pitch Player -->
+                        <div id="audioPlayerContainer" style="margin-top: 10px; display: none;">
+                            <div style="font-size: 0.75rem; color: var(--accent-cyan); font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 5px;">
+                                <span>🎙️ LIVE VOICE AUDITION RECORDING:</span>
+                            </div>
+                            <audio id="detailAudioPlayer" controls style="width: 100%; height: 32px; outline: none; border-radius: 6px;"></audio>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Backstory Summary -->
-                <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 12px; border: 1px solid var(--border-color);">
-                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase;">Life Summary / Backstory:</div>
-                    <p style="font-size: 0.9rem; line-height: 1.5; color: rgba(255,255,255,0.9); margin-top: 4px;" id="detailSummary"></p>
+                <!-- Backstory Summary & Acting Critique -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 12px; border: 1px solid var(--border-color);">
+                        <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase;">Life Summary / Backstory:</div>
+                        <p style="font-size: 0.85rem; line-height: 1.5; color: rgba(255,255,255,0.9); margin-top: 4px;" id="detailSummary"></p>
+                    </div>
+                    <div style="background: rgba(255, 102, 0, 0.08); padding: 12px; border-radius: 12px; border: 1px solid rgba(255, 102, 0, 0.25);">
+                        <div style="font-size: 0.75rem; color: var(--toffee-gold); text-transform: uppercase; font-weight: 700;">Director's Acting Verdict:</div>
+                        <p style="font-size: 0.85rem; line-height: 1.5; color: #FFF; margin-top: 4px;" id="detailCritique">স্ক্রিন প্রেজেন্স: ৯৬% — অসাধারণ গ্যাংস্টার গ্রিট।</p>
+                    </div>
+                </div>
+
+                <!-- Quick Action Bar -->
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button class="btn" style="background: rgba(0, 240, 255, 0.15); border-color: var(--accent-cyan); color: var(--accent-cyan); font-size: 0.8rem; padding: 6px 12px;" onclick="copyAllPromptsBundle()">
+                        📑 Copy All Prompts Bundle (JSON / Flow)
+                    </button>
                 </div>
 
                 <!-- PROMPT 1: 10-Second Veo Omni Flash Prompt (PRIORITY) -->
@@ -639,7 +661,18 @@
             document.querySelectorAll('.candidate-card').forEach(c => c.classList.remove('active'));
             renderCandidates();
 
-            document.getElementById('detailPortrait').src = cand.portraitUrl;
+            // Dual posters (Composite & Raw Studio Photo)
+            const posterImg = document.getElementById('detailPoster');
+            const portraitImg = document.getElementById('detailPortrait');
+            
+            posterImg.src = cand.posterUrl || cand.portraitUrl;
+            if (cand.posterUrl && cand.portraitUrl && cand.posterUrl !== cand.portraitUrl) {
+                portraitImg.src = cand.portraitUrl;
+                portraitImg.style.display = 'block';
+            } else {
+                portraitImg.style.display = 'none';
+            }
+
             document.getElementById('detailCharName').innerText = cand.characterName;
             document.getElementById('detailRole').innerText = cand.roleTitle;
             document.getElementById('detailRealName').innerText = `Performer: ${cand.realName}`;
@@ -647,6 +680,23 @@
             document.getElementById('detailTagline').innerText = `"${cand.tagline}"`;
             document.getElementById('detailSummary').innerText = cand.summary;
             document.getElementById('activeGenreBadge').innerText = cand.genre.toUpperCase();
+
+            // Acting Critique
+            const critiqueElem = document.getElementById('detailCritique');
+            if (critiqueElem) {
+                critiqueElem.innerText = cand.actingCritique || 'স্ক্রিন প্রেজেন্স ও ওটিটি ডায়লগ ডেলিভারি লিড রোলে সম্পূর্ণ উপযুক্ত।';
+            }
+
+            // Audio Player for attendee's recorded voice audition pitch
+            const audioContainer = document.getElementById('audioPlayerContainer');
+            const audioPlayer = document.getElementById('detailAudioPlayer');
+            if (cand.audioUrl) {
+                audioPlayer.src = cand.audioUrl;
+                audioContainer.style.display = 'block';
+            } else {
+                audioPlayer.src = '';
+                audioContainer.style.display = 'none';
+            }
 
             // Prompts
             document.getElementById('veo10sPrompt').innerText = cand.prompts?.veo10sPrompt || 'N/A';
@@ -658,6 +708,21 @@
             const text = document.getElementById(elementId).innerText;
             navigator.clipboard.writeText(text);
             alert('Prompt copied to clipboard! Paste directly into Google Flow / Veo.');
+        }
+
+        function copyAllPromptsBundle() {
+            const cand = candidates.find(c => c.id === selectedCandidateId);
+            if (!cand) return;
+            const bundle = {
+                characterName: cand.characterName,
+                genre: cand.genre,
+                roleTitle: cand.roleTitle,
+                tagline: cand.tagline,
+                actingCritique: cand.actingCritique,
+                prompts: cand.prompts
+            };
+            navigator.clipboard.writeText(JSON.stringify(bundle, null, 2));
+            alert('Full AI Prompts & Dossier bundle copied to clipboard!');
         }
 
         async function toggleTop10(event, id) {

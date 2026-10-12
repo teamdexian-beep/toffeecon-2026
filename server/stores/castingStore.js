@@ -146,6 +146,30 @@ class CastingStore {
         }
     }
 
+    // Save base64 audio sample to disk
+    saveAudioToDisk(audioBase64, filename) {
+        if (!audioBase64) return null;
+        try {
+            let base64Content = audioBase64;
+            let ext = 'webm';
+            if (audioBase64.startsWith('data:audio')) {
+                const matches = audioBase64.match(/^data:audio\/([a-zA-Z0-9]+);base64,(.+)$/);
+                if (matches && matches.length === 3) {
+                    ext = matches[1];
+                    base64Content = matches[2];
+                }
+            }
+            const buffer = Buffer.from(base64Content, 'base64');
+            const safeName = `${filename}-voice.${ext}`;
+            const diskPath = path.join(this.mediaDir, safeName);
+            fs.writeFileSync(diskPath, buffer);
+            return `/api/media/${safeName}`;
+        } catch (e) {
+            console.error('[CastingStore] Audio save error:', e);
+            return null;
+        }
+    }
+
     addCandidate(candidateData) {
         if (!this.state) this.init();
         const candId = 'cand-' + Date.now();
@@ -157,15 +181,37 @@ class CastingStore {
             if (savedUrl) portraitUrl = savedUrl;
         }
 
+        // Optional disk offloading for rendered composite poster
+        let posterUrl = candidateData.posterBase64;
+        if (candidateData.posterBase64 && candidateData.posterBase64.startsWith('data:image')) {
+            const savedPoster = this.saveImageToDisk(candidateData.posterBase64, `${candId}-poster`);
+            if (savedPoster) posterUrl = savedPoster;
+        }
+
+        // Optional audio pitch offloading
+        let audioUrl = '';
+        if (candidateData.audioBase64) {
+            const savedAudio = this.saveAudioToDisk(candidateData.audioBase64, candId);
+            if (savedAudio) audioUrl = savedAudio;
+        }
+
         const candidate = {
             id: candId,
             characterName: candidateData.characterName || 'বল্টু ভাই',
             realName: candidateData.realName || 'অডিশন প্রার্থী',
             genre: candidateData.genre || 'thriller',
             roleTitle: candidateData.roleTitle,
+            seriesTitle: candidateData.seriesTitle || 'টফি ওটিটি অরিজিনাল',
+            englishTitle: candidateData.englishTitle || 'TOFFEE ORIGINAL SERIES',
             tagline: candidateData.tagline,
             summary: candidateData.summary,
+            thematicBackdropUrl: candidateData.backdropUrl || '',
+            accentColor: candidateData.accentColor || '#FF6B00',
+            colorGrade: candidateData.colorGrade || 'teal-orange',
+            actingCritique: candidateData.actingCritique || 'টফি ওটিটি কাস্টিং লিড রোলে সম্পূর্ণ উপযুক্ত!',
             portraitUrl: portraitUrl || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80',
+            posterUrl: posterUrl || portraitUrl,
+            audioUrl: audioUrl || '',
             ottScore: candidateData.ottScore,
             scoreBreakdown: candidateData.scoreBreakdown,
             prompts: candidateData.prompts,

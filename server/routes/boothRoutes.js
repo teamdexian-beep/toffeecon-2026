@@ -200,7 +200,7 @@ module.exports = function(eventStore, broadcast, aiProvider) {
     // Submit new audition from Touch Kiosk
     router.post('/audition/submit', async (req, res) => {
         try {
-            const { characterName, speechTranscript, genre, photoBase64, realName } = req.body;
+            const { characterName, speechTranscript, genre, photoBase64, posterBase64, audioBase64, realName } = req.body;
             
             // Run AI analysis & Veo prompt synthesis
             const aiResult = await aiProvider.analyzeAndGenerateAudition({
@@ -216,9 +216,17 @@ module.exports = function(eventStore, broadcast, aiProvider) {
                 realName: realName || 'অডিশন প্রার্থী',
                 genre: genre || 'thriller',
                 photoBase64,
+                posterBase64,
+                audioBase64,
                 roleTitle: aiResult.roleTitle,
+                seriesTitle: aiResult.seriesTitle,
+                englishTitle: aiResult.englishTitle,
                 tagline: aiResult.tagline,
                 summary: aiResult.summary,
+                backdropUrl: aiResult.backdropUrl,
+                accentColor: aiResult.accentColor,
+                colorGrade: aiResult.colorGrade,
+                actingCritique: aiResult.actingCritique,
                 ottScore: aiResult.ottScore,
                 scoreBreakdown: aiResult.scoreBreakdown,
                 prompts: aiResult.prompts
