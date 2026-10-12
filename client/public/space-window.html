@@ -3,75 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToffeeCon 2026 · The Space Window & Hall of Fame</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>The Space Window & 100+ Channel Catalogue | ToffeeCon 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-deep: #05020c;
-            --neon-pink: #FF10F0;
-            --neon-purple: #A855F7;
+            --bg-deep: #05020F;
+            --panel-hull: #0A051E;
+            --card-hull: #110830;
+            --border-metal: #29154F;
             --neon-cyan: #00F0FF;
-            --neon-amber: #FFB300;
-            --panel-hull: #0e071e;
-            --border-metal: #2d184d;
-            --text-main: #FFFFFF;
+            --neon-pink: #FF10F0;
+            --neon-purple: #9D00FF;
+            --neon-amber: #FFB800;
+            --neon-green: #00FF88;
+            --text-dim: #9987BC;
+            --font-mono: 'Space Mono', monospace;
+            --font-display: 'Orbitron', 'Syne', sans-serif;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
         body {
             background: var(--bg-deep);
-            color: var(--text-main);
+            color: #FFFFFF;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
+        /* Top Header */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 32px;
-            background: rgba(8, 4, 18, 0.9);
-            border-bottom: 1px solid #23123d;
-            position: sticky;
-            top: 0;
+            padding: 12px 28px;
+            background: rgba(8, 4, 22, 0.95);
+            border-bottom: 1px solid var(--border-metal);
+            flex-shrink: 0;
             z-index: 100;
         }
 
         .header-brand {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
         }
 
         .badge-space {
             background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
             color: #000;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 6px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.8rem;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
             font-weight: 800;
             letter-spacing: 2px;
         }
 
-        /* Split Venue Layout: Ceiling Space Window + Floor Hall of Fame Wall */
-        .venue-stage {
-            display: grid;
-            grid-template-rows: 280px 1fr;
-            flex-grow: 1;
-            height: calc(100vh - 70px);
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        /* 1. Ceiling Space Window Viewport (Matching Slide Photo) */
-        .space-ceiling-frame {
+        .nav-pill-btn {
+            background: rgba(16, 8, 44, 0.8);
+            border: 1px solid var(--border-metal);
+            color: #C3B4E4;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-pill-btn:hover {
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+        }
+
+        .nav-pill-btn.primary {
+            background: linear-gradient(135deg, var(--neon-cyan), #0099FF);
+            color: #000;
+            font-weight: 800;
+            border: none;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+        }
+
+        /* 2-Tier Split Layout: Overhead Ceiling Viewport (Top 35%) + Lit Channel Wall (Bottom 65%) */
+        .stage-split-container {
+            display: grid;
+            grid-template-rows: 320px 1fr;
+            flex-grow: 1;
+            height: calc(100vh - 60px);
+            overflow: hidden;
+        }
+
+        /* 1. TOP: Space Ceiling Simulation Viewport */
+        .space-ceiling-pane {
             position: relative;
             background: #020108;
-            border-bottom: 4px solid var(--border-metal);
+            border-bottom: 3px solid var(--border-metal);
             overflow: hidden;
-            box-shadow: inset 0 -20px 40px rgba(0,0,0,0.8);
+            box-shadow: inset 0 -30px 60px rgba(0, 0, 0, 0.9);
         }
 
         canvas#spaceCanvas {
@@ -79,252 +126,370 @@
             inset: 0;
             width: 100%;
             height: 100%;
+            display: block;
         }
 
-        .space-hud-overlay {
+        .ceiling-hud {
             position: absolute;
             top: 14px; left: 24px;
             z-index: 10;
-            background: rgba(10, 4, 22, 0.7);
-            border: 1px solid var(--border-metal);
-            padding: 8px 16px;
+            background: rgba(8, 3, 22, 0.75);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 240, 255, 0.3);
             border-radius: 8px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.75rem;
+            padding: 8px 16px;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
             display: flex;
             align-items: center;
             gap: 16px;
         }
 
-        /* 2. Hall of Fame 100+ Channels Wall */
-        .hall-of-fame-wall {
+        .ceiling-downlink-callout {
+            position: absolute;
+            top: 14px; right: 24px;
+            z-index: 10;
+            background: rgba(8, 3, 22, 0.75);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 16, 240, 0.3);
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            text-align: right;
+        }
+
+        /* 2. BOTTOM: Lit Channel Catalogue Wall */
+        .channel-wall-pane {
             background: var(--panel-hull);
-            padding: 24px 32px;
+            padding: 20px 28px;
             display: flex;
             flex-direction: column;
             overflow-y: auto;
         }
 
-        .wall-title-banner {
-            border: 2px solid var(--neon-purple);
-            border-radius: 12px;
-            padding: 12px;
-            text-align: center;
-            background: rgba(168, 85, 247, 0.1);
-            margin-bottom: 20px;
-            box-shadow: 0 0 25px rgba(168, 85, 247, 0.3);
-        }
-
-        .wall-title-banner h1 {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.8rem;
-            color: #fff;
-            letter-spacing: 2px;
-            text-shadow: 0 0 15px var(--neon-purple);
-        }
-
-        .filter-bar {
+        .wall-title-strip {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
             flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .wall-title-strip h2 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-ribbon {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
         }
 
         .filter-btn {
-            background: #15092a;
-            border: 1px solid #361763;
-            color: #b7a8d9;
+            background: #110729;
+            border: 1px solid var(--border-metal);
+            color: #A090C4;
             padding: 6px 14px;
             border-radius: 20px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .filter-btn:hover { border-color: var(--neon-cyan); color: #fff; }
+
+        .filter-btn:hover {
+            border-color: var(--neon-cyan);
+            color: #FFF;
+        }
+
         .filter-btn.active {
             background: var(--neon-cyan);
             color: #000;
-            font-weight: 700;
+            font-weight: 800;
             border-color: var(--neon-cyan);
-            box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
         }
 
-        /* Channel Grid (100+ Live Channels) */
+        /* Channel Grid */
         .channel-matrix {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 12px;
             flex-grow: 1;
+            padding-bottom: 24px;
         }
 
-        .channel-badge-card {
-            background: #14092b;
-            border: 1px solid #2e1654;
-            border-radius: 10px;
-            padding: 12px 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
+        .channel-card {
+            background: var(--card-hull);
+            border: 1px solid var(--border-metal);
+            border-radius: 12px;
+            padding: 12px 14px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s;
             position: relative;
             overflow: hidden;
         }
 
-        .channel-badge-card:hover {
-            border-color: var(--neon-pink);
-            transform: translateY(-2px);
-            box-shadow: 0 0 15px rgba(255, 16, 240, 0.4);
-        }
-
-        .channel-badge-card.uplinking {
+        .channel-card:hover {
             border-color: var(--neon-cyan);
-            background: rgba(0, 240, 255, 0.15);
-            animation: pulse-uplink 1s infinite;
-        }
-        @keyframes pulse-uplink {
-            0%, 100% { box-shadow: 0 0 10px var(--neon-cyan); }
-            50% { box-shadow: 0 0 25px var(--neon-cyan); }
+            transform: translateY(-2px);
+            box-shadow: 0 0 16px rgba(0, 240, 255, 0.3);
+            background: #160B3B;
         }
 
-        .ch-icon { font-size: 1.6rem; margin-bottom: 6px; }
-        .ch-name { font-weight: 700; font-size: 0.8rem; color: #fff; }
-        .ch-category { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: #8c7ba8; margin-top: 2px; }
-        .ch-live-dot {
-            position: absolute;
-            top: 6px; right: 6px;
+        .channel-card.uplinking {
+            border-color: var(--neon-pink);
+            background: rgba(255, 16, 240, 0.15);
+            box-shadow: 0 0 25px var(--neon-pink);
+        }
+
+        .ch-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .ch-icon { font-size: 1.6rem; }
+
+        .ch-live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.62rem;
+            color: var(--neon-green);
+        }
+
+        .live-dot {
             width: 6px; height: 6px;
+            background: var(--neon-green);
             border-radius: 50%;
-            background: #10B981;
-            box-shadow: 0 0 6px #10B981;
+            box-shadow: 0 0 6px var(--neon-green);
+        }
+
+        .ch-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #FFFFFF;
+            line-height: 1.25;
+            margin-bottom: 4px;
+        }
+
+        .ch-meta {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .ch-metrics {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 0.68rem;
+            font-family: var(--font-mono);
+            color: #8C7BA8;
+        }
+
+        .ch-metrics strong { color: #FFF; }
+
+        /* Uplink Beam Notification */
+        .uplink-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: rgba(12, 5, 32, 0.95);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 10px;
+            padding: 12px 20px;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 200;
+        }
+
+        .uplink-toast.active {
+            transform: translateY(0);
+            opacity: 1;
         }
     </style>
 </head>
 <body>
     <header>
         <div class="header-brand">
-            <img src="/assets/toffeecon-logo.png" alt="ToffeeCon" style="height:32px; filter:drop-shadow(0 0 10px rgba(0,240,255,0.6));">
+            <img src="/assets/toffeecon-logo.png" alt="ToffeeCon" style="height:28px;">
             <div class="badge-space">THE SPACE WINDOW & HALL OF FAME</div>
         </div>
-        <div style="font-family:'Space Mono'; font-size:0.8rem; color:var(--neon-cyan);">
-            SATELLITE DOWNLINK · 100+ LIVE CHANNELS
+        <div class="header-actions">
+            <a href="/space-ceiling" target="_blank" class="nav-pill-btn">Ceiling LED Viewport 🛰️</a>
+            <a href="/space-wall" target="_blank" class="nav-pill-btn">Lit Catalogue Wall 📺</a>
+            <a href="/space-kit" target="_blank" class="nav-pill-btn primary">B2B Media Kit 📄</a>
         </div>
     </header>
 
-    <div class="venue-stage">
-        <!-- 1. Ceiling Space Window Viewport -->
-        <div class="space-ceiling-frame">
+    <div class="stage-split-container">
+        <!-- 1. Ceiling Space Simulation Viewport -->
+        <div class="space-ceiling-pane">
             <canvas id="spaceCanvas"></canvas>
-            <div class="space-hud-overlay">
-                <span style="color:var(--neon-green);">● SATELLITE DOWNLINK: BANGABANDHU-1 / TOFFEE RELAY-7</span>
-                <span style="color:var(--neon-cyan);">ORBIT ALTITUDE: 35,786 KM</span>
-                <span id="uplinkCounter" style="color:var(--neon-amber);">CHANNELS RELAYED: 100+</span>
+            <div class="ceiling-hud">
+                <span style="color:var(--neon-green);">● BS-1 SATELLITE: NOMINAL</span>
+                <span style="color:var(--neon-cyan);">GEO 35,786 KM · 119.1°E</span>
+                <span style="color:var(--neon-amber);" id="totalChannelsHud">CHANNELS: 104 LIVE</span>
+            </div>
+            <div class="ceiling-downlink-callout">
+                <div style="font-size:0.65rem; color:var(--neon-pink); font-weight:700;">ACTIVE CARRIER DOWNLINK</div>
+                <div style="font-size:0.92rem; font-weight:800; color:#FFF;" id="activeDownlinkName">T SPORTS HD</div>
             </div>
         </div>
 
-        <!-- 2. Floor Hall of Fame Wall -->
-        <div class="hall-of-fame-wall">
-            <div class="wall-title-banner">
-                <h1>TOFFEE HALL OF FAME</h1>
-                <div style="font-family:'Space Mono'; font-size:0.8rem; color:var(--neon-cyan); margin-top:4px;">
-                    EXPLORE 100+ CHANNELS UNDER THE BELT · TAP ANY CHANNEL TO TRIGGER ORBIT UPLINK
+        <!-- 2. Lit 100+ Channel Catalogue Wall Below -->
+        <div class="channel-wall-pane">
+            <div class="wall-title-strip">
+                <div>
+                    <h2>
+                        <span>TOFFEE HALL OF FAME</span>
+                        <span style="font-size:0.85rem; color:var(--neon-cyan); font-family:var(--font-mono); font-weight:400;">[100+ LIVE CHANNELS]</span>
+                    </h2>
+                    <p style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-dim); margin-top:2px;">
+                        TAP ANY CHANNEL TO TRIGGER A REAL-TIME LASER UPLINK TO THE SATELLITE OVERHEAD
+                    </p>
+                </div>
+
+                <div class="filter-ribbon">
+                    <button class="filter-btn active" onclick="filterCategory('all', this)">ALL (104)</button>
+                    <button class="filter-btn" onclick="filterCategory('sports', this)">⚽ SPORTS (18)</button>
+                    <button class="filter-btn" onclick="filterCategory('news', this)">📰 LIVE NEWS (20)</button>
+                    <button class="filter-btn" onclick="filterCategory('movies', this)">🎬 DRAMA (24)</button>
+                    <button class="filter-btn" onclick="filterCategory('music', this)">🎵 MUSIC (14)</button>
+                    <button class="filter-btn" onclick="filterCategory('kids', this)">🧸 KIDS (14)</button>
+                    <button class="filter-btn" onclick="filterCategory('infotainment', this)">🌋 DOCS (14)</button>
                 </div>
             </div>
 
-            <!-- Category Filters -->
-            <div class="filter-bar">
-                <button class="filter-btn active" onclick="filterChannels('all', this)">ALL CHANNELS (100+)</button>
-                <button class="filter-btn" onclick="filterChannels('sports', this)">⚽ SPORTS</button>
-                <button class="filter-btn" onclick="filterChannels('news', this)">📰 LIVE NEWS</button>
-                <button class="filter-btn" onclick="filterChannels('movies', this)">🎬 MOVIES & DRAMA</button>
-                <button class="filter-btn" onclick="filterChannels('music', this)">🎵 MUSIC</button>
-                <button class="filter-btn" onclick="filterChannels('kids', this)">🧸 KIDS</button>
-            </div>
-
-            <!-- Dynamic Channel Grid -->
             <div class="channel-matrix" id="channelGrid">
-                <!-- Injected via JavaScript -->
+                <!-- Rendered dynamically -->
             </div>
         </div>
     </div>
 
+    <!-- Uplink Toast Notification -->
+    <div class="uplink-toast" id="uplinkToast">
+        <span>⚡</span>
+        <span id="uplinkToastMsg">Uplink Lock: T Sports HD → BS-1 Satellite</span>
+    </div>
+
     <script>
-        // Space Ceiling Animation Canvas (Orbiting Satellite & Earth)
-        const spaceCanvas = document.getElementById('spaceCanvas');
-        const sCtx = spaceCanvas.getContext('2d');
+        // Space Ceiling Simulation
+        const canvas = document.getElementById('spaceCanvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = canvas.clientWidth;
+        let height = canvas.height = canvas.clientHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = canvas.clientWidth;
+            height = canvas.height = canvas.clientHeight;
+        });
+
         let satAngle = 0;
         let laserBeams = [];
+        let stars = [];
+
+        for (let i = 0; i < 90; i++) {
+            stars.push({
+                x: Math.random() * 2000,
+                y: Math.random() * 500,
+                size: Math.random() * 2 + 0.5,
+                alpha: Math.random() * 0.8 + 0.2
+            });
+        }
 
         function renderSpaceWindow() {
-            const w = spaceCanvas.width = spaceCanvas.clientWidth;
-            const h = spaceCanvas.height = spaceCanvas.clientHeight;
-            sCtx.clearRect(0, 0, w, h);
+            ctx.clearRect(0, 0, width, height);
 
-            // Deep Space Nebula & Stars
-            sCtx.fillStyle = '#020108';
-            sCtx.fillRect(0, 0, w, h);
+            // Deep Space Background
+            ctx.fillStyle = '#020108';
+            ctx.fillRect(0, 0, width, height);
 
-            // Procedural Stars
-            for (let i = 0; i < 60; i++) {
-                const sx = (Math.sin(i * 99) * 0.5 + 0.5) * w;
-                const sy = (Math.cos(i * 33) * 0.5 + 0.5) * h;
-                sCtx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-                sCtx.fillRect(sx, sy, 1.5, 1.5);
+            // Stars
+            for (let s of stars) {
+                ctx.fillStyle = 'rgba(255, 255, 255, ' + s.alpha + ')';
+                ctx.fillRect(s.x % width, s.y % height, s.size, s.size);
             }
 
-            // Earth Limb in Background
-            sCtx.beginPath();
-            sCtx.arc(w / 2, h + 180, 260, 0, Math.PI * 2);
-            const earthGrad = sCtx.createRadialGradient(w/2, h + 180, 50, w/2, h + 180, 260);
-            earthGrad.addColorStop(0, '#0055ff');
+            // Earth Curvature at bottom
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(width / 2, height + 180, 280, 0, Math.PI * 2);
+            const earthGrad = ctx.createRadialGradient(width/2, height + 180, 60, width/2, height + 180, 280);
+            earthGrad.addColorStop(0, '#0044cc');
             earthGrad.addColorStop(0.8, '#001144');
             earthGrad.addColorStop(1, '#000011');
-            sCtx.fillStyle = earthGrad;
-            sCtx.fill();
-            sCtx.strokeStyle = 'rgba(0, 240, 255, 0.5)';
-            sCtx.stroke();
+            ctx.fillStyle = earthGrad;
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(0, 240, 255, 0.45)';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+            ctx.restore();
 
-            // Orbiting Satellite Position
-            satAngle += 0.008;
-            const satX = (w / 2) + Math.cos(satAngle) * (w * 0.35);
-            const satY = 70 + Math.sin(satAngle * 2) * 25;
+            // Satellite Dynamics
+            satAngle += 0.006;
+            const satX = (width / 2) + Math.cos(satAngle) * (width * 0.38);
+            const satY = 70 + Math.sin(satAngle * 2) * 22;
 
-            // Draw Satellite Body
-            sCtx.save();
-            sCtx.translate(satX, satY);
-            sCtx.rotate(Math.sin(satAngle) * 0.3);
+            ctx.save();
+            ctx.translate(satX, satY);
+            ctx.rotate(Math.sin(satAngle) * 0.2);
 
             // Solar Panels
-            sCtx.fillStyle = '#00F0FF';
-            sCtx.fillRect(-45, -8, 25, 16);
-            sCtx.fillRect(20, -8, 25, 16);
-            sCtx.strokeStyle = '#fff';
-            sCtx.strokeRect(-45, -8, 25, 16);
-            sCtx.strokeRect(20, -8, 25, 16);
+            ctx.fillStyle = '#00F0FF';
+            ctx.fillRect(-50, -10, 30, 20);
+            ctx.fillRect(20, -10, 30, 20);
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.strokeRect(-50, -10, 30, 20);
+            ctx.strokeRect(20, -10, 30, 20);
 
-            // Center Chassis
-            sCtx.fillStyle = '#C5A059';
-            sCtx.fillRect(-15, -12, 30, 24);
-            sCtx.fillStyle = '#FF10F0';
-            sCtx.beginPath();
-            sCtx.arc(0, 0, 4, 0, Math.PI * 2);
-            sCtx.fill();
-            sCtx.restore();
+            // Satellite Chassis
+            ctx.fillStyle = '#D4AF37';
+            ctx.fillRect(-18, -14, 36, 28);
+            ctx.fillStyle = '#FF10F0';
+            ctx.beginPath();
+            ctx.arc(0, 0, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
 
             // Render Uplink Laser Beams
             for (let i = laserBeams.length - 1; i >= 0; i--) {
                 const beam = laserBeams[i];
                 beam.progress += 0.04;
-                const currentY = h - (beam.progress * (h - satY));
-                sCtx.beginPath();
-                sCtx.moveTo(beam.startX, h);
-                sCtx.lineTo(satX, currentY);
-                sCtx.strokeStyle = 'rgba(0, 240, 255, ' + (1 - beam.progress) + ')';
-                sCtx.lineWidth = 3;
-                sCtx.stroke();
+                const currentY = height - (beam.progress * (height - satY));
+
+                ctx.beginPath();
+                ctx.moveTo(beam.startX, height);
+                ctx.lineTo(satX, currentY);
+                ctx.strokeStyle = beam.color || 'rgba(0, 240, 255, ' + (1 - beam.progress) + ')';
+                ctx.lineWidth = 3.5;
+                ctx.stroke();
 
                 if (beam.progress >= 1) {
                     laserBeams.splice(i, 1);
@@ -335,72 +500,66 @@
         }
         renderSpaceWindow();
 
-        // 100+ Channels Catalog Generator
-        const sampleChannels = [
-            { name: 'T Sports HD', category: 'sports', icon: '⚽' },
-            { name: 'Sony Sports Ten 1', category: 'sports', icon: '🏏' },
-            { name: 'Sony Sports Ten 2', category: 'sports', icon: '🎾' },
-            { name: 'Star Sports 1', category: 'sports', icon: '🏆' },
-            { name: 'Gazi TV (GTV)', category: 'sports', icon: '🏏' },
-            { name: 'Somoy TV', category: 'news', icon: '📰' },
-            { name: 'Jamuna TV', category: 'news', icon: '📺' },
-            { name: 'Ekattor TV', category: 'news', icon: '🎙️' },
-            { name: 'Channel 24', category: 'news', icon: '📡' },
-            { name: 'BBC World News', category: 'news', icon: '🌍' },
-            { name: 'Zee Bangla Cinema', category: 'movies', icon: '🎬' },
-            { name: 'Star Jalsha', category: 'movies', icon: '🎭' },
-            { name: 'Colors Bangla', category: 'movies', icon: '✨' },
-            { name: 'BTV National', category: 'movies', icon: '🏛️' },
-            { name: 'NTV', category: 'movies', icon: '🎥' },
-            { name: 'Channel i', category: 'movies', icon: '🌟' },
-            { name: 'MTV Live', category: 'music', icon: '🎵' },
-            { name: 'Gaan Bangla', category: 'music', icon: '🎸' },
-            { name: 'Sangeet Bangla', category: 'music', icon: '🎶' },
-            { name: 'Cartoon Network', category: 'kids', icon: '🧸' },
-            { name: 'Nickelodeon HD', category: 'kids', icon: '🚀' },
-            { name: 'Discovery Kids', category: 'kids', icon: '🦁' },
-            { name: 'Animal Planet', category: 'movies', icon: '🐾' },
-            { name: 'National Geographic', category: 'movies', icon: '🌋' }
-        ];
+        // 104-Channel Catalogue Integration
+        let allChannels = [];
+        let activeCategory = 'all';
 
-        // Replicate to 100+ Channels
-        const allChannels = [];
-        for (let i = 1; i <= 104; i++) {
-            const base = sampleChannels[(i - 1) % sampleChannels.length];
-            allChannels.push({
-                id: i,
-                name: i <= sampleChannels.length ? base.name : `${base.name} Feed ${Math.floor(i / sampleChannels.length) + 1}`,
-                category: base.category,
-                icon: base.icon
-            });
+        async function fetchChannels() {
+            try {
+                const res = await fetch('/api/booth/space/channels?category=all');
+                const data = await res.json();
+                if (data.success && data.channels) {
+                    allChannels = data.channels;
+                    document.getElementById('totalChannelsHud').innerText = `CHANNELS: ${allChannels.length} LIVE`;
+                    renderChannelMatrix();
+                }
+            } catch (e) {
+                console.error('[SpaceWindow] Channels fetch failed:', e);
+            }
         }
 
-        function populateChannels(filter = 'all') {
+        function renderChannelMatrix() {
             const grid = document.getElementById('channelGrid');
             grid.innerHTML = '';
-            const filtered = filter === 'all' ? allChannels : allChannels.filter(c => c.category === filter);
+
+            const filtered = activeCategory === 'all' 
+                ? allChannels 
+                : allChannels.filter(c => c.category === activeCategory);
 
             filtered.forEach(ch => {
                 const card = document.createElement('div');
-                card.className = 'channel-badge-card';
+                card.className = 'channel-card';
+                card.id = `card-${ch.id}`;
                 card.innerHTML = `
-                    <div class="ch-live-dot"></div>
-                    <div class="ch-icon">${ch.icon}</div>
-                    <div class="ch-name">${ch.name}</div>
-                    <div class="ch-category">${ch.category.toUpperCase()}</div>
+                    <div class="ch-top">
+                        <span class="ch-icon">${ch.icon}</span>
+                        <div class="ch-live-indicator">
+                            <span class="live-dot"></span>
+                            <span>CH ${ch.number}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="ch-name">${ch.name}</div>
+                        <div class="ch-meta">${ch.category} · ${ch.bitrate}</div>
+                    </div>
+                    <div class="ch-metrics">
+                        <span>Reach: <strong>${ch.reach}</strong></span>
+                        <span>CPM: <strong style="color:var(--neon-green);">${ch.cpm}</strong></span>
+                    </div>
                 `;
-                card.onclick = (e) => triggerChannelUplink(card, e);
+                card.onclick = (e) => triggerUplink(ch, card, e);
                 grid.appendChild(card);
             });
         }
 
-        function filterChannels(category, btn) {
+        function filterCategory(cat, btn) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            populateChannels(category);
+            activeCategory = cat;
+            renderChannelMatrix();
         }
 
-        function triggerChannelUplink(card, event) {
+        async function triggerUplink(channel, card, event) {
             card.classList.add('uplinking');
             setTimeout(() => card.classList.remove('uplinking'), 1500);
 
@@ -408,11 +567,63 @@
             const rect = card.getBoundingClientRect();
             laserBeams.push({
                 startX: rect.left + rect.width / 2,
-                progress: 0
+                progress: 0,
+                color: channel.category === 'sports' ? '#00F0FF' : (channel.category === 'movies' ? '#FF10F0' : '#FFB800')
             });
+
+            // Update on-screen downlink banner
+            document.getElementById('activeDownlinkName').innerText = channel.name;
+
+            // Show Toast
+            showToast(`Uplink Lock: ${channel.name} → BS-1 Satellite!`);
+
+            // POST to backend API
+            try {
+                await fetch('/api/booth/space/uplink', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        channelId: channel.id,
+                        partnerName: 'Executive Cockpit VIP'
+                    })
+                });
+            } catch (e) {
+                console.error('[SpaceWindow] Uplink error:', e);
+            }
         }
 
-        populateChannels('all');
+        function showToast(msg) {
+            const toast = document.getElementById('uplinkToast');
+            document.getElementById('uplinkToastMsg').innerText = msg;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 3000);
+        }
+
+        // WebSocket for live synchronization
+        function setupWebSocket() {
+            const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const ws = new WebSocket(`${protocol}//${location.host}`);
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'SPACE_UPLINK' || data.event === 'SPACE_UPLINK') {
+                        const up = data.payload?.uplink || data.uplink;
+                        if (up) {
+                            document.getElementById('activeDownlinkName').innerText = up.channelName;
+                            laserBeams.push({
+                                startX: width * (0.2 + Math.random() * 0.6),
+                                progress: 0,
+                                color: up.category === 'sports' ? '#00F0FF' : '#FF10F0'
+                            });
+                        }
+                    }
+                } catch(e) {}
+            };
+            ws.onclose = () => setTimeout(setupWebSocket, 4000);
+        }
+        setupWebSocket();
+
+        fetchChannels();
     </script>
 </body>
 </html>

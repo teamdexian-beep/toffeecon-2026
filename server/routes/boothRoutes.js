@@ -5,6 +5,7 @@ const path = require('path');
 const { aiRateLimiter } = require('../middleware/security');
 const dubStore = require('../stores/dubStore');
 const universeStore = require('../stores/universeStore');
+const spaceStore = require('../stores/spaceStore');
 
 module.exports = function(eventStore, broadcast, aiProvider) {
     // 1. Mission Control Proposal Generator
@@ -440,6 +441,112 @@ module.exports = function(eventStore, broadcast, aiProvider) {
             success: true,
             ottAudition: castingStore.getState()
         });
+    });
+
+    // ========================================================
+    // 7. The Space Window & 100+ Channel Catalogue (MADCON p.14)
+    // ========================================================
+
+    // Get live satellite downlink state & telemetry
+    router.get('/space/state', (req, res) => {
+        res.json({
+            success: true,
+            spaceState: spaceStore.getState()
+        });
+    });
+
+    // Get channels with optional category filtering
+    router.get('/space/channels', (req, res) => {
+        const category = req.query.category || 'all';
+        const channels = spaceStore.getChannels(category);
+        res.json({
+            success: true,
+            totalChannels: channels.length,
+            category,
+            channels
+        });
+    });
+
+    // Get specific channel metadata & advertiser rates
+    router.get('/space/channel/:id', (req, res) => {
+        const channel = spaceStore.getChannelById(req.params.id);
+        if (!channel) {
+            return res.status(404).json({ success: false, error: 'Channel not found in catalogue' });
+        }
+        res.json({ success: true, channel });
+    });
+
+    // Trigger laser beam uplink from lit channel wall to overhead ceiling satellite
+    router.post('/space/uplink', (req, res) => {
+        const { channelId, partnerName } = req.body;
+        const uplinkEvent = spaceStore.triggerUplink({ channelId, partnerName });
+
+        // Broadcast to ceiling screens, wall screens, and hub via WebSocket
+        broadcast('SPACE_UPLINK', {
+            type: 'SATELLITE_UPLINK_TRIGGERED',
+            uplink: uplinkEvent,
+            telemetry: spaceStore.getState().telemetry,
+            satellite: spaceStore.getState().satellite
+        });
+
+        res.json({
+            success: true,
+            uplink: uplinkEvent,
+            telemetry: spaceStore.getState().telemetry
+        });
+    });
+
+    // Submit B2B advertiser / sponsor inquiry
+    router.post('/space/sponsor-inquiry', (req, res) => {
+        const { channelId, brandName, contactEmail, contactPhone, targetBudget, desiredFormats } = req.body;
+        const inquiry = spaceStore.submitSponsorInquiry({
+            channelId,
+            brandName,
+            contactEmail,
+            contactPhone,
+            targetBudget,
+            desiredFormats
+        });
+
+        broadcast('SPACE_SPONSOR_INQUIRY', {
+            type: 'NEW_ADVERTISER_INQUIRY',
+            inquiry,
+            telemetry: spaceStore.getState().telemetry
+        });
+
+        res.json({
+            success: true,
+            inquiry,
+            telemetry: spaceStore.getState().telemetry
+        });
+    });
+
+    // Generate B2B Rate Card / Digital Media Kit
+    router.get(['/space/media-kit', '/space/media-kit/:id'], (req, res) => {
+        const channelId = req.params.id;
+        const channel = channelId ? spaceStore.getChannelById(channelId) : null;
+        const allChannels = spaceStore.getChannels('all');
+
+        const mediaKit = {
+            platform: 'Toffee OTT (Banglalink)',
+            totalLiveChannels: allChannels.length,
+            activeDownlink: spaceStore.getState().satellite.name,
+            totalMonthlyReach: spaceStore.getState().telemetry.totalMonthlyReach,
+            adOpportunities: [
+                { format: 'L-Band Overlay', cpm: '৳300 - ৳400', clickThroughAvg: '3.4%', placement: 'Live Sports & Breaking News' },
+                { format: 'Dynamic Ad Insertion (DAI)', cpm: '৳350 - ৳450', clickThroughAvg: '4.2%', placement: 'Pre-roll & Mid-roll Linear Streams' },
+                { format: 'Sponsorship Bug / Anchor Branding', cpm: '৳250 - ৳320', clickThroughAvg: 'N/A (100% SOV)', placement: 'Corner Watermark / Clock bug' },
+                { format: '4K HDR Feature Integration', cpm: '৳450 - ৳600', clickThroughAvg: '5.1%', placement: 'Toffee Originals & Mega Drama' }
+            ],
+            targetChannel: channel || {
+                name: 'All 100+ Channels Portfolio Package',
+                reach: '95M+ Platform Cumulative',
+                cpm: '৳320 Composite CPM'
+            },
+            generatedAt: new Date().toISOString()
+        };
+
+        res.json({ success: true, mediaKit });
     });
 
     return router;

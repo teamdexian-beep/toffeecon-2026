@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toffee OTT · B2B Channel Media Kit & Sponsorship Deck | ToffeeCon 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #05020F;
+            --panel-hull: #0C0624;
+            --card-hull: #120A33;
+            --border-metal: #28164D;
+            --neon-cyan: #00F0FF;
+            --neon-pink: #FF10F0;
+            --neon-amber: #FFB800;
+            --neon-green: #00FF88;
+            --neon-purple: #9D00FF;
+            --text-dim: #9888BA;
+            --font-mono: 'Space Mono', monospace;
+            --font-display: 'Orbitron', 'Syne', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg-deep);
+            color: #FFFFFF;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            padding-bottom: 60px;
+            background-image: 
+                radial-gradient(circle at 85% 10%, rgba(0, 240, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 15% 90%, rgba(255, 16, 240, 0.08) 0%, transparent 40%);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 36px;
+            background: rgba(8, 4, 22, 0.95);
+            border-bottom: 1px solid var(--border-metal);
+            backdrop-filter: blur(14px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand-pill {
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            color: #000;
+            padding: 5px 14px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-action {
+            background: rgba(18, 10, 48, 0.8);
+            border: 1px solid var(--border-metal);
+            color: #FFFFFF;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-action:hover {
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--neon-cyan), #0099FF);
+            color: #000;
+            font-weight: 800;
+            border: none;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.7);
+            transform: translateY(-2px);
+        }
+
+        /* Container */
+        .page-container {
+            max-width: 1200px;
+            margin: 36px auto 0;
+            padding: 0 24px;
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            background: linear-gradient(135deg, rgba(16, 7, 44, 0.95), rgba(6, 20, 44, 0.95));
+            border: 2px solid rgba(0, 240, 255, 0.3);
+            border-radius: 20px;
+            padding: 36px 44px;
+            margin-bottom: 32px;
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.12);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-banner h1 {
+            font-family: var(--font-display);
+            font-size: 2.3rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #FFFFFF;
+            text-shadow: 0 0 25px var(--neon-cyan);
+            margin-bottom: 8px;
+        }
+
+        .hero-banner p {
+            color: var(--text-dim);
+            font-size: 1rem;
+            max-width: 780px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .hero-metrics-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .hero-metric-card {
+            background: rgba(6, 2, 20, 0.8);
+            border: 1px solid var(--border-metal);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .metric-num {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--neon-cyan);
+        }
+
+        .metric-caption {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* 2-Column Deck Grid */
+        .deck-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 28px;
+            margin-bottom: 36px;
+        }
+
+        .deck-panel {
+            background: var(--panel-hull);
+            border: 1px solid var(--border-metal);
+            border-radius: 18px;
+            padding: 28px;
+        }
+
+        .panel-heading {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-metal);
+        }
+
+        /* Ad Formats Table */
+        .rate-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+            font-family: var(--font-mono);
+        }
+
+        .rate-table th {
+            text-align: left;
+            padding: 10px 12px;
+            color: #7966A0;
+            border-bottom: 1px solid var(--border-metal);
+            text-transform: uppercase;
+            font-size: 0.72rem;
+        }
+
+        .rate-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: middle;
+        }
+
+        .badge-format {
+            background: rgba(0, 240, 255, 0.12);
+            color: var(--neon-cyan);
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        /* Interactive Reach & Budget Estimator */
+        .calculator-box {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+        }
+
+        .slider-input {
+            width: 100%;
+            accent-color: var(--neon-pink);
+            cursor: pointer;
+        }
+
+        .est-results-card {
+            background: rgba(14, 6, 36, 0.9);
+            border: 2px solid var(--neon-pink);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 0 25px rgba(255, 16, 240, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .res-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .res-row span:first-child {
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+        }
+
+        .res-row strong {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            color: #FFFFFF;
+        }
+
+        /* Competitive Advantage Comparison */
+        .comparison-strip {
+            background: var(--panel-hull);
+            border: 1px solid var(--border-metal);
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 36px;
+        }
+
+        .comp-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .comp-card {
+            background: rgba(8, 4, 24, 0.7);
+            border: 1px solid var(--border-metal);
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+        }
+
+        .comp-card.toffee-winner {
+            border-color: var(--neon-cyan);
+            background: linear-gradient(180deg, rgba(0, 240, 255, 0.1), rgba(8, 4, 24, 0.9));
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.25);
+        }
+
+        .comp-name {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .comp-stat {
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            color: var(--text-dim);
+            margin: 6px 0;
+        }
+
+        /* Print One-Pager Styling */
+        @media print {
+            body { background: #FFF !important; color: #000 !important; }
+            header, .header-actions, .slider-group { display: none !important; }
+            .hero-banner, .deck-panel, .est-results-card { border: 1px solid #CCC !important; box-shadow: none !important; background: #FFF !important; color: #000 !important; }
+            .metric-num, .panel-heading, strong { color: #000 !important; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-brand">
+            <img src="/assets/toffeecon-logo.png" alt="ToffeeCon" style="height:32px;">
+            <div class="brand-pill">B2B MEDIA KIT & RATE CARD</div>
+        </div>
+        <div class="header-actions">
+            <a href="/space-wall" class="btn-action">← Lit Channel Wall</a>
+            <a href="/space-ceiling" class="btn-action">Ceiling Starfield 🛰️</a>
+            <button class="btn-action" onclick="window.print()">Print One-Pager 🖨️</button>
+            <button class="btn-action btn-primary" onclick="scrollToInquiry()">Contact Brand Desk 🚀</button>
+        </div>
+    </header>
+
+    <div class="page-container">
+        <!-- Hero Overview -->
+        <section class="hero-banner">
+            <h1>TOFFEE OTT MEDIA PARTNER KIT 2026</h1>
+            <p>
+                As Bangladesh's #1 indigenous streaming network powered by Banglalink and Bangabandhu Satellite-1 (BS-1), Toffee provides unprecedented advertising reach across 104 high-definition live linear television channels, live sports, and original blockbusters.
+            </p>
+            <div class="hero-metrics-row">
+                <div class="hero-metric-card">
+                    <span class="metric-num">104</span>
+                    <span class="metric-caption">Live Linear Channels</span>
+                </div>
+                <div class="hero-metric-card">
+                    <span class="metric-num">95M+</span>
+                    <span class="metric-caption">Cumulative Reach</span>
+                </div>
+                <div class="hero-metric-card">
+                    <span class="metric-num">1080p60</span>
+                    <span class="metric-caption">4K & HD Broadcast Feeds</span>
+                </div>
+                <div class="hero-metric-card">
+                    <span class="metric-num">24ms</span>
+                    <span class="metric-caption">Edge CDN Downlink Latency</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2-Column Rate Card & Interactive Estimator -->
+        <div class="deck-grid">
+            <!-- Left: Commercial Formats & CPM Benchmarks -->
+            <div class="deck-panel">
+                <div class="panel-heading">
+                    <span>📊</span>
+                    <span>COMMERCIAL AD INVENTORY & CPM BENCHMARKS</span>
+                </div>
+                <table class="rate-table">
+                    <thead>
+                        <tr>
+                            <th>Ad Format</th>
+                            <th>Target Genre</th>
+                            <th>CTR Avg</th>
+                            <th>CPM Range</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge-format">L-Band Overlay</span></td>
+                            <td>Live Sports & Breaking News</td>
+                            <td>3.4%</td>
+                            <td style="color:var(--neon-green); font-weight:700;">৳300 - ৳400</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge-format">Pre-Roll Linear</span></td>
+                            <td>All 104 Channels on App Launch</td>
+                            <td>4.2%</td>
+                            <td style="color:var(--neon-green); font-weight:700;">৳280 - ৳360</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge-format">Mid-Roll DAI</span></td>
+                            <td>Mega Drama & Movies</td>
+                            <td>2.9%</td>
+                            <td style="color:var(--neon-green); font-weight:700;">৳250 - ৳320</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge-format">Scoreboard Bug</span></td>
+                            <td>FIFA, Cricket & EPL Live</td>
+                            <td>100% SOV</td>
+                            <td style="color:var(--neon-green); font-weight:700;">৳450 - ৳600</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge-format">FAST Channel Takeover</span></td>
+                            <td>24/7 Dedicated Brand Channel</td>
+                            <td>Exclusive</td>
+                            <td style="color:var(--neon-green); font-weight:700;">৳1.5M / Month</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Right: Interactive Campaign Budget & Reach Calculator -->
+            <div class="deck-panel">
+                <div class="panel-heading">
+                    <span>⚡</span>
+                    <span>CAMPAIGN REACH & BUDGET SIMULATOR</span>
+                </div>
+                <div class="calculator-box">
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span>Estimated Campaign Budget</span>
+                            <strong id="budgetDisplay" style="color:var(--neon-cyan);">৳1,000,000</strong>
+                        </div>
+                        <input type="range" class="slider-input" id="budgetSlider" min="200000" max="5000000" step="100000" value="1000000" oninput="updateCalculator(this.value)">
+                    </div>
+
+                    <div class="est-results-card">
+                        <div class="res-row">
+                            <span>Projected Impressions</span>
+                            <strong id="resImpressions" style="color:var(--neon-cyan);">3,125,000</strong>
+                        </div>
+                        <div class="res-row">
+                            <span>Unique Targeted Reach</span>
+                            <strong id="resReach">1,850,000 Viewers</strong>
+                        </div>
+                        <div class="res-row">
+                            <span>Estimated Click-Throughs</span>
+                            <strong id="resClicks" style="color:var(--neon-green);">106,250 Clicks</strong>
+                        </div>
+                        <div class="res-row">
+                            <span>Recommended Mix</span>
+                            <span style="font-family:var(--font-mono); font-size:0.75rem; color:#A293C8;">50% Sports · 30% News · 20% Drama</span>
+                        </div>
+                    </div>
+
+                    <div style="font-family:var(--font-mono); font-size:0.72rem; color:#7966A0; text-align:center;">
+                        *Simulated via Toffee AdOps Engine with Dynamic Ad Insertion (DAI).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Competitive Scale Comparison -->
+        <section class="comparison-strip">
+            <div class="panel-heading">
+                <span>🏆</span>
+                <span>PLATFORM SCALE COMPARISON (BANGLADESH OTT ECOSYSTEM)</span>
+            </div>
+            <div class="comp-grid">
+                <div class="comp-card toffee-winner">
+                    <div class="comp-name" style="color:var(--neon-cyan);">TOFFEE OTT</div>
+                    <div class="comp-stat"><strong>104 Live Channels</strong></div>
+                    <div class="comp-stat">95M+ Lifetime Reach</div>
+                    <div class="comp-stat" style="color:var(--neon-green); font-weight:700;">BS-1 Satellite Downlink</div>
+                    <div class="comp-stat">Free Ad-Supported (FAST)</div>
+                </div>
+                <div class="comp-card">
+                    <div class="comp-name">Netflix</div>
+                    <div class="comp-stat">0 Live Channels</div>
+                    <div class="comp-stat">Subscribers Only</div>
+                    <div class="comp-stat">No Local Sports</div>
+                    <div class="comp-stat">Subscription (SVOD)</div>
+                </div>
+                <div class="comp-card">
+                    <div class="comp-name">Chorki</div>
+                    <div class="comp-stat">0 Live Linear Channels</div>
+                    <div class="comp-stat">VOD Exclusives Only</div>
+                    <div class="comp-stat">No Live Sports</div>
+                    <div class="comp-stat">Subscription (SVOD)</div>
+                </div>
+                <div class="comp-card">
+                    <div class="comp-name">Hoichoi</div>
+                    <div class="comp-stat">0 Live Channels</div>
+                    <div class="comp-stat">Regional Drama Only</div>
+                    <div class="comp-stat">No Live TV Feeds</div>
+                    <div class="comp-stat">Subscription (SVOD)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Brand Desk Submission Form -->
+        <section class="deck-panel" id="inquirySection">
+            <div class="panel-heading">
+                <span>📩</span>
+                <span>SUBMIT ADVERTISER SPONSORSHIP INQUIRY (MADCON VIP DESK)</span>
+            </div>
+            <form onsubmit="handleDeckInquiry(event)" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:18px;">
+                <div>
+                    <label style="display:block; font-family:var(--font-mono); font-size:0.75rem; color:#A293C8; margin-bottom:6px;">Brand / Agency Name</label>
+                    <input type="text" id="deckBrand" required placeholder="e.g. Unilever / Standard Chartered / GP" style="width:100%; background:#160A3C; border:1px solid var(--border-metal); padding:10px 14px; border-radius:8px; color:#FFF; font-family:var(--font-mono); font-size:0.82rem;">
+                </div>
+                <div>
+                    <label style="display:block; font-family:var(--font-mono); font-size:0.75rem; color:#A293C8; margin-bottom:6px;">CMO / Media Buyer Email</label>
+                    <input type="email" id="deckEmail" required placeholder="cmo@brand.com" style="width:100%; background:#160A3C; border:1px solid var(--border-metal); padding:10px 14px; border-radius:8px; color:#FFF; font-family:var(--font-mono); font-size:0.82rem;">
+                </div>
+                <div>
+                    <label style="display:block; font-family:var(--font-mono); font-size:0.75rem; color:#A293C8; margin-bottom:6px;">WhatsApp / Phone Number</label>
+                    <input type="tel" id="deckPhone" required placeholder="+880 1700 000000" style="width:100%; background:#160A3C; border:1px solid var(--border-metal); padding:10px 14px; border-radius:8px; color:#FFF; font-family:var(--font-mono); font-size:0.82rem;">
+                </div>
+                <div>
+                    <label style="display:block; font-family:var(--font-mono); font-size:0.75rem; color:#A293C8; margin-bottom:6px;">Preferred Category Focus</label>
+                    <select id="deckCategory" style="width:100%; background:#160A3C; border:1px solid var(--border-metal); padding:10px 14px; border-radius:8px; color:#FFF; font-family:var(--font-mono); font-size:0.82rem;">
+                        <option value="Live Sports (Cricket/FIFA/EPL)">Live Sports (Cricket, FIFA, EPL)</option>
+                        <option value="24/7 Live News Matrix">24/7 Live News Matrix</option>
+                        <option value="Toffee Mega Drama & Movies">Toffee Mega Drama & Movies</option>
+                        <option value="All 104 Channels Full Portfolio">All 104 Channels Full Portfolio</option>
+                    </select>
+                </div>
+                <div style="grid-column: 1 / -1;">
+                    <button type="submit" class="btn-action btn-primary" style="width:100%; justify-content:center; padding:14px; font-size:0.9rem;">
+                        Send Priority Media RFP to Banglalink AdOps Desk 🚀
+                    </button>
+                </div>
+            </form>
+            <div id="deckSuccessMsg" style="display:none; margin-top:16px; padding:14px; background:rgba(0,255,136,0.15); border:1px solid var(--neon-green); border-radius:8px; color:var(--neon-green); font-family:var(--font-mono); font-size:0.82rem; text-align:center;">
+                ✅ RFP Dispatched! The Banglalink Toffee Commercial Director will reach out within 2 hours.
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function updateCalculator(budget) {
+            const b = parseInt(budget, 10);
+            document.getElementById('budgetDisplay').innerText = `৳${b.toLocaleString()}`;
+
+            // Approx composite CPM ৳320
+            const impressions = Math.round((b / 320) * 1000);
+            const reach = Math.round(impressions * 0.58);
+            const clicks = Math.round(impressions * 0.034);
+
+            document.getElementById('resImpressions').innerText = impressions.toLocaleString();
+            document.getElementById('resReach').innerText = `${reach.toLocaleString()} Viewers`;
+            document.getElementById('resClicks').innerText = `${clicks.toLocaleString()} Clicks`;
+        }
+
+        function scrollToInquiry() {
+            document.getElementById('inquirySection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function handleDeckInquiry(e) {
+            e.preventDefault();
+            const brand = document.getElementById('deckBrand').value;
+            const email = document.getElementById('deckEmail').value;
+            const phone = document.getElementById('deckPhone').value;
+            const budget = document.getElementById('budgetDisplay').innerText;
+            const cat = document.getElementById('deckCategory').value;
+
+            try {
+                const res = await fetch('/api/booth/space/sponsor-inquiry', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        channelId: 'catalogue-portfolio',
+                        brandName: brand,
+                        contactEmail: email,
+                        contactPhone: phone,
+                        targetBudget: budget,
+                        desiredFormats: [cat, 'L-Band Overlay', 'Dynamic Ad Insertion']
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('deckSuccessMsg').style.display = 'block';
+                }
+            } catch (err) {
+                console.error('[SpaceKit] Inquiry error:', err);
+            }
+        }
+    </script>
+</body>
+</html>
