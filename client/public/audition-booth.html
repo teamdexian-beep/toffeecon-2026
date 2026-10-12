@@ -581,7 +581,369 @@
             margin-top: 1rem;
         }
 
-        /* Loading Spinner */
+        /* High-Tech AI Casting Loading Suite */
+        .analysis-loading-suite {
+            padding: 1.25rem;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .loading-hud-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .hud-pill {
+            font-size: 0.75rem;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1.5px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.8);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hud-pill.live-pill {
+            background: rgba(255, 102, 0, 0.15);
+            border-color: rgba(255, 102, 0, 0.4);
+            color: var(--toffee-orange);
+            font-weight: 700;
+        }
+
+        .pulsing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--toffee-orange);
+            box-shadow: 0 0 10px var(--toffee-orange);
+            animation: pulseGlow 1.2s infinite ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.4; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        .hud-pill.timer-pill {
+            color: var(--toffee-gold);
+            border-color: rgba(255, 184, 0, 0.3);
+            background: rgba(255, 184, 0, 0.08);
+        }
+
+        .loading-grid {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 2rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        @media (max-width: 768px) {
+            .loading-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+
+        /* Biometric Scanner Box */
+        .biometric-scanner-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .scanner-frame {
+            width: 240px;
+            height: 310px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+            border: 1px solid rgba(0, 240, 255, 0.35);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 240, 255, 0.2);
+        }
+
+        #loadingAttendeePhoto {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: contrast(1.1) brightness(0.9);
+        }
+
+        /* Laser Scan Line */
+        .laser-scanner-line {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent 0%, #00F0FF 50%, transparent 100%);
+            box-shadow: 0 0 16px #00F0FF, 0 0 30px #00F0FF;
+            animation: scanUpDown 2.2s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes scanUpDown {
+            0% { top: 0%; opacity: 0.3; }
+            50% { top: 96%; opacity: 1; }
+            100% { top: 0%; opacity: 0.3; }
+        }
+
+        /* HUD Corners */
+        .hud-corner {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            pointer-events: none;
+        }
+        .hud-corner.top-left { top: 8px; left: 8px; border-top: 2px solid #00F0FF; border-left: 2px solid #00F0FF; }
+        .hud-corner.top-right { top: 8px; right: 8px; border-top: 2px solid #00F0FF; border-right: 2px solid #00F0FF; }
+        .hud-corner.bottom-left { bottom: 8px; left: 8px; border-bottom: 2px solid #00F0FF; border-left: 2px solid #00F0FF; }
+        .hud-corner.bottom-right { bottom: 8px; right: 8px; border-bottom: 2px solid #00F0FF; border-right: 2px solid #00F0FF; }
+
+        .hud-target-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            border: 1px dashed rgba(0, 240, 255, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: rotateSlow 10s linear infinite;
+        }
+
+        @keyframes rotateSlow {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .hud-scan-stats {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            right: 8px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.62rem;
+            font-family: 'Orbitron', monospace;
+            color: #00F0FF;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 4px 8px;
+            border-radius: 4px;
+            backdrop-filter: blur(4px);
+        }
+
+        .scanner-genre-badge {
+            margin-top: 0.75rem;
+            font-size: 0.75rem;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--toffee-gold);
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        /* Right Side: Pipeline Details */
+        .pipeline-status-box {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .loading-main-title {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: #FFF;
+            line-height: 1.3;
+        }
+
+        .ellipsis-anim {
+            display: inline-block;
+            animation: ellipsisBlink 1.5s infinite;
+        }
+        @keyframes ellipsisBlink {
+            0%, 20% { opacity: 0; }
+            40% { opacity: 0.5; }
+            60%, 100% { opacity: 1; }
+        }
+
+        .loading-sub-title {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.65);
+            line-height: 1.5;
+        }
+
+        /* Progress Bar */
+        .pipeline-progress-container {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 0.4rem 0 0.8rem;
+        }
+
+        .pipeline-progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 600;
+        }
+
+        .progress-percent {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            color: var(--toffee-orange);
+            font-size: 1.15rem;
+        }
+
+        .pipeline-progress-track {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .pipeline-progress-fill {
+            height: 100%;
+            width: 10%;
+            background: linear-gradient(90deg, #FF6600 0%, #FFB800 50%, #00F0FF 100%);
+            border-radius: 6px;
+            transition: width 0.35s ease;
+            box-shadow: 0 0 12px rgba(255, 102, 0, 0.6);
+            position: relative;
+        }
+
+        .pipeline-progress-fill::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmerBar 1.5s infinite;
+        }
+
+        @keyframes shimmerBar {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Pipeline Steps List */
+        .pipeline-steps-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .pipeline-step {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 0.5rem 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .pipeline-step.active {
+            background: rgba(255, 102, 0, 0.08);
+            border-color: rgba(255, 102, 0, 0.35);
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.1);
+        }
+
+        .pipeline-step.completed {
+            background: rgba(16, 185, 129, 0.08);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .step-icon {
+            font-size: 1.2rem;
+            min-width: 28px;
+            text-align: center;
+        }
+
+        .step-details {
+            flex: 1;
+        }
+
+        .step-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #FFF;
+        }
+
+        .step-desc {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .step-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.5);
+            white-space: nowrap;
+        }
+
+        .pipeline-step.active .step-badge {
+            background: rgba(255, 102, 0, 0.2);
+            color: var(--toffee-orange);
+            animation: pulseGlow 1.2s infinite ease-in-out;
+        }
+
+        .pipeline-step.completed .step-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+        }
+
+        /* Director Insight Ticker */
+        .director-insight-ticker {
+            background: rgba(255, 184, 0, 0.06);
+            border: 1px solid rgba(255, 184, 0, 0.2);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-align: left;
+        }
+
+        .ticker-badge {
+            font-size: 0.65rem;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            background: var(--toffee-gold);
+            color: #000;
+            padding: 3px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .ticker-quote {
+            font-size: 0.85rem;
+            font-style: italic;
+            color: #F1F5F9;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Fallback Legacy Spinner */
         .spinner {
             width: 48px;
             height: 48px;
@@ -763,10 +1125,102 @@
         <!-- SCREEN 5: AI Dossier & Poster Review -->
         <section class="screen-view" id="screen5">
             <div class="glass-panel" style="max-width: 950px;">
-                <div id="analysisLoading">
-                    <div class="spinner"></div>
-                    <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">AI কাস্টিং ডিরেক্টর বিশ্লেষণ করছে...</h2>
-                    <p style="color: rgba(255,255,255,0.6);">Google Gemini দিয়ে ডায়লগ, লুক ও চরিত্র বিন্যাস প্রস্তুত হচ্ছে...</p>
+                <div id="analysisLoading" class="analysis-loading-suite">
+                    <!-- Top HUD Banner -->
+                    <div class="loading-hud-header">
+                        <span class="hud-pill live-pill"><span class="pulsing-dot"></span> LIVE AI NEURAL PIPELINE</span>
+                        <span class="hud-pill" id="loadingStageTag">STAGE: FACIAL & DIALOGUE SYNTHESIS</span>
+                        <span class="hud-pill timer-pill" id="loadingEstimatedTime">⏱ আনুমানিক ১২ সেকেন্ড</span>
+                    </div>
+
+                    <!-- Main Content Grid: Biometric Face Scanner + Pipeline Status -->
+                    <div class="loading-grid">
+                        <!-- Left: Attendee Face Biometric Scan HUD -->
+                        <div class="biometric-scanner-box">
+                            <div class="scanner-frame">
+                                <img id="loadingAttendeePhoto" src="" alt="Attendee Biometric Scan">
+                                <div class="laser-scanner-line"></div>
+                                <div class="hud-corner top-left"></div>
+                                <div class="hud-corner top-right"></div>
+                                <div class="hud-corner bottom-left"></div>
+                                <div class="hud-corner bottom-right"></div>
+                                <div class="hud-target-circle"></div>
+                                <div class="hud-scan-stats">
+                                    <span id="hudNodesText">FACIAL MESH: 68 NODES</span>
+                                    <span id="hudConfidenceText">MATCH: 99.4%</span>
+                                </div>
+                            </div>
+                            <div class="scanner-genre-badge" id="loadingGenreBadge">
+                                🎭 ARCHETYPE: CRIME MASTERMIND
+                            </div>
+                        </div>
+
+                        <!-- Right: Multi-Stage Animated Pipeline Checklist & Progress Bar -->
+                        <div class="pipeline-status-box">
+                            <h2 class="loading-main-title">
+                                AI কাস্টিং ডিরেক্টর চরিত্র বিন্যাস করছে<span class="ellipsis-anim">...</span>
+                            </h2>
+                            <p class="loading-sub-title">
+                                Google Gemini ও PiAPI নিউরাল ক্লাউড ইঞ্জিন দিয়ে আপনার ভয়েস, দৃষ্টি ও এক্সপ্রেশন বিশ্লেষণ চলছে
+                            </p>
+
+                            <!-- Dynamic Progress Bar -->
+                            <div class="pipeline-progress-container">
+                                <div class="pipeline-progress-header">
+                                    <span id="progressStepTitle">নিউরাল এআই ফেস-ম্যাপিং চলছে...</span>
+                                    <span class="progress-percent" id="pipelinePercent">14%</span>
+                                </div>
+                                <div class="pipeline-progress-track">
+                                    <div class="pipeline-progress-fill" id="pipelineProgressFill"></div>
+                                </div>
+                            </div>
+
+                            <!-- Pipeline Steps Checklist with active animations -->
+                            <div class="pipeline-steps-list">
+                                <div class="pipeline-step active" id="step1">
+                                    <div class="step-icon">🎙️</div>
+                                    <div class="step-details">
+                                        <div class="step-name">ডায়লগ ডেলিভারি ও অডিও ফ্রিকোয়েন্সি বিশ্লেষণ</div>
+                                        <div class="step-desc">স্পীচ পেস, টোনালিটি ও ডায়লগ পাঞ্চ স্কোরিং</div>
+                                    </div>
+                                    <div class="step-badge" id="step1Badge">বিশ্লেষণ চলছে...</div>
+                                </div>
+
+                                <div class="pipeline-step" id="step2">
+                                    <div class="step-icon">👁️</div>
+                                    <div class="step-details">
+                                        <div class="step-name">মাইক্রো-এক্সপ্রেশন ও স্ক্রিন প্রেজেন্স ম্যাপিং</div>
+                                        <div class="step-desc">চোখের দৃষ্টি, ড্রামাটিক গ্রিট ও অ্যাঙ্গেল ম্যাচ</div>
+                                    </div>
+                                    <div class="step-badge" id="step2Badge">অপেক্ষারত</div>
+                                </div>
+
+                                <div class="pipeline-step" id="step3">
+                                    <div class="step-icon">🧠</div>
+                                    <div class="step-details">
+                                        <div class="step-name">নিউরাল ফেস-ট্রান্সফরমেশন ও লুক সিন্থেসিস</div>
+                                        <div class="step-desc">PiAPI GPU ক্লাউড আর্কিটেকচারে ফেস সোয়াপিং</div>
+                                    </div>
+                                    <div class="step-badge" id="step3Badge">অপেক্ষারত</div>
+                                </div>
+
+                                <div class="pipeline-step" id="step4">
+                                    <div class="step-icon">🎬</div>
+                                    <div class="step-details">
+                                        <div class="step-name">৪K সিনেম্যাটিক লাইটিং ও মাস্টার পোস্টার রেন্ডারিং</div>
+                                        <div class="step-desc">টফি ওটিটি ব্রান্ডিং, কালার গ্রেডিং ও বিলিং ব্লক</div>
+                                    </div>
+                                    <div class="step-badge" id="step4Badge">অপেক্ষারত</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Director Quotes / Ticker at Bottom -->
+                    <div class="director-insight-ticker">
+                        <span class="ticker-badge">DIRECTOR'S VERDICT</span>
+                        <span class="ticker-quote" id="directorTickerQuote">"চরিত্রের ঠান্ডা চাহনির সাথে আন্ডারগ্রাউন্ড ভল্টের পরিবেশ পুরোপুরি মানিয়েছে..."</span>
+                    </div>
                 </div>
 
                 <div id="dossierContent" style="display: none;">
@@ -1643,11 +2097,125 @@
             return canvas.toDataURL('image/jpeg', 0.94);
         }
 
+        // =========================================================
+        // High-Tech AI Casting Loading Suite Controller
+        // =========================================================
+        let loadingInterval = null;
+        let tickerInterval = null;
+
+        const directorQuotes = [
+            '“চরিত্রের গভীর চাহনির সাথে আন্ডারগ্রাউন্ড ভল্টের অন্ধকার দারুণ মানিয়েছে...”',
+            '“ডায়লগে ক্ষিপ্র আত্মবিশ্বাস—টফি ওটিটি ক্রাইম থ্রিলারের জন্য অসাধারণ!”',
+            '“বুড়িগঙ্গার রাতের আলোয় আপনার চরিত্রের উপস্থিতি ফুটে উঠছে...”',
+            '“নিউরাল নেটওয়ার্কে ৪K সিনেম্যাটিক গ্রেডিং সিন্থেসিস সম্পন্ন হচ্ছে...”',
+            '“কাস্টিং জুরি স্কোর রেডি—অডিশন ডসিয়ের প্রস্তুত হচ্ছে!”'
+        ];
+
+        function startLoadingSuite(photoBase64, genre) {
+            const photoEl = document.getElementById('loadingAttendeePhoto');
+            if (photoEl) photoEl.src = photoBase64 || '/api/media/archetypes/drama.jpg';
+            
+            const genreBadge = document.getElementById('loadingGenreBadge');
+            if (genreBadge) genreBadge.innerText = `🎭 ARCHETYPE: ${(genre || 'CRIME').toUpperCase()}`;
+
+            let progress = 10;
+            const fillEl = document.getElementById('pipelineProgressFill');
+            const percentEl = document.getElementById('pipelinePercent');
+            const stepTitleEl = document.getElementById('progressStepTitle');
+            const timeEl = document.getElementById('loadingEstimatedTime');
+
+            const quotes = [...directorQuotes];
+            let qIdx = 0;
+            const tickerQuoteEl = document.getElementById('directorTickerQuote');
+            if (tickerQuoteEl) tickerQuoteEl.innerText = quotes[0];
+
+            if (tickerInterval) clearInterval(tickerInterval);
+            tickerInterval = setInterval(() => {
+                qIdx = (qIdx + 1) % quotes.length;
+                if (tickerQuoteEl) {
+                    tickerQuoteEl.style.opacity = '0';
+                    setTimeout(() => {
+                        tickerQuoteEl.innerText = quotes[qIdx];
+                        tickerQuoteEl.style.opacity = '1';
+                    }, 300);
+                }
+            }, 2800);
+
+            const updateStep = (id, status, badgeText) => {
+                const el = document.getElementById(id);
+                const b = document.getElementById(id + 'Badge');
+                if (!el || !b) return;
+                el.className = 'pipeline-step ' + (status || '');
+                b.innerText = badgeText;
+            };
+
+            updateStep('step1', 'active', 'বিশ্লেষণ চলছে...');
+            updateStep('step2', '', 'অপেক্ষারত');
+            updateStep('step3', '', 'অপেক্ষারত');
+            updateStep('step4', '', 'অপেক্ষারত');
+
+            const startTime = Date.now();
+            const targetDuration = 12500; // ~12.5s average PiAPI completion
+
+            if (loadingInterval) clearInterval(loadingInterval);
+            loadingInterval = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const remaining = Math.max(1, Math.round((targetDuration - elapsed) / 1000));
+                if (timeEl) timeEl.innerText = `⏱ আনুমানিক ${remaining} সেকেন্ড বাকি`;
+
+                const ratio = Math.min(elapsed / targetDuration, 0.94);
+                progress = Math.min(94, Math.round(ratio * 94) + 6);
+
+                if (fillEl) fillEl.style.width = progress + '%';
+                if (percentEl) percentEl.innerText = progress + '%';
+
+                if (progress >= 25 && progress < 55) {
+                    updateStep('step1', 'completed', '✓ সম্পন্ন (৯৪%)');
+                    updateStep('step2', 'active', 'ম্যাপিং চলছে...');
+                    if (stepTitleEl) stepTitleEl.innerText = 'মাইক্রো-এক্সপ্রেশন ও স্ক্রিন গ্রিট ম্যাপিং...';
+                } else if (progress >= 55 && progress < 85) {
+                    updateStep('step1', 'completed', '✓ সম্পন্ন (৯৪%)');
+                    updateStep('step2', 'completed', '✓ সম্পন্ন (৯৬%)');
+                    updateStep('step3', 'active', 'PiAPI ক্লাউড প্রসেসিং...');
+                    if (stepTitleEl) stepTitleEl.innerText = 'নিউরাল এআই ফেস-ট্রান্সফরমেশন সিন্থেসিস...';
+                } else if (progress >= 85) {
+                    updateStep('step1', 'completed', '✓ সম্পন্ন (৯৪%)');
+                    updateStep('step2', 'completed', '✓ সম্পন্ন (৯৬%)');
+                    updateStep('step3', 'completed', '✓ সম্পন্ন');
+                    updateStep('step4', 'active', 'পোস্টার কম্পোজিটিং...');
+                    if (stepTitleEl) stepTitleEl.innerText = '৪K সিনেম্যাটিক মাস্টার পোস্টার রেন্ডারিং...';
+                }
+            }, 300);
+        }
+
+        function finishLoadingSuite() {
+            if (loadingInterval) clearInterval(loadingInterval);
+            if (tickerInterval) clearInterval(tickerInterval);
+
+            const fillEl = document.getElementById('pipelineProgressFill');
+            const percentEl = document.getElementById('pipelinePercent');
+            const stepTitleEl = document.getElementById('progressStepTitle');
+
+            if (fillEl) fillEl.style.width = '100%';
+            if (percentEl) percentEl.innerText = '100%';
+            if (stepTitleEl) stepTitleEl.innerText = 'কাস্টিং বিশ্লেষণ সফলভাবে সম্পন্ন হয়েছে!';
+
+            ['step1', 'step2', 'step3', 'step4'].forEach(id => {
+                const el = document.getElementById(id);
+                const b = document.getElementById(id + 'Badge');
+                if (el) el.className = 'pipeline-step completed';
+                if (b) b.innerText = '✓ সম্পন্ন';
+            });
+
+            try { playSfx('bassReveal'); } catch(e){}
+        }
+
         // Submit Audition to Backend AI Engine
         async function submitAuditionForAnalysis() {
             goToScreen(5);
             document.getElementById('analysisLoading').style.display = 'block';
             document.getElementById('dossierContent').style.display = 'none';
+            startLoadingSuite(capturedPhotoBase64, selectedGenre);
 
             const characterName = document.getElementById('characterNameInput').value.trim() || 'বল্টু ভাই';
             const realName = document.getElementById('realNameInput').value.trim() || 'অডিশন প্রার্থী';
@@ -1733,12 +2301,15 @@
         }
 
         function displayDossier(cand) {
-            document.getElementById('analysisLoading').style.display = 'none';
-            document.getElementById('dossierContent').style.display = 'block';
+            finishLoadingSuite();
 
-            // Poster Card with composite poster
-            const displayImg = cand.posterUrl || compositePosterBase64 || cand.portraitUrl;
-            document.getElementById('posterImg').src = displayImg;
+            setTimeout(() => {
+                document.getElementById('analysisLoading').style.display = 'none';
+                document.getElementById('dossierContent').style.display = 'block';
+
+                // Poster Card with composite poster
+                const displayImg = cand.posterUrl || cand.portraitUrl || compositePosterBase64;
+                document.getElementById('posterImg').src = displayImg;
             document.getElementById('posterScoreBadge').innerText = `${cand.ottScore}%`;
             document.getElementById('posterCharName').innerText = cand.characterName;
             document.getElementById('posterArchetype').innerText = (cand.roleTitle || 'TOFFEE STAR').toUpperCase();
@@ -1768,7 +2339,8 @@
                 document.getElementById('statOrig').innerText = `${cand.scoreBreakdown.originality}%`;
                 document.getElementById('fillOrig').style.width = `${cand.scoreBreakdown.originality}%`;
             }
-        }
+        }, 500);
+    }
 
         // Render QR Code & Sync Screen 7 Poster
         function renderShareQR() {
