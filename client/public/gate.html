@@ -232,6 +232,76 @@
             overflow-y: auto;
         }
 
+        /* Gate Terminal Selector & Quick RFID Triggers */
+        .terminal-lane-select {
+            background: #181330;
+            border: 1px solid var(--border-glow);
+            color: var(--cyan);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.82rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .rfid-quick-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn-rfid-chip {
+            background: rgba(147, 51, 234, 0.12);
+            border: 1px solid rgba(147, 51, 234, 0.35);
+            color: #d8b4fe;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-rfid-chip:hover {
+            background: rgba(147, 51, 234, 0.25);
+            border-color: var(--purple);
+            transform: translateY(-1px);
+        }
+
+        .velocity-badge {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--green);
+            background: rgba(16, 185, 129, 0.1);
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        /* Virtual 1D Barcode Graphic */
+        .barcode-strip {
+            display: flex;
+            align-items: stretch;
+            height: 38px;
+            background: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-top: 10px;
+            gap: 2px;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .barcode-bar {
+            background: #000;
+            height: 100%;
+        }
+
         .search-item {
             background: #181330;
             border: 1px solid var(--border-glow);
@@ -399,9 +469,16 @@
         <div class="brand-group">
             <img src="/assets/toffeecon-logo.png" alt="ToffeeCon" style="height:34px; filter:drop-shadow(0 0 12px rgba(184,0,136,0.5));">
             <div class="badge-terminal">SPEED-GATE · TERMINAL 01</div>
+            <select id="gateLaneSelect" class="terminal-lane-select" onchange="handleGateChange(this.value)">
+                <option value="Gate 1 (VIP North)">Gate 1 (VIP North)</option>
+                <option value="Gate 2 (Main Foyer)">Gate 2 (Main Foyer)</option>
+                <option value="Gate 3 (Press & Media)">Gate 3 (Press & Media)</option>
+                <option value="Gate 4 (Express Turnstile)">Gate 4 (Express Turnstile)</option>
+            </select>
             <span class="status-dot" id="wsStatusDot" title="Live WebSocket Connected"></span>
         </div>
         <div class="terminal-stats">
+            <span class="velocity-badge" id="gateVelocityBadge">⚡ 14.8 CHECK-INS / MIN</span>
             <div class="stat-pill">CHECKED-IN: <b id="statCheckedIn">548</b></div>
             <div class="stat-pill" style="color: var(--orange); border-color: rgba(255,107,0,0.3); background: rgba(255,107,0,0.08);">
                 TOTAL RSVP: <b id="statTotalRSVP">600</b>
@@ -415,15 +492,36 @@
         <div class="panel">
             <h2 class="panel-h2">
                 <span>Rapid Pass Check-In</span>
-                <span style="font-family:'Space Mono'; font-size:0.8rem; color:var(--cyan);">TARGET: &lt; 2.5s</span>
+                <span style="font-family:'Space Mono'; font-size:0.8rem; color:var(--cyan);">TARGET: &lt; 2.0s</span>
             </h2>
+
+            <!-- Quick Virtual RFID / Keycard Tap Simulators -->
+            <div style="margin-bottom: 12px;">
+                <label style="font-family:'Space Mono'; font-size:0.75rem; color:var(--text-dim); display:block; margin-bottom:6px;">
+                    VIRTUAL RFID / NFC KEYCARD TAP:
+                </label>
+                <div class="rfid-quick-bar">
+                    <button type="button" class="btn-rfid-chip" onclick="simulateRfidTap('TCON-2001', 'Erik Aas (CEO)')">
+                        <span>💳</span> Erik Aas (CEO)
+                    </button>
+                    <button type="button" class="btn-rfid-chip" onclick="simulateRfidTap('TCON-4001', 'Ananya Roy (Unilever)')">
+                        <span>💳</span> Ananya Roy (Unilever)
+                    </button>
+                    <button type="button" class="btn-rfid-chip" onclick="simulateRfidTap('TCON-4002', 'Tanvir Hasan (bKash)')">
+                        <span>💳</span> Tanvir Hasan (bKash)
+                    </button>
+                    <button type="button" class="btn-rfid-chip" onclick="simulateRfidTap('TCON-4004', 'M. Haque (Daily Star)')">
+                        <span>💳</span> M. Haque (Press)
+                    </button>
+                </div>
+            </div>
 
             <!-- Feedback Indicator Box -->
             <div class="scan-box" id="feedbackBox">
                 <div style="font-size: 2.2rem; margin-bottom: 6px;" id="feedbackIcon">📷</div>
                 <div style="font-family: 'Syne'; font-size: 1.15rem; font-weight: 700;" id="feedbackTitle">Ready to Scan Pass</div>
                 <p style="color: var(--text-dim); font-size: 0.8rem; margin-top: 4px;" id="feedbackSub">
-                    Scan attendee QR pass or enter Ticket ID below
+                    Scan attendee QR pass or enter Ticket ID / Phone below
                 </p>
             </div>
 
@@ -437,16 +535,16 @@
 
             <!-- Manual Input / USB Barcode Scanner Reader -->
             <form onsubmit="handleManualCheckin(event)" class="input-group">
-                <input type="text" id="ticketInput" class="input-text" placeholder="Enter Ticket ID (e.g. TCON-3089)" autofocus autocomplete="off">
+                <input type="text" id="ticketInput" class="input-text" placeholder="Scan Barcode / Ticket ID / Phone (e.g. TCON-3089 or 017...)" autofocus autocomplete="off">
                 <button type="submit" class="btn-checkin">Verify Pass ⚡</button>
             </form>
 
-            <!-- Search Guest by Name -->
+            <!-- Search Guest by Name / Phone / Company -->
             <div style="margin-top: 20px; border-top: 1px solid var(--border-glow); padding-top: 16px;">
                 <label style="font-family:'Space Mono'; font-size:0.8rem; color:var(--text-dim); display:block; margin-bottom:8px;">
-                    LOST PASS LOOKUP (NAME / COMPANY / EMAIL)
+                    LOST PASS LOOKUP (NAME / PHONE / COMPANY / EMAIL)
                 </label>
-                <input type="text" id="searchInput" class="input-text" style="width: 100%;" placeholder="Search attendee..." oninput="handleSearch(this.value)">
+                <input type="text" id="searchInput" class="input-text" style="width: 100%;" placeholder="Search by name, phone (017...), or company..." oninput="handleSearch(this.value)">
                 <ul class="search-results" id="searchResults"></ul>
             </div>
         </div>
@@ -464,13 +562,19 @@
                         <div style="display:flex; justify-content:center; margin-bottom:8px;">
                             <img src="/assets/toffeecon-logo.png" alt="ToffeeCon 2026" style="height:32px; filter:drop-shadow(0 0 8px rgba(184,0,136,0.4));">
                         </div>
-                        <div style="font-family:'Space Mono'; font-size:0.75rem; color:#8F89A8; letter-spacing:2px; margin-top:2px;">THE FUTURE OF SCREENING</div>
+                        <div style="font-family:'Space Mono'; font-size:0.75rem; color:#8F89A8; letter-spacing:2px; margin-top:2px;">THE FUTURE OF STREAMING</div>
                         <div class="badge-role-pill role-speaker" id="badgeRolePill">KEYNOTE SPEAKER</div>
                     </div>
 
                     <div class="badge-body">
                         <div class="badge-guest-name" id="badgeName">Taimur Rahman</div>
                         <div class="badge-guest-company" id="badgeCompany">Banglalink · CCRO</div>
+                        <div style="font-family:'Space Mono'; font-size:0.78rem; color:var(--text-dim); margin-top:6px;" id="badgeGateLocation">GATE: Gate 1 (VIP North)</div>
+                    </div>
+
+                    <!-- 1D Virtual Barcode Strip -->
+                    <div class="barcode-strip" id="badgeBarcodeStrip" title="Code 128 Scan Barcode">
+                        <!-- Populated with dynamic CSS bars -->
                     </div>
 
                     <div class="badge-footer">
@@ -533,6 +637,57 @@
             }
         }
 
+        // Selected Gate Terminal Lane
+        let currentGateLane = 'Gate 1 (VIP North)';
+        function handleGateChange(val) {
+            currentGateLane = val;
+            const gateLocEl = document.getElementById('badgeGateLocation');
+            if (gateLocEl) gateLocEl.innerText = `GATE: ${currentGateLane}`;
+        }
+
+        // Velocity Tracking (Check-ins per minute)
+        let checkInTimestamps = [];
+        function recordVelocity() {
+            const now = Date.now();
+            checkInTimestamps.push(now);
+            // Keep timestamps from the last 60 seconds
+            checkInTimestamps = checkInTimestamps.filter(t => now - t <= 60000);
+            const rate = Math.max(1, checkInTimestamps.length);
+            const badge = document.getElementById('gateVelocityBadge');
+            if (badge) badge.innerText = `⚡ ${(rate * 2.5).toFixed(1)} CHECK-INS / MIN`;
+        }
+
+        // Virtual 1D Barcode Renderer (Generates realistic Code 128 vertical stripes)
+        function renderBarcodeStrip(code) {
+            const container = document.getElementById('badgeBarcodeStrip');
+            if (!container) return;
+            container.innerHTML = '';
+            // Generate pattern based on code string ASCII values
+            const str = (code || 'TCON-3089').toUpperCase();
+            for (let i = 0; i < str.length * 3; i++) {
+                const charCode = str.charCodeAt(i % str.length);
+                const width = ((charCode + i) % 4) + 1; // 1 to 4px wide
+                const bar = document.createElement('div');
+                bar.className = 'barcode-bar';
+                bar.style.width = `${width}px`;
+                container.appendChild(bar);
+            }
+        }
+
+        // Simulate RFID / NFC Card Tap
+        function simulateRfidTap(ticketId, label) {
+            const box = document.getElementById('feedbackBox');
+            if (box) {
+                box.className = 'scan-box';
+                document.getElementById('feedbackIcon').innerText = '📡';
+                document.getElementById('feedbackTitle').innerText = 'NFC / RFID DETECTED';
+                document.getElementById('feedbackSub').innerText = `Reading credential: ${label}...`;
+            }
+            setTimeout(() => {
+                checkInTicket(ticketId);
+            }, 300);
+        }
+
         // Checkin Execution
         async function checkInTicket(ticketId) {
             if (!ticketId) return;
@@ -541,27 +696,31 @@
                 const res = await fetch('/api/gate/checkin', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ticketId: ticketId.trim() })
+                    body: JSON.stringify({ 
+                        ticketId: ticketId.trim(),
+                        gate: currentGateLane
+                    })
                 });
                 const data = await res.json();
 
                 const box = document.getElementById('feedbackBox');
                 if (data.success) {
                     playChime(true);
+                    recordVelocity();
                     box.className = 'scan-box success';
                     document.getElementById('feedbackIcon').innerText = '✅';
                     document.getElementById('feedbackTitle').innerText = data.alreadyCheckedIn ? 'RE-ENTRY VERIFIED' : 'ACCESS GRANTED';
-                    document.getElementById('feedbackSub').innerText = `${data.ticket.name} (${data.ticket.role}) · Welcome to ToffeeCon!`;
+                    document.getElementById('feedbackSub').innerText = `${data.ticket.name} (${data.ticket.role}) · Assigned to ${data.ticket.gate || currentGateLane}`;
                     
                     updateBadge(data.ticket);
-                    document.getElementById('statCheckedIn').innerText = data.totalCheckedIn;
-                    document.getElementById('statTotalRSVP').innerText = data.totalRSVP;
+                    if (data.totalCheckedIn !== undefined) document.getElementById('statCheckedIn').innerText = data.totalCheckedIn;
+                    if (data.totalRSVP !== undefined) document.getElementById('statTotalRSVP').innerText = data.totalRSVP;
                 } else {
                     playChime(false);
                     box.className = 'scan-box warning';
                     document.getElementById('feedbackIcon').innerText = '⚠️';
                     document.getElementById('feedbackTitle').innerText = 'PASS NOT FOUND';
-                    document.getElementById('feedbackSub').innerText = 'Invalid ticket ID. Please verify or use name search.';
+                    document.getElementById('feedbackSub').innerText = data.error || 'Invalid ticket ID or phone number. Please verify or use name search.';
                 }
             } catch (err) {
                 console.error(err);
@@ -622,6 +781,11 @@
             document.getElementById('badgeCompany').innerText = `${ticket.company}`;
             document.getElementById('badgeId').innerText = ticket.id;
             document.getElementById('badgeQr').src = `https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=https://toffeecon.live/programme?id=${ticket.id}`;
+            
+            const gateLocEl = document.getElementById('badgeGateLocation');
+            if (gateLocEl) gateLocEl.innerText = `GATE: ${ticket.gate || currentGateLane}`;
+
+            renderBarcodeStrip(ticket.id);
 
             const pill = document.getElementById('badgeRolePill');
             pill.innerText = ticket.role.toUpperCase();
@@ -660,7 +824,7 @@
             input.value = '';
         }
 
-        // Live Guest Search
+        // Live Guest Search (Multi-attribute: Name, Phone, Company, Ticket ID)
         let debounceTimer;
         function handleSearch(query) {
             clearTimeout(debounceTimer);
@@ -674,15 +838,21 @@
                 const res = await fetch(`/api/gate/search?q=${encodeURIComponent(query)}`);
                 const results = await res.json();
                 list.innerHTML = '';
+                if (results.length === 0) {
+                    list.innerHTML = '<li style="padding:10px; color:var(--text-dim); font-size:0.8rem;">No attendees found matching query.</li>';
+                    return;
+                }
                 results.forEach(guest => {
                     const li = document.createElement('li');
                     li.className = 'search-item';
+                    const phoneHint = guest.phoneMasked && guest.phoneMasked !== 'N/A' ? ` · 📞 ${guest.phoneMasked}` : '';
+                    const checkedBadge = guest.checkedIn ? '<span style="color:var(--green); font-size:0.75rem;">[CHECKED-IN]</span>' : '';
                     li.innerHTML = `
                         <div>
-                            <b>${guest.name}</b> <span style="color:var(--text-dim);">(${guest.company})</span>
-                            <div style="font-family:'Space Mono'; font-size:0.75rem; color:var(--cyan);">${guest.id} · ${guest.role}</div>
+                            <b>${guest.name}</b> <span style="color:var(--text-dim);">(${guest.company})</span> ${checkedBadge}
+                            <div style="font-family:'Space Mono'; font-size:0.75rem; color:var(--cyan);">${guest.id} · ${guest.role}${phoneHint}</div>
                         </div>
-                        <button class="btn-checkin" style="padding:6px 14px; font-size:0.8rem;">Check In</button>
+                        <button class="btn-checkin" style="padding:6px 14px; font-size:0.8rem;">${guest.checkedIn ? 'Re-Verify' : 'Check In'}</button>
                     `;
                     li.onclick = () => {
                         checkInTicket(guest.id);
@@ -691,13 +861,17 @@
                     };
                     list.appendChild(li);
                 });
-            }, 250);
+            }, 200);
         }
 
-        // Init stats
+        // Initialize Barcode and Stats
+        renderBarcodeStrip('TCON-3089');
+
         fetch('/api/state').then(r => r.json()).then(d => {
-            document.getElementById('statCheckedIn').innerText = d.telemetry.checkedInAttendees;
-            document.getElementById('statTotalRSVP').innerText = d.telemetry.totalRSVP;
+            if (d && d.telemetry) {
+                document.getElementById('statCheckedIn').innerText = d.telemetry.checkedInAttendees;
+                document.getElementById('statTotalRSVP').innerText = d.telemetry.totalRSVP;
+            }
         });
 
         // WebSocket for live arrivals feed & connection dot
@@ -714,10 +888,12 @@
         ws.onmessage = (event) => {
             const msg = JSON.parse(event.data);
             if (msg.type === 'ATTENDEE_CHECKED_IN') {
-                document.getElementById('statCheckedIn').innerText = msg.data.totalCheckedIn;
-                document.getElementById('statTotalRSVP').innerText = msg.data.totalRSVP;
-                if (msg.data.ticket) {
-                    addArrivalFeedItem(msg.data.ticket);
+                if (msg.telemetry) {
+                    document.getElementById('statCheckedIn').innerText = msg.telemetry.checkedInAttendees;
+                    document.getElementById('statTotalRSVP').innerText = msg.telemetry.totalRSVP;
+                }
+                if (msg.ticket) {
+                    addArrivalFeedItem(msg.ticket);
                 }
             }
         };

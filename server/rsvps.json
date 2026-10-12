@@ -3,27 +3,174 @@
     "id": "TCON-3089",
     "name": "Taimur Rahman",
     "email": "taimur@banglalink.net",
-    "phone": "N/A",
+    "phone": "01911990001",
     "company": "Banglalink",
     "role": "Keynote Speaker",
     "registeredAt": "2026-10-06T16:18:01.403Z",
     "checkedIn": true,
-    "checkedInAt": "2026-10-06T17:06:27.687Z"
+    "checkedInAt": "2026-10-06T17:06:27.687Z",
+    "gate": "Gate 1 (VIP North)"
   },
   {
     "id": "TCON-1001",
     "name": "Kabir Chowdhury",
-    "company": "Mindshare",
+    "company": "Mindshare Bangladesh",
     "role": "Advertiser",
+    "phone": "01711223344",
     "email": "kabir@mindshare.com",
-    "timestamp": 1791299857752
+    "registeredAt": "2026-10-07T09:20:00.000Z",
+    "checkedIn": true,
+    "checkedInAt": "2026-10-07T10:15:20.000Z",
+    "gate": "Gate 2 (Main Foyer)"
   },
   {
     "id": "TCON-1002",
     "name": "Nusrat Jahan",
     "company": "Asiatic 360",
     "role": "Media Buyer",
+    "phone": "01819887766",
     "email": "nusrat@asiatic.com",
-    "timestamp": 1791296257752
+    "registeredAt": "2026-10-07T09:25:00.000Z",
+    "checkedIn": true,
+    "checkedInAt": "2026-10-07T10:22:10.000Z",
+    "gate": "Gate 2 (Main Foyer)"
+  },
+  {
+    "id": "TCON-2001",
+    "name": "Erik Aas",
+    "company": "Banglalink",
+    "role": "Keynote Speaker",
+    "phone": "01911000000",
+    "email": "erik.aas@banglalink.net",
+    "registeredAt": "2026-10-05T12:00:00.000Z",
+    "checkedIn": true,
+    "checkedInAt": "2026-10-07T10:05:00.000Z",
+    "gate": "Gate 1 (VIP North)"
+  },
+  {
+    "id": "TCON-2002",
+    "name": "Kazi Mahboob Hassan",
+    "company": "Banglalink",
+    "role": "Chief Digital Officer",
+    "phone": "01911000002",
+    "email": "kmhassan@banglalink.net",
+    "registeredAt": "2026-10-05T12:30:00.000Z",
+    "checkedIn": true,
+    "checkedInAt": "2026-10-07T10:10:00.000Z",
+    "gate": "Gate 1 (VIP North)"
+  },
+  {
+    "id": "TCON-2003",
+    "name": "Upal Majumdar",
+    "company": "Toffee OTT",
+    "role": "Head of Toffee",
+    "phone": "01911000003",
+    "email": "upal@toffeecon.live",
+    "registeredAt": "2026-10-05T13:00:00.000Z",
+    "checkedIn": true,
+    "checkedInAt": "2026-10-07T10:12:00.000Z",
+    "gate": "Gate 1 (VIP North)"
+  },
+  {
+    "id": "TCON-4001",
+    "name": "Ananya Roy",
+    "company": "Unilever Bangladesh",
+    "role": "Advertiser",
+    "phone": "01755123456",
+    "email": "ananya.roy@unilever.com",
+    "registeredAt": "2026-10-08T14:10:00.000Z",
+    "checkedIn": true,
+    "checkedInAt": "2026-10-12T21:19:46.907Z",
+    "gate": "Gate 1 (VIP North)"
+  },
+  {
+    "id": "TCON-4002",
+    "name": "Tanvir Hasan",
+    "company": "bKash Limited",
+    "role": "Enterprise Partner",
+    "phone": "01713987654",
+    "email": "tanvir.hasan@bkash.com",
+    "registeredAt": "2026-10-08T15:20:00.000Z",
+    "checkedIn": false
+  },
+  {
+    "id": "TCON-4003",
+    "name": "Farhana Ahmed",
+    "company": "Wavemaker Global",
+    "role": "Media Buyer",
+    "phone": "01819001122",
+    "email": "farhana@wavemaker.com",
+    "registeredAt": "2026-10-08T16:00:00.000Z",
+    "checkedIn": false
+  },
+  {
+    "id": "TCON-4004",
+    "name": "Mahmudul Haque",
+    "company": "The Daily Star",
+    "role": "Press Delegate",
+    "phone": "01611334455",
+    "email": "m.haque@thedailystar.net",
+    "registeredAt": "2026-10-08T17:30:00.000Z",
+    "checkedIn": false
+  },
+  {
+    "id": "TCON-4005",
+    "name": "Sarah Khan",
+    "company": "Creators Guild BD",
+    "role": "Content Creator",
+    "phone": "01511223344",
+    "email": "sarah@creatorsguild.bd",
+    "registeredAt": "2026-10-08T18:00:00.000Z",
+    "checkedIn": false
+  },
+  {
+    "id": "TCON-4006",
+    "name": "Sadman Sakib",
+    "company": "Adcomm Limited",
+    "role": "Agency Partner",
+    "phone": "01918776655",
+    "email": "sadman@adcomm.com.bd",
+    "registeredAt": "2026-10-08T19:00:00.000Z",
+    "checkedIn": false
+  },
+  {
+    "id": "TCON-4007",
+    "name": "Zubair Al Mahmud",
+    "company": "Nagad Limited",
+    "role": "Enterprise Partner",
+    "phone": "01712334455",
+    "email": "zubair@nagad.com.bd",
+    "registeredAt": "2026-10-09T10:15:00.000Z",
+    "checkedIn": false
+  },
+  {
+    "id": "TCON-4008",
+    "name": "Tahsin Nabil",
+    "company": "Bangla OTT Review",
+    "role": "Press Delegate",
+    "phone": "01811445566",
+    "email": "tahsin@ottreview.net",
+    "registeredAt": "2026-10-09T11:00:00.000Z",
+    "checkedIn": false
+  },
+  {
+    "id": "TCON-4009",
+    "name": "Rezaul Karim",
+    "company": "Apex Footwear Limited",
+    "role": "Advertiser",
+    "phone": "01714556677",
+    "email": "rezaul@apexfootwearltd.com",
+    "registeredAt": "2026-10-09T11:45:00.000Z",
+    "checkedIn": false
+  },
+  {
+    "id": "TCON-4010",
+    "name": "Priti Debnath",
+    "company": "Ogilvy Bangladesh",
+    "role": "Media Buyer",
+    "phone": "01919887711",
+    "email": "priti.debnath@ogilvy.com",
+    "registeredAt": "2026-10-09T12:30:00.000Z",
+    "checkedIn": false
   }
 ]

@@ -116,11 +116,14 @@ module.exports = function(eventStore, broadcast, rsvpsFilePath) {
 
     // 4. Gate Check-In API
     router.post('/gate/checkin', gateRateLimiter, (req, res) => {
-        const { ticketId, gate = 'Gate 1' } = req.body;
-        const guest = rsvps.find(r => r.id.toLowerCase() === (ticketId || '').toLowerCase());
+        const { ticketId, gate = 'Gate 1 (Main Foyer)' } = req.body;
+        const guest = rsvps.find(r => 
+            (r.id && r.id.toLowerCase() === (ticketId || '').toLowerCase().trim()) ||
+            (r.phone && r.phone.replace(/[^0-9]/g, '') === (ticketId || '').replace(/[^0-9]/g, '') && (ticketId || '').length >= 7)
+        );
 
         if (!guest) {
-            return res.status(404).json({ error: 'Ticket ID not found' });
+            return res.status(404).json({ error: 'Ticket ID or registered phone not found' });
         }
 
         const alreadyCheckedIn = !!guest.checkedIn;
@@ -129,57 +132,76 @@ module.exports = function(eventStore, broadcast, rsvpsFilePath) {
         guest.gate = gate;
         saveRSVPs(rsvps);
 
-        const checkedCount = rsvps.filter(r => r.checkedIn).length;
+        // Calculate checked in total based on event state baseline plus newly marked RSVPs
+        const checkedCount = Math.max(
+            eventStore.getState().telemetry.checkedInAttendees || 0,
+            rsvps.filter(r => r.checkedIn).length
+        ) + (alreadyCheckedIn ? 0 : 1);
+
         eventStore.update(st => {
             st.telemetry.checkedInAttendees = checkedCount;
         });
 
+        const checkedInTicketData = {
+            id: guest.id,
+            name: guest.name,
+            company: guest.company,
+            role: guest.role,
+            gate: guest.gate,
+            phoneMasked: guest.phone && guest.phone.length > 5 ? guest.phone.slice(0, 3) + '****' + guest.phone.slice(-3) : 'N/A',
+            checkedInAt: guest.checkedInAt,
+            alreadyCheckedIn
+        };
+
+        // Broadcast to Executive Hub ticker and arrival meters
         broadcast('ATTENDEE_CHECKED_IN', {
-            ticket: {
-                id: guest.id,
-                name: guest.name,
-                company: guest.company,
-                role: guest.role,
-                gate: guest.gate,
-                checkedInAt: guest.checkedInAt,
-                alreadyCheckedIn
-            },
+            ticket: checkedInTicketData,
             telemetry: eventStore.getState().telemetry
+        });
+
+        // Broadcast to Chronological Live Audit Stream in Tab 5
+        broadcast('AUDIT_EVENT', {
+            id: Date.now(),
+            type: 'GATE',
+            message: `Attendee ${guest.name} (${guest.company || 'VIP'}) checked in at ${guest.gate}`,
+            timestamp: new Date().toLocaleTimeString()
         });
 
         res.json({
             success: true,
             alreadyCheckedIn,
-            ticket: {
-                id: guest.id,
-                name: guest.name,
-                company: guest.company,
-                role: guest.role,
-                gate: guest.gate,
-                checkedInAt: guest.checkedInAt
-            },
+            ticket: checkedInTicketData,
+            totalCheckedIn: checkedCount,
+            totalRSVP: eventStore.getState().telemetry.totalRSVP || 600,
             telemetry: eventStore.getState().telemetry
         });
     });
 
-    // 5. Gate Search API (Masked PII)
+    // 5. Gate Search API (Multi-Attribute: Name, Phone, Company, ID)
     router.get('/gate/search', (req, res) => {
         const query = (req.query.q || '').toLowerCase().trim();
+        const rawDigits = (req.query.q || '').replace(/[^0-9]/g, '');
         if (!query) return res.json([]);
 
-        const results = rsvps.filter(r =>
-            (r.name && r.name.toLowerCase().includes(query)) ||
-            (r.company && r.company.toLowerCase().includes(query)) ||
-            (r.id && r.id.toLowerCase().includes(query))
-        ).map(r => ({
+        const results = rsvps.filter(r => {
+            const matchName = r.name && r.name.toLowerCase().includes(query);
+            const matchCompany = r.company && r.company.toLowerCase().includes(query);
+            const matchId = r.id && r.id.toLowerCase().includes(query);
+            const matchPhone = rawDigits.length >= 4 && r.phone && r.phone.replace(/[^0-9]/g, '').includes(rawDigits);
+            const matchEmail = r.email && r.email.toLowerCase().includes(query);
+            return matchName || matchCompany || matchId || matchPhone || matchEmail;
+        }).map(r => ({
             id: r.id,
             name: r.name,
             company: r.company,
             role: r.role,
-            checkedIn: !!r.checkedIn
+            phoneMasked: r.phone && r.phone.length > 5 ? r.phone.slice(0, 3) + '****' + r.phone.slice(-3) : 'N/A',
+            checkedIn: !!r.checkedIn,
+            checkedInAt: r.checkedInAt || null,
+            gate: r.gate || null
         }));
 
-        res.json(results.slice(0, 10));
+        res.json(results.slice(0, 12));
     });
 
     return router;
