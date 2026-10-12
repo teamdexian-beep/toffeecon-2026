@@ -22,5 +22,7 @@ server/data/*.tmp
 server/data/snapshots/
 server/data/media/*
 !server/data/media/.gitkeep
+!server/data/media/archetypes/
+!server/data/media/archetypes/*
 .system_generated/
 scratch/

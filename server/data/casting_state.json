@@ -1,7 +1,75 @@
 {
   "status": "active",
-  "totalAuditions": 4,
+  "totalAuditions": 6,
   "candidates": [
+    {
+      "id": "cand-1791789171918",
+      "characterName": "বল্টু ভাই",
+      "realName": "তানভীর আহমেদ",
+      "genre": "drama",
+      "roleTitle": "Underground Heist Mastermind",
+      "seriesTitle": "মুখোশের আড়ালে",
+      "englishTitle": "BEHIND THE MASK",
+      "tagline": "আইনের চোখ অন্ধ হতে পারে, কিন্তু আমার পরিকল্পনা নিখুঁত।",
+      "summary": "ঢাকার অভিজাত সমাজের অন্তরালে পরিচালিত এক দুর্ধর্ষ মাস্টারমাইন্ড। যার প্রতিটি পদক্ষেপের পেছনে থাকে দাবা খেলার চালের মতো জটিল পরিকল্পনা।",
+      "thematicBackdropUrl": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=1000&q=80",
+      "accentColor": "#EF4444",
+      "colorGrade": "noir-mono",
+      "actingCritique": "নাটকীয় গভীরতা: ৯৫% — শান্ত কিন্তু ধ্বংসাত্মক বুদ্ধিমত্তার বহিঃপ্রকাশ। তুখোড় ক্রিমিনাল ড্রামার মুখ্য চরিত্র।",
+      "portraitUrl": "/api/media/cand-1791789171918.jpg",
+      "posterUrl": "/api/media/cand-1791789171918-poster.jpg",
+      "audioUrl": "",
+      "ottScore": 95,
+      "scoreBreakdown": {
+        "screenPresence": 94,
+        "dramaticGrit": 93,
+        "dialoguePunch": 98,
+        "originality": 96
+      },
+      "prompts": {
+        "portraitPrompt": "Cinematic 8K character poster for বল্টু ভাই, playing as Underground Heist Mastermind in \"BEHIND THE MASK\", 35mm film still, intense penetrating gaze, Dramatic single keylight with deep noir shadow slits and smoke, fine Dhaka textures, authentic Bengali persona, Toffee Original aesthetic, depth of field --ar 9:16",
+        "fullBodyPrompt": "Full body cinematic action hero still of বল্টু ভাই in authentic stylized costume for Underground Heist Mastermind, atmospheric set reflecting drama, standing with confident posture, Dramatic single keylight with deep noir shadow slits and smoke, 8k photorealistic",
+        "veo10sPrompt": "Cinematic 10-second OTT character reveal. [Camera Move: slow dolly push-in transitioning to high-angle hero reveal]. বল্টু ভাই, dressed as Underground Heist Mastermind, turns collar up, making an intense dramatic gaze directly into the camera lens with a subtle confident smirk. Lighting: Dramatic single keylight with deep noir shadow slits and smoke. Atmosphere: light atmospheric mist and dust motes. Audio: deep cinematic bass pulse with ambient environmental sound. 24fps 4K."
+      },
+      "videoUrl": "",
+      "isTop10": false,
+      "rank": 2,
+      "createdAt": "2026-10-12T07:12:52.268Z"
+    },
+    {
+      "id": "cand-1791788199750",
+      "characterName": "বল্টু ভাই",
+      "realName": "তানভীর আহমেদ",
+      "genre": "drama",
+      "roleTitle": "Underground Heist Mastermind",
+      "seriesTitle": "মুখোশের আড়ালে",
+      "englishTitle": "BEHIND THE MASK",
+      "tagline": "আইনের চোখ অন্ধ হতে পারে, কিন্তু আমার পরিকল্পনা নিখুঁত।",
+      "summary": "ঢাকার অভিজাত সমাজের অন্তরালে পরিচালিত এক দুর্ধর্ষ মাস্টারমাইন্ড। যার প্রতিটি পদক্ষেপের পেছনে থাকে দাবা খেলার চালের মতো জটিল পরিকল্পনা।",
+      "thematicBackdropUrl": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80",
+      "accentColor": "#EF4444",
+      "colorGrade": "noir-mono",
+      "actingCritique": "নাটকীয় গভীরতা: ৯৫% — শান্ত কিন্তু ধ্বংসাত্মক বুদ্ধিমত্তার বহিঃপ্রকাশ। তুখোড় ক্রিমিনাল ড্রামার মুখ্য চরিত্র।",
+      "portraitUrl": "/api/media/cand-1791788199750.jpg",
+      "posterUrl": "/api/media/cand-1791788199750-poster.jpg",
+      "audioUrl": "/api/media/cand-1791788199750-voice.webm",
+      "ottScore": 97,
+      "scoreBreakdown": {
+        "screenPresence": 98,
+        "dramaticGrit": 95,
+        "dialoguePunch": 98,
+        "originality": 98
+      },
+      "prompts": {
+        "portraitPrompt": "Cinematic 8K character poster for বল্টু ভাই, playing as Underground Heist Mastermind in \"BEHIND THE MASK\", 35mm film still, intense penetrating gaze, Dramatic single keylight with deep noir shadow slits and smoke, fine Dhaka textures, authentic Bengali persona, Toffee Original aesthetic, depth of field --ar 9:16",
+        "fullBodyPrompt": "Full body cinematic action hero still of বল্টু ভাই in authentic stylized costume for Underground Heist Mastermind, atmospheric set reflecting drama, standing with confident posture, Dramatic single keylight with deep noir shadow slits and smoke, 8k photorealistic",
+        "veo10sPrompt": "Cinematic 10-second OTT character reveal. [Camera Move: slow dolly push-in transitioning to high-angle hero reveal]. বল্টু ভাই, dressed as Underground Heist Mastermind, turns collar up, making an intense dramatic gaze directly into the camera lens with a subtle confident smirk. Lighting: Dramatic single keylight with deep noir shadow slits and smoke. Atmosphere: light atmospheric mist and dust motes. Audio: deep cinematic bass pulse with ambient environmental sound. 24fps 4K."
+      },
+      "videoUrl": "",
+      "isTop10": false,
+      "rank": 1,
+      "createdAt": "2026-10-12T06:56:39.763Z"
+    },
     {
       "id": "cand-1791752468854",
       "characterName": "বল্টু ভাই",

@@ -365,7 +365,8 @@ Analyze this audition and output ONLY a valid JSON object with the following str
                 baseScore: 93,
                 accentColor: '#FF6B00',
                 colorGrade: 'teal-orange',
-                backdropUrl: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1200&q=80',
+                backdropUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1000&q=80',
+                localBackdropUrl: '/api/media/archetypes/thriller.jpg',
                 lighting: 'Moody noir with amber sodium streetlamp glow and atmospheric river fog',
                 actingCritique: 'স্ক্রিন প্রেজেন্স: ৯৬% — অসাধারণ গ্যাংস্টার গ্রিট এবং ভিলেনের ঠান্ডা চাহনি। টফি ওটিটি ক্রাইম থ্রিলার লিড রোলে পারফেক্ট কাস্টিং!'
             },
@@ -378,7 +379,8 @@ Analyze this audition and output ONLY a valid JSON object with the following str
                 baseScore: 91,
                 accentColor: '#00F0FF',
                 colorGrade: 'cyber-neon',
-                backdropUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
+                backdropUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=80',
+                localBackdropUrl: '/api/media/archetypes/action.jpg',
                 lighting: 'High-contrast cyan and crimson neon rim light with metallic highlights',
                 actingCritique: 'অ্যাকশন এনার্জি: ৯৩% — ক্ষিপ্র শারীরিক ভাষা ও তীক্ষ্ণ চোখ। ব্লকব্লাস্টার অ্যাকশন থ্রিলারের জন্য উপযোগী।'
             },
@@ -391,7 +393,8 @@ Analyze this audition and output ONLY a valid JSON object with the following str
                 baseScore: 89,
                 accentColor: '#F59E0B',
                 colorGrade: 'warm-golden',
-                backdropUrl: 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&w=1200&q=80',
+                backdropUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1000&q=80',
+                localBackdropUrl: '/api/media/archetypes/comedy.jpg',
                 lighting: 'Warm saturated golden hour light with vibrant street market background',
                 actingCritique: 'কমিক টাইমিং: ৯৫% — স্বতঃস্ফূর্ত বডি ল্যাঙ্গুয়েজ এবং আঞ্চলিক ডায়লগ পাঞ্চ। দর্শকদের হাসিয়ে কাঁপিয়ে দেওয়ার ক্ষমতা।'
             },
@@ -404,7 +407,8 @@ Analyze this audition and output ONLY a valid JSON object with the following str
                 baseScore: 92,
                 accentColor: '#EC4899',
                 colorGrade: 'blue-hour',
-                backdropUrl: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=1200&q=80',
+                backdropUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1000&q=80',
+                localBackdropUrl: '/api/media/archetypes/romance.jpg',
                 lighting: 'Soft diffused blue hour illumination with warm cafe fairy lights',
                 actingCritique: 'আবেগ ও রোম্যান্স: ৯৪% — চোখের গভীরতায় তীব্র বিষাদ ও রোমান্টিক আবহ। ওটিটি মিউজিক্যাল ড্রামার প্রাণ।'
             },
@@ -417,7 +421,8 @@ Analyze this audition and output ONLY a valid JSON object with the following str
                 baseScore: 95,
                 accentColor: '#A855F7',
                 colorGrade: 'neon-violet',
-                backdropUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
+                backdropUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=1000&q=80',
+                localBackdropUrl: '/api/media/archetypes/scifi.jpg',
                 lighting: 'Deep indigo and electric violet volumetric lasers with holographic glints',
                 actingCritique: 'ফিউচারিস্টিক লুক: ৯৭% — অনন্য সাই-ফাই স্ক্রিন প্রেজেন্স ও ভবিষ্যৎ দৃষ্টি। গ্লোবাল স্ট্যান্ডার্ড কনসেপ্ট।'
             },
@@ -430,7 +435,8 @@ Analyze this audition and output ONLY a valid JSON object with the following str
                 baseScore: 94,
                 accentColor: '#EF4444',
                 colorGrade: 'noir-mono',
-                backdropUrl: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80',
+                backdropUrl: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=1000&q=80',
+                localBackdropUrl: '/api/media/archetypes/drama.jpg',
                 lighting: 'Dramatic single keylight with deep noir shadow slits and smoke',
                 actingCritique: 'নাটকীয় গভীরতা: ৯৫% — শান্ত কিন্তু ধ্বংসাত্মক বুদ্ধিমত্তার বহিঃপ্রকাশ। তুখোড় ক্রিমিনাল ড্রামার মুখ্য চরিত্র।'
             }
@@ -499,33 +505,36 @@ Analyze this audition and output ONLY a valid JSON object with the following str
         const taskId = createData.data.task_id;
         console.log(`[PiAPI] Task accepted: ${taskId}. Polling for completion...`);
 
-        // Poll task status (up to 15 seconds)
+        // Poll task status (up to 35 seconds)
         const startTime = Date.now();
-        while (Date.now() - startTime < 16000) {
-            await new Promise(r => setTimeout(r, 1500));
+        while (Date.now() - startTime < 35000) {
+            await new Promise(r => setTimeout(r, 1800));
             try {
                 const pollRes = await fetch(`https://api.piapi.ai/api/v1/task/${taskId}`, {
                     headers: { 'x-api-key': apiKey }
                 });
                 const pollData = await pollRes.json();
                 const task = pollData.data;
+                console.log(`[PiAPI] Task ${taskId} status: ${task?.status || 'unknown'}`);
 
                 if (task && task.status === 'completed' && task.output?.image_url) {
-                    console.log(`[PiAPI] Face swap completed in ${Date.now() - startTime}ms!`);
+                    console.log(`[PiAPI] Face swap completed in ${Date.now() - startTime}ms! URL: ${task.output.image_url}`);
                     return {
                         success: true,
                         imageUrl: task.output.image_url,
                         durationMs: Date.now() - startTime
                     };
                 } else if (task && task.status === 'failed') {
-                    throw new Error(`PiAPI task failed: ${task.error?.message || 'Unknown error'}`);
+                    const errMsg = task.error?.message || (task.logs && task.logs.join(' ')) || 'Unknown error';
+                    throw new Error(`PiAPI task failed: ${errMsg}`);
                 }
             } catch (pollErr) {
                 console.warn('[PiAPI] Poll warning:', pollErr.message);
+                if (pollErr.message.includes('PiAPI task failed')) throw pollErr;
             }
         }
 
-        throw new Error('PiAPI task timeout after 16s');
+        throw new Error('PiAPI task timeout after 35s');
     }
 }
 

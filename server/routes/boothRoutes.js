@@ -221,8 +221,19 @@ module.exports = function(eventStore, broadcast, aiProvider) {
                         targetImageUrl: aiResult.backdropUrl
                     });
                     if (swapRes.success && swapRes.imageUrl) {
-                        finalPosterBase64 = swapRes.imageUrl;
-                        console.log('[BoothRoutes] Neural face swap successfully attached:', finalPosterBase64);
+                        try {
+                            const imgRes = await fetch(swapRes.imageUrl);
+                            if (imgRes.ok) {
+                                const buffer = Buffer.from(await imgRes.arrayBuffer());
+                                finalPosterBase64 = 'data:image/jpeg;base64,' + buffer.toString('base64');
+                                console.log('[BoothRoutes] Neural face swap successfully buffered to disk store');
+                            } else {
+                                finalPosterBase64 = swapRes.imageUrl;
+                            }
+                        } catch (dlErr) {
+                            console.warn('[BoothRoutes] Direct URL fallback for neural image:', dlErr.message);
+                            finalPosterBase64 = swapRes.imageUrl;
+                        }
                     }
                 } catch (swapErr) {
                     console.warn('[BoothRoutes] PiAPI face swap failed, using composite poster fallback:', swapErr.message);
