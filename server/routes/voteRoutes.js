@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { voteRateLimiter } = require('../middleware/security');
+const marathonStore = require('../stores/marathonStore');
 
 module.exports = function(eventStore, broadcast) {
     const votedClients = new Set();
@@ -147,89 +148,84 @@ module.exports = function(eventStore, broadcast) {
         res.json({ success: true, ...payload });
     });
 
-    // 3. Memory Marathon Trivia APIs
-    router.post('/marathon/control', (req, res) => {
-        const { action } = req.body;
+    // 3. Memory Marathon Trivia APIs (MADCON Brief, pp. 18, 22)
 
-        eventStore.update(st => {
-            const race = st.marathonRace;
-            if (action === 'start') {
-                race.status = 'racing';
-                race.currentQuestionIndex = 0;
-                race.questionStartTime = Date.now();
-                race.winner = null;
-                race.racers.forEach(r => { r.progress = 0; r.score = 0; });
-            } else if (action === 'next') {
-                if (race.currentQuestionIndex < race.questions.length - 1) {
-                    race.currentQuestionIndex += 1;
-                    race.questionStartTime = Date.now();
-                } else {
-                    race.status = 'finished';
-                    const winner = [...race.racers].sort((a,b) => b.score - a.score)[0];
-                    race.winner = winner;
-                }
-            } else if (action === 'reset') {
-                race.status = 'waiting';
-                race.currentQuestionIndex = 0;
-                race.winner = null;
-                race.racers.forEach(r => { r.progress = 0; r.score = 0; });
-            }
+    // Get live race & question state
+    router.get('/marathon/state', (req, res) => {
+        const race = marathonStore.getState();
+        res.json({
+            success: true,
+            race
+        });
+    });
+
+    // Get top 10 leaderboard
+    router.get('/marathon/leaderboard', (req, res) => {
+        const race = marathonStore.getState();
+        res.json({
+            success: true,
+            leaderboard: race.leaderboard,
+            winner: race.winner,
+            status: race.status
+        });
+    });
+
+    // Register / spawn audience racer dot
+    router.post('/marathon/register', (req, res) => {
+        const { playerId, playerName, avatarColor } = req.body;
+        const racer = marathonStore.registerRacer({
+            id: playerId,
+            name: playerName,
+            avatarColor
         });
 
-        const updatedRace = eventStore.getState().marathonRace;
+        const updatedRace = marathonStore.getState();
+        eventStore.update(st => {
+            st.marathonRace = updatedRace;
+        });
+
+        broadcast('MARATHON_UPDATE', updatedRace);
+        res.json({ success: true, racer, race: updatedRace });
+    });
+
+    // Race director / MC keynote control (start, next, reveal, finish, reset)
+    router.post('/marathon/control', (req, res) => {
+        const { action, index } = req.body;
+        const updatedRace = marathonStore.controlRace(action, { index });
+
+        eventStore.update(st => {
+            st.marathonRace = updatedRace;
+        });
+
         broadcast('MARATHON_UPDATE', updatedRace);
         res.json({ success: true, race: updatedRace });
     });
 
+    // Audience rapid-fire answer submission
     router.post('/marathon/answer', voteRateLimiter, (req, res) => {
         const { playerId, playerName, answerIndex } = req.body;
-        const race = eventStore.getState().marathonRace;
+        const race = marathonStore.getState();
 
         if (race.status !== 'racing') {
-            return res.status(400).json({ error: 'Race is not currently active' });
+            return res.status(400).json({ error: 'Race is not currently active for voting' });
         }
 
-        const currentQ = race.questions[race.currentQuestionIndex];
-        const isCorrect = answerIndex === currentQ.correct;
-        const elapsedMs = Math.max(100, Date.now() - race.questionStartTime);
-        const speedPoints = isCorrect ? Math.max(200, 1000 - Math.min(800, elapsedMs)) : 0;
-
-        let resultPayload = {};
-
-        eventStore.update(st => {
-            const rState = st.marathonRace;
-            let racer = rState.racers.find(r => r.id === playerId || r.name === playerName);
-            if (!racer) {
-                racer = {
-                    id: playerId || `p_${Date.now()}`,
-                    name: playerName || `Racer_${rState.racers.length + 1}`,
-                    progress: 0,
-                    score: 0
-                };
-                rState.racers.push(racer);
-            }
-
-            if (isCorrect) {
-                racer.score += speedPoints;
-                racer.progress = Math.min(1.0, racer.progress + 0.18 + (speedPoints / 5000));
-            }
-
-            if (racer.progress >= 0.95 && !rState.winner) {
-                rState.status = 'finished';
-                rState.winner = racer;
-            }
-
-            resultPayload = {
-                success: true,
-                isCorrect,
-                speedPoints,
-                progress: racer.progress,
-                totalScore: racer.score
-            };
+        const answerResult = marathonStore.recordAnswer({
+            playerId,
+            playerName,
+            answerIndex
         });
 
-        broadcast('MARATHON_UPDATE', eventStore.getState().marathonRace);
-        res.json(resultPayload);
+        const updatedRace = marathonStore.getState();
+        eventStore.update(st => {
+            st.marathonRace = updatedRace;
+        });
+
+        broadcast('MARATHON_UPDATE', updatedRace);
+        res.json({
+            success: true,
+            ...answerResult
+        });
     });
 
     // 4. ToffeeCon Wrapped & Capsule 2033 APIs

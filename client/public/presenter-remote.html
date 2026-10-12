@@ -177,12 +177,34 @@
             font-size: 0.75rem;
             color: rgba(255, 255, 255, 0.5);
             text-transform: uppercase;
+        .mode-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 4px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
         }
 
-        .up-next-name {
+        .mode-tab-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 700;
-            font-size: 0.95rem;
-            color: var(--toffee-orange);
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mode-tab-btn.active {
+            background: var(--toffee-orange);
+            color: #FFF;
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.5);
         }
     </style>
 </head>
@@ -196,27 +218,88 @@
         <div class="status-badge" id="syncStatus">STAGE CONNECTED</div>
     </header>
 
-    <!-- Large Host Buttons -->
-    <div class="controls-grid">
-        <button class="ctrl-btn launch" onclick="sendCmd('LAUNCH')">
-            <span>🎬</span> LAUNCH TOP 10 REVEAL
-        </button>
-        <button class="ctrl-btn" onclick="sendCmd('PLAY')">
-            <span style="font-size: 1.5rem;">▶</span> PLAY SHOW
-        </button>
-        <button class="ctrl-btn" onclick="sendCmd('PAUSE')">
-            <span style="font-size: 1.5rem;">⏸</span> PAUSE
-        </button>
-        <button class="ctrl-btn" onclick="sendCmd('PREV')">
-            <span style="font-size: 1.5rem;">⏮</span> PREVIOUS
-        </button>
-        <button class="ctrl-btn" onclick="sendCmd('NEXT')">
-            <span style="font-size: 1.5rem;">⏭</span> NEXT (#<span id="nextRankNum">2</span>)
-        </button>
-        <button class="ctrl-btn winner" onclick="sendCmd('WINNER')">
-            <span>👑</span> REVEAL #1 GRAND WINNER
-        </button>
+    <!-- Mode Switcher -->
+    <div class="mode-tabs">
+        <button class="mode-tab-btn" id="tabAuditionBtn" onclick="switchPresenterMode('audition')">🎭 AI Auditions (Top 10)</button>
+        <button class="mode-tab-btn active" id="tabMarathonBtn" onclick="switchPresenterMode('marathon')">🏁 Memory Marathon (Keynote)</button>
     </div>
+
+    <!-- 1. MEMORY MARATHON PRESENTER COCKPIT -->
+    <div id="sectionMarathon">
+        <div class="controls-grid">
+            <button class="ctrl-btn launch" style="background:linear-gradient(135deg, #EC4899, #B80088); border-color:#EC4899;" onclick="sendMarathonControl('start')">
+                <span>🚀</span> START RACE & QUESTION 1
+            </button>
+            <button class="ctrl-btn" style="border-color:#00F0FF; color:#00F0FF;" onclick="sendMarathonControl('reveal')">
+                <span>👁️</span> REVEAL ANSWER
+            </button>
+            <button class="ctrl-btn" style="border-color:#FFB800; color:#FFB800;" onclick="sendMarathonControl('next')">
+                <span>▶️</span> NEXT QUESTION
+            </button>
+            <button class="ctrl-btn winner" style="grid-column:span 2; background:linear-gradient(135deg, #FFB800, #FF6B00);" onclick="sendMarathonControl('finish')">
+                <span>👑</span> DECLARE CHAMPION & STAGE PYRO
+            </button>
+            <button class="ctrl-btn" style="grid-column:span 2; padding:10px; font-size:0.85rem; color:#A293C8; border-color:rgba(255,255,255,0.15);" onclick="sendMarathonControl('reset')">
+                ↺ Reset Race to Waiting
+            </button>
+        </div>
+
+        <!-- Teleprompter Cue for Keynote Trivia -->
+        <div class="teleprompter-card" style="border-color:#EC4899;">
+            <div>
+                <div class="prompter-label">
+                    <span id="mmKeynoteChapter" style="color:#00F0FF;">CHAPTER 1: THE INCEPTION</span>
+                    <span id="mmQuestionNum" style="color:#EC4899;">Q 01 / 05</span>
+                </div>
+                <div class="character-title" style="font-size:1.3rem;" id="mmQuestionTitle">In what year did Toffee officially launch in Bangladesh?</div>
+                <div class="actor-name" id="mmSlideRef" style="color:rgba(255,255,255,0.6);">Slide 06 · The Birth of Native Streaming</div>
+
+                <div class="dialogue-bubble" id="mmSpeakerPrompt" style="border-left-color:#EC4899; font-size:1rem; font-style:italic;">
+                    Taimur Rahman: "Who remembers the humble beginnings in 2019 when we first took Bangladesh by storm?"
+                </div>
+
+                <div class="backstory-notes" id="mmCorrectAnswerNotes" style="font-size:0.9rem; color:#00FF88;">
+                    ✓ Correct Answer: <b>[B] 2019 (Commercial Launch)</b>
+                </div>
+            </div>
+
+            <div style="margin-top:1rem; font-size:0.8rem; color:#FFB800;">
+                💡 <b>MC Cue:</b> Give the audience 5 seconds to answer on their phones, then hit "REVEAL ANSWER" to show the green highlight on the 40ft LED!
+            </div>
+        </div>
+
+        <!-- Live Top Racers Strip -->
+        <div class="up-next-bar" style="border-color:rgba(0,240,255,0.3);">
+            <div>
+                <div class="up-next-title" style="color:#00F0FF;">Live Arena Leader:</div>
+                <div class="up-next-name" id="mmLeaderboardPreview" style="color:#FFF;">Sarah_K · 3,240 PTS (85% Climbed)</div>
+            </div>
+            <span style="font-family:'Space Mono'; font-size:0.75rem; color:var(--toffee-gold);">548 RACERS</span>
+        </div>
+    </div>
+
+    <!-- 2. AUDITION SHOWCASE COCKPIT -->
+    <div id="sectionAudition" style="display:none;">
+        <div class="controls-grid">
+            <button class="ctrl-btn launch" onclick="sendCmd('LAUNCH')">
+                <span>🎬</span> LAUNCH TOP 10 REVEAL
+            </button>
+            <button class="ctrl-btn" onclick="sendCmd('PLAY')">
+                <span style="font-size: 1.5rem;">▶</span> PLAY SHOW
+            </button>
+            <button class="ctrl-btn" onclick="sendCmd('PAUSE')">
+                <span style="font-size: 1.5rem;">⏸</span> PAUSE
+            </button>
+            <button class="ctrl-btn" onclick="sendCmd('PREV')">
+                <span style="font-size: 1.5rem;">⏮</span> PREVIOUS
+            </button>
+            <button class="ctrl-btn" onclick="sendCmd('NEXT')">
+                <span style="font-size: 1.5rem;">⏭</span> NEXT (#<span id="nextRankNum">2</span>)
+            </button>
+            <button class="ctrl-btn winner" onclick="sendCmd('WINNER')">
+                <span>👑</span> REVEAL #1 GRAND WINNER
+            </button>
+        </div>
 
     <!-- Live Teleprompter for MC -->
     <div class="teleprompter-card">
@@ -277,11 +360,64 @@
                     } else if (msg.type === 'AUDITION_TOP10_UPDATED') {
                         top10Ids = msg.top10Ids;
                         updateTeleprompter();
+                    } else if (msg.type === 'MARATHON_UPDATE' || msg.event === 'MARATHON_UPDATE') {
+                        const race = msg.data || msg.race || msg.payload;
+                        if (race) updateMarathonTeleprompter(race);
                     }
                 } catch (e) {
                     console.error(e);
                 }
             };
+        }
+
+        function switchPresenterMode(mode) {
+            if (mode === 'marathon') {
+                document.getElementById('sectionMarathon').style.display = 'block';
+                document.getElementById('sectionAudition').style.display = 'none';
+                document.getElementById('tabMarathonBtn').classList.add('active');
+                document.getElementById('tabAuditionBtn').classList.remove('active');
+            } else {
+                document.getElementById('sectionMarathon').style.display = 'none';
+                document.getElementById('sectionAudition').style.display = 'block';
+                document.getElementById('tabMarathonBtn').classList.remove('active');
+                document.getElementById('tabAuditionBtn').classList.add('active');
+            }
+        }
+
+        async function sendMarathonControl(action) {
+            try {
+                const res = await fetch('/api/marathon/control', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action })
+                });
+                const data = await res.json();
+                if (data.success && data.race) {
+                    updateMarathonTeleprompter(data.race);
+                }
+            } catch(e) {
+                console.error('Marathon control error:', e);
+            }
+        }
+
+        function updateMarathonTeleprompter(race) {
+            if (!race) return;
+            const q = race.questions[race.currentQuestionIndex];
+            if (q) {
+                document.getElementById('mmKeynoteChapter').innerText = q.keynoteChapter;
+                document.getElementById('mmQuestionNum').innerText = `Q 0${race.currentQuestionIndex + 1} / 0${race.questions.length} · ${race.status.toUpperCase()}`;
+                document.getElementById('mmQuestionTitle').innerText = q.q;
+                document.getElementById('mmSlideRef').innerText = q.keynoteSlide;
+                document.getElementById('mmSpeakerPrompt').innerText = q.speakerPrompt;
+                document.getElementById('mmCorrectAnswerNotes').innerHTML = `✓ Correct Answer: <b>${q.options[q.correct]}</b>`;
+            }
+
+            const sorted = [...(race.racers || [])].sort((a,b) => b.score - a.score);
+            if (sorted.length > 0) {
+                const top = sorted[0];
+                document.getElementById('mmLeaderboardPreview').innerText = 
+                    `${top.name} · ${top.score.toLocaleString()} PTS (${Math.round(top.progress * 100)}% Climbed)`;
+            }
         }
 
         async function loadData() {
@@ -293,6 +429,13 @@
                     top10Ids = data.top10Ids || [];
                     currentIndex = data.stagePlayback?.activeIndex || 0;
                     updateTeleprompter();
+                }
+
+                // Load marathon race data
+                const mRes = await fetch('/api/marathon/state');
+                const mData = await mRes.json();
+                if (mData.success && mData.race) {
+                    updateMarathonTeleprompter(mData.race);
                 }
             } catch (e) {
                 console.error(e);

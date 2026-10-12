@@ -35,113 +35,273 @@
     "topic": "Screen of Tomorrow: The Next 7 Years of Streaming"
   },
   "marathonRace": {
-    "status": "waiting",
-    "currentQuestionIndex": 0,
-    "questionStartTime": 1791361379259,
+    "status": "racing",
+    "currentQuestionIndex": 1,
+    "questionStartTime": 1791831229135,
     "timeLimitSec": 10,
     "questions": [
       {
+        "id": "q1",
+        "keynoteChapter": "CHAPTER 1: THE INCEPTION",
+        "keynoteSlide": "Slide 06 · The Birth of Native Streaming",
+        "speakerPrompt": "Taimur Rahman: \"Who remembers the humble beginnings in 2019 when we first took Bangladesh by storm?\"",
         "q": "In what year did Toffee officially launch in Bangladesh?",
         "options": [
-          "A) 2017",
-          "B) 2019",
-          "C) 2021",
-          "D) 2015"
+          "A) 2017 (Beta Trial)",
+          "B) 2019 (Commercial Launch)",
+          "C) 2021 (Post-Pandemic)",
+          "D) 2015 (Pre-Banglalink 4G)"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "Toffee launched commercially in November 2019, quickly becoming Bangladesh's highest-rated entertainment app."
       },
       {
-        "q": "How many lifetime users have experienced Toffee streaming?",
+        "id": "q2",
+        "keynoteChapter": "CHAPTER 2: REACH & AUDIENCE SURGE",
+        "keynoteSlide": "Slide 12 · Democratizing Entertainment",
+        "speakerPrompt": "Taimur Rahman: \"We set out to reach every household. Look at the numbers today on this 40ft LED!\"",
+        "q": "How many lifetime users have experienced Toffee streaming to date?",
         "options": [
-          "A) 25 Million+",
-          "B) 50 Million+",
-          "C) Almost 100 Million+",
-          "D) 200 Million+"
+          "A) 25 Million+ Registered",
+          "B) 50 Million+ Active",
+          "C) Almost 100 Million+ Lifetime",
+          "D) 200 Million+ Global"
         ],
-        "correct": 2
+        "correct": 2,
+        "explanation": "Over 95M–100M unique viewers have streamed content on Toffee across mobile and connected TV."
       },
       {
-        "q": "How many World Cup tournaments were broadcasted on Toffee?",
+        "id": "q3",
+        "keynoteChapter": "CHAPTER 3: THE SPORTS ARENA",
+        "keynoteSlide": "Slide 18 · Unrivaled Sports Broadcasting",
+        "speakerPrompt": "Taimur Rahman: \"From the historic FIFA World Cup 2022 to the Asia Cup and EPL live at 60 FPS!\"",
+        "q": "How many global sporting tournaments & World Cups were broadcast on Toffee?",
         "options": [
-          "A) 4 Events",
-          "B) 6 Events",
-          "C) 8 Events",
-          "D) 12 Events"
+          "A) 4 Tournaments",
+          "B) 6 Tournaments",
+          "C) 8 Mega Tournaments",
+          "D) 14 Tournaments"
         ],
-        "correct": 2
+        "correct": 2,
+        "explanation": "Toffee has streamed 8 mega tournaments including FIFA World Cup Qatar 2022, Asia Cup, and ICC World Cups."
       },
       {
-        "q": "What is the new AI feature allowing local dialect voice-overs?",
+        "id": "q4",
+        "keynoteChapter": "CHAPTER 4: THE GENERATIVE AI FRONTIER",
+        "keynoteSlide": "Slide 24 · Creator Voice Morphing & AI",
+        "speakerPrompt": "Taimur Rahman: \"You all experienced it outside in the foyer just an hour ago — our revolutionary AI activation!\"",
+        "q": "What new AI feature introduces local dialect voice-morphing for creators?",
         "options": [
-          "A) VoiceMorph",
+          "A) VoiceMorph Studio",
           "B) The Dub Booth",
-          "C) AudioSync AI",
-          "D) BhashaAI"
+          "C) AudioSync Neural",
+          "D) BhashaAI Engine"
         ],
-        "correct": 1
+        "correct": 1,
+        "explanation": "The Dub Booth allows creators to voice-dub iconic cinema scenes into regional Bangla dialects (Noakhali, Chittagong, Sylheti) and global languages."
       },
       {
-        "q": "What is the 7-year anniversary summit theme of ToffeeCon 2026?",
+        "id": "q5",
+        "keynoteChapter": "CHAPTER 5: VISION 2033 & THE FUTURE",
+        "keynoteSlide": "Slide 30 · The Next 7 Years of Streaming",
+        "speakerPrompt": "Taimur Rahman: \"Our theme for tonight represents not just today, but our contract with the future!\"",
+        "q": "What is the official 7-year anniversary summit theme of ToffeeCon 2026?",
         "options": [
           "A) Screen of Tomorrow",
           "B) Future of Mobile",
-          "C) Digital Bengal",
-          "D) StreamFest"
+          "C) Digital Bengal 2030",
+          "D) Next-Gen OTT Network"
         ],
-        "correct": 0
+        "correct": 0,
+        "explanation": "\"Screen of Tomorrow\" is the defining keynote theme for Toffee's next 7 years of interactive entertainment."
       }
     ],
     "racers": [
       {
-        "id": "p1",
+        "id": "r-01",
         "name": "Sarah_K",
-        "progress": 0.15,
-        "score": 320
+        "score": 0,
+        "progress": 0,
+        "streak": 0,
+        "avatarColor": "#EC4899",
+        "answers": []
       },
       {
-        "id": "p2",
+        "id": "r-02",
         "name": "Tanvir_M",
-        "progress": 0.22,
-        "score": 450
+        "score": 0,
+        "progress": 0,
+        "streak": 0,
+        "avatarColor": "#00F0FF",
+        "answers": []
       },
       {
-        "id": "p3",
-        "name": "Fahim_R",
-        "progress": 0.08,
-        "score": 180
-      },
-      {
-        "id": "p4",
+        "id": "r-03",
         "name": "Nusrat_A",
-        "progress": 0.3,
-        "score": 610
+        "score": 0,
+        "progress": 0,
+        "streak": 0,
+        "avatarColor": "#FFB800",
+        "answers": []
       },
       {
-        "id": "p5",
+        "id": "r-04",
         "name": "Zubair_B",
-        "progress": 0.12,
-        "score": 250
+        "score": 0,
+        "progress": 0,
+        "streak": 0,
+        "avatarColor": "#A855F7",
+        "answers": []
       },
       {
-        "id": "p6",
+        "id": "r-05",
         "name": "Ishrat_H",
-        "progress": 0.25,
-        "score": 520
+        "score": 0,
+        "progress": 0,
+        "streak": 0,
+        "avatarColor": "#00FF88",
+        "answers": []
       },
       {
-        "id": "p7",
+        "id": "r-06",
         "name": "Adnan_S",
-        "progress": 0.18,
-        "score": 380
+        "score": 0,
+        "progress": 0,
+        "streak": 0,
+        "avatarColor": "#FF6B00",
+        "answers": []
       },
       {
-        "id": "p8",
+        "id": "r-07",
+        "name": "Fahim_R",
+        "score": 0,
+        "progress": 0,
+        "streak": 0,
+        "avatarColor": "#38BDF8",
+        "answers": []
+      },
+      {
+        "id": "r-08",
         "name": "Mehnaz_T",
-        "progress": 0.05,
-        "score": 110
+        "score": 0,
+        "progress": 0,
+        "streak": 0,
+        "avatarColor": "#F43F5E",
+        "answers": []
+      },
+      {
+        "id": "test_vip_1",
+        "name": "AudienceVIP",
+        "score": 603,
+        "progress": 0.24614285714285716,
+        "streak": 1,
+        "avatarColor": "#EC4899",
+        "answers": [
+          {
+            "answerIndex": 1,
+            "isCorrect": true,
+            "speedPoints": 603,
+            "elapsedMs": 6106
+          }
+        ]
       }
     ],
-    "winner": null
+    "winner": null,
+    "telemetry": {
+      "totalAnswersSubmitted": 843,
+      "totalActiveRacers": 9,
+      "averageAnswerSpeedMs": 1420
+    },
+    "leaderboard": [
+      {
+        "id": "test_vip_1",
+        "name": "AudienceVIP",
+        "score": 603,
+        "progress": 0.24614285714285716,
+        "streak": 1,
+        "avatarColor": "#EC4899",
+        "answers": [
+          {
+            "answerIndex": 1,
+            "isCorrect": true,
+            "speedPoints": 603,
+            "elapsedMs": 6106
+          }
+        ]
+      },
+      {
+        "id": "r-01",
+        "name": "Sarah_K",
+        "score": 0,
+        "progress": 0,
+        "streak": 0,
+        "avatarColor": "#EC4899",
+        "answers": []
+      },
+      {
+        "id": "r-02",
+        "name": "Tanvir_M",
+        "score": 0,
+        "progress": 0,
+        "streak": 0,
+        "avatarColor": "#00F0FF",
+        "answers": []
+      },
+      {
+        "id": "r-03",
+        "name": "Nusrat_A",
+        "score": 0,
+        "progress": 0,
+        "streak": 0,
+        "avatarColor": "#FFB800",
+        "answers": []
+      },
+      {
+        "id": "r-04",
+        "name": "Zubair_B",
+        "score": 0,
+        "progress": 0,
+        "streak": 0,
+        "avatarColor": "#A855F7",
+        "answers": []
+      },
+      {
+        "id": "r-05",
+        "name": "Ishrat_H",
+        "score": 0,
+        "progress": 0,
+        "streak": 0,
+        "avatarColor": "#00FF88",
+        "answers": []
+      },
+      {
+        "id": "r-06",
+        "name": "Adnan_S",
+        "score": 0,
+        "progress": 0,
+        "streak": 0,
+        "avatarColor": "#FF6B00",
+        "answers": []
+      },
+      {
+        "id": "r-07",
+        "name": "Fahim_R",
+        "score": 0,
+        "progress": 0,
+        "streak": 0,
+        "avatarColor": "#38BDF8",
+        "answers": []
+      },
+      {
+        "id": "r-08",
+        "name": "Mehnaz_T",
+        "score": 0,
+        "progress": 0,
+        "streak": 0,
+        "avatarColor": "#F43F5E",
+        "answers": []
+      }
+    ]
   },
   "personalDashboard": {
     "status": "voting",

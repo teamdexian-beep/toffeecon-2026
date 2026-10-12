@@ -1017,17 +1017,23 @@
                         <!-- 2. Memory Marathon -->
                         <div class="audience-card">
                             <div class="audience-card-head">
-                                <span class="audience-card-title">🏁 2. Memory Marathon Race</span>
-                                <a href="/marathon" target="_blank" class="btn-action outline" style="font-size:0.7rem; padding:4px 8px;">Open Racer ↗</a>
+                                <span class="audience-card-title">🏁 2. Memory Marathon (Keynote Race)</span>
+                                <div style="display:flex; gap:6px;">
+                                    <a href="/marathon" target="_blank" class="btn-action cyan" style="font-size:0.7rem; padding:4px 8px;">Mobile Racer 📱</a>
+                                    <a href="/marathon-stage" target="_blank" class="btn-action magenta" style="font-size:0.7rem; padding:4px 8px;">Stage LED 🖥️</a>
+                                    <a href="/presenter" target="_blank" class="btn-action outline" style="font-size:0.7rem; padding:4px 8px;">MC Remote 🎙️</a>
+                                </div>
                             </div>
                             <div class="racer-box">
-                                <div class="racer-lane-row"><span class="racer-lane-label">Adex:</span><div class="racer-lane-track"><div class="racer-lane-fill" id="lane1" style="width:75%;"></div></div></div>
-                                <div class="racer-lane-row"><span class="racer-lane-label">Asiatic:</span><div class="racer-lane-track"><div class="racer-lane-fill" id="lane2" style="width:60%;"></div></div></div>
-                                <div class="racer-lane-row"><span class="racer-lane-label">Grey:</span><div class="racer-lane-track"><div class="racer-lane-fill" id="lane3" style="width:85%;"></div></div></div>
+                                <div class="racer-lane-row"><span class="racer-lane-label">Sarah_K:</span><div class="racer-lane-track"><div class="racer-lane-fill" id="lane1" style="width:85%; background:var(--pink);"></div></div></div>
+                                <div class="racer-lane-row"><span class="racer-lane-label">Tanvir_M:</span><div class="racer-lane-track"><div class="racer-lane-fill" id="lane2" style="width:78%; background:var(--cyan);"></div></div></div>
+                                <div class="racer-lane-row"><span class="racer-lane-label">Nusrat_A:</span><div class="racer-lane-track"><div class="racer-lane-fill" id="lane3" style="width:72%; background:var(--amber);"></div></div></div>
                             </div>
-                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <div style="display:flex; gap:6px; flex-wrap:wrap;">
                                 <button class="btn-action emerald" onclick="controlMarathon('start')">🚀 Start Race & Q1</button>
+                                <button class="btn-action magenta" onclick="controlMarathon('reveal')">👁️ Reveal Answer</button>
                                 <button class="btn-action cyan" onclick="controlMarathon('next')">▶ Next Question</button>
+                                <button class="btn-action amber" onclick="controlMarathon('finish')">👑 Declare Winner</button>
                                 <button class="btn-action outline" style="color:var(--crimson);" onclick="controlMarathon('reset')">↺ Reset</button>
                             </div>
                         </div>
