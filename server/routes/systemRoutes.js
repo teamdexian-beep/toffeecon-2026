@@ -62,7 +62,7 @@ module.exports = function(eventStore, broadcast, aiProvider, wss) {
     });
 
     // Update AI Provider configuration
-    router.post('/ai/config', (req, res) => {
+    router.post('/ai/config', requireDirectorAuth, (req, res) => {
         const { provider, apiKey, model } = req.body;
         const updated = aiProvider.updateConfig({
             ...(provider && { provider }),

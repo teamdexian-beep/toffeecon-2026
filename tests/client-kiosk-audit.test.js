@@ -7,8 +7,8 @@ describe('Experiential Kiosk & Dynamic Binding Audit Test Suite', () => {
     const publicDir = path.join(__dirname, '../client/public');
     const htmlFiles = fs.readdirSync(publicDir).filter(f => f.endsWith('.html'));
 
-    test('All 33 experiential HTML views must be present in client/public', () => {
-        assert.strictEqual(htmlFiles.length, 33, `Expected exactly 33 HTML views, found ${htmlFiles.length}`);
+    test('All 34 experiential HTML views must be present in client/public', () => {
+        assert.strictEqual(htmlFiles.length, 34, `Expected exactly 34 HTML views, found ${htmlFiles.length}`);
     });
 
     test('Zero-Blocking Modal Policy: No alert(), confirm(), or prompt() in any client view', () => {

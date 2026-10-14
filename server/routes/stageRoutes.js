@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const { requireDirectorAuth } = require('../middleware/security');
 
 module.exports = function(eventStore, broadcast) {
     // Stage Keynote & Multi-Screen Scene Control API
-    router.post('/control', (req, res) => {
+    router.post('/control', requireDirectorAuth, (req, res) => {
         const { action, scene, speakerName, speakerRole, speakerTopic } = req.body;
         const state = eventStore.getState();
 

@@ -1089,9 +1089,214 @@
             color: #fff;
             background: rgba(255, 0, 119, 0.15);
         }
+
+        /* ================= DIRECTOR PIN GATEKEEPER MODAL ================= */
+        #directorPinModal {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, #120A24 0%, #06040A 100%);
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(16px);
+        }
+
+        .pin-card {
+            background: rgba(18, 14, 34, 0.95);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.15), 0 20px 40px rgba(0, 0, 0, 0.8);
+            border-radius: 20px;
+            padding: 36px 32px;
+            width: 360px;
+            max-width: 90vw;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pin-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--cyan), var(--magenta), var(--orange));
+        }
+
+        .pin-shield-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 0 12px rgba(0, 240, 255, 0.6));
+        }
+
+        .pin-title {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .pin-subtitle {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            margin-bottom: 22px;
+            letter-spacing: 0.5px;
+        }
+
+        .pin-dots-container {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            justify-content: center;
+        }
+
+        .pin-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid rgba(0, 240, 255, 0.4);
+            background: transparent;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .pin-dot.filled {
+            background: var(--cyan);
+            border-color: var(--cyan);
+            box-shadow: 0 0 14px var(--cyan);
+            transform: scale(1.15);
+        }
+
+        .pin-dots-container.shake {
+            animation: pin-shake 0.4s ease-in-out;
+        }
+
+        @keyframes pin-shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-12px); }
+            40%, 80% { transform: translateX(12px); }
+        }
+
+        .pin-feedback {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            min-height: 20px;
+            margin-bottom: 14px;
+            color: var(--cyan);
+            letter-spacing: 0.5px;
+        }
+
+        .pin-keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;
+        }
+
+        .pin-key {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-machined);
+            border-radius: 12px;
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 1.25rem;
+            font-weight: 700;
+            padding: 14px 0;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        .pin-key:hover:not(:disabled) {
+            background: rgba(0, 240, 255, 0.15);
+            border-color: var(--cyan);
+            color: var(--cyan);
+            transform: translateY(-1px);
+        }
+
+        .pin-key:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        .pin-key.btn-action {
+            font-size: 0.8rem;
+            font-family: var(--font-sans);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .pin-key.btn-action.clear {
+            color: #F87171;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .pin-key.btn-action.clear:hover:not(:disabled) {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--crimson);
+            color: #fff;
+        }
+
+        .pin-key.btn-action.unlock {
+            color: var(--cyan);
+            border-color: rgba(0, 240, 255, 0.4);
+        }
+
+        .pin-key.btn-action.unlock:hover:not(:disabled) {
+            background: rgba(0, 240, 255, 0.25);
+            border-color: var(--cyan);
+            color: #fff;
+        }
+
+        .pin-key:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
+
+    <!-- ================= DIRECTOR PIN GATEKEEPER MODAL ================= -->
+    <div id="directorPinModal">
+        <div class="pin-card">
+            <div class="pin-shield-icon">🛡️</div>
+            <div class="pin-title">MISSION CONTROL AUTH</div>
+            <div class="pin-subtitle">DIRECTOR CREDENTIAL VERIFICATION</div>
+
+            <div class="pin-dots-container" id="pinDotsContainer">
+                <div class="pin-dot" id="pindot-0"></div>
+                <div class="pin-dot" id="pindot-1"></div>
+                <div class="pin-dot" id="pindot-2"></div>
+                <div class="pin-dot" id="pindot-3"></div>
+            </div>
+
+            <div class="pin-feedback" id="pinFeedback">ENTER 4-DIGIT PIN</div>
+
+            <div class="pin-keypad">
+                <button type="button" class="pin-key" onclick="handlePinDigit('1')">1</button>
+                <button type="button" class="pin-key" onclick="handlePinDigit('2')">2</button>
+                <button type="button" class="pin-key" onclick="handlePinDigit('3')">3</button>
+                <button type="button" class="pin-key" onclick="handlePinDigit('4')">4</button>
+                <button type="button" class="pin-key" onclick="handlePinDigit('5')">5</button>
+                <button type="button" class="pin-key" onclick="handlePinDigit('6')">6</button>
+                <button type="button" class="pin-key" onclick="handlePinDigit('7')">7</button>
+                <button type="button" class="pin-key" onclick="handlePinDigit('8')">8</button>
+                <button type="button" class="pin-key" onclick="handlePinDigit('9')">9</button>
+                <button type="button" class="pin-key btn-action clear" onclick="clearPin()">Clear</button>
+                <button type="button" class="pin-key" onclick="handlePinDigit('0')">0</button>
+                <button type="button" class="pin-key btn-action unlock" onclick="attemptPinUnlock()">Unlock</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Notification Toast -->
     <div id="hubToast">
@@ -1151,6 +1356,9 @@
             <a href="/portal" class="btn-header" target="_blank">
                 <span>🌌</span> <span>3D Portal ↗</span>
             </a>
+            <button class="btn-header" id="btnLockConsole" onclick="lockDirectorConsole()" style="border-color:rgba(239, 68, 68, 0.4); color:#FCA5A5;" title="Lock Director Console">
+                <span>🔒</span> <span>Lock Console</span>
+            </button>
             <a href="/" class="btn-header">
                 <span>← Home</span>
             </a>
@@ -1658,6 +1866,164 @@
     <!-- ================= JAVASCRIPT CONTROLLER ================= -->
     <script>
         // ==========================================
+        // 0. Cyber Security & Director PIN Gatekeeper
+        // ==========================================
+        // Auto-attach x-director-auth to all administrative REST calls
+        const originalFetch = window.fetch;
+        window.fetch = function(url, options = {}) {
+            options = options || {};
+            options.headers = options.headers || {};
+            if (options.headers instanceof Headers) {
+                if (!options.headers.has('x-director-auth')) {
+                    options.headers.set('x-director-auth', 'toffeecon-2026-secure');
+                }
+            } else if (Array.isArray(options.headers)) {
+                options.headers.push(['x-director-auth', 'toffeecon-2026-secure']);
+            } else {
+                options.headers['x-director-auth'] = 'toffeecon-2026-secure';
+            }
+            return originalFetch(url, options);
+        };
+
+        let currentPin = '';
+        let pinFailures = 0;
+        let lockoutTimer = null;
+        let lockoutSecondsLeft = 0;
+
+        function updatePinDots() {
+            for (let i = 0; i < 4; i++) {
+                const dot = document.getElementById(`pindot-${i}`);
+                if (dot) {
+                    if (i < currentPin.length) {
+                        dot.classList.add('filled');
+                    } else {
+                        dot.classList.remove('filled');
+                    }
+                }
+            }
+        }
+
+        function setPinFeedback(msg, isError = false) {
+            const fb = document.getElementById('pinFeedback');
+            if (fb) {
+                fb.innerText = msg;
+                fb.style.color = isError ? 'var(--crimson)' : (msg.includes('GRANTED') ? 'var(--emerald)' : 'var(--cyan)');
+            }
+        }
+
+        function handlePinDigit(digit) {
+            if (lockoutSecondsLeft > 0) return;
+            if (currentPin.length < 4) {
+                currentPin += digit;
+                updatePinDots();
+                if (typeof audioRelay !== 'undefined' && audioRelay) audioRelay.playClick();
+                if (currentPin.length === 4) {
+                    setTimeout(attemptPinUnlock, 120);
+                }
+            }
+        }
+
+        function clearPin() {
+            if (lockoutSecondsLeft > 0) return;
+            currentPin = '';
+            updatePinDots();
+            setPinFeedback('ENTER 4-DIGIT PIN');
+        }
+
+        function attemptPinUnlock() {
+            if (lockoutSecondsLeft > 0) return;
+            const targetPin = window.DIRECTOR_PIN || '2026';
+            if (currentPin === targetPin) {
+                sessionStorage.setItem('toffeecon_director_session', 'authenticated');
+                setPinFeedback('ACCESS GRANTED · INITIALIZING...', false);
+                if (typeof audioRelay !== 'undefined' && audioRelay) audioRelay.playFanfare();
+                setTimeout(() => {
+                    const modal = document.getElementById('directorPinModal');
+                    if (modal) modal.style.display = 'none';
+                    currentPin = '';
+                    updatePinDots();
+                    pinFailures = 0;
+                    showToast('Director Console Authenticated', '🛡️');
+                    if (typeof ws !== 'undefined' && ws && ws.readyState === WebSocket.OPEN) {
+                        ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'director_channel', auth: 'toffeecon-2026-secure' }));
+                    }
+                }, 350);
+            } else {
+                pinFailures++;
+                if (typeof audioRelay !== 'undefined' && audioRelay) audioRelay.playClick();
+                const container = document.getElementById('pinDotsContainer');
+                if (container) {
+                    container.classList.add('shake');
+                    setTimeout(() => container.classList.remove('shake'), 450);
+                }
+                currentPin = '';
+                updatePinDots();
+
+                if (pinFailures >= 3) {
+                    startPinLockout(30);
+                } else {
+                    setPinFeedback(`INVALID PIN (${pinFailures}/3 ATTEMPTS)`, true);
+                }
+            }
+        }
+
+        function startPinLockout(seconds) {
+            lockoutSecondsLeft = seconds;
+            const keys = document.querySelectorAll('.pin-key');
+            keys.forEach(k => k.disabled = true);
+            setPinFeedback(`SECURITY LOCKOUT: ${lockoutSecondsLeft}s REMAINING`, true);
+
+            if (lockoutTimer) clearInterval(lockoutTimer);
+            lockoutTimer = setInterval(() => {
+                lockoutSecondsLeft--;
+                if (lockoutSecondsLeft <= 0) {
+                    clearInterval(lockoutTimer);
+                    lockoutTimer = null;
+                    lockoutSecondsLeft = 0;
+                    pinFailures = 0;
+                    keys.forEach(k => k.disabled = false);
+                    setPinFeedback('ENTER 4-DIGIT PIN');
+                } else {
+                    setPinFeedback(`SECURITY LOCKOUT: ${lockoutSecondsLeft}s REMAINING`, true);
+                }
+            }, 1000);
+        }
+
+        function checkDirectorSession() {
+            const isAuth = sessionStorage.getItem('toffeecon_director_session') === 'authenticated';
+            const modal = document.getElementById('directorPinModal');
+            if (modal) {
+                modal.style.display = isAuth ? 'none' : 'flex';
+            }
+        }
+
+        function lockDirectorConsole() {
+            sessionStorage.removeItem('toffeecon_director_session');
+            currentPin = '';
+            updatePinDots();
+            setPinFeedback('ENTER 4-DIGIT PIN');
+            const modal = document.getElementById('directorPinModal');
+            if (modal) modal.style.display = 'flex';
+            showToast('Console Locked', '🔒');
+        }
+
+        window.addEventListener('keydown', (e) => {
+            const modal = document.getElementById('directorPinModal');
+            if (!modal || modal.style.display === 'none') return;
+            if (e.key >= '0' && e.key <= '9') {
+                handlePinDigit(e.key);
+            } else if (e.key === 'Backspace' || e.key === 'Escape') {
+                clearPin();
+            } else if (e.key === 'Enter') {
+                attemptPinUnlock();
+            }
+        });
+
+        // Initialize session check immediately
+        checkDirectorSession();
+        window.addEventListener('DOMContentLoaded', checkDirectorSession);
+
+        // ==========================================
         // 1. Toast Notification Helper
         // ==========================================
         function showToast(msg, icon = '⚡') {
@@ -2049,7 +2415,12 @@
         const ws = new WebSocket(`${proto}//${location.host}`);
 
         ws.onopen = () => {
-            ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'hub' }));
+            const isAuth = sessionStorage.getItem('toffeecon_director_session') === 'authenticated';
+            if (isAuth) {
+                ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'director_channel', auth: 'toffeecon-2026-secure' }));
+            } else {
+                ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'hub' }));
+            }
             console.log('Director Hub connected via WebSocket');
         };
 

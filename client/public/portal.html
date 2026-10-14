@@ -2,2255 +2,1580 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Portal to a New Era · ToffeeCon 2026 Immersive Screen Tunnel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ToffeeCon 2026 Companion · Official Mobile PWA</title>
+    
+    <!-- PWA & Mobile Meta -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#FF6600">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ToffeeCon">
+    <link rel="apple-touch-icon" href="/assets/icon-192.png">
+    <link rel="icon" type="image/png" href="/assets/icon-192.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            --bg-void: #020106;
-            --orange: #FF6B00;
-            --purple: #9333EA;
-            --magenta: #FF0077;
-            --cyan: #00F0FF;
-            --amber: #FFB300;
+            --bg-obsidian: #07060E;
+            --bg-card: #12101F;
+            --bg-card-alt: #1A162B;
+            --toffee-orange: #FF6600;
+            --toffee-red: #E60045;
+            --neon-magenta: #FF0077;
+            --neon-cyan: #00F0FF;
+            --neon-purple: #9333EA;
+            --gold: #FFB800;
+            --success: #10B981;
             --text-main: #FFFFFF;
-            --text-dim: #94A3B8;
+            --text-muted: #94A3B8;
+            --border-glow: rgba(255, 102, 0, 0.25);
+            --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'Space Mono', monospace;
+            --font-display: 'Syne', sans-serif;
+            --nav-height: 68px;
+            --header-height: 64px;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
 
         body {
-            background-color: var(--bg-void);
+            background-color: var(--bg-obsidian);
             color: var(--text-main);
-            overflow: hidden;
-            width: 100vw;
-            height: 100vh;
-            position: relative;
+            font-family: var(--font-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            padding-top: var(--header-height);
+            padding-bottom: calc(var(--nav-height) + 16px);
+            background-image: 
+                radial-gradient(circle at 10% 15%, rgba(255, 102, 0, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 90% 85%, rgba(230, 0, 69, 0.1) 0%, transparent 45%);
+            background-attachment: fixed;
         }
 
-        /* 3D WebGL Canvas */
-        #portal-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-
-        /* CRT Glitch Scanline Overlay (Dynamic opacity based on depth) */
-        #crt-overlay {
+        /* Ambient scanline texture */
+        .scanlines {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
             pointer-events: none;
-            z-index: 8;
-            background: linear-gradient(rgba(18, 16, 38, 0) 50%, rgba(0, 0, 0, 0.5) 50%);
+            background: linear-gradient(rgba(18, 16, 38, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
             background-size: 100% 4px;
-            opacity: 0.9;
-            transition: opacity 0.3s ease;
+            z-index: 99;
+            opacity: 0.6;
         }
 
-        #noise-overlay {
+        /* Header / App Bar */
+        .app-header {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none;
-            z-index: 9;
-            opacity: 0.35;
-            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.7'/%3E%3C/svg%3E");
-            transition: opacity 0.3s ease;
-        }
-
-        /* Portal HUD Top Bar */
-        .hud-header {
-            position: absolute;
-            top: 18px;
-            left: 20px;
-            right: 20px;
+            top: 0; left: 0; right: 0;
+            height: var(--header-height);
+            background: rgba(7, 6, 14, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-            z-index: 25;
-            pointer-events: none;
+            padding: 0 16px;
+            z-index: 50;
         }
 
-        .hud-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            pointer-events: auto;
-        }
-
-        .portal-badge {
-            background: rgba(14, 8, 30, 0.88);
-            border: 1px solid rgba(255, 0, 119, 0.4);
-            padding: 8px 18px;
-            border-radius: 30px;
+        .header-brand {
             display: flex;
             align-items: center;
             gap: 10px;
-            backdrop-filter: blur(14px);
-            box-shadow: 0 4px 25px rgba(255, 0, 119, 0.3);
-        }
-
-        .portal-badge img {
-            height: 22px;
-            filter: drop-shadow(0 0 10px rgba(255, 0, 119, 0.8));
-        }
-
-        .portal-badge span {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.8rem;
-            color: #FFFFFF;
-            letter-spacing: 1.5px;
-            font-weight: 700;
-        }
-
-        .director-pulse-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 20px;
-            background: rgba(0, 240, 255, 0.15);
-            border: 1px solid rgba(0, 240, 255, 0.4);
-            font-family: 'Space Mono', monospace;
-            font-size: 0.7rem;
-            color: var(--cyan);
-            backdrop-filter: blur(10px);
-        }
-
-        .director-pulse-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--cyan);
-            box-shadow: 0 0 8px var(--cyan);
-            animation: pulse-dot 1.2s infinite;
-        }
-
-        .hud-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            pointer-events: auto;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-        }
-
-        .hud-btn {
-            background: rgba(14, 8, 30, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #F8FAFC;
-            padding: 8px 14px;
-            border-radius: 30px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.72rem;
             text-decoration: none;
+        }
+
+        .header-logo {
+            height: 32px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .brand-badge {
+            background: linear-gradient(135deg, var(--toffee-orange), var(--toffee-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-pill {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            cursor: pointer;
-            backdrop-filter: blur(14px);
-            transition: all 0.2s;
-        }
-
-        .hud-btn:hover {
-            border-color: var(--cyan);
-            color: var(--cyan);
-            transform: scale(1.04);
-        }
-
-        .hud-btn.active {
-            border-color: var(--magenta);
-            background: rgba(255, 0, 119, 0.25);
-            color: #fff;
-            box-shadow: 0 0 15px rgba(255, 0, 119, 0.4);
-        }
-
-        /* Camera Viewpoint Selector Bar */
-        .camera-selector-bar {
-            position: absolute;
-            top: 76px;
-            left: 20px;
-            display: flex;
-            gap: 8px;
-            z-index: 25;
-            background: rgba(10, 6, 22, 0.85);
-            padding: 6px 12px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(16px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-        }
-
-        .cam-btn {
-            background: transparent;
-            border: 1px solid transparent;
-            color: var(--text-dim);
-            padding: 4px 10px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--success);
+            padding: 6px 10px;
             border-radius: 20px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.68rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .cam-btn:hover {
-            color: #fff;
-        }
-
-        .cam-btn.active {
-            background: rgba(0, 240, 255, 0.2);
-            border-color: var(--cyan);
-            color: #fff;
-            box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
-            font-weight: 700;
-        }
-
-        /* Walkthrough Depth Progress Meter & Time Scrubber */
-        .portal-timeline-meter {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 94%;
-            max-width: 840px;
-            background: rgba(11, 7, 24, 0.92);
-            border: 1px solid rgba(255, 0, 119, 0.4);
-            border-radius: 18px;
-            padding: 14px 22px;
-            backdrop-filter: blur(20px);
-            z-index: 25;
-            box-shadow: 0 10px 45px rgba(0, 0, 0, 0.85), 0 0 35px rgba(255, 0, 119, 0.25);
-        }
-
-        .meter-labels {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-family: 'Space Mono', monospace;
+            font-family: var(--font-mono);
             font-size: 0.7rem;
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-        }
-
-        .label-past { color: #94A3B8; cursor: pointer; }
-        .label-mid { color: var(--cyan); cursor: pointer; }
-        .label-future { color: var(--magenta); font-weight: 700; text-shadow: 0 0 10px var(--magenta); cursor: pointer; }
-        .label-past:hover, .label-mid:hover, .label-future:hover { text-decoration: underline; }
-
-        /* Interactive Timeline Scrubber Track */
-        .progress-track-container {
-            width: 100%;
-            height: 22px;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .progress-track {
-            width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 6px;
-            position: relative;
-            overflow: visible;
-        }
-
-        .progress-fill {
-            position: absolute;
-            top: 0; left: 0; height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #64748B 0%, var(--cyan) 50%, var(--magenta) 100%);
-            border-radius: 6px;
-            box-shadow: 0 0 14px var(--magenta);
-            pointer-events: none;
-        }
-
-        .scrubber-handle {
-            position: absolute;
-            top: 50%;
-            left: 0%;
-            transform: translate(-50%, -50%);
-            width: 16px;
-            height: 16px;
-            background: #FFFFFF;
-            border: 2px solid var(--magenta);
-            border-radius: 50%;
-            box-shadow: 0 0 12px var(--magenta);
-            pointer-events: none;
-            transition: transform 0.1s;
-        }
-
-        .meter-status {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 8px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.72rem;
-            color: #E2E8F0;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+            font-weight: 700;
+            min-height: 32px;
         }
 
         .status-dot {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
-            background: var(--magenta);
-            box-shadow: 0 0 8px var(--magenta);
-            animation: pulse-dot 1.2s infinite;
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
+            animation: pulse-dot 2s infinite;
         }
 
         @keyframes pulse-dot {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 1; transform: scale(1.2); }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
         }
 
-        /* Walk Forward Action Button for Mobile */
-        .btn-walk-step {
-            background: linear-gradient(135deg, var(--orange), var(--magenta));
+        .offline-badge {
+            display: none;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #EF4444;
+        }
+
+        .offline-badge .status-dot {
+            background: #EF4444;
+            box-shadow: 0 0 8px #EF4444;
+            animation: none;
+        }
+
+        .btn-install-pwa {
+            display: none;
+            background: linear-gradient(135deg, var(--toffee-orange), var(--toffee-red));
+            color: #fff;
             border: none;
-            color: #fff;
-            padding: 7px 16px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.72rem;
-            cursor: pointer;
-            letter-spacing: 1px;
-            box-shadow: 0 0 15px rgba(255, 0, 119, 0.4);
-            transition: transform 0.15s;
-        }
-        .btn-walk-step:active { transform: scale(0.96); }
-
-        /* Navigation Hint */
-        .walk-instructions {
-            position: absolute;
-            top: 120px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.78);
-            border: 1px solid rgba(255, 0, 119, 0.35);
-            padding: 6px 18px;
-            border-radius: 20px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.72rem;
-            color: #CBD5E1;
-            letter-spacing: 1.5px;
-            z-index: 15;
-            pointer-events: none;
-            white-space: nowrap;
-            transition: opacity 0.5s ease;
-        }
-
-        /* Holographic Screen Inspection Detail Modal */
-        .inspect-card {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            background: rgba(14, 8, 30, 0.95);
-            border: 2px solid var(--cyan);
-            border-radius: 20px;
-            padding: 24px;
-            width: 90%;
-            max-width: 440px;
-            z-index: 50;
-            display: none;
-            opacity: 0;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 0 50px rgba(0, 240, 255, 0.5);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .inspect-card.show {
-            display: block;
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .inspect-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            font-family: 'Space Mono', monospace;
+            padding: 6px 12px;
+            border-radius: 18px;
             font-size: 0.75rem;
-            color: var(--cyan);
-        }
-
-        .inspect-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin-bottom: 6px;
-            color: #fff;
-        }
-
-        .inspect-body {
-            font-size: 0.85rem;
-            color: var(--text-dim);
-            line-height: 1.5;
-            margin-bottom: 16px;
-        }
-
-        .inspect-stats {
-            background: #000;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 10px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.72rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        /* Exit Portal Rebirth Modal / Banner */
-        .rebirth-banner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            background: rgba(14, 8, 30, 0.96);
-            border: 2px solid var(--magenta);
-            box-shadow: 0 0 70px rgba(255, 0, 119, 0.6), 0 0 140px rgba(147, 51, 234, 0.5);
-            border-radius: 24px;
-            padding: 40px;
-            text-align: center;
-            max-width: 540px;
-            width: 90%;
-            z-index: 60;
-            display: none;
-            backdrop-filter: blur(24px);
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .rebirth-banner.show {
-            display: block;
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .rebirth-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 2.3rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #FFFFFF 0%, var(--magenta) 50%, var(--orange) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 12px;
-        }
-
-        .rebirth-desc {
-            color: #E2E8F0;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 24px;
-        }
-
-        .btn-enter-summit {
-            background: linear-gradient(135deg, var(--orange), var(--magenta));
-            color: #fff;
-            padding: 14px 32px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 800;
-            font-size: 1rem;
-            display: inline-block;
-            box-shadow: 0 6px 30px rgba(255, 0, 119, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: transform 0.2s;
-        }
-        .btn-enter-summit:hover { transform: scale(1.04); }
-
-        /* ========================================================
-           ATTENDEE COMPANION WEB APP (PWA / EOS 2.0 MOBILE CLIENT)
-           ======================================================== */
-        .companion-app-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #06030e;
-            color: #fff;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-
-        .companion-app-overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(0.98);
-        }
-
-        .companion-header {
-            padding: 14px 20px;
-            background: #0d0822;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-shrink: 0;
-        }
-
-        .companion-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .companion-brand img {
-            height: 24px;
-        }
-
-        .companion-badge-pill {
-            background: linear-gradient(135deg, var(--orange), var(--magenta));
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.68rem;
             font-weight: 700;
-            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(255, 102, 0, 0.3);
         }
 
-        .companion-content {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 16px 20px 85px;
-            max-width: 680px;
+        /* Tab Content Container */
+        .tab-viewport {
+            flex: 1;
+            padding: 16px;
+            max-width: 640px;
             width: 100%;
             margin: 0 auto;
         }
 
-        .companion-tab-panel {
+        .tab-panel {
             display: none;
-            animation: fadeIn 0.25s ease;
+            animation: fadeIn 0.25s ease-out;
         }
 
-        .companion-tab-panel.active {
+        .tab-panel.active {
             display: block;
         }
 
-        /* Bottom Tab Navigation Bar */
-        .companion-bottom-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(14, 8, 30, 0.95);
-            border-top: 1px solid rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(20px);
-            display: flex;
-            justify-content: space-around;
-            padding: 8px 12px;
-            z-index: 110;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .nav-item-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-dim);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.65rem;
-            cursor: pointer;
-            padding: 6px 12px;
-            border-radius: 8px;
-            transition: all 0.2s;
+        /* Hero Banner inside tabs */
+        .section-header {
+            margin-bottom: 16px;
         }
 
-        .nav-item-btn .nav-icon {
-            font-size: 1.25rem;
-        }
-
-        .nav-item-btn.active {
-            color: var(--cyan);
-            background: rgba(0, 240, 255, 0.08);
+        .section-tag {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+            color: var(--toffee-orange);
+            text-transform: uppercase;
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
         }
 
-        /* Tab 1: Digital Pass Card */
-        .pass-card-container {
-            background: #0f0a24;
-            border: 2px solid var(--purple);
-            border-radius: 20px;
-            padding: 24px 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(147, 51, 234, 0.25);
-            text-align: center;
-            position: relative;
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #ffffff, #dcdcdc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ========================================================
+           TAB 1: LIVE STAGE & AGENDA
+           ======================================================== */
+        .keynote-card {
+            background: linear-gradient(135deg, rgba(255, 102, 0, 0.12), rgba(230, 0, 69, 0.08)), var(--bg-card);
+            border: 1px solid rgba(255, 102, 0, 0.35);
+            border-radius: 18px;
+            padding: 18px;
             margin-bottom: 20px;
-            background-image: radial-gradient(circle at 80% 20%, rgba(255, 107, 0, 0.12) 0%, transparent 60%);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
         }
 
-        .pass-role-badge {
-            display: inline-block;
-            background: var(--orange);
-            color: #fff;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.75rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-            margin-top: 8px;
+        .keynote-card::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 80px; height: 80px;
+            background: radial-gradient(circle, rgba(255, 102, 0, 0.25), transparent 70%);
+            pointer-events: none;
         }
 
-        .pass-guest-name {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.9rem;
-            font-weight: 800;
-            margin: 14px 0 4px;
-            color: #fff;
-        }
-
-        .pass-company-name {
-            font-family: 'Space Mono', monospace;
-            color: var(--cyan);
-            font-size: 0.95rem;
-        }
-
-        .pass-qr-box {
-            background: #fff;
-            padding: 10px;
+        .live-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(230, 0, 69, 0.2);
+            border: 1px solid rgba(230, 0, 69, 0.5);
+            color: #FF0055;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 4px 10px;
             border-radius: 12px;
-            display: inline-block;
-            margin: 20px auto 14px;
+            margin-bottom: 12px;
         }
 
-        .pass-id-display {
-            font-family: 'Space Mono', monospace;
+        .speaker-name {
             font-size: 1.3rem;
             font-weight: 800;
-            color: var(--orange);
-            letter-spacing: 2px;
-        }
-
-        /* Tab 2: Agenda Items */
-        .agenda-session-card {
-            background: #110c26;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            transition: all 0.2s;
-        }
-
-        .agenda-session-card.is-live {
-            border-color: #22c55e;
-            background: rgba(34, 197, 94, 0.08);
-            box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
-        }
-
-        .session-time-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--cyan);
-            margin-bottom: 6px;
-        }
-
-        .session-live-pill {
-            background: #22c55e;
-            color: #000;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-weight: 800;
-            font-size: 0.65rem;
-            letter-spacing: 1px;
-            animation: pulse-dot 1s infinite alternate;
-        }
-
-        .session-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.05rem;
-            font-weight: 700;
             color: #fff;
             margin-bottom: 4px;
         }
 
-        .session-speaker {
-            font-size: 0.82rem;
-            color: var(--text-dim);
+        .speaker-role {
+            font-size: 0.85rem;
+            color: var(--neon-cyan);
+            font-weight: 600;
+            margin-bottom: 12px;
         }
 
-        /* Tab 3: Booth Guide Directory */
-        .booth-guide-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-
-        .booth-guide-item {
-            background: #110c26;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 14px 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .booth-guide-info h4 {
-            font-family: 'Syne', sans-serif;
+        .keynote-topic {
             font-size: 0.95rem;
+            line-height: 1.45;
+            color: #e2e8f0;
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 3px solid var(--toffee-orange);
+            padding: 10px 12px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 14px;
+        }
+
+        .keynote-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-live-action {
+            flex: 1;
+            min-height: 48px;
+            background: linear-gradient(135deg, var(--toffee-orange), var(--toffee-red));
             color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(255, 102, 0, 0.35);
+            text-decoration: none;
+        }
+
+        .btn-live-action.secondary {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: none;
+            color: #fff;
+        }
+
+        .agenda-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .agenda-item {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 14px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .agenda-item.active-session {
+            border-color: rgba(0, 240, 255, 0.4);
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.06), var(--bg-card));
+        }
+
+        .agenda-time {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--neon-cyan);
+            font-weight: 700;
+            white-space: nowrap;
+            padding-top: 2px;
+        }
+
+        .agenda-info h4 {
+            font-size: 0.95rem;
+            font-weight: 700;
             margin-bottom: 3px;
         }
 
-        .booth-guide-info p {
-            font-size: 0.78rem;
-            color: var(--text-dim);
-            line-height: 1.4;
+        .agenda-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
         }
 
-        .booth-tag-pill {
-            display: inline-block;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.65rem;
-            padding: 2px 8px;
-            border-radius: 8px;
-            margin-top: 4px;
-            background: rgba(0, 240, 255, 0.1);
-            color: var(--cyan);
-            border: 1px solid rgba(0, 240, 255, 0.3);
-        }
-
-        .btn-booth-link {
-            background: linear-gradient(135deg, var(--orange), var(--magenta));
-            color: #fff;
-            padding: 8px 14px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.72rem;
-            font-weight: 700;
-            white-space: nowrap;
-            display: inline-flex;
+        /* ========================================================
+           TAB 2: INSTANT VOTE BUZZER
+           ======================================================== */
+        .vote-container {
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 4px;
+            text-align: center;
         }
 
-        /* Tab 4: Live Voting Widget */
-        .vote-card-box {
-            background: #110c26;
-            border: 1px solid var(--border-machined);
+        .poll-topic-box {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
+            padding: 16px 20px;
+            width: 100%;
+            margin-bottom: 20px;
         }
 
-        .vote-btn-choice {
-            width: 100%;
-            padding: 16px;
-            border-radius: 12px;
-            border: 2px solid transparent;
-            font-family: 'Syne', sans-serif;
-            font-size: 1.05rem;
+        .poll-status-indicator {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--gold);
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .poll-title {
+            font-size: 1.15rem;
             font-weight: 800;
+            line-height: 1.35;
+        }
+
+        /* Massive Dual Buzzer Buttons (Min height 110px each, touch >= 48px guaranteed) */
+        .buzzer-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .buzzer-btn {
+            position: relative;
+            min-height: 110px;
+            width: 100%;
+            border-radius: 20px;
+            border: 2px solid transparent;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             cursor: pointer;
-            margin-bottom: 12px;
-            transition: all 0.2s;
+            outline: none;
+            overflow: hidden;
+            transition: transform 0.08s ease, filter 0.15s ease;
+        }
+
+        .buzzer-btn:active {
+            transform: scale(0.96);
+            filter: brightness(1.2);
+        }
+
+        .buzzer-btn.red-team {
+            background: linear-gradient(135deg, #FF6600, #E60045);
+            box-shadow: 0 10px 30px rgba(255, 102, 0, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 102, 0, 0.5);
+        }
+
+        .buzzer-btn.blue-team {
+            background: linear-gradient(135deg, #00C6FF, #0072FF);
+            box-shadow: 0 10px 30px rgba(0, 198, 255, 0.35), inset 0 2px 0 rgba(255, 255, 255, 0.25);
+            border-color: rgba(0, 198, 255, 0.5);
+        }
+
+        .buzzer-meta {
+            text-align: left;
+            z-index: 2;
+        }
+
+        .buzzer-key {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            opacity: 0.9;
+            font-weight: 700;
+        }
+
+        .buzzer-label {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #fff;
+            margin: 4px 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .buzzer-hint {
+            font-size: 0.78rem;
+            opacity: 0.85;
+        }
+
+        .buzzer-icon {
+            font-size: 2.2rem;
+            z-index: 2;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+
+        /* Sub-50ms Haptic Ripple */
+        .buzzer-ripple {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: translate(-50%, -50%) scale(0);
+            pointer-events: none;
+        }
+
+        .buzzer-ripple.active {
+            animation: rip 0.45s cubic-bezier(0.1, 0.8, 0.3, 1);
+        }
+
+        @keyframes rip {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(15); opacity: 0; }
+        }
+
+        /* Live Meter & Stats */
+        .poll-results-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 18px;
+            width: 100%;
+        }
+
+        .meter-bar-container {
+            display: flex;
+            height: 18px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 12px 0 10px;
+            background: #231E3D;
+        }
+
+        .meter-segment-red {
+            background: linear-gradient(90deg, #FF6600, #E60045);
+            transition: width 0.35s ease;
+        }
+
+        .meter-segment-blue {
+            background: linear-gradient(90deg, #00C6FF, #0072FF);
+            transition: width 0.35s ease;
+        }
+
+        .results-legend {
             display: flex;
             justify-content: space-between;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .vote-toast {
+            position: fixed;
+            bottom: calc(var(--nav-height) + 24px);
+            left: 50%;
+            transform: translateX(-50%) translateY(30px);
+            background: rgba(16, 185, 129, 0.95);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 24px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
             align-items: center;
+            gap: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+            z-index: 100;
         }
 
-        .vote-btn-choice.red {
-            background: rgba(255, 8, 68, 0.15);
-            border-color: #FF0844;
-            color: #FF0844;
+        .vote-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
 
-        .vote-btn-choice.red:hover, .vote-btn-choice.red.voted {
-            background: #FF0844;
+        /* ========================================================
+           TAB 3: VECTOR STADIUM HALL MAP
+           ======================================================== */
+        .map-wrapper {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            padding: 14px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .map-svg {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+            background: #090814;
+        }
+
+        .map-pin {
+            cursor: pointer;
+            transition: transform 0.2s, filter 0.2s;
+        }
+
+        .map-pin:hover, .map-pin:active {
+            transform: scale(1.08);
+            filter: drop-shadow(0 0 10px var(--neon-cyan));
+        }
+
+        .booth-detail-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .booth-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .booth-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+
+        .booth-tag {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .booth-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        .booth-quick-nav {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .btn-booth-pill {
+            min-height: 48px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             color: #fff;
-            box-shadow: 0 0 25px rgba(255, 8, 68, 0.6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 12px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
         }
 
-        .vote-btn-choice.blue {
-            background: rgba(0, 114, 255, 0.15);
-            border-color: #0072FF;
-            color: #0072FF;
+        .btn-booth-pill:active {
+            background: rgba(255, 102, 0, 0.18);
+            border-color: var(--toffee-orange);
         }
 
-        .vote-btn-choice.blue:hover, .vote-btn-choice.blue.voted {
-            background: #0072FF;
+        /* ========================================================
+           TAB 4: ATTENDEE MEDIA LOCKER
+           ======================================================== */
+        .attendee-id-card {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(230, 0, 69, 0.2)), var(--bg-card);
+            border: 1px solid rgba(147, 51, 234, 0.4);
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .attendee-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--toffee-orange), var(--toffee-red));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.35);
+        }
+
+        .attendee-meta h3 {
+            font-size: 1.05rem;
+            font-weight: 800;
+        }
+
+        .attendee-meta p {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--neon-cyan);
+        }
+
+        .locker-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .locker-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .locker-badge-type {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--toffee-orange);
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .locker-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .locker-sub {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .locker-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-locker-action {
+            flex: 1;
+            min-height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-locker-action.download {
+            background: linear-gradient(135deg, var(--toffee-orange), var(--toffee-red));
             color: #fff;
-            box-shadow: 0 0 25px rgba(0, 114, 255, 0.6);
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
         }
 
-        /* Hidden video element for live video textures */
-        #hero-video-source {
+        .btn-locker-action.whatsapp {
+            background: #25D366;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        .offline-wallet-pass {
+            background: #0D0B18;
+            border: 2px dashed rgba(255, 102, 0, 0.35);
+            border-radius: 16px;
+            padding: 18px;
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .qr-placeholder {
+            width: 140px;
+            height: 140px;
+            margin: 12px auto;
+            background: #fff;
+            padding: 8px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-placeholder svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ========================================================
+           NATIVE BOTTOM NAVIGATION BAR (Touch targets >= 48px)
+           ======================================================== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: var(--nav-height);
+            background: rgba(14, 11, 28, 0.94);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding: 0 4px;
+            z-index: 50;
+        }
+
+        .nav-tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            min-height: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: color 0.15s, transform 0.1s;
+            position: relative;
+        }
+
+        .nav-tab-btn:active {
+            transform: scale(0.94);
+        }
+
+        .nav-tab-icon {
+            font-size: 1.35rem;
+            transition: transform 0.15s;
+        }
+
+        .nav-tab-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+
+        .nav-tab-btn.active {
+            color: var(--toffee-orange);
+        }
+
+        .nav-tab-btn.active .nav-tab-icon {
+            transform: translateY(-2px);
+            filter: drop-shadow(0 2px 8px rgba(255, 102, 0, 0.5));
+        }
+
+        .tab-indicator {
+            position: absolute;
+            top: 0;
+            width: 28px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--toffee-orange), var(--toffee-red));
+            border-radius: 0 0 3px 3px;
             display: none;
+        }
+
+        .nav-tab-btn.active .tab-indicator {
+            display: block;
         }
     </style>
 </head>
 <body>
+    <div class="scanlines"></div>
 
-    <!-- Shared Loop Video for Hero LED Screen Textures -->
-    <video id="hero-video-source" src="/assets/opening-film.mp4" loop muted playsinline crossOrigin="anonymous"></video>
-
-    <!-- CRT Glitch & Noise Overlays for Analog Grain Transition -->
-    <div id="crt-overlay"></div>
-    <div id="noise-overlay"></div>
-
-    <!-- Top HUD Navigation -->
-    <div class="hud-header">
-        <div class="hud-left">
-            <div class="portal-badge">
-                <img src="/assets/toffeecon-logo.png" alt="ToffeeCon 2026">
-                <span>THE PORTAL TO A NEW ERA</span>
+    <!-- PWA Top App Bar -->
+    <header class="app-header">
+        <a href="/portal" class="header-brand">
+            <img src="/assets/toffeecon-logo.png" alt="ToffeeCon" class="header-logo" onerror="this.style.display='none'">
+            <span class="brand-badge">TOFFEECON '26</span>
+        </a>
+        <div class="header-actions">
+            <button class="btn-install-pwa" id="btnInstallPwa" onclick="installPWA()">Install App</button>
+            <div class="status-pill" id="liveStatusPill">
+                <span class="status-dot"></span>
+                <span id="liveStatusText">LIVE SYNC</span>
             </div>
-            <div class="director-pulse-badge" id="director-status-pill">
-                <span class="director-pulse-dot"></span>
-                <span id="director-status-text">LIVE SYNC</span>
-            </div>
-        </div>
-        <div class="hud-right">
-            <button class="hud-btn" id="btn-toggle-companion" onclick="toggleCompanionView()" style="background:linear-gradient(135deg, rgba(255,107,0,0.3), rgba(255,0,119,0.4)); border-color:var(--magenta); color:#fff; font-weight:700;">
-                <span>📱</span>
-                <span>Attendee Companion</span>
-            </button>
-            <button class="hud-btn" id="btn-audio" title="Toggle Ambience Sound">
-                <span id="audio-icon">🔇</span>
-                <span>Spatial Sound: Muted</span>
-            </button>
-            <a href="/hub" class="hud-btn" title="Director Hub Control">
-                <span>🎛️</span>
-                <span>Director Hub</span>
-            </a>
-            <a href="/" class="hud-btn">
-                <span>←</span>
-                <span>Summit Home</span>
-            </a>
-        </div>
-    </div>
-
-    <!-- ========================================================
-         ATTENDEE COMPANION WEB APP (PWA / EOS 2.0 MOBILE CLIENT)
-         ======================================================== -->
-    <div class="companion-app-overlay hidden" id="companionOverlay">
-        <!-- Top App Bar -->
-        <div class="companion-header">
-            <div class="companion-brand">
-                <img src="/assets/toffeecon-logo.png" alt="ToffeeCon 2026">
-                <div>
-                    <div style="font-family:'Syne', sans-serif; font-weight:800; font-size:0.95rem; line-height:1;">TOFFEECON '26</div>
-                    <div style="font-family:'Space Mono', monospace; font-size:0.65rem; color:var(--cyan); margin-top:2px;">ATTENDEE COMPANION</div>
-                </div>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-                <span class="companion-badge-pill" id="appLiveSessionTag">NOW: AMBIENT WALK-IN</span>
-                <button class="hud-btn" onclick="toggleCompanionView()" style="padding:6px 12px; font-size:0.75rem;">
-                    <span>✕</span> <span>3D Tunnel</span>
-                </button>
+            <div class="status-pill offline-badge" id="offlineStatusPill">
+                <span class="status-dot"></span>
+                <span>OFFLINE WALLET</span>
             </div>
         </div>
+    </header>
 
-        <!-- Scrollable Tab Content Container -->
-        <div class="companion-content">
-            <!-- TAB 1: DIGITAL PASS -->
-            <div class="companion-tab-panel active" id="cpanel-pass">
-                <div class="pass-card-container">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-family:'Space Mono'; font-size:0.7rem; color:var(--text-dim);">SUMMIT ACCREDITATION</span>
-                        <span style="font-family:'Space Mono'; font-size:0.7rem; color:var(--green);">● VERIFIED IN-VENUE</span>
-                    </div>
+    <!-- Main Mobile Viewport -->
+    <main class="tab-viewport">
+        <!-- ==========================================
+             TAB 1: LIVE STAGE & AGENDA
+             ========================================== -->
+        <section class="tab-panel active" id="tab-agenda">
+            <div class="section-header">
+                <div class="section-tag"><span>⚡</span> ARENA KEYNOTE STAGE</div>
+                <h1 class="section-title">Live Stage & Agenda</h1>
+            </div>
 
-                    <div class="pass-role-badge" id="appPassRole">KEYNOTE SPEAKER</div>
-                    <div class="pass-guest-name" id="appPassName">Taimur Rahman</div>
-                    <div class="pass-company-name" id="appPassCompany">Banglalink · CCRO</div>
-                    <div style="font-family:'Space Mono'; font-size:0.75rem; color:var(--text-dim); margin-top:4px;" id="appPassGate">ASSIGNED GATE: Gate 1 (VIP North)</div>
-
-                    <!-- Dynamic QR Code -->
-                    <div class="pass-qr-box">
-                        <img id="appPassQr" src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://toffeecon.live/programme?id=TCON-3089" width="130" height="130" alt="Personal Digital Pass QR">
-                    </div>
-                    <div class="pass-id-display" id="appPassId">TCON-3089</div>
-
-                    <!-- 1D Barcode Graphic -->
-                    <div class="barcode-strip" style="margin-top:14px; height:34px; background:#fff; display:flex; gap:2px; padding:3px 8px; border-radius:4px; justify-content:center; overflow:hidden;" id="appPassBarcode">
-                        <!-- Populated by JS -->
-                    </div>
-
-                    <div style="display:flex; gap:8px; margin-top:18px; justify-content:center;">
-                        <button class="hud-btn" onclick="window.print()" style="padding:8px 16px; font-size:0.75rem;">🖨️ Print Physical Badge</button>
-                        <a href="/gate" class="hud-btn" style="padding:8px 16px; font-size:0.75rem; border-color:var(--cyan); color:var(--cyan);">Speed-Gate ↗</a>
-                    </div>
+            <!-- Active Keynote Card -->
+            <div class="keynote-card">
+                <div class="live-tag">
+                    <span class="status-dot" style="background:#FF0055;"></span>
+                    <span id="keynoteStatusBadge">NOW BROADCASTING</span>
+                </div>
+                <div class="speaker-name" id="speakerName">Taimur Rahman</div>
+                <div class="speaker-role" id="speakerRole">Chief Commercial Officer · Banglalink</div>
+                <div class="keynote-topic" id="speakerTopic">
+                    "Screen of Tomorrow: The Next 7 Years of Streaming & Telco Video Evolution"
+                </div>
+                <div class="keynote-actions">
+                    <button class="btn-live-action" onclick="switchTab('vote')">
+                        <span>⚡</span>
+                        <span>Cast Live Vote</span>
+                    </button>
+                    <a href="/stage" class="btn-live-action secondary" target="_blank">
+                        <span>🖥️</span>
+                        <span>Arena LED</span>
+                    </a>
                 </div>
             </div>
 
-            <!-- TAB 2: SCHEDULE & LIVE AGENDA TRACKER -->
-            <div class="companion-tab-panel" id="cpanel-agenda">
-                <div style="margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-family:'Space Mono'; font-size:0.75rem; color:var(--text-dim);">MAINSTAGE RUN OF SHOW</span>
-                    <span style="font-family:'Space Mono'; font-size:0.72rem; color:var(--green);">● LIVE SYNC ACTIVE</span>
+            <!-- Summit Agenda Timeline -->
+            <div class="section-tag" style="margin-top: 24px;"><span>📅</span> OFFICIAL SUMMIT SCHEDULE</div>
+            <div class="agenda-list">
+                <div class="agenda-item">
+                    <div class="agenda-time">10:00 AM</div>
+                    <div class="agenda-info">
+                        <h4>Opening AV: The Genesis of Streaming</h4>
+                        <p>Main Arena · 3-Screen Immersive Panoramic Reveal</p>
+                    </div>
                 </div>
-
-                <div id="companionAgendaList">
-                    <!-- Populated dynamically with live scene highlight -->
+                <div class="agenda-item active-session">
+                    <div class="agenda-time">10:30 AM</div>
+                    <div class="agenda-info">
+                        <h4>Purple Dot Handoff & Keynote Address</h4>
+                        <p>Taimur Rahman & Erik Aas · Telephony meets 6G AI</p>
+                    </div>
                 </div>
-            </div>
-
-            <!-- TAB 3: BOOTH GUIDE DIRECTORY (ALL 9 BOOTHS) -->
-            <div class="companion-tab-panel" id="cpanel-booths">
-                <div style="margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-family:'Space Mono'; font-size:0.75rem; color:var(--text-dim);">EXPERIENTIAL ACTIVATIONS (9 BOOTHS)</span>
-                    <span style="font-family:'Space Mono'; font-size:0.72rem; color:var(--cyan);">RADISSON BLU FOYER</span>
+                <div class="agenda-item">
+                    <div class="agenda-time">11:15 AM</div>
+                    <div class="agenda-info">
+                        <h4>The Sonic Dilemma: Brand Sound Clash</h4>
+                        <p>Audience Instant Haptic Buzzer Duel</p>
+                    </div>
                 </div>
-
-                <div class="booth-guide-grid">
-                    <!-- 1. Mission Control -->
-                    <div class="booth-guide-item">
-                        <div class="booth-guide-info">
-                            <h4>🚀 1. Mission Control (Advertiser Flight Deck)</h4>
-                            <p>Retro flight-deck console for advertisers with physical toggles, Solari board, and instant 1-page reports.</p>
-                            <span class="booth-tag-pill">ADVERTISERS · FOYER ZONE A</span>
-                        </div>
-                        <a href="/booth/mission-control" target="_blank" class="btn-booth-link">Launch ↗</a>
+                <div class="agenda-item">
+                    <div class="agenda-time">01:00 PM</div>
+                    <div class="agenda-info">
+                        <h4>Memory Marathon Grand Prix 🏁</h4>
+                        <p>Fastest Finger First · 60s Stadium Speed Run</p>
                     </div>
-
-                    <!-- 2. The Dub Booth -->
-                    <div class="booth-guide-item">
-                        <div class="booth-guide-info">
-                            <h4>🎙️ 2. The Dub Booth (Global AI Voice)</h4>
-                            <p>Global OTT voice morphing studio with 5 regional dialects and 9:16 vertical lip-sync reel generator.</p>
-                            <span class="booth-tag-pill">INTERACTIVE · FOYER ZONE B</span>
-                        </div>
-                        <a href="/dub" target="_blank" class="btn-booth-link">Launch ↗</a>
+                </div>
+                <div class="agenda-item">
+                    <div class="agenda-time">02:30 PM</div>
+                    <div class="agenda-info">
+                        <h4>Toffee OTT AI Casting Audition Showcase</h4>
+                        <p>Bengali Sci-Fi Protagonist Curated Screen Test</p>
                     </div>
-
-                    <!-- 3. Screen Relay -->
-                    <div class="booth-guide-item">
-                        <div class="booth-guide-info">
-                            <h4>📱 3. Screen Relay</h4>
-                            <p>Seamless triple-screen migration: move your 4K stream across phone, tablet, and big screen with sub-second handoff.</p>
-                            <span class="booth-tag-pill">TECH DEMO · FOYER ZONE C</span>
-                        </div>
-                        <a href="/booth/screen-relay" target="_blank" class="btn-booth-link">Launch ↗</a>
-                    </div>
-
-                    <!-- 4. The Space Window -->
-                    <div class="booth-guide-item">
-                        <div class="booth-guide-info">
-                            <h4>🛰️ 4. The Space Window</h4>
-                            <p>Ceiling-mounted LED starfield simulator and illuminated 104-channel catalogue wall with B2B advertiser media kit.</p>
-                            <span class="booth-tag-pill">PR & ADVERTISERS · CEILING LED</span>
-                        </div>
-                        <a href="/space-window" target="_blank" class="btn-booth-link">Launch ↗</a>
-                    </div>
-
-                    <!-- 5. Capsule Cabin -->
-                    <div class="booth-guide-item">
-                        <div class="booth-guide-info">
-                            <h4>📼 5. Capsule Cabin (2033 Archive)</h4>
-                            <p>Retro CRT prediction cabin where attendees record 2033 entertainment forecasts, summarized by Gemini AI.</p>
-                            <span class="booth-tag-pill">EXPERIENTIAL · ZONE D</span>
-                        </div>
-                        <a href="/booth/capsule-booth" target="_blank" class="btn-booth-link">Launch ↗</a>
-                    </div>
-
-                    <!-- 6. In Another Universe -->
-                    <div class="booth-guide-item">
-                        <div class="booth-guide-info">
-                            <h4>🌌 6. In Another Universe</h4>
-                            <p>Retro-futuristic photobooth transforming attendees into Sports, Adventure, Drama, and Action movie worlds.</p>
-                            <span class="booth-tag-pill">PHOTO ACTIVATION · ZONE E</span>
-                        </div>
-                        <a href="/universe" target="_blank" class="btn-booth-link">Launch ↗</a>
-                    </div>
-
-                    <!-- 7. OTT Casting Audition -->
-                    <div class="booth-guide-item">
-                        <div class="booth-guide-info">
-                            <h4>🎭 7. OTT Casting Audition</h4>
-                            <p>Audition as Boltu Bhai or Maya Sen with real-time AI critique, OTT readiness score, and movie posters.</p>
-                            <span class="booth-tag-pill">TALENT HUB · ZONE F</span>
-                        </div>
-                        <a href="/booth/audition" target="_blank" class="btn-booth-link">Launch ↗</a>
-                    </div>
-
-                    <!-- 8. Memory Marathon -->
-                    <div class="booth-guide-item">
-                        <div class="booth-guide-info">
-                            <h4>🏃 8. Memory Marathon (Audience Race)</h4>
-                            <p>Live 8-lane crowd trivia battle synced to keynote topics on the 3-screen panoramic LED mainstage.</p>
-                            <span class="booth-tag-pill">ON-STAGE CROWD · LIVE SHOW</span>
-                        </div>
-                        <a href="/marathon" target="_blank" class="btn-booth-link">Racer 📱</a>
-                    </div>
-
-                    <!-- 9. Taste Duel -->
-                    <div class="booth-guide-item">
-                        <div class="booth-guide-info">
-                            <h4>🥊 9. Taste Duel (Codec A/B)</h4>
-                            <p>Blind streaming challenge putting AV1 vs HEVC head-to-head under high network latency simulations.</p>
-                            <span class="booth-tag-pill">TECH CHALLENGE · ZONE G</span>
-                        </div>
-                        <a href="/booth/taste-duel" target="_blank" class="btn-booth-link">Launch ↗</a>
+                </div>
+                <div class="agenda-item">
+                    <div class="agenda-time">04:00 PM</div>
+                    <div class="agenda-info">
+                        <h4>ToffeeCon 2033 Time Capsule & Wrap</h4>
+                        <p>Digital Sealed Vault & Summit Recap Holograms</p>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- TAB 4: LIVE ON-STAGE AUDIENCE VOTING -->
-            <div class="companion-tab-panel" id="cpanel-vote">
-                <div class="vote-card-box">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                        <span style="font-family:'Space Mono'; font-size:0.75rem; color:var(--magenta);">⚔️ LIVE MAINSTAGE POLL</span>
-                        <span class="session-live-pill">OPEN FOR VOTING</span>
+        <!-- ==========================================
+             TAB 2: INSTANT VOTE BUZZER
+             ========================================== -->
+        <section class="tab-panel" id="tab-vote">
+            <div class="section-header">
+                <div class="section-tag"><span>⚡</span> SUB-50MS HAPTIC BUZZER</div>
+                <h1 class="section-title">Audience Vote Buzzer</h1>
+            </div>
+
+            <div class="vote-container">
+                <div class="poll-topic-box">
+                    <div class="poll-status-indicator" id="pollStatusIndicator">ACTIVE POLL · LIVE ARENA SYNC</div>
+                    <h2 class="poll-title" id="pollTitle">The Sonic Dilemma: Official Toffee Brand Sound</h2>
+                </div>
+
+                <!-- Dual Giant Buzzers -->
+                <div class="buzzer-grid">
+                    <button class="buzzer-btn red-team" id="buzzerRed" onclick="handleVoteClick('red')">
+                        <div class="buzzer-ripple" id="rippleRed"></div>
+                        <div class="buzzer-meta">
+                            <span class="buzzer-key">OPTION A</span>
+                            <div class="buzzer-label" id="labelRed">Sonic Alpha</div>
+                            <span class="buzzer-hint">Dynamic Retro Synth Pulse</span>
+                        </div>
+                        <div class="buzzer-icon">🔴</div>
+                    </button>
+
+                    <button class="buzzer-btn blue-team" id="buzzerBlue" onclick="handleVoteClick('blue')">
+                        <div class="buzzer-ripple" id="rippleBlue"></div>
+                        <div class="buzzer-meta">
+                            <span class="buzzer-key">OPTION B</span>
+                            <div class="buzzer-label" id="labelBlue">Sonic Beta</div>
+                            <span class="buzzer-hint">Futuristic 6G Sub-Bass</span>
+                        </div>
+                        <div class="buzzer-icon">🔵</div>
+                    </button>
+                </div>
+
+                <!-- Live Poll Results Bar -->
+                <div class="poll-results-card">
+                    <div class="results-legend">
+                        <span style="color:#FF6600;" id="pctRed">52% (Alpha)</span>
+                        <span style="color:var(--text-muted);" id="totalVotesCount">600 TOTAL VOTES</span>
+                        <span style="color:#00C6FF;" id="pctBlue">48% (Beta)</span>
                     </div>
-                    <h3 style="font-family:'Syne', sans-serif; font-size:1.25rem; font-weight:800; margin-bottom:6px;">
-                        The Sonic Dilemma: Official Toffee Brand Sound
-                    </h3>
-                    <p style="font-size:0.82rem; color:var(--text-dim); margin-bottom:16px;">
-                        Cast your vote directly from your seat. Results stream in real-time to the 3-screen mainstage LED wall!
+                    <div class="meter-bar-container">
+                        <div class="meter-segment-red" id="barRed" style="width: 52%;"></div>
+                        <div class="meter-segment-blue" id="barBlue" style="width: 48%;"></div>
+                    </div>
+                    <p style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">
+                        Tapping triggers device haptic motor & multicasts via WebSocket room <code>attendee_voting</code>
                     </p>
+                </div>
+            </div>
+        </section>
 
-                    <button type="button" class="vote-btn-choice red" id="appVoteRedBtn" onclick="castAppVote('red')">
-                        <span>🔴 Sonic Alpha (Retro Dynamic)</span>
-                        <span id="appPctRed">52%</span>
-                    </button>
+        <!-- ==========================================
+             TAB 3: VECTOR STADIUM HALL MAP
+             ========================================== -->
+        <section class="tab-panel" id="tab-map">
+            <div class="section-header">
+                <div class="section-tag"><span>🗺️</span> INTERACTIVE STADIUM MAP</div>
+                <h1 class="section-title">Floor Plan & Booths</h1>
+            </div>
 
-                    <button type="button" class="vote-btn-choice blue" id="appVoteBlueBtn" onclick="castAppVote('blue')">
-                        <span>🔵 Sonic Beta (Futuristic Pulse)</span>
-                        <span id="appPctBlue">48%</span>
-                    </button>
+            <!-- Stadium Vector SVG Map -->
+            <div class="map-wrapper">
+                <svg class="map-svg" viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Stadium Outer Shell -->
+                    <rect x="20" y="20" width="760" height="480" rx="40" fill="#0D0B1A" stroke="#252042" stroke-width="3"/>
+                    
+                    <!-- Main Arena Stage -->
+                    <path d="M 120 70 L 680 70 L 630 150 L 170 150 Z" fill="url(#stageGrad)" stroke="#FF6600" stroke-width="2"/>
+                    <text x="400" y="115" text-anchor="middle" fill="#FFFFFF" font-family="'Syne', sans-serif" font-weight="800" font-size="20">
+                        MAINSTAGE PANORAMIC LED ARENA
+                    </text>
 
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; font-family:'Space Mono'; font-size:0.75rem; color:var(--text-dim);">
-                        <span id="appTotalVotes">600 Total Votes</span>
-                        <a href="/vote" target="_blank" style="color:var(--cyan); text-decoration:none;">Full Vote Deck ↗</a>
+                    <!-- Runway / Walkway -->
+                    <rect x="360" y="150" width="80" height="230" fill="#17132F" stroke="#3D356A" stroke-dasharray="6,4"/>
+                    <text x="400" y="270" text-anchor="middle" fill="#94A3B8" font-family="'Space Mono'" font-size="11" transform="rotate(-90 400 270)">
+                        CENTRAL IMMERSIVE RUNWAY
+                    </text>
+
+                    <!-- Booth 1: Dub Booth (Top Left) -->
+                    <g class="map-pin" onclick="selectBooth('dub')">
+                        <rect x="60" y="180" width="130" height="85" rx="12" fill="#1C1835" stroke="#FF6600" stroke-width="2"/>
+                        <circle cx="125" cy="210" r="16" fill="rgba(255,102,0,0.2)"/>
+                        <text x="125" y="215" text-anchor="middle" font-size="14">🎙️</text>
+                        <text x="125" y="242" text-anchor="middle" fill="#FFFFFF" font-family="'Plus Jakarta Sans'" font-weight="700" font-size="11">AI Dub Box</text>
+                    </g>
+
+                    <!-- Booth 2: AI Casting (Mid Left) -->
+                    <g class="map-pin" onclick="selectBooth('audition')">
+                        <rect x="60" y="285" width="130" height="85" rx="12" fill="#1C1835" stroke="#9333EA" stroke-width="2"/>
+                        <circle cx="125" cy="315" r="16" fill="rgba(147,51,234,0.2)"/>
+                        <text x="125" y="320" text-anchor="middle" font-size="14">🎭</text>
+                        <text x="125" y="347" text-anchor="middle" fill="#FFFFFF" font-family="'Plus Jakarta Sans'" font-weight="700" font-size="11">AI Audition</text>
+                    </g>
+
+                    <!-- Booth 3: Capsule Booth (Top Right) -->
+                    <g class="map-pin" onclick="selectBooth('capsule')">
+                        <rect x="610" y="180" width="130" height="85" rx="12" fill="#1C1835" stroke="#FFB800" stroke-width="2"/>
+                        <circle cx="675" cy="210" r="16" fill="rgba(255,184,0,0.2)"/>
+                        <text x="675" y="215" text-anchor="middle" font-size="14">📼</text>
+                        <text x="675" y="242" text-anchor="middle" fill="#FFFFFF" font-family="'Plus Jakarta Sans'" font-weight="700" font-size="11">Time Capsule</text>
+                    </g>
+
+                    <!-- Booth 4: Taste Duel (Mid Right) -->
+                    <g class="map-pin" onclick="selectBooth('duel')">
+                        <rect x="610" y="285" width="130" height="85" rx="12" fill="#1C1835" stroke="#00F0FF" stroke-width="2"/>
+                        <circle cx="675" cy="315" r="16" fill="rgba(0,240,255,0.2)"/>
+                        <text x="675" y="320" text-anchor="middle" font-size="14">📺</text>
+                        <text x="675" y="347" text-anchor="middle" fill="#FFFFFF" font-family="'Plus Jakarta Sans'" font-weight="700" font-size="11">Taste Duel</text>
+                    </g>
+
+                    <!-- Space Window Booth (Bottom Left) -->
+                    <g class="map-pin" onclick="selectBooth('space')">
+                        <rect x="210" y="285" width="130" height="85" rx="12" fill="#1C1835" stroke="#10B981" stroke-width="1.5"/>
+                        <circle cx="275" cy="315" r="16" fill="rgba(16,185,129,0.2)"/>
+                        <text x="275" y="320" text-anchor="middle" font-size="14">🛰️</text>
+                        <text x="275" y="347" text-anchor="middle" fill="#FFFFFF" font-family="'Plus Jakarta Sans'" font-weight="700" font-size="11">Space Window</text>
+                    </g>
+
+                    <!-- 100-Phone Wall (Bottom Right) -->
+                    <g class="map-pin" onclick="selectBooth('wall')">
+                        <rect x="460" y="285" width="130" height="85" rx="12" fill="#1C1835" stroke="#FF0077" stroke-width="1.5"/>
+                        <circle cx="525" cy="315" r="16" fill="rgba(255,0,119,0.2)"/>
+                        <text x="525" y="320" text-anchor="middle" font-size="14">📱</text>
+                        <text x="525" y="347" text-anchor="middle" fill="#FFFFFF" font-family="'Plus Jakarta Sans'" font-weight="700" font-size="11">100-Phone Wall</text>
+                    </g>
+
+                    <!-- Entrance & Turnstile -->
+                    <rect x="300" y="420" width="200" height="55" rx="16" fill="#120F26" stroke="#00F0FF" stroke-width="2"/>
+                    <text x="400" y="445" text-anchor="middle" fill="#00F0FF" font-family="'Space Mono'" font-size="11" font-weight="700">
+                        🚪 RAPID PASS SPEED-GATE
+                    </text>
+                    <text x="400" y="462" text-anchor="middle" fill="#94A3B8" font-family="'Plus Jakarta Sans'" font-size="9">
+                        Express Turnstiles & VIP Accreditation
+                    </text>
+
+                    <!-- Gradients -->
+                    <defs>
+                        <linearGradient id="stageGrad" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#FF6600" stop-opacity="0.3"/>
+                            <stop offset="50%" stop-color="#E60045" stop-opacity="0.5"/>
+                            <stop offset="100%" stop-color="#FF6600" stop-opacity="0.3"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+
+            <!-- Booth Detail Card (Changes dynamically on pin tap) -->
+            <div class="booth-detail-card" id="boothDetailCard">
+                <div class="booth-title-row">
+                    <h3 class="booth-title" id="boothCardTitle">🎙️ Telephone Dub Box (Booth 01)</h3>
+                    <span class="booth-tag" id="boothCardTag" style="background:rgba(255,102,0,0.15); color:#FF6600;">QUEUE: 3 MIN</span>
+                </div>
+                <p class="booth-desc" id="boothCardDesc">
+                    Step inside the retro red telephone booth. Pick up the receiver to dub your voice into legendary Hollywood or Bangla movie clips using Gemini AI zero-shot voice cloning.
+                </p>
+                <div class="keynote-actions">
+                    <a id="btnBoothLaunch" href="/dub" class="btn-live-action" target="_blank">
+                        <span>🚀</span>
+                        <span>Open Booth Interface</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="booth-quick-nav">
+                <button class="btn-booth-pill" onclick="selectBooth('dub')">🎙️ Dub Box</button>
+                <button class="btn-booth-pill" onclick="selectBooth('audition')">🎭 Audition</button>
+                <button class="btn-booth-pill" onclick="selectBooth('capsule')">📼 Capsule</button>
+                <button class="btn-booth-pill" onclick="selectBooth('duel')">📺 Taste Duel</button>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TAB 4: ATTENDEE MEDIA LOCKER
+             ========================================== -->
+        <section class="tab-panel" id="tab-locker">
+            <div class="section-header">
+                <div class="section-tag"><span>🎒</span> PERSONAL CREATIVE VAULT</div>
+                <h1 class="section-title">My Media Locker</h1>
+            </div>
+
+            <!-- Attendee VIP Card -->
+            <div class="attendee-id-card">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div class="attendee-avatar">👑</div>
+                    <div class="attendee-meta">
+                        <h3 id="lockerAttendeeName">Erik Aas</h3>
+                        <p id="lockerAttendeePass">VIP PASS #TC-8821 · ACCREDITED</p>
+                    </div>
+                </div>
+                <span class="status-pill" style="color:var(--gold); border-color:rgba(255,184,0,0.3); background:rgba(255,184,0,0.08);">
+                    ALL ACCESS
+                </span>
+            </div>
+
+            <!-- Media Cards Grid -->
+            <div class="locker-grid">
+                <!-- 1. AI Voice Dub Card -->
+                <div class="locker-card">
+                    <div class="locker-badge-type"><span>🎙️</span> AI VOICE CLONE ARTIFACT</div>
+                    <h3 class="locker-title">Bengali Sci-Fi Dub: Neo Dhaka</h3>
+                    <p class="locker-sub">Recorded at Booth 01 · Zero-Shot Voice Synthesis (00:24)</p>
+                    <div class="locker-actions">
+                        <a href="/api/media/sample_voice.mp3" download="ToffeeCon-AI-Dub.mp3" class="btn-locker-action download">
+                            <span>📥</span>
+                            <span>Download MP3</span>
+                        </a>
+                        <a href="https://api.whatsapp.com/send?text=Check%20out%20my%20AI%20Voice%20Dub%20from%20ToffeeCon%202026!%20%23ToffeeCon2026" target="_blank" class="btn-locker-action whatsapp">
+                            <span>💬</span>
+                            <span>Share</span>
+                        </a>
                     </div>
                 </div>
 
-                <!-- Memory Marathon Racer Quick Link -->
-                <div class="agenda-session-card" style="border-color:var(--green); background:rgba(34, 197, 94, 0.05); display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <div style="font-family:'Syne'; font-weight:700; font-size:0.95rem; color:#fff;">🏃 Memory Marathon Trivia Race</div>
-                        <div style="font-size:0.78rem; color:var(--text-dim);">Participate in the 8-lane trivia showdown on stage</div>
+                <!-- 2. AI Audition Headshot Card -->
+                <div class="locker-card">
+                    <div class="locker-badge-type" style="color:var(--neon-magenta);"><span>🎭</span> OTT CASTING AUDITION PASS</div>
+                    <h3 class="locker-title">Protagonist Screen Test</h3>
+                    <p class="locker-sub">Score: 98.4% Match · Genre: Cyberpunk Courier</p>
+                    <div class="locker-actions">
+                        <a href="/assets/toffeecon-hero-emblem.png" download="ToffeeCon-Audition-Pass.png" class="btn-locker-action download">
+                            <span>📸</span>
+                            <span>Save Headshot</span>
+                        </a>
+                        <a href="https://api.whatsapp.com/send?text=I%20just%20auditioned%20for%20Toffee%20OTT%20at%20ToffeeCon%202026!%20Scored%2098.4%25%20%F0%9F%8E%AD" target="_blank" class="btn-locker-action whatsapp">
+                            <span>💬</span>
+                            <span>Share</span>
+                        </a>
                     </div>
-                    <a href="/marathon" target="_blank" class="btn-booth-link" style="background:linear-gradient(135deg, #10B981, #059669);">Join Race 🏎️</a>
+                </div>
+
+                <!-- 3. ToffeeCon Wrapped Hologram -->
+                <div class="locker-card">
+                    <div class="locker-badge-type" style="color:var(--neon-cyan);"><span>📼</span> TOFFEECON WRAPPED CAPSULE</div>
+                    <h3 class="locker-title">Summit Experience Recap Badge</h3>
+                    <p class="locker-sub">6 Booths Visited · 14 Keynote Votes · 1 Sonic Trophy</p>
+                    <div class="locker-actions">
+                        <a href="/assets/toffeecon-logo.png" download="ToffeeCon-Wrapped-Card.png" class="btn-locker-action download">
+                            <span>🏷️</span>
+                            <span>Download Badge</span>
+                        </a>
+                        <a href="https://api.whatsapp.com/send?text=My%20ToffeeCon%202026%20Wrapped%20Badge%20is%20unlocked!%20%F0%9F%8E%9F%EF%B8%8F%20%23ToffeeCon2026" target="_blank" class="btn-locker-action whatsapp">
+                            <span>💬</span>
+                            <span>Share</span>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Bottom Segmented Tab Navigation Bar -->
-        <div class="companion-bottom-bar">
-            <button class="nav-item-btn active" id="cnav-pass" onclick="switchCompanionTab('pass')">
-                <span class="nav-icon">🎫</span>
-                <span>Pass</span>
-            </button>
-            <button class="nav-item-btn" id="cnav-agenda" onclick="switchCompanionTab('agenda')">
-                <span class="nav-icon">📅</span>
-                <span>Agenda</span>
-            </button>
-            <button class="nav-item-btn" id="cnav-booths" onclick="switchCompanionTab('booths')">
-                <span class="nav-icon">🎪</span>
-                <span>Booths</span>
-            </button>
-            <button class="nav-item-btn" id="cnav-vote" onclick="switchCompanionTab('vote')">
-                <span class="nav-icon">⚡</span>
-                <span>Live Vote</span>
-            </button>
-        </div>
-    </div>
+            <!-- Offline Wallet QR Fallback (Guaranteed available offline via Service Worker) -->
+            <div class="offline-wallet-pass">
+                <div class="section-tag" style="justify-content:center; color:var(--success);">
+                    <span>🛡️</span> OFFLINE BADGE WALLET (AIR-GAPPED)
+                </div>
+                <div class="qr-placeholder">
+                    <svg viewBox="0 0 100 100" fill="#07060E">
+                        <rect x="0" y="0" width="30" height="30" />
+                        <rect x="5" y="5" width="20" height="20" fill="#fff" />
+                        <rect x="10" y="10" width="10" height="10" />
+                        
+                        <rect x="70" y="0" width="30" height="30" />
+                        <rect x="75" y="5" width="20" height="20" fill="#fff" />
+                        <rect x="80" y="10" width="10" height="10" />
 
-    <!-- Camera Viewpoint Selector Bar -->
-    <div class="camera-selector-bar">
-        <button class="cam-btn active" id="cam-walk" onclick="setCameraMode('walk')">
-            <span>🚶</span> <span>Walker</span>
-        </button>
-        <button class="cam-btn" id="cam-drone" onclick="setCameraMode('drone')">
-            <span>✈️</span> <span>Drone Tour</span>
-        </button>
-        <button class="cam-btn" id="cam-crane" onclick="setCameraMode('crane')">
-            <span>🎥</span> <span>Wide Crane</span>
-        </button>
-        <button class="cam-btn" id="cam-floor" onclick="setCameraMode('floor')">
-            <span>🔍</span> <span>Floor Cam</span>
-        </button>
-    </div>
+                        <rect x="0" y="70" width="30" height="30" />
+                        <rect x="5" y="75" width="20" height="20" fill="#fff" />
+                        <rect x="10" y="80" width="10" height="10" />
 
-    <!-- Interactive Navigation Hint -->
-    <div class="walk-instructions" id="walk-hint">
-        ✦ SCROLL, DRAG, OR SCRUB TIMELINE TO TRAVEL THROUGH 7 YEARS OF SCREENING ✦
-    </div>
-
-    <!-- 3D Three.js WebGL Container -->
-    <div id="portal-canvas"></div>
-
-    <!-- Bottom Timeline / Evolution Progress Meter & Scrubber -->
-    <div class="portal-timeline-meter">
-        <div class="meter-labels">
-            <span class="label-past" onclick="scrubToZone(0.05)" title="Jump to 1990s Analog Dawn">ZONE 1: 480i CRT ANALOG (1990s)</span>
-            <span class="label-mid" onclick="scrubToZone(0.50)" title="Jump to 2010s Digital Streaming">ZONE 2: 1080p DIGITAL SHIFT (2010s)</span>
-            <span class="label-future" onclick="scrubToZone(0.96)" title="Jump to 2026 4K HDR Rebirth">ZONE 3: 4K HDR REBIRTH (2026)</span>
-        </div>
-        <div class="progress-track-container" id="timeline-scrubber">
-            <div class="progress-track">
-                <div class="progress-fill" id="progress-fill"></div>
-                <div class="scrubber-handle" id="scrubber-handle"></div>
+                        <rect x="35" y="15" width="10" height="10" />
+                        <rect x="45" y="35" width="20" height="15" />
+                        <rect x="35" y="70" width="15" height="15" />
+                        <rect x="65" y="60" width="15" height="20" />
+                        <rect x="55" y="80" width="20" height="10" />
+                    </svg>
+                </div>
+                <p style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);">
+                    SCAN AT GATE TURNSTILE · TOKEN: <b style="color:#fff;">TC26-9810-VIP</b>
+                </p>
             </div>
-        </div>
-        <div class="meter-status">
-            <div class="status-badge">
-                <span class="status-dot" id="status-dot"></span>
-                <span id="portal-status-text">ZONE 01: ANALOG DAWN (CRT SCANLINES) · 0%</span>
-            </div>
-            <div style="display:flex; gap:8px; align-items:center;">
-                <button class="btn-walk-step" id="btn-walk-forward">Walk Forward ▶</button>
-                <button class="hud-btn" id="btn-reset" style="padding: 6px 12px;">Reset</button>
-            </div>
-        </div>
+        </section>
+    </main>
+
+    <!-- Sub-50ms Haptic Confirmation Toast -->
+    <div class="vote-toast" id="voteToast">
+        <span>⚡</span>
+        <span id="voteToastText">VOTE RECORDED INSTANTLY</span>
     </div>
 
-    <!-- Holographic Screen Detail Modal -->
-    <div class="inspect-card" id="inspectModal">
-        <div class="inspect-header">
-            <span>● SCREEN TILE INSPECTED</span>
-            <span id="inspectZoneTag">ZONE 3 // 4K STREAM</span>
-        </div>
-        <h3 class="inspect-title" id="inspectTitle">Toffee Premier League Live</h3>
-        <p class="inspect-body" id="inspectDesc">Ultra-low latency streaming broadcast with dynamic statistical telemetry overlay.</p>
-        <div class="inspect-stats">
-            <div>RESOLUTION: <strong style="color:var(--cyan);" id="inspectRes">3840x2160 (4K)</strong></div>
-            <div>BITRATE: <strong style="color:var(--magenta);" id="inspectBitrate">18.5 Mbps HDR</strong></div>
-        </div>
-        <button onclick="closeInspect()" style="background:var(--cyan); color:#000; border:none; padding:8px 18px; border-radius:6px; font-weight:800; cursor:pointer; width:100%;">
-            Resume Walkthrough
+    <!-- Native Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+        <button class="nav-tab-btn active" id="btnTabAgenda" onclick="switchTab('agenda')">
+            <div class="tab-indicator"></div>
+            <span class="nav-tab-icon">📅</span>
+            <span class="nav-tab-label">Stage</span>
         </button>
-    </div>
 
-    <!-- Rebirth Exit Banner (Triggered at End of Tunnel) -->
-    <div class="rebirth-banner" id="rebirth-banner">
-        <div style="font-family:'Space Mono', monospace; font-size:0.75rem; color:var(--magenta); letter-spacing:2px; margin-bottom:8px;">
-            PORTAL COMPLETED // 100% CLARITY ACHIEVED
-        </div>
-        <h2 class="rebirth-title">A Rebirth of Screening</h2>
-        <p class="rebirth-desc">
-            You have walked through 7 years of screen evolution from analog noise to crystal-clear 4K HDR. Step into the main summit arena to witness the future of streaming.
-        </p>
-        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
-            <a href="/stage" class="btn-enter-summit">Enter 3-Screen Mainstage ⚡</a>
-            <a href="/hub" class="btn-enter-summit" style="background:linear-gradient(135deg, var(--purple), var(--cyan));">Mission Control Hub 🎛️</a>
-        </div>
-    </div>
+        <button class="nav-tab-btn" id="btnTabVote" onclick="switchTab('vote')">
+            <div class="tab-indicator"></div>
+            <span class="nav-tab-icon">⚡</span>
+            <span class="nav-tab-label">Buzzer</span>
+        </button>
 
+        <button class="nav-tab-btn" id="btnTabMap" onclick="switchTab('map')">
+            <div class="tab-indicator"></div>
+            <span class="nav-tab-icon">🗺️</span>
+            <span class="nav-tab-label">Hall Map</span>
+        </button>
+
+        <button class="nav-tab-btn" id="btnTabLocker" onclick="switchTab('locker')">
+            <div class="tab-indicator"></div>
+            <span class="nav-tab-icon">🎒</span>
+            <span class="nav-tab-label">My Locker</span>
+        </button>
+    </nav>
+
+    <!-- Companion Logic -->
     <script>
-        /* =============================================================
-           1. Web Audio API Continuum & Procedural Foley Soundscapes
-           ============================================================= */
-        let audioCtx = null;
-        let isAudioMuted = true; // Default muted per browser autoplay standards
-        let noiseGain = null;
-        let synthGain = null;
-        let footstepGain = null;
-        let digitalBleepGain = null;
-
-        function initSoundscape() {
-            if (audioCtx) {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                return;
-            }
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            audioCtx = new AudioContext();
-
-            // 1. Noise Generator (Simulating analog TV static at entrance)
-            const bufferSize = audioCtx.sampleRate * 2;
-            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-            const output = noiseBuffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) {
-                output[i] = Math.random() * 2 - 1;
-            }
-
-            const whiteNoise = audioCtx.createBufferSource();
-            whiteNoise.buffer = noiseBuffer;
-            whiteNoise.loop = true;
-
-            const filterNode = audioCtx.createBiquadFilter();
-            filterNode.type = 'lowpass';
-            filterNode.frequency.value = 1600;
-
-            noiseGain = audioCtx.createGain();
-            noiseGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-
-            whiteNoise.connect(filterNode);
-            filterNode.connect(noiseGain);
-            noiseGain.connect(audioCtx.destination);
-            whiteNoise.start();
-
-            // 2. Synthesizer Drone (For future rebirth at exit)
-            synthGain = audioCtx.createGain();
-            synthGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-
-            const freqs = [130.81, 196.00, 261.63, 329.63, 392.00, 523.25]; // C3, G3, C4, E4, G4, C5 chord
-            freqs.forEach(f => {
-                const osc = audioCtx.createOscillator();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(f, audioCtx.currentTime);
-
-                const oscFilter = audioCtx.createBiquadFilter();
-                oscFilter.type = 'lowpass';
-                oscFilter.frequency.value = 450;
-
-                osc.connect(oscFilter);
-                oscFilter.connect(synthGain);
-                osc.start();
+        // 1. Service Worker & PWA Installation
+        let deferredPrompt = null;
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('[PWA] SW registered:', reg.scope))
+                    .catch(err => console.log('[PWA] SW registration failed:', err));
             });
+        }
 
-            synthGain.connect(audioCtx.destination);
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const btn = document.getElementById('btnInstallPwa');
+            if (btn) btn.style.display = 'block';
+        });
 
-            // 3. Footstep Foley Gain
-            footstepGain = audioCtx.createGain();
-            footstepGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-            footstepGain.connect(audioCtx.destination);
-
-            // 4. Digital UI Chirp Gain
-            digitalBleepGain = audioCtx.createGain();
-            digitalBleepGain.gain.setValueAtTime(0.03, audioCtx.currentTime);
-            digitalBleepGain.connect(audioCtx.destination);
-
-            // Try starting background video element
-            const videoElem = document.getElementById('hero-video-source');
-            if (videoElem) {
-                videoElem.play().catch(e => console.log('Video autoplay deferred:', e.message));
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt['prompt']();
+                deferredPrompt.userChoice.then(() => {
+                    deferredPrompt = null;
+                    const btn = document.getElementById('btnInstallPwa');
+                    if (btn) btn.style.display = 'none';
+                });
             }
         }
 
-        function triggerFootstepSound() {
-            if (!audioCtx || isAudioMuted) return;
-            const now = audioCtx.currentTime;
-            const osc = audioCtx.createOscillator();
-            const g = audioCtx.createGain();
-            osc.frequency.setValueAtTime(80, now);
-            osc.frequency.exponentialRampToValueAtTime(35, now + 0.08);
-            g.gain.setValueAtTime(0.03, now);
-            g.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
-            osc.connect(g);
-            g.connect(footstepGain);
-            osc.start(now);
-            osc.stop(now + 0.08);
-        }
-
-        function triggerDigitalChirp() {
-            if (!audioCtx || isAudioMuted) return;
-            const now = audioCtx.currentTime;
-            const osc = audioCtx.createOscillator();
-            const g = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(880, now);
-            osc.frequency.setValueAtTime(1760, now + 0.04);
-            g.gain.setValueAtTime(0.02, now);
-            g.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
-            osc.connect(g);
-            g.connect(digitalBleepGain);
-            osc.start(now);
-            osc.stop(now + 0.08);
-        }
-
-        function updateAudioByDepth(progressRatio) {
-            if (!audioCtx || isAudioMuted) return;
-            const now = audioCtx.currentTime;
-            const staticLevel = Math.max(0.0001, (1.0 - progressRatio) * 0.08);
-            const synthLevel = Math.max(0.0001, progressRatio * 0.16);
-
-            if (noiseGain) noiseGain.gain.setTargetAtTime(staticLevel, now, 0.1);
-            if (synthGain) synthGain.gain.setTargetAtTime(synthLevel, now, 0.1);
-        }
-
-        const audioBtn = document.getElementById('btn-audio');
-        audioBtn.addEventListener('click', () => {
-            initSoundscape();
-            isAudioMuted = !isAudioMuted;
-            document.getElementById('audio-icon').textContent = isAudioMuted ? '🔇' : '🔊';
-            audioBtn.querySelector('span:nth-child(2)').textContent = isAudioMuted ? 'Spatial Sound: Muted' : 'Spatial Sound: LIVE';
-            audioBtn.classList.toggle('active', !isAudioMuted);
-
-            if (isAudioMuted) {
-                if (noiseGain) noiseGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-                if (synthGain) synthGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+        // Online / Offline Status
+        function updateOnlineStatus() {
+            const livePill = document.getElementById('liveStatusPill');
+            const offlinePill = document.getElementById('offlineStatusPill');
+            if (navigator.onLine) {
+                livePill.style.display = 'inline-flex';
+                offlinePill.style.display = 'none';
             } else {
-                const progressRatio = Math.min(1.0, Math.max(0.0, -currentZ / TUNNEL_LENGTH));
-                updateAudioByDepth(progressRatio);
-            }
-        });
-
-        /* =============================================================
-           2. Three.js Cylindrical LED Screen Tunnel & Reflective Runway
-           ============================================================= */
-        const canvasContainer = document.getElementById('portal-canvas');
-        const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x020106, 0.015);
-
-        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 250);
-        camera.position.set(0, 0, 0);
-
-        const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.35;
-        canvasContainer.appendChild(renderer.domElement);
-
-        // Tunnel Geometry Dimensions
-        const TUNNEL_LENGTH = 120;
-        const TUNNEL_RADIUS = 5.4;
-        const SCREEN_RINGS = 32;
-        const SCREENS_PER_RING = 16;
-
-        // Content Database for Holographic Tiles
-        const TILE_CATALOG = [
-            { title: "Toffee World Cup 2026", desc: "Live multi-camera cricket stream in ultra-low latency.", res: "3840x2160 (4K)", bitrate: "22 Mbps" },
-            { title: "Bengali Noir: Shurjo Dighol", desc: "Award-winning restored classic cinema presentation.", res: "1920x1080 (HD)", bitrate: "9.5 Mbps" },
-            { title: "Dhallywood Cyberpunk: Dhaka 2033", desc: "Sci-Fi original series exploring futuristic megacities.", res: "3840x2160 (HDR)", bitrate: "24 Mbps" },
-            { title: "BPL Premier League LIVE", desc: "Real-time sports hub with interactive audience voting.", res: "3840x2160 (60fps)", bitrate: "20 Mbps" },
-            { title: "Toffee Comedy Corner", desc: "Stand-up specials and regional comedy sketches.", res: "1920x1080", bitrate: "8.0 Mbps" },
-            { title: "Classic Drama 1994", desc: "Archival footage digitised from analog magnetic tape.", res: "640x480 (480i)", bitrate: "2.5 Mbps" }
-        ];
-
-        // Shared Video Texture Setup for Key Hero Screens
-        const videoElem = document.getElementById('hero-video-source');
-        let videoTexture = null;
-        if (videoElem) {
-            videoTexture = new THREE.VideoTexture(videoElem);
-            videoTexture.minFilter = THREE.LinearFilter;
-            videoTexture.magFilter = THREE.LinearFilter;
-            videoTexture.format = THREE.RGBAFormat;
-        }
-
-        // Procedural Dynamic Canvas Texture Generator
-        function createScreenCanvas(ringIdx, screenIdx, totalRings) {
-            const canvas = document.createElement('canvas');
-            canvas.width = 256;
-            canvas.height = 180;
-            const ctx = canvas.getContext('2d');
-            const progress = ringIdx / totalRings;
-
-            if (progress < 0.32) {
-                // ZONE 1: Analog Grain / CRT Static / Monochrome green-grey
-                ctx.fillStyle = '#08080a';
-                ctx.fillRect(0, 0, 256, 180);
-
-                for (let i = 0; i < 450; i++) {
-                    ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.22)' : 'rgba(0,255,100,0.18)';
-                    ctx.fillRect(Math.random() * 256, Math.random() * 180, 2, 2);
-                }
-
-                ctx.strokeStyle = 'rgba(255,255,255,0.35)';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(8, 8, 240, 164);
-
-                ctx.fillStyle = '#00FF66';
-                ctx.font = 'bold 15px "Space Mono", monospace';
-                ctx.fillText(`CH-0${(screenIdx % 9) + 1} ANALOG`, 20, 36);
-
-                ctx.fillStyle = 'rgba(255,255,255,0.6)';
-                ctx.font = '11px "Space Mono", monospace';
-                ctx.fillText('SIGNAL: 480i NTSC', 20, 68);
-                ctx.fillText('TRACKING ERR...', 20, 96);
-                ctx.fillText('NO CARRIER', 20, 124);
-
-            } else if (progress < 0.68) {
-                // ZONE 2: Digital Shift / Streaming Catalogs / Early Menus
-                ctx.fillStyle = '#0b061c';
-                ctx.fillRect(0, 0, 256, 180);
-
-                ctx.strokeStyle = 'rgba(0, 240, 255, 0.7)';
-                ctx.lineWidth = 3;
-                ctx.strokeRect(6, 6, 244, 168);
-
-                ctx.fillStyle = '#00F0FF';
-                ctx.font = 'bold 14px "Space Mono", monospace';
-                ctx.fillText('STREAMING CATALOG', 18, 32);
-
-                // Menu cards
-                ctx.fillStyle = 'rgba(147, 51, 234, 0.45)';
-                ctx.fillRect(18, 46, 62, 85);
-                ctx.fillRect(88, 46, 62, 85);
-                ctx.fillRect(158, 46, 62, 85);
-
-                ctx.fillStyle = '#FFFFFF';
-                ctx.font = '10px "Space Mono", monospace';
-                ctx.fillText('BUFFERING 720p...', 18, 155);
-
-            } else {
-                // ZONE 3: 2026 Rebirth / Ultra-crisp Neon 4K Streaming
-                const grad = ctx.createLinearGradient(0, 0, 256, 180);
-                grad.addColorStop(0, '#FF0077');
-                grad.addColorStop(0.5, '#7913C7');
-                grad.addColorStop(1, '#00F0FF');
-                ctx.fillStyle = grad;
-                ctx.fillRect(0, 0, 256, 180);
-
-                ctx.fillStyle = '#FFFFFF';
-                ctx.font = '900 18px "Syne", sans-serif';
-                ctx.fillText('TOFFEECON 2026', 18, 42);
-
-                ctx.fillStyle = '#00F0FF';
-                ctx.font = 'bold 13px "Space Mono", monospace';
-                ctx.fillText('4K HDR · 60 FPS LIVE', 18, 70);
-
-                ctx.fillStyle = '#FFFFFF';
-                ctx.font = '11px "Space Mono", monospace';
-                ctx.fillText('THE SCREEN OF TOMORROW', 18, 100);
-                ctx.fillText('7 YEARS OF STREAMING', 18, 126);
-
-                // Glowing neon border
-                ctx.strokeStyle = '#FFFFFF';
-                ctx.lineWidth = 4;
-                ctx.strokeRect(4, 4, 248, 172);
-            }
-
-            return canvas;
-        }
-
-        // Screen Meshes Array & Interactive Raycasting
-        const screenGroup = new THREE.Group();
-        scene.add(screenGroup);
-        const interactiveMeshes = [];
-        const heroVideoMeshes = [];
-
-        for (let ring = 0; ring < SCREEN_RINGS; ring++) {
-            const zPos = -ring * (TUNNEL_LENGTH / SCREEN_RINGS);
-            const progress = ring / SCREEN_RINGS;
-
-            for (let s = 0; s < SCREENS_PER_RING; s++) {
-                const angle = (s / SCREENS_PER_RING) * Math.PI * 2;
-                const isFloor = Math.abs(angle - Math.PI / 2) < 0.28;
-
-                // Alternate between vertical 9:16, horizontal 16:9, and square tiles
-                let width = 2.1;
-                let height = 1.4;
-                if ((s + ring) % 3 === 0) {
-                    width = 1.3;
-                    height = 2.1; // Vertical 9:16 mobile card
-                } else if ((s + ring) % 3 === 1) {
-                    width = 2.4;
-                    height = 1.3; // Wide 16:9 cinematic
-                }
-
-                const screenGeometry = new THREE.PlaneGeometry(width, height);
-                let material;
-
-                // Assign actual video feed to prominent hero screens in Zone 2 and Zone 3
-                const isHeroVideoTile = videoTexture && ((ring === 10 && s === 3) || (ring === 14 && s === 11) || (ring === 20 && s === 4) || (ring === 26 && s === 12));
-
-                if (isHeroVideoTile) {
-                    material = new THREE.MeshBasicMaterial({
-                        map: videoTexture,
-                        side: THREE.DoubleSide
-                    });
-                } else {
-                    const canvas = createScreenCanvas(ring, s, SCREEN_RINGS);
-                    const texture = new THREE.CanvasTexture(canvas);
-                    material = new THREE.MeshBasicMaterial({
-                        map: texture,
-                        side: THREE.DoubleSide
-                    });
-                }
-
-                const screenMesh = new THREE.Mesh(screenGeometry, material);
-                screenMesh.position.x = Math.cos(angle) * TUNNEL_RADIUS;
-                screenMesh.position.y = Math.sin(angle) * TUNNEL_RADIUS;
-                screenMesh.position.z = zPos;
-
-                screenMesh.lookAt(0, 0, zPos);
-                screenMesh.rotateY(Math.PI);
-
-                if (isFloor) {
-                    screenMesh.scale.set(1.3, 1.3, 1);
-                }
-
-                screenMesh.userData = {
-                    ring,
-                    tileInfo: TILE_CATALOG[(ring + s) % TILE_CATALOG.length],
-                    isHeroVideo: isHeroVideoTile
-                };
-
-                screenGroup.add(screenMesh);
-                interactiveMeshes.push(screenMesh);
-                if (isHeroVideoTile) heroVideoMeshes.push(screenMesh);
+                livePill.style.display = 'none';
+                offlinePill.style.display = 'inline-flex';
             }
         }
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        updateOnlineStatus();
 
-        // Glossy Reflective Runway Floor Texture
-        function createRunwayTexture() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 512;
-            canvas.height = 1024;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#05020d';
-            ctx.fillRect(0, 0, 512, 1024);
+        // 2. Tab Navigation
+        const tabs = ['agenda', 'vote', 'map', 'locker'];
+        function switchTab(tabId) {
+            // Tactile light haptic tick on navigation
+            if (navigator.vibrate) navigator.vibrate(12);
 
-            // Reflected glow lines & floor screen grid
-            for (let y = 0; y < 1024; y += 64) {
-                ctx.strokeStyle = 'rgba(255, 0, 119, 0.25)';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(32, y);
-                ctx.lineTo(480, y);
-                ctx.stroke();
-
-                // Floor screen thumbnail cards
-                ctx.fillStyle = 'rgba(147, 51, 234, 0.18)';
-                ctx.fillRect(48, y + 8, 180, 48);
-                ctx.fillStyle = 'rgba(0, 240, 255, 0.15)';
-                ctx.fillRect(284, y + 8, 180, 48);
-            }
-
-            // Central laser guiding line
-            ctx.strokeStyle = '#00F0FF';
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.moveTo(256, 0);
-            ctx.lineTo(256, 1024);
-            ctx.stroke();
-
-            return new THREE.CanvasTexture(canvas);
+            tabs.forEach(t => {
+                const panel = document.getElementById(`tab-${t}`);
+                const btn = document.getElementById(`btnTab${t.charAt(0).toUpperCase() + t.slice(1)}`);
+                if (panel) panel.classList.toggle('active', t === tabId);
+                if (btn) btn.classList.toggle('active', t === tabId);
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        const runwayGeo = new THREE.PlaneGeometry(4.2, TUNNEL_LENGTH);
-        const runwayTex = createRunwayTexture();
-        runwayTex.wrapS = THREE.RepeatWrapping;
-        runwayTex.wrapT = THREE.RepeatWrapping;
-        runwayTex.repeat.set(1, 8);
-
-        const runwayMat = new THREE.MeshBasicMaterial({
-            map: runwayTex,
-            side: THREE.DoubleSide
-        });
-        const runway = new THREE.Mesh(runwayGeo, runwayMat);
-        runway.rotation.x = Math.PI / 2;
-        runway.position.set(0, -TUNNEL_RADIUS + 0.35, -TUNNEL_LENGTH / 2);
-        scene.add(runway);
-
-        // Human Silhouette Spectators Walking Ahead (Matching pitch deck slide)
-        function createSilhouetteTexture() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 128;
-            canvas.height = 256;
-            const ctx = canvas.getContext('2d');
-
-            // Head
-            ctx.fillStyle = '#080414';
-            ctx.beginPath();
-            ctx.arc(64, 40, 16, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Torso & Jacket
-            ctx.beginPath();
-            ctx.moveTo(40, 60);
-            ctx.lineTo(88, 60);
-            ctx.lineTo(92, 160);
-            ctx.lineTo(36, 160);
-            ctx.closePath();
-            ctx.fill();
-
-            // Legs
-            ctx.fillRect(44, 160, 16, 85);
-            ctx.fillRect(68, 160, 16, 85);
-
-            // Radiant Neon Rim Lighting (Pink & Cyan backlights from the tunnel)
-            ctx.strokeStyle = 'rgba(255, 0, 119, 0.75)';
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.arc(64, 40, 18, Math.PI * 1.1, Math.PI * 1.9);
-            ctx.stroke();
-
-            ctx.strokeStyle = 'rgba(0, 240, 255, 0.7)';
-            ctx.beginPath();
-            ctx.moveTo(34, 62);
-            ctx.lineTo(34, 160);
-            ctx.lineTo(42, 245);
-            ctx.stroke();
-
-            return new THREE.CanvasTexture(canvas);
-        }
-
-        const silTex = createSilhouetteTexture();
-        const silGeo = new THREE.PlaneGeometry(1.6, 3.2);
-        const silMat = new THREE.MeshBasicMaterial({ map: silTex, transparent: true, opacity: 0.9, side: THREE.DoubleSide });
-
-        const spectator1 = new THREE.Mesh(silGeo, silMat);
-        spectator1.position.set(-0.7, -TUNNEL_RADIUS + 1.95, -28);
-        scene.add(spectator1);
-
-        const spectator2 = new THREE.Mesh(silGeo, silMat);
-        spectator2.position.set(0.6, -TUNNEL_RADIUS + 1.95, -34);
-        spectator2.scale.set(0.92, 0.92, 1);
-        scene.add(spectator2);
-
-        const spectator3 = new THREE.Mesh(silGeo, silMat);
-        spectator3.position.set(-0.3, -TUNNEL_RADIUS + 1.95, -65);
-        spectator3.scale.set(0.75, 0.75, 1);
-        scene.add(spectator3);
-
-        // Floating Volumetric Photon Particles (Velocity-reactive)
-        const particleCount = 450;
-        const particleGeo = new THREE.BufferGeometry();
-        const particlePositions = new Float32Array(particleCount * 3);
-
-        for (let p = 0; p < particleCount; p++) {
-            const rad = Math.random() * (TUNNEL_RADIUS - 0.8);
-            const ang = Math.random() * Math.PI * 2;
-            particlePositions[p * 3] = Math.cos(ang) * rad;
-            particlePositions[p * 3 + 1] = Math.sin(ang) * rad;
-            particlePositions[p * 3 + 2] = -Math.random() * TUNNEL_LENGTH;
-        }
-
-        particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-        const particleMat = new THREE.PointsMaterial({
-            color: 0xFF0077,
-            size: 0.14,
-            transparent: true,
-            opacity: 0.65
-        });
-        const particles = new THREE.Points(particleGeo, particleMat);
-        scene.add(particles);
-
-        // Glowing Neon Toroidal Arcs Along Tunnel (Magenta, Purple, Cyan)
-        const tunnelLights = [];
-        const tunnelRings = [];
-        for (let i = 0; i < 7; i++) {
-            const z = -i * 18;
-            const progress = i / 6;
-            const ringColor = progress < 0.35 ? 0x00FF66 : (progress < 0.7 ? 0x00F0FF : 0xFF0077);
-
-            const ringLight = new THREE.PointLight(ringColor, 3.5, 22);
-            ringLight.position.set(0, 2.2, z);
-            scene.add(ringLight);
-            tunnelLights.push(ringLight);
-
-            // Glowing structural neon ring arch
-            const ringGeo = new THREE.TorusGeometry(TUNNEL_RADIUS + 0.12, 0.05, 16, 64);
-            const ringMat = new THREE.MeshBasicMaterial({ color: ringColor, transparent: true, opacity: 0.65 });
-            const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-            ringMesh.position.z = z;
-            scene.add(ringMesh);
-            tunnelRings.push(ringMesh);
-        }
-
-        // Luminous Exit Portal Arch (The Rebirth Ring)
-        const exitArchGeo = new THREE.TorusGeometry(TUNNEL_RADIUS, 0.35, 20, 80);
-        const exitArchMat = new THREE.MeshBasicMaterial({ color: 0xFF0077 });
-        const exitArch = new THREE.Mesh(exitArchGeo, exitArchMat);
-        exitArch.position.z = -TUNNEL_LENGTH;
-        scene.add(exitArch);
-
-        // Volumetric Hyperspace Exit Light Cone (God Rays)
-        const exitBeamGeo = new THREE.CylinderGeometry(0.8, TUNNEL_RADIUS, 32, 32, 1, true);
-        const exitBeamMat = new THREE.MeshBasicMaterial({
-            color: 0xFF0077,
-            transparent: true,
-            opacity: 0.45,
-            side: THREE.DoubleSide
-        });
-        const exitBeam = new THREE.Mesh(exitBeamGeo, exitBeamMat);
-        exitBeam.rotation.x = Math.PI / 2;
-        exitBeam.position.z = -TUNNEL_LENGTH - 10;
-        scene.add(exitBeam);
-
-        // Volumetric Light God Ray Shimmer Cone (Additive Blending)
-        const godRayGeo = new THREE.ConeGeometry(TUNNEL_RADIUS * 1.1, 40, 32, 1, true);
-        const godRayMat = new THREE.MeshBasicMaterial({
-            color: 0x00F0FF,
-            transparent: true,
-            opacity: 0.22,
-            blending: THREE.AdditiveBlending,
-            side: THREE.DoubleSide
-        });
-        const godRays = new THREE.Mesh(godRayGeo, godRayMat);
-        godRays.rotation.x = -Math.PI / 2;
-        godRays.position.z = -TUNNEL_LENGTH + 12;
-        scene.add(godRays);
-
-        /* =============================================================
-           3. Multi-Angle Camera System & Trajectory Rig
-           ============================================================= */
-        let targetZ = 0;
-        let currentZ = 0;
-        let mouseLook = { x: 0, y: 0 };
-        let isDragging = false;
-        let prevMouse = { x: 0, y: 0 };
-        let cameraMode = 'walk'; // 'walk', 'drone', 'crane', 'floor'
-        let cameraOffset = new THREE.Vector3(0, 0, 0);
-
-        function setCameraMode(mode) {
-            cameraMode = mode;
-            initSoundscape();
-
-            document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active'));
-            const activeBtn = document.getElementById(`cam-${mode}`);
-            if (activeBtn) activeBtn.classList.add('active');
-
-            const hint = document.getElementById('walk-hint');
-            if (mode === 'drone') {
-                hint.textContent = '✦ DRONE FLY-THROUGH ACTIVE · GLIDING THROUGH THE 360° MOSAIC ✦';
-            } else if (mode === 'crane') {
-                hint.textContent = '✦ ELEVATED CRANE PERSPECTIVE · VIEWING THE CURVED CYLINDER ✦';
-            } else if (mode === 'floor') {
-                hint.textContent = '✦ LOW FLOOR REFLECTION CAM · LASER GUIDE RUNWAY VIEW ✦';
-            } else {
-                hint.textContent = '✦ WALKER MODE · SCROLL, DRAG, OR SCRUB TIMELINE TO ADVANCE ✦';
-            }
-        }
-
-        const crtOverlay = document.getElementById('crt-overlay');
-        const noiseOverlay = document.getElementById('noise-overlay');
-        const progressFill = document.getElementById('progress-fill');
-        const scrubberHandle = document.getElementById('scrubber-handle');
-        const statusText = document.getElementById('portal-status-text');
-        const statusDot = document.getElementById('status-dot');
-        const rebirthBanner = document.getElementById('rebirth-banner');
-
-        function moveForward(amount = 6) {
-            initSoundscape();
-            triggerFootstepSound();
-            targetZ = Math.max(-TUNNEL_LENGTH, Math.min(0, targetZ - amount));
-        }
-
-        function moveBackward(amount = 6) {
-            initSoundscape();
-            targetZ = Math.max(-TUNNEL_LENGTH, Math.min(0, targetZ + amount));
-        }
-
-        function scrubToZone(ratio) {
-            initSoundscape();
-            targetZ = -ratio * TUNNEL_LENGTH;
-            triggerDigitalChirp();
-        }
-
-        document.getElementById('btn-walk-forward').addEventListener('click', () => moveForward(8));
-        document.getElementById('btn-reset').addEventListener('click', () => {
-            initSoundscape();
-            targetZ = 0;
-            mouseLook = { x: 0, y: 0 };
-            setCameraMode('walk');
-        });
-
-        // Timeline Scrubber Drag & Click
-        const timelineScrubber = document.getElementById('timeline-scrubber');
-        let isScrubbing = false;
-
-        function handleScrub(e) {
-            const rect = timelineScrubber.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clickX = Math.max(0, Math.min(rect.width, clientX - rect.left));
-            const ratio = clickX / rect.width;
-            scrubToZone(ratio);
-        }
-
-        timelineScrubber.addEventListener('mousedown', (e) => {
-            isScrubbing = true;
-            handleScrub(e);
-        });
-
-        window.addEventListener('mousemove', (e) => {
-            if (isScrubbing) handleScrub(e);
-        });
-
-        window.addEventListener('mouseup', () => {
-            isScrubbing = false;
-        });
-
-        timelineScrubber.addEventListener('touchstart', (e) => {
-            isScrubbing = true;
-            handleScrub(e);
-        });
-
-        window.addEventListener('touchmove', (e) => {
-            if (isScrubbing) handleScrub(e);
-        });
-
-        window.addEventListener('touchend', () => {
-            isScrubbing = false;
-        });
-
-        // Wheel and Keyboard Controls
-        window.addEventListener('wheel', (e) => {
-            initSoundscape();
-            targetZ = Math.max(-TUNNEL_LENGTH, Math.min(0, targetZ - e.deltaY * 0.055));
-            if (Math.abs(e.deltaY) > 20) triggerFootstepSound();
-        }, { passive: true });
-
-        window.addEventListener('keydown', (e) => {
-            initSoundscape();
-            if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') moveForward(5);
-            if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') moveBackward(5);
-        });
-
-        // Mouse Drag Navigation
-        window.addEventListener('mousedown', (e) => {
-            if (e.target.closest('.hud-header') || e.target.closest('.camera-selector-bar') || e.target.closest('.portal-timeline-meter') || e.target.closest('.inspect-card') || e.target.closest('.rebirth-banner')) return;
-            initSoundscape();
-            isDragging = true;
-            prevMouse = { x: e.clientX, y: e.clientY };
-        });
-
-        window.addEventListener('mousemove', (e) => {
-            if (!isDragging) {
-                mouseLook.x = (e.clientX / window.innerWidth - 0.5) * 0.45;
-                mouseLook.y = -(e.clientY / window.innerHeight - 0.5) * 0.35;
-                return;
-            }
-            const deltaY = e.clientY - prevMouse.y;
-            const deltaX = e.clientX - prevMouse.x;
-            targetZ = Math.max(-TUNNEL_LENGTH, Math.min(0, targetZ + deltaY * 0.16));
-            mouseLook.x += deltaX * 0.002;
-            prevMouse = { x: e.clientX, y: e.clientY };
-        });
-
-        window.addEventListener('mouseup', () => isDragging = false);
-
-        // Touch Interaction
-        window.addEventListener('touchstart', (e) => {
-            if (e.target.closest('.hud-header') || e.target.closest('.camera-selector-bar') || e.target.closest('.portal-timeline-meter') || e.target.closest('.inspect-card') || e.target.closest('.rebirth-banner')) return;
-            initSoundscape();
-            if (e.touches.length === 1) {
-                isDragging = true;
-                prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-            }
-        });
-
-        window.addEventListener('touchmove', (e) => {
-            if (!isDragging || e.touches.length !== 1) return;
-            const deltaY = e.touches[0].clientY - prevMouse.y;
-            targetZ = Math.max(-TUNNEL_LENGTH, Math.min(0, targetZ + deltaY * 0.22));
-            prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-        });
-
-        window.addEventListener('touchend', () => isDragging = false);
-
-        /* =============================================================
-           4. Holographic Screen Raycaster Inspection
-           ============================================================= */
-        const raycaster = new THREE.Raycaster();
-        const mouseVec = new THREE.Vector2();
-
-        window.addEventListener('click', (e) => {
-            if (e.target.closest('.hud-header') || e.target.closest('.camera-selector-bar') || e.target.closest('.portal-timeline-meter') || e.target.closest('.inspect-card') || e.target.closest('.rebirth-banner')) return;
-
-            mouseVec.x = (e.clientX / window.innerWidth) * 2 - 1;
-            mouseVec.y = -(e.clientY / window.innerHeight) * 2 + 1;
-
-            raycaster.setFromCamera(mouseVec, camera);
-            const intersects = raycaster.intersectObjects(interactiveMeshes);
-
-            if (intersects.length > 0) {
-                const hit = intersects[0].object;
-                if (hit.userData && hit.userData.tileInfo) {
-                    showInspect(hit.userData);
-                }
-            }
-        });
-
-        function showInspect(userData) {
-            const modal = document.getElementById('inspectModal');
-            const info = userData.tileInfo;
-            const progress = userData.ring / SCREEN_RINGS;
-
-            document.getElementById('inspectTitle').textContent = info.title;
-            document.getElementById('inspectDesc').textContent = info.desc;
-            document.getElementById('inspectRes').textContent = info.res;
-            document.getElementById('inspectBitrate').textContent = info.bitrate;
-            document.getElementById('inspectZoneTag').textContent = progress < 0.35 ? 'ZONE 1 // 480i ANALOG' : (progress < 0.7 ? 'ZONE 2 // 1080p DIGITAL' : 'ZONE 3 // 4K HDR REBIRTH');
-
-            modal.classList.add('show');
-            triggerDigitalChirp();
-            if (navigator.vibrate) navigator.vibrate([40]);
-        }
-
-        function closeInspect() {
-            document.getElementById('inspectModal').classList.remove('show');
-        }
-
-        /* =============================================================
-           5. Evolutionary State & Dynamic Shaders
-           ============================================================= */
-        function updateDepthState(progress) {
-            const pct = Math.round(progress * 100);
-            progressFill.style.width = `${pct}%`;
-            scrubberHandle.style.left = `${pct}%`;
-            updateAudioByDepth(progress);
-
-            // Dynamically dissolve CRT scanlines & static noise as user reaches clarity
-            crtOverlay.style.opacity = (1.0 - progress * 0.88).toString();
-            noiseOverlay.style.opacity = Math.max(0, (1.0 - progress * 1.25) * 0.35).toString();
-
-            if (progress < 0.33) {
-                statusText.textContent = `ZONE 01: ANALOG DAWN (480i CRT SCANLINES & STATIC) · ${pct}%`;
-                statusDot.style.background = '#64748B';
-                statusDot.style.boxShadow = '0 0 8px #64748B';
-            } else if (progress < 0.72) {
-                statusText.textContent = `ZONE 02: THE DIGITAL SHIFT (BROWSING MENUS & BUFFERING) · ${pct}%`;
-                statusDot.style.background = '#00F0FF';
-                statusDot.style.boxShadow = '0 0 10px #00F0FF';
-            } else {
-                statusText.textContent = `ZONE 03: REBIRTH OF SCREENING (4K HDR CRISP STREAMING) · ${pct}%`;
-                statusDot.style.background = '#FF0077';
-                statusDot.style.boxShadow = '0 0 14px #FF0077';
-            }
-
-            if (progress >= 0.96) {
-                rebirthBanner.classList.add('show');
-            } else {
-                rebirthBanner.classList.remove('show');
-            }
-        }
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        /* =============================================================
-           6. Real-Time Director Sync via WebSocket
-           ============================================================= */
-        let currentPollState = { options: { red: { votes: 312 }, blue: { votes: 288 } } };
+        // 3. WebSocket Real-Time Sync (Room: attendee_voting)
         let ws = null;
-        function connectPortalWebSocket() {
-            const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        let reconnectTimer = null;
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.host}`;
+
+        function connectWebSocket() {
             try {
-                ws = new WebSocket(`${proto}//${location.host}`);
+                ws = new WebSocket(wsUrl);
+
                 ws.onopen = () => {
-                    ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'portal' }));
-                    document.getElementById('director-status-text').textContent = 'DIRECTOR SYNC ACTIVE';
-                    document.getElementById('director-status-pill').style.borderColor = 'var(--cyan)';
+                    console.log('[WS] Connected to ToffeeCon Staging Core');
+                    // Subscribe strictly to attendee_voting room
+                    ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'attendee_voting' }));
+                    document.getElementById('liveStatusText').innerText = 'LIVE SYNC';
                 };
+
                 ws.onmessage = (event) => {
                     try {
                         const msg = JSON.parse(event.data);
-                        if (msg.type === 'SCENE_CHANGE') {
-                            applyDirectorPulse(msg.data.sceneId);
-                        } else if (msg.type === 'STAGE_SCENE_CHANGE') {
-                            if (msg.data && msg.data.scene) {
-                                currentLiveSceneId = msg.data.scene;
-                                if (typeof renderCompanionAgenda === 'function') renderCompanionAgenda();
-                                applyDirectorPulse(msg.data.scene);
-                            }
-                        } else if (msg.type === 'VOTE_UPDATE' || msg.type === 'INIT_STATE') {
-                            const votingData = msg.data.voting || msg.data;
-                            if (votingData && votingData.options) {
-                                currentPollState = votingData;
-                                if (typeof updateAppVotePercentages === 'function') updateAppVotePercentages(votingData);
-                            }
-                        } else if (msg.type === 'STAGE_CONTROL' && msg.data.action === 'blackout') {
-                            flashBlackout();
+                        if (msg.type === 'INITIAL_STATE' && msg.data) {
+                            if (msg.data.stageSpeaker) updateStageSpeaker(msg.data.stageSpeaker, msg.data.stageScene);
+                            if (msg.data.votingEngine) updateVotingUI(msg.data.votingEngine);
+                        } else if (msg.type === 'STAGE_SCENE_CHANGE' && msg.data) {
+                            if (msg.data.stageSpeaker) updateStageSpeaker(msg.data.stageSpeaker, msg.data.scene);
+                            if (msg.data.voting) updateVotingUI(msg.data.voting);
+                        } else if (msg.type === 'VOTE_UPDATE' && msg.data) {
+                            updateVotingUI(msg.data);
                         }
-                    } catch (e) {}
+                    } catch (err) {
+                        console.error('[WS] Parse error:', err);
+                    }
                 };
+
                 ws.onclose = () => {
-                    document.getElementById('director-status-text').textContent = 'LOCAL STANDALONE';
-                    setTimeout(connectPortalWebSocket, 3000);
+                    document.getElementById('liveStatusText').innerText = 'RECONNECTING';
+                    if (!reconnectTimer) {
+                        reconnectTimer = setTimeout(() => {
+                            reconnectTimer = null;
+                            connectWebSocket();
+                        }, 3000);
+                    }
                 };
-            } catch (e) {}
-        }
-        connectPortalWebSocket();
 
-        function applyDirectorPulse(sceneId) {
-            let colorHex = 0xFF0077;
-            if (sceneId === 'awards') colorHex = 0xFFB300;
-            if (sceneId === 'future') colorHex = 0x00F0FF;
-            if (sceneId === 'sonic') colorHex = 0x9333EA;
-
-            tunnelLights.forEach(l => l.color.setHex(colorHex));
-            exitArchMat.color.setHex(colorHex);
-            exitBeamMat.color.setHex(colorHex);
-        }
-
-        function flashBlackout() {
-            tunnelLights.forEach(l => l.intensity = 0.2);
-            setTimeout(() => {
-                tunnelLights.forEach(l => l.intensity = 3.5);
-            }, 3000);
-        }
-
-        /* =============================================================
-           7. Render Loop & Camera Kinematics
-           ============================================================= */
-        const clock = new THREE.Clock();
-
-        function animate() {
-            requestAnimationFrame(animate);
-            const delta = clock.getDelta();
-            const elapsed = clock.getElapsedTime();
-
-            // 1. Camera Movement Calculations per Mode
-            if (cameraMode === 'drone') {
-                targetZ = Math.max(-TUNNEL_LENGTH, targetZ - delta * 7.5);
-                if (targetZ <= -TUNNEL_LENGTH + 1) targetZ = 0; // Seamless loop in drone tour
-
-                // Banking flight spline motion
-                camera.position.x = Math.sin(elapsed * 0.8) * 1.5;
-                camera.position.y = Math.cos(elapsed * 0.6) * 1.2;
-                camera.rotation.z = Math.sin(elapsed * 0.8) * 0.15;
-            } else if (cameraMode === 'crane') {
-                camera.position.x = 0;
-                camera.position.y = 2.8;
-                camera.rotation.z = 0;
-            } else if (cameraMode === 'floor') {
-                camera.position.x = 0;
-                camera.position.y = -TUNNEL_RADIUS + 0.9;
-                camera.rotation.z = 0;
-            } else {
-                // Walker mode: eye-level spectator with walking bobbing
-                camera.position.x = 0;
-                camera.rotation.z = 0;
-                const walkSpeed = Math.abs(targetZ - currentZ);
-                if (walkSpeed > 0.04) {
-                    camera.position.y = Math.sin(elapsed * 7) * 0.06;
-                } else {
-                    camera.position.y = 0;
-                }
-            }
-
-            // Smooth camera Z interpolation
-            currentZ += (targetZ - currentZ) * 0.08;
-            camera.position.z = currentZ;
-
-            camera.rotation.y = -mouseLook.x;
-            camera.rotation.x = mouseLook.y;
-
-            const progressRatio = Math.min(1.0, Math.max(0.0, -currentZ / TUNNEL_LENGTH));
-            updateDepthState(progressRatio);
-
-            // 2. Rotate exit arches, beams and god rays
-            exitArch.rotation.z += 0.008;
-            exitBeam.rotation.z -= 0.004;
-            godRays.rotation.y += 0.005;
-            particles.rotation.z += 0.0006;
-
-            // 3. Subtle spectator walking bobbing motion
-            if (spectator1 && spectator2 && spectator3) {
-                spectator1.position.y = -TUNNEL_RADIUS + 1.95 + Math.sin(elapsed * 3.5) * 0.03;
-                spectator2.position.y = -TUNNEL_RADIUS + 1.95 + Math.sin(elapsed * 3.2 + 1) * 0.03;
-                spectator3.position.y = -TUNNEL_RADIUS + 1.95 + Math.sin(elapsed * 3.0 + 2) * 0.02;
-            }
-
-            renderer.render(scene, camera);
-        }
-        /* =============================================================
-           8. Attendee Companion PWA Controller Logic
-           ============================================================= */
-        let isCompanionActive = false;
-        let currentCompanionTab = 'pass';
-        let currentLiveSceneId = 'ambient';
-
-        const AGENDA_SCHEDULE = [
-            { id: 'ambient', time: '6:30 PM', title: 'Arrival & Ambient Walk-In', speaker: 'Foyer Panoramic LED Particles', tag: 'NETWORKING' },
-            { id: 'opening_film', time: '7:00 PM', title: 'Opening AV Film & Countdown', speaker: 'Summit Opener & Sonic Riser', tag: 'FILM' },
-            { id: 'speaker_portal', time: '7:05 PM', title: 'Speaker Portal Reveal', speaker: 'Taimur Rahman (CCO Banglalink)', tag: 'KEYNOTE 1' },
-            { id: 'sonic_battle', time: '7:30 PM', title: 'The Sonic Battle (Live Poll)', speaker: 'Audience Showdown (Alpha vs Beta)', tag: 'VOTING' },
-            { id: 'keynote', time: '7:45 PM', title: 'Platform Roadmap & Advertiser Keynote', speaker: 'Modasser Ahmed & Leadership', tag: 'KEYNOTE 2' },
-            { id: 'marathon_race', time: '8:15 PM', title: 'Memory Marathon Trivia Race', speaker: '8-Lane Crowd Interactive Showdown', tag: 'RACE' },
-            { id: 'personal_dashboard', time: '8:35 PM', title: 'Personal Dashboard & This/That', speaker: 'Audience Curated Reel & Duel', tag: 'SHOWCASE' },
-            { id: 'wrapped_capsule', time: '8:55 PM', title: 'ToffeeCon Wrapped & 2033 Capsule', speaker: 'Erik Aas (CEO) & Finale Seal', tag: 'FINALE' }
-        ];
-
-        function toggleCompanionView() {
-            const overlay = document.getElementById('companionOverlay');
-            isCompanionActive = !isCompanionActive;
-            if (isCompanionActive) {
-                overlay.classList.remove('hidden');
-                renderCompanionAgenda();
-                renderCompanionBarcode();
-            } else {
-                overlay.classList.add('hidden');
+                ws.onerror = () => {
+                    if (ws) ws.close();
+                };
+            } catch (e) {
+                console.warn('[WS] Offline fallback active');
             }
         }
 
-        function switchCompanionTab(tabId) {
-            currentCompanionTab = tabId;
-            document.querySelectorAll('.nav-item-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.companion-tab-panel').forEach(p => p.classList.remove('active'));
+        connectWebSocket();
 
-            const navBtn = document.getElementById(`cnav-${tabId}`);
-            const panel = document.getElementById(`cpanel-${tabId}`);
-            if (navBtn) navBtn.classList.add('active');
-            if (panel) panel.classList.add('active');
+        // Fallback Initial State Fetch via REST
+        fetch('/api/stage/state')
+            .then(res => res.json())
+            .then(data => {
+                if (data.stageSpeaker) updateStageSpeaker(data.stageSpeaker, data.stageScene);
+                if (data.votingEngine) updateVotingUI(data.votingEngine);
+            })
+            .catch(() => {/* Offline service worker will serve fallback */});
+
+        function updateStageSpeaker(speaker, scene) {
+            if (!speaker) return;
+            const nameEl = document.getElementById('speakerName');
+            const roleEl = document.getElementById('speakerRole');
+            const topicEl = document.getElementById('speakerTopic');
+            const badgeEl = document.getElementById('keynoteStatusBadge');
+            
+            if (nameEl && speaker.name) nameEl.innerText = speaker.name;
+            if (roleEl && speaker.role) roleEl.innerText = speaker.role;
+            if (topicEl && speaker.topic) topicEl.innerText = `"${speaker.topic}"`;
+            if (badgeEl && scene) badgeEl.innerText = `NOW BROADCASTING // ${scene.toUpperCase()}`;
         }
 
-        function renderCompanionAgenda() {
-            const list = document.getElementById('companionAgendaList');
-            if (!list) return;
-            list.innerHTML = '';
+        // 4. Instant Haptic Vote Buzzer
+        let localVoteCountRed = 312;
+        let localVoteCountBlue = 288;
+        let hasVotedLocally = false;
 
-            AGENDA_SCHEDULE.forEach(item => {
-                const card = document.createElement('div');
-                const isLive = (item.id === currentLiveSceneId);
-                card.className = 'agenda-session-card' + (isLive ? ' is-live' : '');
-
-                card.innerHTML = `
-                    <div class="session-time-row">
-                        <span>${item.time} &middot; ${item.tag}</span>
-                        ${isLive ? '<span class="session-live-pill">● LIVE ON STAGE</span>' : ''}
-                    </div>
-                    <div class="session-title">${item.title}</div>
-                    <div class="session-speaker">${item.speaker}</div>
-                `;
-                list.appendChild(card);
-            });
-
-            // Update header badge
-            const currentObj = AGENDA_SCHEDULE.find(s => s.id === currentLiveSceneId);
-            const tagEl = document.getElementById('appLiveSessionTag');
-            if (tagEl && currentObj) {
-                tagEl.innerText = `NOW: ${currentObj.title.toUpperCase()}`;
+        function updateVotingUI(engine) {
+            if (!engine || !engine.options) return;
+            
+            if (engine.title) {
+                const titleEl = document.getElementById('pollTitle');
+                if (titleEl) titleEl.innerText = engine.title;
             }
+
+            const red = engine.options.red || { label: 'Sonic Alpha', votes: 312 };
+            const blue = engine.options.blue || { label: 'Sonic Beta', votes: 288 };
+
+            localVoteCountRed = red.votes;
+            localVoteCountBlue = blue.votes;
+
+            const total = localVoteCountRed + localVoteCountBlue;
+            const pctRedVal = total > 0 ? Math.round((localVoteCountRed / total) * 100) : 50;
+            const pctBlueVal = 100 - pctRedVal;
+
+            const labelRedEl = document.getElementById('labelRed');
+            const labelBlueEl = document.getElementById('labelBlue');
+            const pctRedEl = document.getElementById('pctRed');
+            const pctBlueEl = document.getElementById('pctBlue');
+            const barRedEl = document.getElementById('barRed');
+            const barBlueEl = document.getElementById('barBlue');
+            const totalEl = document.getElementById('totalVotesCount');
+
+            if (labelRedEl) labelRedEl.innerText = red.label || 'Sonic Alpha';
+            if (labelBlueEl) labelBlueEl.innerText = blue.label || 'Sonic Beta';
+            if (pctRedEl) pctRedEl.innerText = `${pctRedVal}% (${red.label ? red.label.split(' ')[0] : 'Alpha'})`;
+            if (pctBlueEl) pctBlueEl.innerText = `${pctBlueVal}% (${blue.label ? blue.label.split(' ')[0] : 'Beta'})`;
+            if (barRedEl) barRedEl.style.width = `${pctRedVal}%`;
+            if (barBlueEl) barBlueEl.style.width = `${pctBlueVal}%`;
+            if (totalEl) totalEl.innerText = `${total} TOTAL VOTES`;
         }
 
-        function renderCompanionBarcode(code) {
-            const container = document.getElementById('appPassBarcode');
-            if (!container) return;
-            container.innerHTML = '';
-            const str = (code || 'TCON-3089').toUpperCase();
-            for (let i = 0; i < str.length * 3; i++) {
-                const charCode = str.charCodeAt(i % str.length);
-                const width = ((charCode + i) % 4) + 1;
-                const bar = document.createElement('div');
-                bar.style.background = '#000';
-                bar.style.height = '100%';
-                bar.style.width = `${width}px`;
-                container.appendChild(bar);
-            }
-        }
-
-        // Live Voting directly from Companion Web App
-        async function castAppVote(option) {
-            const redBtn = document.getElementById('appVoteRedBtn');
-            const blueBtn = document.getElementById('appVoteBlueBtn');
-
-            if (option === 'red') {
-                redBtn.classList.add('voted');
-                blueBtn.classList.remove('voted');
-            } else {
-                blueBtn.classList.add('voted');
-                redBtn.classList.remove('voted');
+        function handleVoteClick(option) {
+            // Instant Haptic Feedback (Dual vibration burst)
+            if (navigator.vibrate) {
+                navigator.vibrate([40, 30, 40]);
             }
 
-            // Instant optimistic UI feedback
-            if (currentPollState && currentPollState.options) {
-                if (option === 'red' && currentPollState.options.red) currentPollState.options.red.votes++;
-                else if (option === 'blue' && currentPollState.options.blue) currentPollState.options.blue.votes++;
-                updateAppVotePercentages(currentPollState);
+            // Visual Ripple
+            const rippleId = option === 'red' ? 'rippleRed' : 'rippleBlue';
+            const ripple = document.getElementById(rippleId);
+            if (ripple) {
+                ripple.classList.remove('active');
+                void ripple.offsetWidth; // Force reflow
+                ripple.classList.add('active');
             }
 
-            // Real-time WebSocket dispatch
+            // Sub-50ms Optimistic UI count update
+            if (option === 'red') localVoteCountRed++;
+            else localVoteCountBlue++;
+            const total = localVoteCountRed + localVoteCountBlue;
+            const pctRedVal = Math.round((localVoteCountRed / total) * 100);
+            const pctBlueVal = 100 - pctRedVal;
+            
+            document.getElementById('pctRed').innerText = `${pctRedVal}%`;
+            document.getElementById('pctBlue').innerText = `${pctBlueVal}%`;
+            document.getElementById('barRed').style.width = `${pctRedVal}%`;
+            document.getElementById('barBlue').style.width = `${pctBlueVal}%`;
+            document.getElementById('totalVotesCount').innerText = `${total} TOTAL VOTES`;
+
+            // Toast confirmation
+            const toast = document.getElementById('voteToast');
+            const toastText = document.getElementById('voteToastText');
+            if (toastText) toastText.innerText = `BUZZER RECORDED ⚡ (${option.toUpperCase()})`;
+            if (toast) {
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2200);
+            }
+
+            // Transmit over WebSocket
             if (ws && ws.readyState === WebSocket.OPEN) {
-                try {
-                    ws.send(JSON.stringify({ type: 'CAST_VOTE', option }));
-                } catch(e) {}
+                ws.send(JSON.stringify({
+                    type: 'CAST_VOTE',
+                    option: option,
+                    room: 'attendee_voting'
+                }));
             }
 
-            try {
-                const res = await fetch('/api/vote', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ option })
-                });
-                const data = await res.json();
-                if (data.voting || data.options) {
-                    currentPollState = data.voting || data;
-                    updateAppVotePercentages(currentPollState);
-                }
-            } catch(e) {}
+            // Fallback REST call for persistence
+            fetch('/api/vote', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    option: option,
+                    voterToken: 'attendee_' + (localStorage.getItem('toffeecon_uid') || Date.now())
+                })
+            }).catch(() => {/* Handled optimistically */});
         }
 
-        function updateAppVotePercentages(voting) {
-            if (!voting || !voting.options) return;
-            const red = voting.options.red ? voting.options.red.votes : 0;
-            const blue = voting.options.blue ? voting.options.blue.votes : 0;
-            const total = red + blue || 1;
-            const pctRed = Math.round((red / total) * 100);
-            const pctBlue = 100 - pctRed;
-
-            const elRed = document.getElementById('appPctRed');
-            const elBlue = document.getElementById('appPctBlue');
-            const totalEl = document.getElementById('appTotalVotes');
-
-            if (elRed) elRed.innerText = `${pctRed}%`;
-            if (elBlue) elBlue.innerText = `${pctBlue}%`;
-            if (totalEl) totalEl.innerText = `${red + blue} Total Votes`;
-        }
-
-        // Hydrate Attendee Profile from URL (e.g. /portal?id=TCON-3089 or /app?id=TCON-4001)
-        function hydrateAttendeeProfile() {
-            const params = new URLSearchParams(window.location.search);
-            const queryId = params.get('id') || 'TCON-3089';
-            const queryName = params.get('name');
-            const queryRole = params.get('role');
-            const queryCompany = params.get('company');
-
-            if (queryName) {
-                applyAttendeeData({
-                    id: queryId,
-                    name: queryName,
-                    role: queryRole || 'VIP Delegate',
-                    company: queryCompany || 'Banglalink Partner',
-                    gate: 'Gate 1 (VIP North)'
-                });
-            } else {
-                fetch(`/api/gate/search?q=${encodeURIComponent(queryId)}`)
-                    .then(r => r.json())
-                    .then(results => {
-                        if (results && results.length > 0) {
-                            applyAttendeeData(results[0]);
-                        }
-                    })
-                    .catch(() => {});
+        // 5. Hall Map Interactive Booth Selector
+        const boothData = {
+            dub: {
+                title: '🎙️ Telephone Dub Box (Booth 01)',
+                tag: 'QUEUE: 3 MIN',
+                tagBg: 'rgba(255,102,0,0.15)',
+                tagColor: '#FF6600',
+                desc: 'Step inside the acoustic telephone booth. Dub your voice onto Hollywood & Bangla cult cinema scenes with zero-shot neural cloning.',
+                link: '/dub'
+            },
+            audition: {
+                title: '🎭 AI Casting & Audition (Booth 02)',
+                tag: 'QUEUE: 5 MIN',
+                tagBg: 'rgba(147,51,234,0.15)',
+                tagColor: '#9333EA',
+                desc: 'Audition in real time for Toffee OTT upcoming original series. AI facial landmark extraction computes character archetype match scores.',
+                link: '/audition'
+            },
+            capsule: {
+                title: '📼 2033 Time Capsule (Booth 03)',
+                tag: 'OPEN ENTRY',
+                tagBg: 'rgba(255,184,0,0.15)',
+                tagColor: '#FFB800',
+                desc: 'Record a 15-second holographic prediction for the year 2033. Stored in an encrypted vault to be unlocked at ToffeeCon 2033.',
+                link: '/booth/capsule-booth'
+            },
+            duel: {
+                title: '📺 Taste Duel Showdown (Booth 04)',
+                tag: 'HEAD-TO-HEAD',
+                tagBg: 'rgba(0,240,255,0.15)',
+                tagColor: '#00F0FF',
+                desc: 'Challenge a peer to a high-speed video recommendation showdown. Test content tastes and win instant Toffee VIP points.',
+                link: '/taste-duel'
+            },
+            space: {
+                title: '🛰️ Space Window & Ceiling (Booth 05)',
+                tag: 'B2B SHOWCASE',
+                tagBg: 'rgba(16,185,129,0.15)',
+                tagColor: '#10B981',
+                desc: 'Witness ambient ad insertion and 6G ceiling starfield projections for smart home streaming environments.',
+                link: '/space-window'
+            },
+            wall: {
+                title: '📱 100-Phone Wall (Booth 06)',
+                tag: 'SYNCHRONIZED',
+                tagBg: 'rgba(255,0,119,0.15)',
+                tagColor: '#FF0077',
+                desc: '100 mobile devices orchestrated into a single unified 4K canvas using ultra-low latency WebSocket frame slicing.',
+                link: '/wall'
             }
+        };
 
-            // If user opens directly with /app or ?view=app, open Companion immediately
-            if (window.location.pathname === '/app' || window.location.pathname === '/companion' || params.get('view') === 'app') {
-                toggleCompanionView();
-            }
+        function selectBooth(key) {
+            if (navigator.vibrate) navigator.vibrate(15);
+            const data = boothData[key];
+            if (!data) return;
+
+            document.getElementById('boothCardTitle').innerText = data.title;
+            const tagEl = document.getElementById('boothCardTag');
+            tagEl.innerText = data.tag;
+            tagEl.style.backgroundColor = data.tagBg;
+            tagEl.style.color = data.tagColor;
+            document.getElementById('boothCardDesc').innerText = data.desc;
+            document.getElementById('btnBoothLaunch').href = data.link;
+
+            // Scroll card into view smoothly on mobile
+            document.getElementById('boothDetailCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
-
-        function applyAttendeeData(attendee) {
-            if (!attendee) return;
-            document.getElementById('appPassName').innerText = attendee.name || 'VIP Delegate';
-            document.getElementById('appPassCompany').innerText = attendee.company || 'Banglalink';
-            document.getElementById('appPassRole').innerText = (attendee.role || 'ATTENDEE').toUpperCase();
-            document.getElementById('appPassId').innerText = attendee.id || 'TCON-2026';
-            document.getElementById('appPassGate').innerText = `ASSIGNED GATE: ${attendee.gate || 'Gate 1 (VIP North)'}`;
-            document.getElementById('appPassQr').src = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://toffeecon.live/programme?id=${attendee.id || 'TCON-2026'}`;
-            renderCompanionBarcode(attendee.id);
-        }
-
-        // Initialize state on load
-        hydrateAttendeeProfile();
-        renderCompanionAgenda();
-
-        animate();
     </script>
 </body>
 </html>

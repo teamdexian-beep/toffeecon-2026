@@ -8,7 +8,7 @@ const cors = require('cors');
 // Services & Security
 const eventStore = require('./services/eventStore');
 const aiProvider = require('./services/aiProvider');
-const { sanitizeBody, setupProcessProtection } = require('./middleware/security');
+const { sanitizeBody, setupProcessProtection, DIRECTOR_AUTH_KEY } = require('./middleware/security');
 
 // Process Uncaught Exception Guard
 setupProcessProtection();
@@ -94,6 +94,7 @@ app.get('/stage', (req, res) => res.sendFile(path.join(clientPublic, 'stage.html
 app.get('/portal', (req, res) => res.sendFile(path.join(clientPublic, 'portal.html')));
 app.get('/app', (req, res) => res.sendFile(path.join(clientPublic, 'portal.html')));
 app.get('/companion', (req, res) => res.sendFile(path.join(clientPublic, 'portal.html')));
+app.get('/tunnel', (req, res) => res.sendFile(path.join(clientPublic, 'tunnel.html')));
 app.get('/gate', (req, res) => res.sendFile(path.join(clientPublic, 'gate.html')));
 app.get('/invite', (req, res) => res.sendFile(path.join(clientPublic, 'greetings.html')));
 app.get('/greetings', (req, res) => res.sendFile(path.join(clientPublic, 'greetings.html')));
@@ -173,7 +174,8 @@ app.get('/stage/led', (req, res) => res.sendFile(path.join(clientPublic, 'stage.
 // WebSocket Connection Lifecycle Handling
 // ==========================================
 wss.on('connection', (ws) => {
-    ws.room = 'all'; // Default room
+    ws.room = 'attendee_voting'; // Default room for public voters
+    ws.isDirector = false;
     const currentState = eventStore.getState();
 
     // Send complete hydrated state snapshot immediately on connection
@@ -207,8 +209,31 @@ wss.on('connection', (ws) => {
         try {
             const parsed = JSON.parse(raw);
             if (parsed.type === 'SUBSCRIBE') {
-                ws.room = parsed.room || 'all';
+                const requestedRoom = parsed.room || 'attendee_voting';
+                const token = parsed.auth || parsed.token;
+                if (requestedRoom === 'director_channel' || token === DIRECTOR_AUTH_KEY) {
+                    if (token === DIRECTOR_AUTH_KEY) {
+                        ws.isDirector = true;
+                        ws.room = requestedRoom;
+                    } else {
+                        ws.isDirector = false;
+                        ws.room = 'attendee_voting';
+                        ws.send(JSON.stringify({ type: 'ERROR', message: 'Unauthorized director channel subscription' }));
+                        return;
+                    }
+                } else {
+                    ws.room = requestedRoom;
+                }
                 ws.send(JSON.stringify({ type: 'SUBSCRIBED', room: ws.room }));
+            } else if (parsed.type === 'DIRECTOR_AUTH') {
+                if (parsed.auth === DIRECTOR_AUTH_KEY) {
+                    ws.isDirector = true;
+                    ws.room = 'director_channel';
+                    ws.send(JSON.stringify({ type: 'DIRECTOR_AUTHENTICATED', success: true }));
+                } else {
+                    ws.isDirector = false;
+                    ws.send(JSON.stringify({ type: 'ERROR', message: 'Invalid director credentials' }));
+                }
             } else if (parsed.type === 'REGISTER_PHONE') {
                 eventStore.update(st => {
                     st.phoneWall.activePhones[parsed.phoneId] = Date.now();
@@ -228,6 +253,77 @@ wss.on('connection', (ws) => {
                         st.votingEngine.options[targetKey].votes += 1;
                     });
                     broadcast('VOTE_UPDATE', eventStore.getState().votingEngine);
+                }
+            } else if (parsed.type === 'STAGE_CONTROL' || parsed.type === 'STAGE_SCENE_CHANGE' || parsed.type === 'WALL_SYNC_TRIGGER') {
+                const token = parsed.auth || parsed.token;
+                const isAuthorized = ws.isDirector || token === DIRECTOR_AUTH_KEY;
+                if (!isAuthorized) {
+                    console.warn(`[WS SECURITY] Discarded unauthorized ${parsed.type} attempt from unauthenticated socket`);
+                    ws.send(JSON.stringify({
+                        type: 'ERROR',
+                        error: 'Unauthorized access. Director authentication credential required.',
+                        command: parsed.type
+                    }));
+                    return;
+                }
+
+                if (parsed.type === 'STAGE_CONTROL') {
+                    const action = parsed.action || (parsed.data && parsed.data.action);
+                    eventStore.update(st => {
+                        if (action === 'reset') {
+                            st.votingEngine.options.red.votes = 300;
+                            st.votingEngine.options.blue.votes = 300;
+                            st.votingEngine.status = 'open';
+                        } else if (action === 'lock') {
+                            st.votingEngine.status = 'locked';
+                        } else if (action === 'reveal') {
+                            st.votingEngine.status = 'revealed';
+                        } else if (action === 'open') {
+                            st.votingEngine.status = 'open';
+                        } else if (action === 'panic_blackout') {
+                            st.stageScene = 'ambient';
+                        }
+                    });
+                    broadcast('STAGE_CONTROL', { action, voting: eventStore.getState().votingEngine });
+                } else if (parsed.type === 'STAGE_SCENE_CHANGE') {
+                    const scene = parsed.scene || (parsed.data && parsed.data.scene);
+                    const speaker = parsed.speaker || (parsed.data && parsed.data.speaker) || {};
+                    const speakerName = parsed.speakerName || speaker.name;
+                    const speakerRole = parsed.speakerRole || speaker.role;
+                    const speakerTopic = parsed.speakerTopic || speaker.topic;
+                    eventStore.update(st => {
+                        if (scene) st.stageScene = scene;
+                        st.stageSpeaker = {
+                            name: speakerName || st.stageSpeaker?.name || 'Taimur Rahman',
+                            role: speakerRole || st.stageSpeaker?.role || 'Chief Commercial Officer · Banglalink',
+                            topic: speakerTopic || st.stageSpeaker?.topic || 'The Future of OTT in Bangladesh'
+                        };
+                    });
+                    const updated = eventStore.getState();
+                    broadcast('STAGE_SCENE_CHANGE', {
+                        scene: updated.stageScene,
+                        speaker: updated.stageSpeaker
+                    });
+                } else if (parsed.type === 'WALL_SYNC_TRIGGER') {
+                    const targetSyncTimestamp = Date.now() + 500;
+                    eventStore.update(st => {
+                        st.phoneWall.currentMode = 'synced_logo';
+                        st.phoneWall.lastSyncTimestamp = targetSyncTimestamp;
+                    });
+                    broadcast('WALL_SYNC_TRIGGER', {
+                        mode: 'synced_logo',
+                        syncAt: targetSyncTimestamp,
+                        durationMs: 5000
+                    });
+                    setTimeout(() => {
+                        eventStore.update(st => {
+                            st.phoneWall.currentMode = 'multilingual';
+                        });
+                        broadcast('WALL_SYNC_TRIGGER', {
+                            mode: 'multilingual',
+                            syncAt: Date.now()
+                        });
+                    }, 5500);
                 }
             }
         } catch (err) {
