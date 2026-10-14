@@ -12,10 +12,10 @@ RUN npm ci --omit=dev
 # Copy application source code
 COPY . .
 
-# Expose standard port
-EXPOSE 3000
+# Expose standard port (Conglomerate Port Matrix: 5000)
+EXPOSE 5000
 
-ENV PORT=3000
+ENV PORT=5000
 ENV NODE_ENV=production
 
 CMD ["node", "server/server.js"]
