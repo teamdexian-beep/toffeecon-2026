@@ -1,7 +1,73 @@
 {
   "status": "active",
-  "totalAuditions": 19,
+  "totalAuditions": 21,
   "candidates": [
+    {
+      "id": "cand-1791999341053",
+      "characterName": "সৈকত আহমেদ",
+      "realName": "Saikat VIP Performer",
+      "genre": "action",
+      "roleTitle": "Spec-Ops Rogue Recon Specialist",
+      "seriesTitle": "সাইবার স্ট্রাইক ২০২৬",
+      "englishTitle": "CYBER STRIKE: SPEC-OPS",
+      "tagline": "মিশন যখন শেষ হবে, তখন কেবল আমার পায়ের ছাপ বাকি থাকবে।",
+      "summary": "কঠিন ট্রেনিংপ্রাপ্ত সাবেক সামরিক স্পেশালিস্ট, যিনি এখন ঢাকার সাইবার আন্ডারগ্রাউন্ডের সাথে এক অসম লড়াইয়ে নেমেছেন। যার লক্ষ্য কেবল সত্য উন্মোচন করা।",
+      "thematicBackdropUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=80",
+      "accentColor": "#00F0FF",
+      "colorGrade": "cyber-neon",
+      "actingCritique": "অ্যাকশন এনার্জি: ৯৩% — ক্ষিপ্র শারীরিক ভাষা ও তীক্ষ্ণ চোখ। ব্লকব্লাস্টার অ্যাকশন থ্রিলারের জন্য উপযোগী।",
+      "portraitUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
+      "audioUrl": "",
+      "ottScore": 93,
+      "scoreBreakdown": {
+        "screenPresence": 92,
+        "dramaticGrit": 94,
+        "dialoguePunch": 95,
+        "originality": 93
+      },
+      "prompts": {
+        "portraitPrompt": "Cinematic 8K character poster for সৈকত আহমেদ, playing as Spec-Ops Rogue Recon Specialist in \"CYBER STRIKE: SPEC-OPS\", 35mm film still, intense penetrating gaze, High-contrast cyan and crimson neon rim light with metallic highlights, fine Dhaka textures, authentic Bengali persona, Toffee Original aesthetic, depth of field --ar 9:16",
+        "fullBodyPrompt": "Full body cinematic action hero still of সৈকত আহমেদ in authentic stylized costume for Spec-Ops Rogue Recon Specialist, atmospheric set reflecting action, standing with confident posture, High-contrast cyan and crimson neon rim light with metallic highlights, 8k photorealistic",
+        "veo10sPrompt": "Cinematic 10-second OTT character reveal. [Camera Move: slow dolly push-in transitioning to high-angle hero reveal]. সৈকত আহমেদ, dressed as Spec-Ops Rogue Recon Specialist, turns collar up, making an intense dramatic gaze directly into the camera lens with a subtle confident smirk. Lighting: High-contrast cyan and crimson neon rim light with metallic highlights. Atmosphere: light atmospheric mist and dust motes. Audio: deep cinematic bass pulse with ambient environmental sound. 24fps 4K."
+      },
+      "videoUrl": "",
+      "isTop10": false,
+      "rank": 11,
+      "createdAt": "2026-10-14T17:35:41.053Z"
+    },
+    {
+      "id": "cand-1791993727922",
+      "characterName": "সৈকত আহমেদ",
+      "realName": "Saikat VIP Performer",
+      "genre": "action",
+      "roleTitle": "Spec-Ops Rogue Recon Specialist",
+      "seriesTitle": "সাইবার স্ট্রাইক ২০২৬",
+      "englishTitle": "CYBER STRIKE: SPEC-OPS",
+      "tagline": "মিশন যখন শেষ হবে, তখন কেবল আমার পায়ের ছাপ বাকি থাকবে।",
+      "summary": "কঠিন ট্রেনিংপ্রাপ্ত সাবেক সামরিক স্পেশালিস্ট, যিনি এখন ঢাকার সাইবার আন্ডারগ্রাউন্ডের সাথে এক অসম লড়াইয়ে নেমেছেন। যার লক্ষ্য কেবল সত্য উন্মোচন করা।",
+      "thematicBackdropUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=80",
+      "accentColor": "#00F0FF",
+      "colorGrade": "cyber-neon",
+      "actingCritique": "অ্যাকশন এনার্জি: ৯৩% — ক্ষিপ্র শারীরিক ভাষা ও তীক্ষ্ণ চোখ। ব্লকব্লাস্টার অ্যাকশন থ্রিলারের জন্য উপযোগী।",
+      "portraitUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
+      "audioUrl": "",
+      "ottScore": 92,
+      "scoreBreakdown": {
+        "screenPresence": 93,
+        "dramaticGrit": 93,
+        "dialoguePunch": 93,
+        "originality": 93
+      },
+      "prompts": {
+        "portraitPrompt": "Cinematic 8K character poster for সৈকত আহমেদ, playing as Spec-Ops Rogue Recon Specialist in \"CYBER STRIKE: SPEC-OPS\", 35mm film still, intense penetrating gaze, High-contrast cyan and crimson neon rim light with metallic highlights, fine Dhaka textures, authentic Bengali persona, Toffee Original aesthetic, depth of field --ar 9:16",
+        "fullBodyPrompt": "Full body cinematic action hero still of সৈকত আহমেদ in authentic stylized costume for Spec-Ops Rogue Recon Specialist, atmospheric set reflecting action, standing with confident posture, High-contrast cyan and crimson neon rim light with metallic highlights, 8k photorealistic",
+        "veo10sPrompt": "Cinematic 10-second OTT character reveal. [Camera Move: slow dolly push-in transitioning to high-angle hero reveal]. সৈকত আহমেদ, dressed as Spec-Ops Rogue Recon Specialist, turns collar up, making an intense dramatic gaze directly into the camera lens with a subtle confident smirk. Lighting: High-contrast cyan and crimson neon rim light with metallic highlights. Atmosphere: light atmospheric mist and dust motes. Audio: deep cinematic bass pulse with ambient environmental sound. 24fps 4K."
+      },
+      "videoUrl": "",
+      "isTop10": false,
+      "rank": 13,
+      "createdAt": "2026-10-14T16:02:07.922Z"
+    },
     {
       "id": "cand-1791842333017",
       "characterName": "বল্টু ভাই",

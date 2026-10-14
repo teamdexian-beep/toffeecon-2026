@@ -1,7 +1,39 @@
 {
   "status": "active",
-  "totalDubs": 7,
+  "totalDubs": 9,
   "takes": [
+    {
+      "id": "DUB-6058",
+      "guestName": "Tanvir Hossain",
+      "originalText": "খেলা হবে মামা!",
+      "language": "russian",
+      "targetDialect": "russian",
+      "languageLabel": "Russian Cold War (রাশিয়ান)",
+      "characterRole": "Moscow Underworld Boss",
+      "characterName": "ভিক্টর সোবোলভ (Viktor Sobolev)",
+      "translatedText": "Игра началась, товарищ!",
+      "phoneticText": "Игра началась, товарищ!",
+      "avatarImage": "/api/media/dub_avatars/russian.jpg",
+      "audioVoiceCode": "ru-RU",
+      "audioUrl": "/api/media/dubs/sample.mp4",
+      "createdAt": "2026-10-14T17:35:41.032Z"
+    },
+    {
+      "id": "DUB-8259",
+      "guestName": "Tanvir Hossain",
+      "originalText": "খেলা হবে মামা!",
+      "language": "russian",
+      "targetDialect": "russian",
+      "languageLabel": "Russian Cold War (রাশিয়ান)",
+      "characterRole": "Moscow Underworld Boss",
+      "characterName": "ভিক্টর সোবোলভ (Viktor Sobolev)",
+      "translatedText": "Игра началась, товарищ!",
+      "phoneticText": "Игра началась, товарищ!",
+      "avatarImage": "/api/media/dub_avatars/russian.jpg",
+      "audioVoiceCode": "ru-RU",
+      "audioUrl": "/api/media/dubs/sample.mp4",
+      "createdAt": "2026-10-14T16:02:07.891Z"
+    },
     {
       "id": "DUB-6047",
       "guestName": "VIP Creator",

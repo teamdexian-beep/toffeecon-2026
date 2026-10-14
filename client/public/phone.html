@@ -351,12 +351,13 @@
         }
 
         // WebSocket Connection for Sub-Millisecond Wall Sync & Registration
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
         let ws;
 
         function connectWallSocket() {
-            ws = new WebSocket(`${protocol}//${window.location.host}`);
+            ws = new WebSocket(`${proto}//${location.host}`);
             ws.onopen = () => {
+                ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'phone' }));
                 if (typeof nodeId === 'number' && !isNaN(nodeId)) {
                     ws.send(JSON.stringify({
                         type: 'REGISTER_PHONE',

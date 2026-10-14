@@ -935,6 +935,20 @@
             openRSVP();
         }
 
+        function showToast(msg) {
+            let toast = document.getElementById('landingToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'landingToast';
+                toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(255,16,240,0.92);color:#fff;padding:12px 24px;border-radius:12px;font-family:Space Mono,monospace;font-size:0.85rem;font-weight:700;z-index:99999;box-shadow:0 0 25px rgba(255,16,240,0.5);transition:opacity 0.3s;pointer-events:none;';
+                document.body.appendChild(toast);
+            }
+            toast.innerText = msg;
+            toast.style.opacity = '1';
+            clearTimeout(window._toastTimeout);
+            window._toastTimeout = setTimeout(() => { toast.style.opacity = '0'; }, 3500);
+        }
+
         // Handle RSVP Form Submission
         async function submitRSVP(e) {
             e.preventDefault();
@@ -961,15 +975,29 @@
                     localStorage.setItem('tcon_saved_ticket', JSON.stringify(data.ticket));
                     displayTicketView(data.ticket);
                 } else {
-                    alert('Accreditation failed: ' + (data.error || 'Please verify form fields'));
+                    showToast('Accreditation failed: ' + (data.error || 'Please verify form fields'));
                 }
             } catch (err) {
-                alert('Connection error. Please try again.');
+                showToast('Connection error. Please try again.');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
             }
         }
+
+        // Real-Time Dynamic WebSocket Binding
+        const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        let ws;
+        function connectLandingWebSocket() {
+            try {
+                ws = new WebSocket(`${proto}//${location.host}`);
+                ws.onopen = () => {
+                    ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'landing' }));
+                };
+                ws.onclose = () => setTimeout(connectLandingWebSocket, 3000);
+            } catch(e) {}
+        }
+        connectLandingWebSocket();
     </script>
 </body>
 </html>

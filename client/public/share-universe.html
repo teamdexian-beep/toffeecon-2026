@@ -624,6 +624,20 @@
         }
 
         document.addEventListener('DOMContentLoaded', loadPosterData);
+
+        // Real-Time Dynamic WebSocket Binding
+        const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        let ws;
+        function connectShareUniverseWebSocket() {
+            try {
+                ws = new WebSocket(`${proto}//${location.host}`);
+                ws.onopen = () => {
+                    ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'share-universe' }));
+                };
+                ws.onclose = () => setTimeout(connectShareUniverseWebSocket, 3000);
+            } catch(e) {}
+        }
+        connectShareUniverseWebSocket();
     </script>
 </body>
 </html>

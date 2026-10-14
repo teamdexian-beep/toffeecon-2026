@@ -266,6 +266,10 @@ class EventStore {
     }
 
     persist() {
+        if (this.saveTimer) {
+            clearTimeout(this.saveTimer);
+            this.saveTimer = null;
+        }
         try {
             const tempPath = this.dataPath + '.tmp';
             fs.writeFileSync(tempPath, JSON.stringify(this.state, null, 2), 'utf-8');

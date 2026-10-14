@@ -437,6 +437,28 @@
         }
 
         fetchDuelState();
+
+        // Real-Time Dynamic WebSocket Binding
+        const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        let ws;
+        function connectDuelWebSocket() {
+            try {
+                ws = new WebSocket(`${proto}//${location.host}`);
+                ws.onopen = () => {
+                    ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'taste-duel' }));
+                };
+                ws.onmessage = (event) => {
+                    try {
+                        const msg = JSON.parse(event.data);
+                        if (msg.type === 'DUEL_UPDATE' && msg.data) {
+                            if (msg.data.questions) questions = msg.data.questions;
+                        }
+                    } catch(e) {}
+                };
+                ws.onclose = () => setTimeout(connectDuelWebSocket, 3000);
+            } catch(e) {}
+        }
+        connectDuelWebSocket();
     </script>
 </body>
 </html>

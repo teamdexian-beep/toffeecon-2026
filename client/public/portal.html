@@ -1935,13 +1935,14 @@
         /* =============================================================
            6. Real-Time Director Sync via WebSocket
            ============================================================= */
+        let currentPollState = { options: { red: { votes: 312 }, blue: { votes: 288 } } };
         let ws = null;
         function connectPortalWebSocket() {
-            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsUrl = `${protocol}//${window.location.host}`;
+            const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
             try {
-                ws = new WebSocket(wsUrl);
+                ws = new WebSocket(`${proto}//${location.host}`);
                 ws.onopen = () => {
+                    ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'portal' }));
                     document.getElementById('director-status-text').textContent = 'DIRECTOR SYNC ACTIVE';
                     document.getElementById('director-status-pill').style.borderColor = 'var(--cyan)';
                 };
@@ -1950,6 +1951,18 @@
                         const msg = JSON.parse(event.data);
                         if (msg.type === 'SCENE_CHANGE') {
                             applyDirectorPulse(msg.data.sceneId);
+                        } else if (msg.type === 'STAGE_SCENE_CHANGE') {
+                            if (msg.data && msg.data.scene) {
+                                currentLiveSceneId = msg.data.scene;
+                                if (typeof renderCompanionAgenda === 'function') renderCompanionAgenda();
+                                applyDirectorPulse(msg.data.scene);
+                            }
+                        } else if (msg.type === 'VOTE_UPDATE' || msg.type === 'INIT_STATE') {
+                            const votingData = msg.data.voting || msg.data;
+                            if (votingData && votingData.options) {
+                                currentPollState = votingData;
+                                if (typeof updateAppVotePercentages === 'function') updateAppVotePercentages(votingData);
+                            }
                         } else if (msg.type === 'STAGE_CONTROL' && msg.data.action === 'blackout') {
                             flashBlackout();
                         }
@@ -1957,7 +1970,7 @@
                 };
                 ws.onclose = () => {
                     document.getElementById('director-status-text').textContent = 'LOCAL STANDALONE';
-                    setTimeout(connectPortalWebSocket, 5000);
+                    setTimeout(connectPortalWebSocket, 3000);
                 };
             } catch (e) {}
         }
@@ -2144,6 +2157,20 @@
                 redBtn.classList.remove('voted');
             }
 
+            // Instant optimistic UI feedback
+            if (currentPollState && currentPollState.options) {
+                if (option === 'red' && currentPollState.options.red) currentPollState.options.red.votes++;
+                else if (option === 'blue' && currentPollState.options.blue) currentPollState.options.blue.votes++;
+                updateAppVotePercentages(currentPollState);
+            }
+
+            // Real-time WebSocket dispatch
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                try {
+                    ws.send(JSON.stringify({ type: 'CAST_VOTE', option }));
+                } catch(e) {}
+            }
+
             try {
                 const res = await fetch('/api/vote', {
                     method: 'POST',
@@ -2151,7 +2178,10 @@
                     body: JSON.stringify({ option })
                 });
                 const data = await res.json();
-                updateAppVotePercentages(data.voting || data);
+                if (data.voting || data.options) {
+                    currentPollState = data.voting || data;
+                    updateAppVotePercentages(currentPollState);
+                }
             } catch(e) {}
         }
 
@@ -2219,23 +2249,6 @@
         // Initialize state on load
         hydrateAttendeeProfile();
         renderCompanionAgenda();
-
-        // WebSocket Listener for Stage Agenda and Poll Sync
-        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const portalWs = new WebSocket(`${wsProtocol}//${window.location.host}`);
-        portalWs.onmessage = (event) => {
-            try {
-                const msg = JSON.parse(event.data);
-                if (msg.type === 'STAGE_SCENE_CHANGE') {
-                    if (msg.data && msg.data.scene) {
-                        currentLiveSceneId = msg.data.scene;
-                        renderCompanionAgenda();
-                    }
-                } else if (msg.type === 'VOTE_UPDATE' || msg.type === 'INIT_STATE') {
-                    updateAppVotePercentages(msg.data.voting || msg.data);
-                }
-            } catch(e) {}
-        };
 
         animate();
     </script>

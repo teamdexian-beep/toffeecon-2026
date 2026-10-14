@@ -1654,8 +1654,11 @@
 
         // Live WebSocket Telemetry Sync
         try {
-            const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const ws = new WebSocket(`${wsProtocol}//${window.location.host}`);
+            const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const ws = new WebSocket(`${proto}//${location.host}`);
+            ws.onopen = () => {
+                ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'mission-control' }));
+            };
             ws.onmessage = (evt) => {
                 try {
                     const msg = JSON.parse(evt.data);

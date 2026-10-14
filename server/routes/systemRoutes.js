@@ -30,8 +30,8 @@ module.exports = function(eventStore, broadcast, aiProvider, wss) {
         }, 5500);
     }
 
-    // Diagnostics & Health Endpoint
-    router.get('/diagnostics', (req, res) => {
+    // Diagnostics & Health Endpoints
+    const handleDiagnostics = (req, res) => {
         const state = eventStore.getState();
         res.json({
             uptimeSeconds: Math.floor(process.uptime()),
@@ -41,7 +41,10 @@ module.exports = function(eventStore, broadcast, aiProvider, wss) {
             eventState: state,
             auditLogs: auditLogs.slice(0, 20)
         });
-    });
+    };
+
+    router.get('/diagnostics', handleDiagnostics);
+    router.get('/system/diagnostics', handleDiagnostics);
 
     // Local IP Discovery
     router.get('/network-ip', (req, res) => {

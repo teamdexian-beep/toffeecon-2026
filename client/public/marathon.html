@@ -468,8 +468,12 @@
         }
 
         // Real-Time WebSocket Sync
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const ws = new WebSocket(`${protocol}//${window.location.host}`);
+        const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${proto}//${location.host}`);
+
+        ws.onopen = () => {
+            ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'marathon' }));
+        };
 
         ws.onmessage = (event) => {
             try {

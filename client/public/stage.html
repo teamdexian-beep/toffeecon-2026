@@ -1921,8 +1921,56 @@
         /* -------------------------------------------------------------
            4. WebSocket Real-Time Stage Sync with Server & Hub
            ------------------------------------------------------------- */
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const ws = new WebSocket(`${protocol}//${window.location.host}`);
+        const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${proto}//${location.host}`);
+
+        ws.onopen = () => {
+            ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'stage' }));
+        };
+
+        function handleStageCue(cue) {
+            if (!cue) return;
+            const action = typeof cue === 'string' ? cue : (cue.action || cue.cue || cue.type);
+            const beams = document.getElementById('stageBeams');
+            const spotlight = document.getElementById('stageSpotlightCone');
+
+            switch (action) {
+                case 'lighting_dim':
+                    if (beams) {
+                        beams.style.transition = 'opacity 0.8s ease';
+                        beams.style.opacity = '0.25';
+                    }
+                    break;
+                case 'lighting_full':
+                case 'lighting_normal':
+                    if (beams) {
+                        beams.style.transition = 'opacity 0.8s ease';
+                        beams.style.opacity = '1';
+                    }
+                    if (spotlight) spotlight.classList.remove('active');
+                    break;
+                case 'spotlight':
+                case 'spotlight_on':
+                    if (spotlight) spotlight.classList.add('active');
+                    break;
+                case 'spotlight_off':
+                    if (spotlight) spotlight.classList.remove('active');
+                    break;
+                case 'handoff':
+                    triggerKeynoteHandoff();
+                    break;
+                case 'motif':
+                case 'sound_motif':
+                    playStageMotif(cue.motif || 'seed');
+                    break;
+                case 'blackout':
+                    if (beams) beams.style.background = '#000000';
+                    break;
+                default:
+                    console.log('[Stage] Received cue:', action);
+                    break;
+            }
+        }
 
         ws.onmessage = (event) => {
             try {
@@ -1933,6 +1981,8 @@
                     if (msg.data.telemetry) updateTelemetry(msg.data.telemetry);
                 } else if (msg.type === 'STAGE_SCENE_CHANGE') {
                     triggerScene(msg.data.scene, msg.data.speaker);
+                } else if (msg.type === 'STAGE_CUE') {
+                    handleStageCue(msg.data || msg);
                 } else if (msg.type === 'VOTE_UPDATE') {
                     updateVoting(msg.data);
                 } else if (msg.type === 'MARATHON_UPDATE') {

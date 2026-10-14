@@ -506,6 +506,20 @@
             requestAnimationFrame(drawChart);
         }
         drawChart();
+
+        // Real-Time Dynamic WebSocket Binding
+        const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        let ws;
+        function connectRelayWebSocket() {
+            try {
+                ws = new WebSocket(`${proto}//${location.host}`);
+                ws.onopen = () => {
+                    ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'screen-relay' }));
+                };
+                ws.onclose = () => setTimeout(connectRelayWebSocket, 3000);
+            } catch(e) {}
+        }
+        connectRelayWebSocket();
     </script>
 </body>
 </html>

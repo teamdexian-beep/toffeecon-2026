@@ -875,11 +875,12 @@
         });
 
         // WebSocket for live arrivals feed & connection dot
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const ws = new WebSocket(`${protocol}//${window.location.host}`);
+        const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${proto}//${location.host}`);
         const statusDot = document.getElementById('wsStatusDot');
 
         ws.onopen = () => {
+            ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'gate' }));
             if (statusDot) statusDot.classList.remove('disconnected');
         };
         ws.onclose = () => {

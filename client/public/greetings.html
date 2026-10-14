@@ -674,9 +674,23 @@
                 playHologramChime();
             } catch (err) {
                 console.warn('Camera access unavailable or declined:', err);
-                alert('WebAR camera access could not be started. Running in 3D Holographic Simulator Mode.');
+                showToast('WebAR camera access declined or unavailable. 3D Holographic Simulator Mode active.');
                 stopCamera();
             }
+        }
+
+        function showToast(msg) {
+            let toast = document.getElementById('greetingsToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'greetingsToast';
+                toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(0,240,255,0.92);color:#010008;padding:12px 24px;border-radius:12px;font-family:Space Mono,monospace;font-size:0.85rem;font-weight:700;z-index:99999;box-shadow:0 0 25px rgba(0,240,255,0.5);transition:opacity 0.3s;pointer-events:none;';
+                document.body.appendChild(toast);
+            }
+            toast.innerText = msg;
+            toast.style.opacity = '1';
+            clearTimeout(window._toastTimeout);
+            window._toastTimeout = setTimeout(() => { toast.style.opacity = '0'; }, 3500);
         }
 
         function stopCamera() {
@@ -1164,8 +1178,11 @@
         }
 
         // Live WebSocket Synchronization with Venue Gate (/gate) Check-ins
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const ws = new WebSocket(`${protocol}//${window.location.host}`);
+        const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${proto}//${location.host}`);
+        ws.onopen = () => {
+            ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'greetings' }));
+        };
         ws.onmessage = (event) => {
             try {
                 const msg = JSON.parse(event.data);

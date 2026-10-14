@@ -315,8 +315,12 @@
         let userSelected = null;
 
         // WebSocket Connection
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const ws = new WebSocket(`${protocol}//${window.location.host}`);
+        const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${proto}//${location.host}`);
+
+        ws.onopen = () => {
+            ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'dashboard' }));
+        };
 
         ws.onmessage = (event) => {
             try {

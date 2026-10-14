@@ -317,6 +317,13 @@
             localStorage.setItem('tcon_user_vote', option);
             applyLockedVote(option);
 
+            // Instant WebSocket dispatch if connected
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                try {
+                    ws.send(JSON.stringify({ type: 'CAST_VOTE', option: option }));
+                } catch(e) {}
+            }
+
             try {
                 const res = await fetch('/api/vote', {
                     method: 'POST',
@@ -338,12 +345,14 @@
         // ==========================================
         // WebSocket Real-Time Stage Synchronization
         // ==========================================
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const wsUrl = `${protocol}//${window.location.host}`;
+        const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
         let ws;
 
         function connectSocket() {
-            ws = new WebSocket(wsUrl);
+            ws = new WebSocket(`${proto}//${location.host}`);
+            ws.onopen = () => {
+                ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'vote' }));
+            };
             ws.onmessage = (event) => {
                 try {
                     const msg = JSON.parse(event.data);

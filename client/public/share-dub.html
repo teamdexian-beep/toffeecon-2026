@@ -784,6 +784,20 @@
         }
 
         document.addEventListener('DOMContentLoaded', loadDubData);
+
+        // Real-Time Dynamic WebSocket Binding
+        const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        let ws;
+        function connectShareDubWebSocket() {
+            try {
+                ws = new WebSocket(`${proto}//${location.host}`);
+                ws.onopen = () => {
+                    ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'share-dub' }));
+                };
+                ws.onclose = () => setTimeout(connectShareDubWebSocket, 3000);
+            } catch(e) {}
+        }
+        connectShareDubWebSocket();
     </script>
 </body>
 </html>

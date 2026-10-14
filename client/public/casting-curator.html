@@ -572,8 +572,12 @@
 
         // Initialize WebSocket for real-time updates
         function initWebSocket() {
-            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            ws = new WebSocket(`${protocol}//${window.location.host}`);
+            const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            ws = new WebSocket(`${proto}//${location.host}`);
+
+            ws.onopen = () => {
+                ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'curator' }));
+            };
 
             ws.onmessage = (event) => {
                 try {
@@ -704,10 +708,24 @@
             document.getElementById('fullBodyPrompt').innerText = cand.prompts?.fullBodyPrompt || 'N/A';
         }
 
+        function showToast(msg) {
+            let toast = document.getElementById('curatorToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'curatorToast';
+                toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(0,240,255,0.92);color:#010008;padding:12px 24px;border-radius:12px;font-family:Space Mono,monospace;font-size:0.85rem;font-weight:700;z-index:99999;box-shadow:0 0 25px rgba(0,240,255,0.5);transition:opacity 0.3s;pointer-events:none;';
+                document.body.appendChild(toast);
+            }
+            toast.innerText = msg;
+            toast.style.opacity = '1';
+            clearTimeout(window._toastTimeout);
+            window._toastTimeout = setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+        }
+
         function copyPrompt(elementId) {
             const text = document.getElementById(elementId).innerText;
             navigator.clipboard.writeText(text);
-            alert('Prompt copied to clipboard! Paste directly into Google Flow / Veo.');
+            showToast('Prompt copied to clipboard! Paste directly into Google Flow / Veo.');
         }
 
         function copyAllPromptsBundle() {
@@ -722,7 +740,7 @@
                 prompts: cand.prompts
             };
             navigator.clipboard.writeText(JSON.stringify(bundle, null, 2));
-            alert('Full AI Prompts & Dossier bundle copied to clipboard!');
+            showToast('Full AI Prompts & Dossier bundle copied to clipboard!');
         }
 
         async function toggleTop10(event, id) {
@@ -731,7 +749,7 @@
                 top10Ids = top10Ids.filter(x => x !== id);
             } else {
                 if (top10Ids.length >= 10) {
-                    alert('Top 10 list is already full. Remove one first.');
+                    showToast('Top 10 list is already full. Remove one first.');
                     return;
                 }
                 top10Ids.push(id);
@@ -793,7 +811,7 @@
             });
             const data = await res.json();
             if (data.success) {
-                alert('Clip URL saved!');
+                showToast('Clip URL saved successfully!');
                 renderTop10Slots();
             }
         }

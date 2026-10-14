@@ -1,6 +1,7 @@
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
+const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 
@@ -39,8 +40,17 @@ app.use(express.static(path.join(__dirname, '../client/public'), {
     }
 }));
 
-// Serve local media uploads (posters & video clips)
-app.use('/api/media', express.static(path.join(__dirname, 'data/media')));
+// Serve local media uploads & staged assets (posters, dubs & video clips)
+const localMediaDir = path.join(__dirname, 'data/media');
+if (!fs.existsSync(localMediaDir)) {
+    fs.mkdirSync(localMediaDir, { recursive: true });
+}
+const dubsMediaDir = path.join(localMediaDir, 'dubs');
+if (!fs.existsSync(dubsMediaDir)) {
+    fs.mkdirSync(dubsMediaDir, { recursive: true });
+}
+app.use('/api/media', express.static(localMediaDir));
+app.use('/api/media', express.static(path.join(__dirname, '../client/public/assets')));
 
 // WebSocket Channel & Room Broadcast Helper
 function broadcast(type, data, room = null) {
@@ -198,6 +208,7 @@ wss.on('connection', (ws) => {
             const parsed = JSON.parse(raw);
             if (parsed.type === 'SUBSCRIBE') {
                 ws.room = parsed.room || 'all';
+                ws.send(JSON.stringify({ type: 'SUBSCRIBED', room: ws.room }));
             } else if (parsed.type === 'REGISTER_PHONE') {
                 eventStore.update(st => {
                     st.phoneWall.activePhones[parsed.phoneId] = Date.now();
@@ -208,9 +219,13 @@ wss.on('connection', (ws) => {
                 });
             } else if (parsed.type === 'CAST_VOTE') {
                 const opt = parsed.option;
-                if (eventStore.getState().votingEngine.options[opt]) {
+                const state = eventStore.getState();
+                const targetKey = (state.votingEngine && state.votingEngine.options && state.votingEngine.options[opt])
+                    ? opt
+                    : (opt === 'optionA' ? 'red' : (opt === 'optionB' ? 'blue' : null));
+                if (targetKey && state.votingEngine && state.votingEngine.options[targetKey]) {
                     eventStore.update(st => {
-                        st.votingEngine.options[opt].votes += 1;
+                        st.votingEngine.options[targetKey].votes += 1;
                     });
                     broadcast('VOTE_UPDATE', eventStore.getState().votingEngine);
                 }
@@ -225,11 +240,58 @@ wss.on('connection', (ws) => {
     });
 });
 
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`[ToffeeCon EOS Core] Live on http://localhost:${PORT}`);
-    console.log(`  - Apex Mission Control: http://localhost:${PORT}/hub`);
-    console.log(`  - 3-Screen Mainstage LED: http://localhost:${PORT}/stage`);
-    console.log(`  - Portal to a New Era: http://localhost:${PORT}/portal`);
-    console.log(`  - Crash-Proof State Engine: ACTIVE (server/data/event_state.json)`);
-});
+const PORT = process.env.PORT || 5000;
+
+function startServer(port = PORT) {
+    return new Promise((resolve, reject) => {
+        if (server.listening) {
+            return resolve(server);
+        }
+        server.listen(port, () => {
+            console.log(`[ToffeeCon EOS Core] Live on http://localhost:${port}`);
+            console.log(`  - Apex Mission Control: http://localhost:${port}/hub`);
+            console.log(`  - 3-Screen Mainstage LED: http://localhost:${port}/stage`);
+            console.log(`  - Portal to a New Era: http://localhost:${port}/portal`);
+            console.log(`  - Crash-Proof State Engine: ACTIVE (server/data/event_state.json)`);
+            resolve(server);
+        });
+        server.once('error', (err) => {
+            if (err.code === 'EADDRINUSE') {
+                resolve(server);
+            } else {
+                reject(err);
+            }
+        });
+    });
+}
+
+function stopServer() {
+    return new Promise((resolve) => {
+        if (!server.listening) {
+            return resolve();
+        }
+        wss.clients.forEach((client) => {
+            try {
+                client.terminate();
+            } catch (_) {}
+        });
+        wss.close(() => {
+            server.close(() => {
+                resolve();
+            });
+        });
+    });
+}
+
+if (require.main === module) {
+    startServer();
+}
+
+module.exports = {
+    app,
+    server,
+    wss,
+    broadcast,
+    startServer,
+    stopServer
+};

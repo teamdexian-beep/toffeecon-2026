@@ -69,41 +69,87 @@ module.exports = function(eventStore, broadcast, aiProvider) {
     });
 
     // 2. The Dub Booth Basic Asset & History
-    router.post('/dub', (req, res) => {
-        const { guestName, sceneId, dialect } = req.body;
+    router.post(['/dub', '/dub/submit'], async (req, res) => {
+        try {
+            const { guestName, speakerName, sceneId, dialect, targetDialect, text, audioSampleBase64 } = req.body;
 
-        eventStore.update(st => {
-            st.telemetry.dubBoothsCompleted += 1;
-        });
+            // Generate dub take via aiProvider with sub-10s voice track stitching
+            const dubTake = await aiProvider.generateDubTake({
+                speakerName: speakerName || guestName || 'VIP Creator',
+                text: text || 'ছু মন্তর ছু কালিপুত্তের গু! মামা খেলা হবে!',
+                targetDialect: targetDialect || dialect || 'japanese',
+                audioSampleBase64,
+                sceneId: sceneId || 'world_cup'
+            });
 
-        const dubAsset = {
-            id: 'DUB-' + Math.floor(1000 + Math.random() * 9000),
-            guestName: guestName || 'VIP Creator',
-            sceneId: sceneId || 'world_cup',
-            dialect: dialect || 'Standard Bangla',
-            videoUrl: 'https://assets.toffeecon.live/dubs/sample.mp4',
-            timestamp: new Date().toISOString()
-        };
+            // Persist into dubStore
+            const savedTake = dubStore.addTake({
+                id: dubTake.dubId,
+                guestName: dubTake.speakerName,
+                originalText: dubTake.originalText,
+                language: dubTake.dialectKey,
+                languageLabel: dubTake.dialect,
+                characterRole: dubTake.characterRole,
+                characterName: dubTake.characterName,
+                translatedText: dubTake.translatedText,
+                phoneticText: dubTake.phoneticText,
+                avatarImage: dubTake.avatarImage,
+                audioVoiceCode: dubTake.voiceCode,
+                audioUrl: dubTake.audioUrl || '/api/media/dubs/sample.mp4'
+            });
 
-        broadcast('BOOTH_UPDATE', {
-            type: 'DUB_COMPLETED',
-            telemetry: eventStore.getState().telemetry,
-            dubAsset
-        });
+            eventStore.update(st => {
+                st.telemetry.dubBoothsCompleted += 1;
+            });
 
-        res.json({ success: true, dubAsset, telemetry: eventStore.getState().telemetry });
+            const dubAsset = {
+                id: dubTake.dubId,
+                guestName: dubTake.speakerName,
+                sceneId: sceneId || 'world_cup',
+                dialect: dubTake.dialect,
+                videoUrl: dubTake.videoUrl || '/api/media/dubs/sample.mp4',
+                audioUrl: dubTake.audioUrl || '/api/media/dubs/sample.mp4',
+                translatedText: dubTake.translatedText,
+                phoneticText: dubTake.phoneticText,
+                stitchingLatencyMs: dubTake.stitchingLatencyMs || 150,
+                timestamp: dubTake.timestamp
+            };
+
+            broadcast('BOOTH_UPDATE', {
+                type: 'DUB_COMPLETED',
+                telemetry: eventStore.getState().telemetry,
+                dubAsset
+            });
+
+            broadcast('DUB_AI_PROCESSED', savedTake);
+
+            res.json({
+                success: true,
+                dubAsset,
+                dub: savedTake,
+                telemetry: eventStore.getState().telemetry
+            });
+        } catch (err) {
+            console.error('[BoothRoutes:dub] Error:', err);
+            res.status(500).json({ success: false, error: err.message });
+        }
     });
 
     // 3. AI Dub Booth Voice & Performance Engine
     router.post('/dub-ai', aiRateLimiter, async (req, res) => {
         try {
-            const { speakerName, text, targetDialect, audioSampleBase64 } = req.body;
-            const result = await aiProvider.translateAndDubVoice({ speakerName, text, targetDialect, audioSampleBase64 });
+            const { speakerName, text, targetDialect, audioSampleBase64, guestName, dialect } = req.body;
+            const result = await aiProvider.generateDubTake({
+                speakerName: speakerName || guestName || 'VIP Creator',
+                text: text || 'ছু মন্তর ছু কালিপুত্তের গু! মামা খেলা হবে!',
+                targetDialect: targetDialect || dialect || 'japanese',
+                audioSampleBase64
+            });
 
             // Persist into dubStore
             const savedTake = dubStore.addTake({
                 id: result.dubId,
-                guestName: speakerName || 'VIP Creator',
+                guestName: result.speakerName || 'VIP Creator',
                 originalText: result.originalText,
                 language: result.dialectKey,
                 languageLabel: result.dialect,
@@ -113,7 +159,7 @@ module.exports = function(eventStore, broadcast, aiProvider) {
                 phoneticText: result.phoneticText,
                 avatarImage: result.avatarImage,
                 audioVoiceCode: result.voiceCode,
-                audioUrl: result.audioUrl || null
+                audioUrl: result.audioUrl || '/api/media/dubs/sample.mp4'
             });
 
             eventStore.update(st => {
@@ -124,7 +170,7 @@ module.exports = function(eventStore, broadcast, aiProvider) {
             res.json({ success: true, dub: savedTake });
         } catch(err) {
             console.error('[DubAI] Error:', err);
-            res.status(500).json({ error: err.message });
+            res.status(500).json({ success: false, error: err.message });
         }
     });
 
@@ -294,11 +340,11 @@ module.exports = function(eventStore, broadcast, aiProvider) {
     const castingStore = require('../stores/castingStore');
 
     // Submit new audition from Touch Kiosk
-    router.post('/audition/submit', async (req, res) => {
+    router.post(['/audition', '/audition/submit'], async (req, res) => {
         try {
             const { characterName, speechTranscript, genre, photoBase64, posterBase64, audioBase64, realName } = req.body;
             
-            // Run AI analysis & Veo prompt synthesis
+            // Run AI analysis & Veo prompt synthesis (deterministic fallback under sub-10s constraint)
             const aiResult = await aiProvider.analyzeAndGenerateAudition({
                 characterName: characterName || 'অপরিচিত নায়ক',
                 speechTranscript: speechTranscript || '',
@@ -307,7 +353,7 @@ module.exports = function(eventStore, broadcast, aiProvider) {
                 realName: realName || 'ToffeeCon Star'
             });
 
-            // Optional Neural AI Cloud Face-Swap via PiAPI (Lowest cost identity preservation)
+            // Optional Neural AI Cloud Face-Swap via PiAPI with strict timeout guard
             let finalPosterBase64 = posterBase64;
             if (aiProvider.config.apiKey && photoBase64) {
                 try {
@@ -318,11 +364,14 @@ module.exports = function(eventStore, broadcast, aiProvider) {
                         targetImage = 'data:image/jpeg;base64,' + fs.readFileSync(archetypePath).toString('base64');
                         console.log(`[BoothRoutes] Using bespoke cinematic archetype master: ${(genre || 'thriller').toLowerCase()}.jpg`);
                     }
-                    const swapRes = await aiProvider.callPiAPIFaceSwap({
+                    const swapPromise = aiProvider.callPiAPIFaceSwap({
                         swapImageBase64: photoBase64,
                         targetImageUrl: targetImage
                     });
-                    if (swapRes.success && swapRes.imageUrl) {
+                    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Neural face-swap timed out (sub-10s constraint)')), 3500));
+                    const swapRes = await Promise.race([swapPromise, timeoutPromise]);
+
+                    if (swapRes && swapRes.success && swapRes.imageUrl) {
                         try {
                             const imgRes = await fetch(swapRes.imageUrl);
                             if (imgRes.ok) {
@@ -338,7 +387,7 @@ module.exports = function(eventStore, broadcast, aiProvider) {
                         }
                     }
                 } catch (swapErr) {
-                    console.warn('[BoothRoutes] PiAPI face swap failed, using composite poster fallback:', swapErr.message);
+                    console.warn('[BoothRoutes] PiAPI face swap skipped or timed out, using composite poster fallback:', swapErr.message);
                 }
             }
 

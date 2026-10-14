@@ -656,6 +656,20 @@
         }
 
         loadProposal();
+
+        // Real-Time Dynamic WebSocket Binding
+        const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        let ws;
+        function connectProposalWebSocket() {
+            try {
+                ws = new WebSocket(`${proto}//${location.host}`);
+                ws.onopen = () => {
+                    ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'proposal' }));
+                };
+                ws.onclose = () => setTimeout(connectProposalWebSocket, 3000);
+            } catch(e) {}
+        }
+        connectProposalWebSocket();
     </script>
 </body>
 </html>

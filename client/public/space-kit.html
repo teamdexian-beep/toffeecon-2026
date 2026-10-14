@@ -606,6 +606,20 @@
                 console.error('[SpaceKit] Inquiry error:', err);
             }
         }
+
+        // Real-Time Dynamic WebSocket Binding
+        const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        let ws;
+        function connectKitWebSocket() {
+            try {
+                ws = new WebSocket(`${proto}//${location.host}`);
+                ws.onopen = () => {
+                    ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'space-kit' }));
+                };
+                ws.onclose = () => setTimeout(connectKitWebSocket, 3000);
+            } catch(e) {}
+        }
+        connectKitWebSocket();
     </script>
 </body>
 </html>

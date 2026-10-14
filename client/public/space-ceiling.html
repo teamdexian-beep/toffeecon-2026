@@ -675,10 +675,11 @@
         // Real-Time WebSocket Connection & Polling
         let ws;
         function connectWebSocket() {
-            const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            ws = new WebSocket(`${protocol}//${location.host}`);
+            const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            ws = new WebSocket(`${proto}//${location.host}`);
 
             ws.onopen = () => {
+                ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'space-ceiling' }));
                 console.log('[SpaceCeiling] WebSocket Connected');
                 document.getElementById('hudStatus').innerText = 'RELAY NOMINAL · LIVE WS';
             };

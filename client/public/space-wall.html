@@ -943,8 +943,11 @@
 
         // WebSocket Listener to Reflect Remote Uplinks
         function connectWebSocket() {
-            const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const ws = new WebSocket(`${protocol}//${location.host}`);
+            const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const ws = new WebSocket(`${proto}//${location.host}`);
+            ws.onopen = () => {
+                ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'space-wall' }));
+            };
             ws.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);

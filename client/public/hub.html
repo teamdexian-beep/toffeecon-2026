@@ -2001,12 +2001,27 @@
             }
         }
 
+        let resetConfirmationPending = false;
+        let resetTimer = null;
         function confirmSystemReset() {
-            if (confirm("⚠️ CAUTION: Are you sure you want to reset live event states to Baseline? (Polls, check-in tallies, and scenes will revert to Day 01 rehearsal defaults)")) {
-                audioRelay.playChime();
-                controlStage('reset');
-                showToast('Master baseline reset executed successfully.', '⚠️');
+            const btn = document.querySelector('button[onclick="confirmSystemReset()"]');
+            if (!resetConfirmationPending) {
+                resetConfirmationPending = true;
+                if (btn) btn.innerText = '⚠️ CLICK TO CONFIRM RESET';
+                showToast('Tap Reset again within 4s to confirm master baseline reset.', '⚠️');
+                clearTimeout(resetTimer);
+                resetTimer = setTimeout(() => {
+                    resetConfirmationPending = false;
+                    if (btn) btn.innerText = '🚨 Reset Event to Baseline';
+                }, 4000);
+                return;
             }
+            resetConfirmationPending = false;
+            clearTimeout(resetTimer);
+            if (btn) btn.innerText = '🚨 Reset Event to Baseline';
+            audioRelay.playChime();
+            controlStage('reset');
+            showToast('Master baseline reset executed successfully.', '⚠️');
         }
 
         // ==========================================
@@ -2030,11 +2045,11 @@
         // ==========================================
         // 6. WebSocket Client & State Reconciliation
         // ==========================================
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const wsUrl = `${protocol}//${window.location.host}`;
-        const ws = new WebSocket(wsUrl);
+        const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${proto}//${location.host}`);
 
         ws.onopen = () => {
+            ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'hub' }));
             console.log('Director Hub connected via WebSocket');
         };
 
@@ -2351,7 +2366,7 @@
         function startVoiceShowcaller() {
             const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRec) {
-                alert('Web Speech API is not supported in this browser.');
+                showToast('Web Speech API is not supported in this browser.', '⚠️');
                 return;
             }
             try {

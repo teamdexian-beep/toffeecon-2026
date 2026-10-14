@@ -588,6 +588,20 @@
         }
 
         window.onload = fetchCandidate;
+
+        // Real-Time Dynamic WebSocket Binding
+        const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        let ws;
+        function connectShareWebSocket() {
+            try {
+                ws = new WebSocket(`${proto}//${location.host}`);
+                ws.onopen = () => {
+                    ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'share' }));
+                };
+                ws.onclose = () => setTimeout(connectShareWebSocket, 3000);
+            } catch(e) {}
+        }
+        connectShareWebSocket();
     </script>
 </body>
 </html>

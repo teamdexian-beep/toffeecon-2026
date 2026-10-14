@@ -908,6 +908,20 @@
         }
 
         document.addEventListener('DOMContentLoaded', initKiosk);
+
+        // Real-Time Dynamic WebSocket Binding
+        const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        let ws;
+        function connectUniverseWebSocket() {
+            try {
+                ws = new WebSocket(`${proto}//${location.host}`);
+                ws.onopen = () => {
+                    ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'universe-kiosk' }));
+                };
+                ws.onclose = () => setTimeout(connectUniverseWebSocket, 3000);
+            } catch(e) {}
+        }
+        connectUniverseWebSocket();
     </script>
 </body>
 </html>

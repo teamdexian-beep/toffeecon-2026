@@ -1693,13 +1693,20 @@
             document.getElementById('retakeBtn').style.display = 'none';
 
             try {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    throw new Error('MediaDevices unsupported on this device/display');
+                }
                 mediaStream = await navigator.mediaDevices.getUserMedia({
                     video: { width: { ideal: 1080 }, height: { ideal: 1080 }, facingMode: 'user' },
                     audio: false
                 });
                 video.srcObject = mediaStream;
             } catch (err) {
-                console.warn('Camera access denied or unavailable, using high-res fallback poster.');
+                console.warn('Camera access denied or unavailable, activating accessible studio portrait fallback:', err);
+                video.style.display = 'none';
+                img.style.display = 'block';
+                img.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80';
+                capturedPhotoBase64 = img.src;
             }
         }
 
@@ -1735,13 +1742,30 @@
                     setTimeout(() => flash.style.opacity = '0', 250);
 
                     // Capture frame
-                    canvas.width = video.videoWidth || 640;
-                    canvas.height = video.videoHeight || 640;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    if (mediaStream && video.videoWidth > 0) {
+                        canvas.width = video.videoWidth || 640;
+                        canvas.height = video.videoHeight || 640;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        capturedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.9);
+                        img.src = capturedPhotoBase64;
+                    } else if (!capturedPhotoBase64) {
+                        canvas.width = 640;
+                        canvas.height = 640;
+                        const ctx = canvas.getContext('2d');
+                        ctx.fillStyle = '#1A0F2E';
+                        ctx.fillRect(0, 0, 640, 640);
+                        ctx.fillStyle = '#00F0FF';
+                        ctx.font = 'bold 28px "Space Mono", monospace';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('TOFFEECON CASTING', 320, 290);
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.font = '20px sans-serif';
+                        ctx.fillText('Accessible Persona Active', 320, 330);
+                        capturedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.9);
+                        img.src = capturedPhotoBase64;
+                    }
 
-                    capturedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.9);
-                    img.src = capturedPhotoBase64;
                     img.style.display = 'block';
                     video.style.display = 'none';
 
@@ -1780,6 +1804,9 @@
 
                 // 1. Initialize Real Mic Stream & Web Audio Analyser
                 try {
+                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                        throw new Error('MediaDevices unsupported on this device/display');
+                    }
                     const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     initAudioVisualizer(audioStream);
 
@@ -1800,8 +1827,9 @@
                     };
                     mediaRecorder.start();
                 } catch (e) {
-                    console.warn('Audio capture stream fallback:', e);
+                    console.warn('Audio capture stream fallback (tablet/headless mode):', e);
                     simulateAudioVisualizer();
+                    capturedAudioBase64 = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
                 }
 
                 // 2. Start Continuous Speech Recognition with auto-restart
@@ -1836,7 +1864,13 @@
         }
 
         function startSpeechRecognition() {
-            if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) return;
+            if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+                const input = document.getElementById('speechTranscriptInput');
+                if (input && !input.value.trim()) {
+                    input.value = "Toffee is launching an all-new era of Bangladeshi storytelling and entertainment.";
+                }
+                return;
+            }
             try {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 speechRecognizer = new SpeechRecognition();
@@ -2531,6 +2565,20 @@
             renderDialogueChips();
             drawFlatVisualizer();
         };
+
+        // Real-Time Dynamic WebSocket Binding
+        const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        let ws;
+        function connectAuditionWebSocket() {
+            try {
+                ws = new WebSocket(`${proto}//${location.host}`);
+                ws.onopen = () => {
+                    ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'audition-booth' }));
+                };
+                ws.onclose = () => setTimeout(connectAuditionWebSocket, 3000);
+            } catch(e) {}
+        }
+        connectAuditionWebSocket();
     </script>
 </body>
 </html>
