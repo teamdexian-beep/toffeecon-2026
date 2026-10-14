@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: toffeecon-2026-staging
+    runtime: node
+    plan: starter
+    region: singapore
+    buildCommand: npm ci
+    startCommand: node server/server.js
+    healthCheckPath: /api/system/diagnostics
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: NODE_ENV
+        value: production
+      - key: GEMINI_API_KEY
+        sync: false
+    autoDeploy: true
