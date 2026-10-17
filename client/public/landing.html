@@ -267,6 +267,50 @@
             justify-content: center;
         }
 
+        /* 4-Pillar Simulation Quick-Dock */
+        .simulation-dock {
+            margin-top: 36px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            width: 100%;
+            max-width: 1080px;
+        }
+
+        .simulation-dock-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            text-decoration: none;
+            color: #fff;
+            transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .simulation-dock-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 240, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+
+        @media (max-width: 900px) {
+            .simulation-dock {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 540px) {
+            .simulation-dock {
+                grid-template-columns: 1fr;
+            }
+        }
+
         /* Stats Strip */
         .stats-strip {
             max-width: 1200px;
@@ -591,14 +635,46 @@
         </div>
 
         <div class="hero-actions">
-            <a href="/portal" class="btn-secondary" style="padding: 14px 28px; font-size: 1rem; border-color: #FF0077; color: #fff; background: rgba(255, 0, 119, 0.2); box-shadow: 0 0 25px rgba(255, 0, 119, 0.5);">
-                Step Inside Screen Portal (3D) 🌀
+            <a href="/simulation" class="btn-rsvp" style="padding: 16px 36px; font-size: 1.05rem; background: linear-gradient(135deg, #FF6600, #FF0055); box-shadow: 0 0 35px rgba(255, 102, 0, 0.65); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; font-weight: 800;">
+                🚀 Launch Interactive Simulation Suite
             </a>
-            <button class="btn-rsvp" style="padding: 14px 32px; font-size: 1rem;" onclick="openRSVP()">
-                Register For VIP Access ↗
-            </button>
-            <a href="/invite" class="btn-secondary" style="padding: 14px 28px; font-size: 1rem;">
-                Launch Greetings.exe (3D) ⚡
+            <a href="/tunnel" class="btn-secondary" style="padding: 14px 26px; font-size: 0.95rem; border-color: #00F0FF; color: #fff; background: rgba(0, 240, 255, 0.15);">
+                🌀 3D Screen Tunnel
+            </a>
+            <a href="/stage" class="btn-secondary" style="padding: 14px 26px; font-size: 0.95rem; border-color: #A855F7; color: #fff; background: rgba(168, 85, 247, 0.15);">
+                🖥️ 3-Screen Mainstage
+            </a>
+        </div>
+
+        <!-- 4-Pillar Simulation Quick-Dock -->
+        <div class="simulation-dock">
+            <a href="/gate" class="simulation-dock-card">
+                <span style="font-size: 1.6rem;">🚪</span>
+                <div style="text-align: left;">
+                    <div style="font-weight: 700; font-size: 0.92rem; color: #fff;">Attendee Gate Check-In</div>
+                    <div style="font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--neon-cyan);">Live RFID / QR Ingress</div>
+                </div>
+            </a>
+            <a href="/wall" class="simulation-dock-card">
+                <span style="font-size: 1.6rem;">📱</span>
+                <div style="text-align: left;">
+                    <div style="font-weight: 700; font-size: 0.92rem; color: #fff;">100-Phone Wall Grid</div>
+                    <div style="font-family: 'Space Mono', monospace; font-size: 0.72rem; color: #FF6600;">Hardware Canvas Mesh</div>
+                </div>
+            </a>
+            <a href="/audition" class="simulation-dock-card">
+                <span style="font-size: 1.6rem;">🎭</span>
+                <div style="text-align: left;">
+                    <div style="font-weight: 700; font-size: 0.92rem; color: #fff;">Creator Dossier & AI Audition</div>
+                    <div style="font-family: 'Space Mono', monospace; font-size: 0.72rem; color: #E6007E;">Generative Screenplay</div>
+                </div>
+            </a>
+            <a href="/stage" class="simulation-dock-card">
+                <span style="font-size: 1.6rem;">🎪</span>
+                <div style="text-align: left;">
+                    <div style="font-weight: 700; font-size: 0.92rem; color: #fff;">Virtual Stage LED Feed</div>
+                    <div style="font-family: 'Space Mono', monospace; font-size: 0.72rem; color: #A855F7;">3-Screen 4K Projection</div>
+                </div>
             </a>
         </div>
     </section>

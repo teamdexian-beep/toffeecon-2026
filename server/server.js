@@ -100,6 +100,11 @@ app.get('/invite', (req, res) => res.sendFile(path.join(clientPublic, 'greetings
 app.get('/greetings', (req, res) => res.sendFile(path.join(clientPublic, 'greetings.html')));
 app.get('/welcome', (req, res) => res.sendFile(path.join(clientPublic, 'greetings.html')));
 
+// Simulation Suite & Live Event Sandbox Surfaces
+app.get('/simulation', (req, res) => res.sendFile(path.join(clientPublic, 'index.html')));
+app.get('/index', (req, res) => res.sendFile(path.join(clientPublic, 'index.html')));
+app.get('/index.html', (req, res) => res.sendFile(path.join(clientPublic, 'index.html')));
+
 // Mobile Audience Keynote Interaction Surfaces
 app.get('/vote', (req, res) => res.sendFile(path.join(clientPublic, 'vote.html')));
 app.get('/marathon', (req, res) => res.sendFile(path.join(clientPublic, 'marathon.html')));
