@@ -10,8 +10,10 @@ module.exports = function(eventStore, broadcast) {
     router.post('/vote', voteRateLimiter, (req, res) => {
         const { option, voterToken, isDirectorOverride } = req.body;
         const clientIdentifier = voterToken || req.ip;
+        const isDirector = req.headers['x-director-auth'] === 'toffeecon-2026-secure' || req.query.auth === 'toffeecon-2026-secure';
+        const hasOverride = isDirector && !!isDirectorOverride;
 
-        if (votedClients.has(clientIdentifier) && !isDirectorOverride) {
+        if (votedClients.has(clientIdentifier) && !hasOverride) {
             return res.status(409).json({
                 error: 'Vote already recorded from this device',
                 alreadyVoted: true,

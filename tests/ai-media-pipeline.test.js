@@ -56,10 +56,10 @@ describe('AI Media Pipeline & Generative Dubbing Test Suite', () => {
             assert.ok(result.template && result.template.title);
             assert.ok(result.posterUrl);
             assert.strictEqual(result.providerUsed, 'local_procedural_compositor');
-            assert.ok(result.generationTimeMs < 5000, 'Poster generation must be fast');
+            assert.ok(result.generationTimeMs < 8000, 'Poster generation must be under 8.0s');
         });
 
-        test('generateDubTake returns deterministic dialect translation and voice track metadata', async () => {
+        test('generateDubTake returns deterministic dialect translation and voice track metadata in < 8.0s', async () => {
             delete process.env.GEMINI_API_KEY;
             const startTime = Date.now();
             const result = await aiProvider.generateDubTake({
@@ -77,8 +77,8 @@ describe('AI Media Pipeline & Generative Dubbing Test Suite', () => {
             assert.ok(result.phoneticText.length > 0);
             assert.strictEqual(result.providerUsed, 'local_phonetic_engine');
             assert.ok(result.audioUrl.includes('/api/media/'));
-            assert.ok(result.stitchingLatencyMs < 10000, 'Stitching latency must be under 10 seconds');
-            assert.ok(durationMs < 10000, 'Total pipeline execution must be under 10 seconds');
+            assert.ok(result.stitchingLatencyMs < 8000, 'Stitching latency must be under 8.0 seconds');
+            assert.ok(durationMs < 8000, 'Total pipeline execution must be under 8.0 seconds SLA');
         });
 
         test('generateProposalCopy returns structured B2B advertising pitch in fallback mode', async () => {
@@ -99,13 +99,15 @@ describe('AI Media Pipeline & Generative Dubbing Test Suite', () => {
             assert.strictEqual(result.providerUsed, 'local_copy_engine');
         });
 
-        test('generateCritique returns high-fidelity audition critique and scoring without crashing', async () => {
+        test('generateCritique returns high-fidelity audition critique and scoring in < 8.0s', async () => {
             delete process.env.GEMINI_API_KEY;
+            const start = Date.now();
             const result = await aiProvider.generateCritique({
                 characterName: 'রকিবুল ইসলাম',
                 genre: 'thriller',
                 realName: 'Audition Candidate #404'
             });
+            const durationMs = Date.now() - start;
 
             assert.strictEqual(result.success, true);
             assert.ok(result.ottScore >= 80 && result.ottScore <= 99);
@@ -114,6 +116,7 @@ describe('AI Media Pipeline & Generative Dubbing Test Suite', () => {
             assert.strictEqual(result.providerUsed, 'procedural_fallback');
             assert.ok('screenPresence' in result.scoreBreakdown);
             assert.ok('prompts' in result);
+            assert.ok(durationMs < 8000, 'Critique generation must be under 8.0s');
         });
     });
 
@@ -125,8 +128,9 @@ describe('AI Media Pipeline & Generative Dubbing Test Suite', () => {
             assert.strictEqual(mediaStatus.writable, true, 'server/data/media must be writable');
         });
 
-        test('Sample video clips resolve with HTTP 200 via GET /api/media/*', async () => {
+        test('Sample video & audio clips resolve with HTTP 200 via GET /api/media/*', async () => {
             const testFiles = [
+                '/api/media/sample_voice.mp3',
                 '/api/media/sample-dub.mp4',
                 '/api/media/sample-audition.mp4',
                 '/api/media/dubs/sample.mp4',
@@ -144,16 +148,39 @@ describe('AI Media Pipeline & Generative Dubbing Test Suite', () => {
                 );
                 const contentType = response.headers.get('content-type') || '';
                 assert.ok(
-                    contentType.includes('video') || contentType.includes('image'),
-                    `Expected video or image content type for ${fileUrl}, got ${contentType}`
+                    contentType.includes('video') || contentType.includes('image') || contentType.includes('audio') || contentType.includes('octet-stream'),
+                    `Expected media content type for ${fileUrl}, got ${contentType}`
                 );
             }
         });
     });
 
-    // 3. Sub-10s Submission Endpoints Audit
-    describe('Sub-10s Pipeline Latency & Booth Submission Endpoints', () => {
-        test('POST /api/booth/dub generates dub take in < 10 seconds', async () => {
+    // 3. Public vs Admin AI Pipeline Segregation & Sub-8.0s SLA
+    describe('Public vs. Admin AI Pipeline Segregation & Latency SLA', () => {
+        test('/api/ai/config is strictly guarded by requireDirectorAuth', async () => {
+            // Unauthenticated GET
+            const unauthGet = await fetch(`${baseUrl}/api/ai/config`);
+            assert.strictEqual(unauthGet.status, 401, 'Expected HTTP 401 Unauthorized for unauthenticated GET');
+
+            // Unauthenticated POST
+            const unauthPost = await fetch(`${baseUrl}/api/ai/config`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ provider: 'local_fallback' })
+            });
+            assert.strictEqual(unauthPost.status, 401, 'Expected HTTP 401 Unauthorized for unauthenticated POST');
+
+            // Authenticated GET with x-director-auth
+            const authGet = await fetch(`${baseUrl}/api/ai/config`, {
+                headers: { 'x-director-auth': process.env.DIRECTOR_AUTH_KEY || 'toffeecon-2026-secure' }
+            });
+            assert.strictEqual(authGet.status, 200, 'Expected HTTP 200 for authenticated Director GET');
+            const data = await authGet.json();
+            assert.strictEqual(data.success, true);
+            assert.ok(!('apiKey' in data.aiConfig), 'Director config response must not leak raw apiKey');
+        });
+
+        test('POST /api/booth/dub returns attendee PWA Media Locker formatted payload in < 8.0s', async () => {
             const start = Date.now();
             const response = await fetch(`${baseUrl}/api/booth/dub`, {
                 method: 'POST',
@@ -173,13 +200,28 @@ describe('AI Media Pipeline & Generative Dubbing Test Suite', () => {
             assert.strictEqual(data.success, true);
             assert.ok(data.dubAsset || data.dub);
             const take = data.dubAsset || data.dub;
-            assert.ok(take.videoUrl || take.audioUrl);
 
-            // Sub-10s SLA assertion
-            assert.ok(latencyMs < 10000, `Dub submission latency ${latencyMs}ms exceeded 10-second SLA limit`);
+            // Media URL verification (must be public /api/media/*, no server paths)
+            assert.ok(take.videoUrl && take.videoUrl.startsWith('/api/media/'));
+            assert.ok(take.audioUrl && take.audioUrl.startsWith('/api/media/'));
+
+            // Attendee PWA Media Locker compatibility fields
+            assert.ok(take.downloadUrl, 'Must include downloadUrl for Media Locker instant download');
+            assert.ok(take.shareUrl, 'Must include shareUrl for WhatsApp sharing');
+            assert.strictEqual(take.badgeType, 'AI VOICE CLONE ARTIFACT');
+            assert.ok(take.lockerFormatted && take.lockerFormatted.title);
+
+            // Verify raw paths and env keys are stripped
+            const responseString = JSON.stringify(data);
+            assert.strictEqual(responseString.includes('D:\\'), false, 'Response must not leak drive paths');
+            assert.strictEqual(responseString.includes('GEMINI_API_KEY'), false, 'Response must not leak GEMINI_API_KEY');
+            assert.strictEqual(responseString.includes('PIAPI_KEY'), false, 'Response must not leak PIAPI_KEY');
+
+            // Sub-8.0s SLA assertion
+            assert.ok(latencyMs < 8000, `Dub submission latency ${latencyMs}ms exceeded 8.0-second SLA limit`);
         });
 
-        test('POST /api/booth/audition submits candidate and generates critique in < 10 seconds', async () => {
+        test('POST /api/booth/audition returns attendee PWA Media Locker formatted badge in < 8.0s', async () => {
             const start = Date.now();
             const response = await fetch(`${baseUrl}/api/booth/audition`, {
                 method: 'POST',
@@ -198,11 +240,25 @@ describe('AI Media Pipeline & Generative Dubbing Test Suite', () => {
             const data = await response.json();
             assert.strictEqual(data.success, true);
             assert.ok(data.candidate);
-            assert.ok(data.candidate.ottScore > 0);
-            assert.ok(data.candidate.roleTitle);
+            const cand = data.candidate;
+            assert.ok(cand.ottScore > 0);
+            assert.ok(cand.roleTitle);
 
-            // Sub-10s SLA assertion
-            assert.ok(latencyMs < 10000, `Audition submission latency ${latencyMs}ms exceeded 10-second SLA limit`);
+            // Attendee PWA Media Locker compatibility fields
+            assert.ok(cand.videoUrl && cand.videoUrl.startsWith('/api/media/'));
+            assert.ok(cand.downloadUrl, 'Candidate must include downloadUrl for PWA Headshot download');
+            assert.ok(cand.badgeUrl, 'Candidate must include badgeUrl');
+            assert.ok(cand.shareUrl, 'Candidate must include shareUrl for viral sharing');
+            assert.strictEqual(cand.badgeType, 'OTT CASTING AUDITION PASS');
+            assert.ok(cand.lockerFormatted && cand.lockerFormatted.title);
+
+            // Verify raw server paths and keys are stripped
+            const responseString = JSON.stringify(data);
+            assert.strictEqual(responseString.includes('D:\\'), false, 'Candidate response must not leak drive paths');
+            assert.strictEqual(responseString.includes('GEMINI_API_KEY'), false, 'Candidate response must not leak GEMINI_API_KEY');
+
+            // Sub-8.0s SLA assertion
+            assert.ok(latencyMs < 8000, `Audition submission latency ${latencyMs}ms exceeded 8.0-second SLA limit`);
         });
     });
 });

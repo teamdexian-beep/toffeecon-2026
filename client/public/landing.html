@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ToffeeCon 2026 · The Future of Screening</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#FF6600">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ToffeeCon">
+    <link rel="apple-touch-icon" href="/assets/icon-192.png">
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="/assets/toffeecon-logo.png">
     <style>
@@ -573,6 +579,207 @@
                 display: none;
             }
         }
+
+        /* Smart Branded PWA Download Button & Pulsing Glow */
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 15px rgba(255, 102, 0, 0.45), 0 0 30px rgba(255, 0, 85, 0.25);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(255, 102, 0, 0.8), 0 0 45px rgba(255, 0, 85, 0.5);
+            }
+        }
+
+        .btn-download-app {
+            background: linear-gradient(135deg, #FF6600, #FF0055);
+            color: #FFFFFF;
+            font-weight: 800;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 9999px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            animation: pulseGlow 2.4s infinite ease-in-out;
+            transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+            text-decoration: none;
+            font-size: 0.88rem;
+            padding: 10px 20px;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .btn-download-app:hover {
+            transform: translateY(-2px) scale(1.02);
+            filter: brightness(1.12);
+        }
+
+        .btn-download-app:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .hero-download-btn {
+            padding: 16px 32px;
+            font-size: 1.05rem;
+            min-height: 54px;
+        }
+
+        /* Glassmorphic PWA Install Instruction Modal */
+        .pwa-install-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 999999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .pwa-install-modal.active {
+            display: flex;
+        }
+
+        .pwa-modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(5, 3, 12, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .pwa-modal-card {
+            position: relative;
+            background: rgba(18, 14, 32, 0.94);
+            border: 1px solid rgba(255, 102, 0, 0.4);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(255, 102, 0, 0.25);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 20px;
+            max-width: 440px;
+            width: 100%;
+            padding: 26px 24px;
+            color: #FFFFFF;
+            animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.92) translateY(12px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .pwa-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #94A3B8;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .pwa-modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #FFFFFF;
+        }
+
+        .pwa-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .pwa-modal-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            object-fit: contain;
+            background: #0D0B1A;
+            border: 1px solid rgba(255, 102, 0, 0.3);
+            padding: 6px;
+        }
+
+        .pwa-modal-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin-bottom: 4px;
+            font-family: 'Syne', 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .pwa-modal-sub {
+            font-size: 0.78rem;
+            color: #94A3B8;
+            line-height: 1.35;
+        }
+
+        .pwa-modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .pwa-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 12px 14px;
+        }
+
+        .pwa-step-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF6600, #FF0055);
+            color: #FFFFFF;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .pwa-step-text {
+            font-size: 0.86rem;
+            color: #E2E8F0;
+            line-height: 1.4;
+        }
+
+        .pwa-step-text strong {
+            color: #00F0FF;
+        }
+
+        .pwa-btn-done {
+            width: 100%;
+            min-height: 46px;
+            background: linear-gradient(135deg, #FF6600, #FF0055);
+            color: #FFFFFF;
+            font-weight: 800;
+            font-size: 0.92rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.35);
+            transition: filter 0.15s;
+        }
+
+        .pwa-btn-done:hover {
+            filter: brightness(1.1);
+        }
     </style>
 </head>
 <body>
@@ -590,7 +797,10 @@
             <li><a href="#experiences">Floor Booths</a></li>
             <li><a href="/invite" style="color: #A855F7;">VIP Greetings</a></li>
         </ul>
-        <button class="btn-rsvp" onclick="openRSVP()">Request VIP Pass</button>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <button class="btn-download-app pwa-install-btn nav-download-btn" onclick="triggerPwaInstall()">📲 Download App</button>
+            <button class="btn-rsvp" onclick="openRSVP()">Request VIP Pass</button>
+        </div>
     </nav>
 
     <!-- Hero Section -->
@@ -635,6 +845,9 @@
         </div>
 
         <div class="hero-actions">
+            <button class="btn-download-app pwa-install-btn hero-download-btn" onclick="triggerPwaInstall()">
+                📲 Download App
+            </button>
             <a href="/simulation" class="btn-rsvp" style="padding: 16px 36px; font-size: 1.05rem; background: linear-gradient(135deg, #FF6600, #FF0055); box-shadow: 0 0 35px rgba(255, 102, 0, 0.65); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; font-weight: 800;">
                 🚀 Launch Interactive Simulation Suite
             </a>
@@ -1073,6 +1286,164 @@
             } catch(e) {}
         }
         connectLandingWebSocket();
+
+        // Cross-Platform Smart PWA Install Engine
+        let deferredPrompt = null;
+
+        function checkStandalonePWA() {
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+                                 window.navigator.standalone === true ||
+                                 document.referrer.includes('android-app://');
+            if (isStandalone) {
+                document.querySelectorAll('.pwa-install-btn').forEach(btn => {
+                    btn.style.display = 'none';
+                });
+                return true;
+            }
+            return false;
+        }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('[PWA] SW registered on landing:', reg.scope))
+                    .catch(err => console.log('[PWA] SW register failed:', err));
+            });
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            console.log('[PWA] beforeinstallprompt captured on landing');
+            if (!checkStandalonePWA()) {
+                document.querySelectorAll('.pwa-install-btn').forEach(btn => {
+                    btn.style.display = '';
+                });
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            console.log('[PWA] App successfully installed from landing');
+            deferredPrompt = null;
+            document.querySelectorAll('.pwa-install-btn').forEach(btn => {
+                btn.style.display = 'none';
+            });
+        });
+
+        window.matchMedia('(display-mode: standalone)').addEventListener('change', (e) => {
+            if (e.matches) {
+                document.querySelectorAll('.pwa-install-btn').forEach(btn => {
+                    btn.style.display = 'none';
+                });
+            }
+        });
+
+        function triggerPwaInstall() {
+            // 1. Android & Desktop Chrome/Edge with beforeinstallprompt ready
+            if (deferredPrompt) {
+                deferredPrompt["prompt"]();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    console.log('[PWA] User choice outcome:', choiceResult.outcome);
+                    if (choiceResult.outcome === 'accepted') {
+                        document.querySelectorAll('.pwa-install-btn').forEach(btn => {
+                            btn.style.display = 'none';
+                        });
+                    }
+                    deferredPrompt = null;
+                }).catch(err => console.error('[PWA] Prompt error:', err));
+                return;
+            }
+
+            // 2. iOS Safari detection
+            const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+            if (isIOS) {
+                showPwaModal('ios');
+                return;
+            }
+
+            // 3. Fallback for other browsers (instructions or desktop guide)
+            showPwaModal('general');
+        }
+
+        function showPwaModal(type = 'ios') {
+            const modal = document.getElementById('pwaInstallModal');
+            const instructions = document.getElementById('pwaModalInstructions');
+            if (!modal) return;
+
+            if (type === 'ios') {
+                instructions.innerHTML = `
+                    <div class="pwa-step">
+                        <span class="pwa-step-num">1</span>
+                        <span class="pwa-step-text">Tap the Share button in Safari: <strong>[□↑]</strong></span>
+                    </div>
+                    <div class="pwa-step">
+                        <span class="pwa-step-num">2</span>
+                        <span class="pwa-step-text">Scroll down and tap <strong>"Add to Home Screen" [+]</strong></span>
+                    </div>
+                    <div class="pwa-step">
+                        <span class="pwa-step-num">3</span>
+                        <span class="pwa-step-text">Tap <strong>Add</strong> in top-right</span>
+                    </div>
+                `;
+            } else {
+                instructions.innerHTML = `
+                    <div class="pwa-step">
+                        <span class="pwa-step-num">1</span>
+                        <span class="pwa-step-text">Open browser menu <strong>(⋮ or Safari Share)</strong></span>
+                    </div>
+                    <div class="pwa-step">
+                        <span class="pwa-step-num">2</span>
+                        <span class="pwa-step-text">Select <strong>"Install App"</strong> or <strong>"Add to Home Screen"</strong></span>
+                    </div>
+                    <div class="pwa-step">
+                        <span class="pwa-step-num">3</span>
+                        <span class="pwa-step-text">Confirm installation to launch the full stadium companion</span>
+                    </div>
+                `;
+            }
+
+            modal.classList.add('active');
+        }
+
+        function closePwaModal() {
+            const modal = document.getElementById('pwaInstallModal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        // Initial check
+        checkStandalonePWA();
     </script>
+
+    <!-- Glassmorphic iOS / PWA Installation Modal -->
+    <div id="pwaInstallModal" class="pwa-install-modal">
+        <div class="pwa-modal-backdrop" onclick="closePwaModal()"></div>
+        <div class="pwa-modal-card">
+            <button class="pwa-modal-close" onclick="closePwaModal()" aria-label="Close">✕</button>
+            <div class="pwa-modal-header">
+                <img src="/assets/toffeecon-logo.png" alt="ToffeeCon" class="pwa-modal-icon">
+                <div>
+                    <h3 class="pwa-modal-title">Install ToffeeCon Companion</h3>
+                    <p class="pwa-modal-sub">Add to Home Screen for the instant offline attendee experience</p>
+                </div>
+            </div>
+            <div class="pwa-modal-body" id="pwaModalInstructions">
+                <div class="pwa-step">
+                    <span class="pwa-step-num">1</span>
+                    <span class="pwa-step-text">Tap the Share button in Safari: <strong>[□↑]</strong></span>
+                </div>
+                <div class="pwa-step">
+                    <span class="pwa-step-num">2</span>
+                    <span class="pwa-step-text">Scroll down and tap <strong>"Add to Home Screen" [+]</strong></span>
+                </div>
+                <div class="pwa-step">
+                    <span class="pwa-step-num">3</span>
+                    <span class="pwa-step-text">Tap <strong>Add</strong> in top-right</span>
+                </div>
+            </div>
+            <div class="pwa-modal-footer">
+                <button class="pwa-btn-done" onclick="closePwaModal()">Got It</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

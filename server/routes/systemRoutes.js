@@ -61,6 +61,11 @@ module.exports = function(eventStore, broadcast, aiProvider, wss) {
         res.json({ ip: localIp });
     });
 
+    // Get AI Provider configuration (Guarded strictly for Directors)
+    router.get('/ai/config', requireDirectorAuth, (req, res) => {
+        res.json({ success: true, aiConfig: aiProvider.getStatus() });
+    });
+
     // Update AI Provider configuration
     router.post('/ai/config', requireDirectorAuth, (req, res) => {
         const { provider, apiKey, model } = req.body;
@@ -133,11 +138,11 @@ module.exports = function(eventStore, broadcast, aiProvider, wss) {
         { id: 6, type: 'BATTLE', message: 'Sonic Battle voting opened for crowd participation', timestamp: new Date(Date.now() - 1000 * 60 * 2).toLocaleTimeString() }
     ];
 
-    router.get('/system/audit-log', (req, res) => {
+    router.get('/system/audit-log', requireDirectorAuth, (req, res) => {
         res.json({ success: true, logs: auditLogs });
     });
 
-    router.post('/system/audit', (req, res) => {
+    router.post('/system/audit', requireDirectorAuth, (req, res) => {
         const { type, message } = req.body;
         const entry = {
             id: Date.now(),

@@ -8,6 +8,16 @@ const universeStore = require('../stores/universeStore');
 const spaceStore = require('../stores/spaceStore');
 const proposalStore = require('../stores/proposalStore');
 
+// Sanitize server errors to prevent raw file path or key leakage to public attendees
+function sanitizeError(err) {
+    if (!err) return 'Internal processing error';
+    let msg = typeof err === 'string' ? err : (err.message || 'Internal processing error');
+    msg = msg.replace(/[A-Za-z]:\\[^"'\n\r\t]+/g, '[REDACTED_PATH]');
+    msg = msg.replace(/\/(?:[a-zA-Z0-9_.-]+\/)+[a-zA-Z0-9_.-]+/g, '[REDACTED_PATH]');
+    msg = msg.replace(/(?:GEMINI_API_KEY|PIAPI_KEY|API_KEY|DIRECTOR_AUTH_KEY)[^\s]*/gi, '[REDACTED_KEY]');
+    return msg;
+}
+
 module.exports = function(eventStore, broadcast, aiProvider) {
     // 1. Mission Control Proposal Generator (MADCON p. 12)
     router.post('/proposal', (req, res) => {
@@ -46,7 +56,7 @@ module.exports = function(eventStore, broadcast, aiProvider) {
             });
         } catch (err) {
             console.error('[MissionControl] Proposal creation error:', err);
-            res.status(500).json({ success: false, error: err.message });
+            res.status(500).json({ success: false, error: sanitizeError(err) });
         }
     });
 
@@ -102,13 +112,27 @@ module.exports = function(eventStore, broadcast, aiProvider) {
                 st.telemetry.dubBoothsCompleted += 1;
             });
 
+            const mediaAudio = dubTake.audioUrl || '/api/media/sample_voice.mp3';
+            const mediaVideo = dubTake.videoUrl || '/api/media/dubs/sample.mp4';
             const dubAsset = {
                 id: dubTake.dubId,
                 guestName: dubTake.speakerName,
                 sceneId: sceneId || 'world_cup',
                 dialect: dubTake.dialect,
-                videoUrl: dubTake.videoUrl || '/api/media/dubs/sample.mp4',
-                audioUrl: dubTake.audioUrl || '/api/media/dubs/sample.mp4',
+                videoUrl: mediaVideo,
+                audioUrl: mediaAudio,
+                mediaUrl: mediaAudio,
+                downloadUrl: mediaAudio,
+                shareUrl: `https://api.whatsapp.com/send?text=${encodeURIComponent(`Check out my AI Voice Dub from ToffeeCon 2026! (${dubTake.dialect}) #ToffeeCon2026`)}`,
+                badgeType: 'AI VOICE CLONE ARTIFACT',
+                lockerFormatted: {
+                    badgeType: 'AI VOICE CLONE ARTIFACT',
+                    title: `${dubTake.characterName || 'Bengali Dub'} (${dubTake.dialect})`,
+                    sub: 'Recorded at Booth 01 · Zero-Shot Voice Synthesis (00:24)',
+                    downloadUrl: mediaAudio,
+                    downloadFilename: `ToffeeCon-AI-Dub-${dubTake.dubId}.mp3`,
+                    shareUrl: `https://api.whatsapp.com/send?text=${encodeURIComponent(`Check out my AI Voice Dub from ToffeeCon 2026! #ToffeeCon2026`)}`
+                },
                 translatedText: dubTake.translatedText,
                 phoneticText: dubTake.phoneticText,
                 stitchingLatencyMs: dubTake.stitchingLatencyMs || 150,
@@ -121,17 +145,27 @@ module.exports = function(eventStore, broadcast, aiProvider) {
                 dubAsset
             });
 
-            broadcast('DUB_AI_PROCESSED', savedTake);
+            // Clean saved take for attendee locker compatibility
+            const lockerSavedTake = {
+                ...savedTake,
+                mediaUrl: mediaAudio,
+                downloadUrl: mediaAudio,
+                shareUrl: dubAsset.shareUrl,
+                badgeType: dubAsset.badgeType,
+                lockerFormatted: dubAsset.lockerFormatted
+            };
+
+            broadcast('DUB_AI_PROCESSED', lockerSavedTake);
 
             res.json({
                 success: true,
                 dubAsset,
-                dub: savedTake,
+                dub: lockerSavedTake,
                 telemetry: eventStore.getState().telemetry
             });
         } catch (err) {
             console.error('[BoothRoutes:dub] Error:', err);
-            res.status(500).json({ success: false, error: err.message });
+            res.status(500).json({ success: false, error: sanitizeError(err) });
         }
     });
 
@@ -146,6 +180,8 @@ module.exports = function(eventStore, broadcast, aiProvider) {
                 audioSampleBase64
             });
 
+            const mediaAudio = result.audioUrl || '/api/media/sample_voice.mp3';
+
             // Persist into dubStore
             const savedTake = dubStore.addTake({
                 id: result.dubId,
@@ -159,18 +195,34 @@ module.exports = function(eventStore, broadcast, aiProvider) {
                 phoneticText: result.phoneticText,
                 avatarImage: result.avatarImage,
                 audioVoiceCode: result.voiceCode,
-                audioUrl: result.audioUrl || '/api/media/dubs/sample.mp4'
+                audioUrl: mediaAudio
             });
 
             eventStore.update(st => {
                 st.telemetry.dubBoothsCompleted += 1;
             });
 
-            broadcast('DUB_AI_PROCESSED', savedTake);
-            res.json({ success: true, dub: savedTake });
+            const lockerSavedTake = {
+                ...savedTake,
+                mediaUrl: mediaAudio,
+                downloadUrl: mediaAudio,
+                shareUrl: `https://api.whatsapp.com/send?text=${encodeURIComponent(`Check out my AI Voice Dub from ToffeeCon 2026! (${savedTake.languageLabel}) #ToffeeCon2026`)}`,
+                badgeType: 'AI VOICE CLONE ARTIFACT',
+                lockerFormatted: {
+                    badgeType: 'AI VOICE CLONE ARTIFACT',
+                    title: `${savedTake.characterName || 'Bengali Dub'} (${savedTake.languageLabel})`,
+                    sub: 'Recorded at Booth 01 · Zero-Shot Voice Synthesis (00:24)',
+                    downloadUrl: mediaAudio,
+                    downloadFilename: `ToffeeCon-AI-Dub-${savedTake.id}.mp3`,
+                    shareUrl: `https://api.whatsapp.com/send?text=${encodeURIComponent(`Check out my AI Voice Dub from ToffeeCon 2026! #ToffeeCon2026`)}`
+                }
+            };
+
+            broadcast('DUB_AI_PROCESSED', lockerSavedTake);
+            res.json({ success: true, dub: lockerSavedTake });
         } catch(err) {
             console.error('[DubAI] Error:', err);
-            res.status(500).json({ success: false, error: err.message });
+            res.status(500).json({ success: false, error: sanitizeError(err) });
         }
     });
 
@@ -213,7 +265,7 @@ module.exports = function(eventStore, broadcast, aiProvider) {
             broadcast('CAPSULE_UPDATE', eventStore.getState().capsuleWrapped);
             res.json({ success: true, prediction: result });
         } catch(err) {
-            res.status(500).json({ error: err.message });
+            res.status(500).json({ success: false, error: sanitizeError(err) });
         }
     });
 
@@ -277,7 +329,7 @@ module.exports = function(eventStore, broadcast, aiProvider) {
             }
         } catch (err) {
             console.error('Universe transformation error:', err);
-            return res.status(500).json({ error: err.message });
+            return res.status(500).json({ success: false, error: sanitizeError(err) });
         }
     });
 
@@ -423,14 +475,35 @@ module.exports = function(eventStore, broadcast, aiProvider) {
                 totalAuditions: castingStore.getState().totalAuditions
             });
 
+            // Enhance candidate with attendee PWA Media Locker formatting
+            const cleanPoster = newCandidate.posterUrl || newCandidate.portraitUrl || '/assets/toffeecon-hero-emblem.png';
+            const cleanVideo = newCandidate.videoUrl || '/api/media/sample-audition.mp4';
+            const candidateResponse = {
+                ...newCandidate,
+                videoUrl: cleanVideo,
+                mediaUrl: cleanVideo,
+                badgeUrl: cleanPoster,
+                downloadUrl: cleanPoster,
+                shareUrl: `https://api.whatsapp.com/send?text=${encodeURIComponent(`I just auditioned for Toffee OTT at ToffeeCon 2026! Scored ${newCandidate.ottScore}% 🎭 #ToffeeCon2026`)}`,
+                badgeType: 'OTT CASTING AUDITION PASS',
+                lockerFormatted: {
+                    badgeType: 'OTT CASTING AUDITION PASS',
+                    title: newCandidate.roleTitle || `${newCandidate.genre.toUpperCase()} Screen Test`,
+                    sub: `Score: ${newCandidate.ottScore}% Match · Genre: ${newCandidate.genre}`,
+                    downloadUrl: cleanPoster,
+                    downloadFilename: `ToffeeCon-Audition-${newCandidate.id}.png`,
+                    shareUrl: `https://api.whatsapp.com/send?text=${encodeURIComponent(`I just auditioned for Toffee OTT at ToffeeCon 2026! Scored ${newCandidate.ottScore}% 🎭 #ToffeeCon2026`)}`
+                }
+            };
+
             res.json({
                 success: true,
-                candidate: newCandidate,
+                candidate: candidateResponse,
                 totalAuditions: castingStore.getState().totalAuditions
             });
         } catch (err) {
             console.error('[Audition Submit Error]:', err);
-            res.status(500).json({ success: false, error: err.message });
+            res.status(500).json({ success: false, error: sanitizeError(err) });
         }
     });
 
