@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToffeeCon 2026 VIP Pass · Dr. Tariqul Islam</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-obsidian: #0A0A0F;
+            --bg-card: #12101C;
+            --gold-primary: #FFB800;
+            --gold-light: #FFE082;
+            --toffee-orange: #FF6600;
+            --neon-cyan: #00F0FF;
+            --text-main: #FFFFFF;
+            --text-muted: #94A3B8;
+            --border-gold: rgba(255, 184, 0, 0.45);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        @page {
+            size: 148mm 210mm;
+            margin: 0;
+        }
+
+        body {
+            background-color: #05040A;
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .invitation-page {
+            width: 148mm;
+            height: 210mm;
+            max-width: 148mm;
+            max-height: 210mm;
+            background: radial-gradient(circle at 50% 0%, #1A162B 0%, var(--bg-card) 60%, var(--bg-obsidian) 100%);
+            border: 1.5mm solid var(--gold-primary);
+            position: relative;
+            padding: 9mm 9mm 7mm 9mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+            page-break-after: always;
+            break-after: page;
+        }
+
+        @media screen {
+            body {
+                padding: 20px 0;
+                background-color: #0d0c14;
+            }
+            .invitation-page {
+                margin-bottom: 24px;
+            }
+        }
+
+        @media print {
+            body {
+                background: none !important;
+                padding: 0 !important;
+            }
+            .invitation-page {
+                margin: 0 !important;
+                box-shadow: none !important;
+                border: 1.5mm solid var(--gold-primary) !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        .security-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 184, 0, 0.25);
+            padding-bottom: 2mm;
+            font-size: 2.2mm;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: var(--gold-light);
+        }
+
+        .banner-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5mm;
+        }
+
+        .pulse-indicator {
+            width: 2mm;
+            height: 2mm;
+            background: #10B981;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .brand-crest {
+            text-align: center;
+            margin: 3mm 0 2mm 0;
+        }
+
+        .crest-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 6.5mm;
+            font-weight: 900;
+            letter-spacing: 0.22em;
+            background: linear-gradient(135deg, #FFB800 0%, #FFF 40%, #FF6600 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .crest-subtitle {
+            font-family: 'Space Mono', monospace;
+            font-size: 2.1mm;
+            letter-spacing: 0.25em;
+            color: var(--gold-light);
+            margin-top: 1mm;
+        }
+
+        .guest-hero {
+            text-align: center;
+            padding: 3mm 2mm;
+            background: rgba(255, 184, 0, 0.04);
+            border: 1px solid rgba(255, 184, 0, 0.18);
+            border-radius: 3mm;
+            margin: 2mm 0;
+        }
+
+        .salutation-label {
+            font-size: 1.8mm;
+            letter-spacing: 0.2em;
+            color: var(--text-muted);
+            margin-bottom: 2mm;
+        }
+
+        .guest-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 5.6mm;
+            font-weight: 800;
+            color: #FFFFFF;
+            letter-spacing: 0.04em;
+            line-height: 1.2;
+            margin-bottom: 1.5mm;
+        }
+
+        .guest-title {
+            font-size: 2.7mm;
+            font-weight: 600;
+            color: var(--gold-light);
+            margin-bottom: 1mm;
+        }
+
+        .guest-org {
+            font-family: 'Space Mono', monospace;
+            font-size: 2.3mm;
+            color: var(--neon-cyan);
+            letter-spacing: 0.05em;
+        }
+
+        .meta-strip {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.2fr;
+            gap: 2mm;
+            margin: 2mm 0;
+        }
+
+        .meta-pill {
+            background: rgba(10, 10, 15, 0.85);
+            border: 1px solid rgba(255, 184, 0, 0.25);
+            border-radius: 2mm;
+            padding: 2mm;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .meta-label {
+            font-size: 1.6mm;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            margin-bottom: 0.8mm;
+        }
+
+        .meta-val {
+            font-size: 2.2mm;
+            font-weight: 700;
+        }
+
+        .meta-val.gold { color: var(--gold-primary); }
+        .meta-val.cyan { color: var(--neon-cyan); }
+        .meta-val.mono { font-family: 'Space Mono', monospace; font-size: 1.9mm; }
+
+        .venue-strip {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.2fr;
+            gap: 2mm;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 2mm;
+            padding: 2mm;
+            margin: 2mm 0;
+        }
+
+        .venue-cell {
+            text-align: center;
+        }
+
+        .cell-label {
+            display: block;
+            font-size: 1.6mm;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            margin-bottom: 0.6mm;
+        }
+
+        .cell-val {
+            display: block;
+            font-size: 2mm;
+            font-weight: 600;
+            color: #FFFFFF;
+        }
+
+        .ingress-footer {
+            display: flex;
+            align-items: center;
+            gap: 4mm;
+            background: rgba(10, 10, 15, 0.9);
+            border: 1px solid rgba(255, 184, 0, 0.3);
+            border-radius: 3mm;
+            padding: 3mm;
+            margin-top: 1mm;
+        }
+
+        .qr-box {
+            width: 25mm;
+            height: 25mm;
+            background: #FFFFFF;
+            padding: 1.5mm;
+            border-radius: 1.5mm;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+
+        .claim-info {
+            flex-grow: 1;
+        }
+
+        .claim-heading {
+            font-size: 2mm;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            color: var(--gold-light);
+            margin-bottom: 1mm;
+        }
+
+        .claim-instructions {
+            font-size: 1.9mm;
+            line-height: 1.35;
+            color: var(--text-muted);
+            margin-bottom: 2mm;
+        }
+
+        .token-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 1.5mm;
+            background: rgba(255, 184, 0, 0.1);
+            border: 1px solid var(--border-gold);
+            border-radius: 1.5mm;
+            padding: 1mm 2mm;
+        }
+
+        .token-prefix {
+            font-size: 1.6mm;
+            letter-spacing: 0.1em;
+            color: var(--gold-light);
+        }
+
+        .token-val {
+            font-family: 'Space Mono', monospace;
+            font-size: 2.1mm;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+
+        .guilloche-strip {
+            text-align: center;
+            font-size: 1.5mm;
+            letter-spacing: 0.18em;
+            color: rgba(255, 255, 255, 0.3);
+            border-top: 1px solid rgba(255, 184, 0, 0.15);
+            padding-top: 1.5mm;
+            margin-top: 1.5mm;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="invitation-page ">
+        <!-- Top Security Bar -->
+        <header class="security-banner">
+            <div class="banner-left">
+                <span class="pulse-indicator"></span>
+                <span>TOFFEECON 2026 · VIP ACCREDITATION</span>
+            </div>
+            <div class="banner-right">OFFICIAL DIPLOMATIC PASS</div>
+        </header>
+
+        <!-- Brand Crest -->
+        <div class="brand-crest">
+            <div class="crest-title">TOFFEECON</div>
+            <div class="crest-subtitle">SEVEN YEAR SUMMIT · 2026</div>
+        </div>
+
+        <!-- Formal Salutation -->
+        <section class="guest-hero">
+            <div class="salutation-label">WE CORDIALLY REQUEST THE HONOUR OF THE PRESENCE OF</div>
+            <div class="guest-name">Dr. Tariqul Islam</div>
+            <div class="guest-title">VP of AI Research</div>
+            <div class="guest-org">Silicon Valley Labs</div>
+        </section>
+
+        <!-- Pass Metadata Badges -->
+        <section class="meta-strip">
+            <div class="meta-pill">
+                <span class="meta-label">PASS TIER</span>
+                <span class="meta-val gold">VIP KEYNOTE</span>
+            </div>
+            <div class="meta-pill">
+                <span class="meta-label">RESERVED ACCESS</span>
+                <span class="meta-val cyan">Zone A - Executive Circle</span>
+            </div>
+            <div class="meta-pill">
+                <span class="meta-label">ACCREDITATION TOKEN</span>
+                <span class="meta-val gold mono">TC26-VIP-1064-EC3B</span>
+            </div>
+        </section>
+
+        <!-- Venue Schedule -->
+        <section class="venue-strip">
+            <div class="venue-cell">
+                <span class="cell-label">DATE</span>
+                <span class="cell-val">OCTOBER 23, 2026</span>
+            </div>
+            <div class="venue-cell">
+                <span class="cell-label">DOORS OPEN</span>
+                <span class="cell-val">09:00 AM BST</span>
+            </div>
+            <div class="venue-cell">
+                <span class="cell-label">VENUE</span>
+                <span class="cell-val">HALL 3 · ICCB DHAKA</span>
+            </div>
+        </section>
+
+        <!-- Ingress Verification QR Section -->
+        <footer class="ingress-footer">
+            <div class="qr-box">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=0&data=https%3A%2F%2Ftoffeecon-2026.onrender.com%2Fclaim%3Ftoken%3DTC26-VIP-1064-EC3B" alt="VIP Ingress QR" class="qr-image" />
+            </div>
+            <div class="claim-info">
+                <div class="claim-heading">SELF-SERVICE PWA INGRESS CLAIM</div>
+                <div class="claim-instructions">
+                    Scan with any smartphone camera or NFC reader to bind credentials to your mobile pass locker.
+                </div>
+                <div class="token-container">
+                    <span class="token-prefix">TOKEN:</span>
+                    <span class="token-val">TC26-VIP-1064-EC3B</span>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Micro-print Security Guilloche Line -->
+        <div class="guilloche-strip">
+            TOFFEECON 2026 · CENTRAL HOLDINGS EOS PROTOCOL · ENCRYPTED INGRESS PASS · 300 DPI PRODUCTION MASTER
+        </div>
+    </div>
+</body>
+</html>

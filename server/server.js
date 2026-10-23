@@ -75,12 +75,14 @@ const voteRoutes = require('./routes/voteRoutes')(eventStore, broadcast);
 const gateRoutes = require('./routes/gateRoutes')(eventStore, broadcast, rsvpsFilePath);
 const boothRoutes = require('./routes/boothRoutes')(eventStore, broadcast, aiProvider);
 const systemRoutes = require('./routes/systemRoutes')(eventStore, broadcast, aiProvider, wss);
+const accreditationRoutes = require('./routes/accreditationRoutes')(eventStore, broadcast);
 
 app.use('/api/stage', stageRoutes);
 app.use('/api', voteRoutes);
 app.use('/api', gateRoutes);
 app.use('/api/booth', boothRoutes);
 app.use('/api', systemRoutes);
+app.use('/api/accreditation', accreditationRoutes);
 
 // ==========================================
 // Page Routing (Single Clean Mappings)
@@ -111,9 +113,18 @@ app.get('/stage', (req, res) => res.sendFile(path.join(clientPublic, 'stage.html
 app.get('/portal', (req, res) => res.sendFile(path.join(clientPublic, 'portal.html')));
 app.get('/app', (req, res) => res.sendFile(path.join(clientPublic, 'portal.html')));
 app.get('/companion', (req, res) => res.sendFile(path.join(clientPublic, 'portal.html')));
+app.get('/claim', (req, res) => {
+    const token = req.query.token;
+    if (token) {
+        res.redirect(`/portal?token=${encodeURIComponent(token)}`);
+    } else {
+        res.redirect('/portal');
+    }
+});
 app.get('/tunnel', (req, res) => res.sendFile(path.join(clientPublic, 'tunnel.html')));
 app.get('/gate', (req, res) => res.sendFile(path.join(clientPublic, 'gate.html')));
-app.get('/invite', (req, res) => res.sendFile(path.join(clientPublic, 'greetings.html')));
+app.get('/invite', (req, res) => res.sendFile(path.join(clientPublic, 'invite.html')));
+app.get('/invitation', (req, res) => res.sendFile(path.join(clientPublic, 'invite.html')));
 app.get('/greetings', (req, res) => res.sendFile(path.join(clientPublic, 'greetings.html')));
 app.get('/welcome', (req, res) => res.sendFile(path.join(clientPublic, 'greetings.html')));
 

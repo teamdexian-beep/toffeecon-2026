@@ -186,6 +186,12 @@
             background: rgba(245, 158, 11, 0.05);
         }
 
+        .scan-box.danger {
+            border-color: #EF4444;
+            background: rgba(239, 68, 68, 0.08);
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.2);
+        }
+
         .input-group {
             display: flex;
             gap: 12px;
@@ -627,42 +633,113 @@
         }
 
 
-        // Checkin Execution
+        // Checkin Execution with Accreditation VIP API & Fallback
         async function checkInTicket(ticketId) {
             if (!ticketId) return;
 
+            let token = ticketId.trim();
+            if (token.includes('token=')) {
+                try {
+                    const u = new URL(token);
+                    token = u.searchParams.get('token') || token;
+                } catch(e) {
+                    const match = token.match(/token=([A-Za-z0-9-]+)/);
+                    if (match) token = match[1];
+                }
+            }
+
+            const box = document.getElementById('feedbackBox');
+            const iconEl = document.getElementById('feedbackIcon');
+            const titleEl = document.getElementById('feedbackTitle');
+            const subEl = document.getElementById('feedbackSub');
+
             try {
-                const res = await fetch('/api/gate/checkin', {
+                // 1. Primary Ingress RPC: Accreditation VIP Check-In
+                const res = await fetch('/api/accreditation/checkin', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        ticketId: ticketId.trim(),
-                        gate: currentGateLane
+                    body: JSON.stringify({
+                        token: token,
+                        gateId: currentGateLane || "GATE-01"
                     })
                 });
-                const data = await res.json();
 
-                const box = document.getElementById('feedbackBox');
-                if (data.success) {
+                if (res.status === 200) {
+                    const data = await res.json();
                     playChime(true);
                     recordVelocity();
                     box.className = 'scan-box success';
-                    document.getElementById('feedbackIcon').innerText = '✅';
-                    document.getElementById('feedbackTitle').innerText = data.alreadyCheckedIn ? 'RE-ENTRY VERIFIED' : 'ACCESS GRANTED';
-                    document.getElementById('feedbackSub').innerText = `${data.ticket.name} (${data.ticket.role}) · Assigned to ${data.ticket.gate || currentGateLane}`;
-                    
-                    updateBadge(data.ticket);
-                    if (data.totalCheckedIn !== undefined) document.getElementById('statCheckedIn').innerText = data.totalCheckedIn;
-                    if (data.totalRSVP !== undefined) document.getElementById('statTotalRSVP').innerText = data.totalRSVP;
-                } else {
+                    iconEl.innerText = '✅';
+                    titleEl.innerText = 'VIP ACCESS GRANTED · GATE OPEN';
+                    const g = data.guest;
+                    subEl.innerText = `${g.name} (${g.organization}) · ${g.tier} · ${g.metadata?.seatZone || 'Executive Circle'}`;
+
+                    updateBadge({
+                        name: g.name,
+                        company: `${g.organization} · ${g.designation || ''}`,
+                        id: g.token,
+                        role: g.tier || 'VIP ALL-ACCESS',
+                        gate: currentGateLane
+                    });
+
+                    addArrivalFeedItem({
+                        name: g.name,
+                        company: g.organization,
+                        id: g.token,
+                        role: 'VIP PASS'
+                    });
+
+                    if (data.stats && data.stats.checkedInCount !== undefined) {
+                        document.getElementById('statCheckedIn').innerText = data.stats.checkedInCount;
+                    }
+                    return;
+                } else if (res.status === 409) {
+                    const data = await res.json();
                     playChime(false);
                     box.className = 'scan-box warning';
-                    document.getElementById('feedbackIcon').innerText = '⚠️';
-                    document.getElementById('feedbackTitle').innerText = 'PASS NOT FOUND';
-                    document.getElementById('feedbackSub').innerText = data.error || 'Invalid ticket ID or phone number. Please verify or use name search.';
+                    iconEl.innerText = '⚠️';
+                    titleEl.innerText = 'ALREADY CHECKED IN';
+                    const g = data.guest;
+                    const timeStr = g && g.checkedInAt ? new Date(g.checkedInAt).toLocaleTimeString() : 'Earlier';
+                    subEl.innerText = `ALREADY CHECKED IN at ${timeStr} · ${g?.name || token}`;
+                    return;
+                } else if (res.status === 403 || res.status === 404) {
+                    // Fallback to legacy ticket checkin if not starting with TC26-VIP
+                    if (!token.startsWith('TC26-VIP')) {
+                        const legacyRes = await fetch('/api/gate/checkin', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ ticketId: token, gate: currentGateLane })
+                        });
+                        const legacyData = await legacyRes.json();
+                        if (legacyData.success) {
+                            playChime(true);
+                            recordVelocity();
+                            box.className = 'scan-box success';
+                            iconEl.innerText = '✅';
+                            titleEl.innerText = legacyData.alreadyCheckedIn ? 'RE-ENTRY VERIFIED' : 'ACCESS GRANTED';
+                            subEl.innerText = `${legacyData.ticket.name} (${legacyData.ticket.role}) · Assigned to ${legacyData.ticket.gate || currentGateLane}`;
+                            updateBadge(legacyData.ticket);
+                            addArrivalFeedItem(legacyData.ticket);
+                            if (legacyData.totalCheckedIn !== undefined) document.getElementById('statCheckedIn').innerText = legacyData.totalCheckedIn;
+                            return;
+                        }
+                    }
+
+                    // Genuine unaccredited / invalid token
+                    playChime(false);
+                    box.className = 'scan-box danger';
+                    iconEl.innerText = '🚫';
+                    titleEl.innerText = 'UNACCREDITED TOKEN';
+                    subEl.innerText = 'VIP pass not recognized. Please direct attendee to VIP Concierge Desk.';
+                    return;
                 }
             } catch (err) {
                 console.error(err);
+                box.className = 'scan-box danger';
+                iconEl.innerText = '⚠️';
+                titleEl.innerText = 'NETWORK / GATEWAY ERROR';
+                subEl.innerText = 'Unable to verify accreditation. Please re-scan.';
             }
         }
 

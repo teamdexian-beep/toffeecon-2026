@@ -1,0 +1,1141 @@
+[
+  {
+    "token": "TC26-VIP-1067-1132",
+    "name": "Ingress Test Guest",
+    "designation": "Executive VIP",
+    "organization": "Audit Systems",
+    "tier": "VIP_ALL_ACCESS",
+    "status": "CHECKED_IN",
+    "invitedAt": "2026-10-23T10:38:11.279Z",
+    "claimedAt": "2026-10-23T10:38:11.298Z",
+    "checkedInAt": "2026-10-23T10:38:11.298Z",
+    "gateId": "GATE-01",
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1066-54F1",
+    "name": "Dr. Tariqul Islam",
+    "designation": "VP of AI Research",
+    "organization": "Silicon Valley Labs",
+    "tier": "VIP_KEYNOTE",
+    "status": "CHECKED_IN",
+    "invitedAt": "2026-10-23T10:35:44.387Z",
+    "claimedAt": "2026-10-23T10:35:46.244Z",
+    "checkedInAt": "2026-10-23T10:35:46.244Z",
+    "gateId": "GATE-01",
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Halal",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1065-67B8",
+    "name": "Dr. Tariqul Islam",
+    "designation": "VP of AI Research",
+    "organization": "Silicon Valley Labs",
+    "tier": "VIP_KEYNOTE",
+    "status": "CHECKED_IN",
+    "invitedAt": "2026-10-23T10:32:18.475Z",
+    "claimedAt": "2026-10-23T10:32:19.933Z",
+    "checkedInAt": "2026-10-23T10:32:19.933Z",
+    "gateId": "GATE-01",
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Halal",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1064-EC3B",
+    "name": "Dr. Tariqul Islam",
+    "designation": "VP of AI Research",
+    "organization": "Silicon Valley Labs",
+    "tier": "VIP_KEYNOTE",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T10:31:19.481Z",
+    "claimedAt": "2026-10-23T10:32:18.378Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Halal",
+      "deviceFingerprint": "test_fingerprint_safari_18"
+    }
+  },
+  {
+    "token": "TC26-VIP-1063-FE1C",
+    "name": "Dr. Tariqul Islam",
+    "designation": "VP of AI Research",
+    "organization": "Silicon Valley Labs",
+    "tier": "VIP_KEYNOTE",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T10:14:18.399Z",
+    "claimedAt": "2026-10-23T10:31:19.369Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Halal",
+      "deviceFingerprint": "test_fingerprint_safari_18"
+    }
+  },
+  {
+    "token": "TC26-VIP-1062-F575",
+    "name": "Dr. Tariqul Islam",
+    "designation": "VP of AI Research",
+    "organization": "Silicon Valley Labs",
+    "tier": "VIP_KEYNOTE",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T10:05:49.229Z",
+    "claimedAt": "2026-10-23T10:14:18.281Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Halal",
+      "deviceFingerprint": "test_fingerprint_safari_18"
+    }
+  },
+  {
+    "token": "TC26-VIP-1061-8EBB",
+    "name": "Dr. Tariqul Islam",
+    "designation": "VP of AI Research",
+    "organization": "Silicon Valley Labs",
+    "tier": "VIP_KEYNOTE",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T10:02:13.060Z",
+    "claimedAt": "2026-10-23T10:05:49.131Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Halal",
+      "deviceFingerprint": "test_fingerprint_safari_18"
+    }
+  },
+  {
+    "token": "TC26-VIP-1001-A9F2",
+    "name": "Sarah Ahmed",
+    "designation": "Chief Digital Officer",
+    "organization": "Banglalink / VEON",
+    "tier": "VIP_ALL_ACCESS",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T10:02:12.857Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Standard",
+      "deviceFingerprint": "test_fingerprint_safari_18"
+    }
+  },
+  {
+    "token": "TC26-VIP-1002-3B4C",
+    "name": "Kaan Terzioğlu",
+    "designation": "Group Chief Executive Officer",
+    "organization": "VEON Group",
+    "tier": "VIP_ALL_ACCESS",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:45:12Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "VIP Premium",
+      "deviceFingerprint": "fp_kaan_veon_ios"
+    }
+  },
+  {
+    "token": "TC26-VIP-1003-8D1E",
+    "name": "Erik Aas",
+    "designation": "Chief Executive Officer",
+    "organization": "Banglalink",
+    "tier": "VIP_ALL_ACCESS",
+    "status": "CHECKED_IN",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:30:00Z",
+    "checkedInAt": "2026-10-23T09:12:44Z",
+    "gateId": "GATE-VIP-TURNOUT-1",
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Vegetarian",
+      "deviceFingerprint": "fp_erik_aas_pixel"
+    }
+  },
+  {
+    "token": "TC26-VIP-1004-9A2F",
+    "name": "Taimur Rahman",
+    "designation": "Chief Commercial Officer",
+    "organization": "Banglalink",
+    "tier": "VIP_ALL_ACCESS",
+    "status": "CHECKED_IN",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:35:00Z",
+    "checkedInAt": "2026-10-23T09:14:02Z",
+    "gateId": "GATE-VIP-TURNOUT-1",
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Standard",
+      "deviceFingerprint": "fp_taimur_bl_mac"
+    }
+  },
+  {
+    "token": "TC26-VIP-1005-4C7E",
+    "name": "Cem Velipasaoglu",
+    "designation": "Chief Financial Officer",
+    "organization": "Banglalink",
+    "tier": "VIP_ALL_ACCESS",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:50:20Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Standard",
+      "deviceFingerprint": "fp_cem_iphone15"
+    }
+  },
+  {
+    "token": "TC26-VIP-1006-2F9A",
+    "name": "Huseyin Turker",
+    "designation": "Chief Technology Officer",
+    "organization": "Banglalink",
+    "tier": "VIP_ALL_ACCESS",
+    "status": "CHECKED_IN",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T10:02:12.887Z",
+    "checkedInAt": "2026-10-23T10:02:12.887Z",
+    "gateId": "GATE-VIP-EXP-01",
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Halal",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1007-5E1B",
+    "name": "Monzula Morshed",
+    "designation": "Chief Human Resources Officer",
+    "organization": "Banglalink",
+    "tier": "VIP_ALL_ACCESS",
+    "status": "CHECKED_IN",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T10:05:49.155Z",
+    "checkedInAt": "2026-10-23T10:05:49.155Z",
+    "gateId": "GATE-VIP-EXP-01",
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1008-7D3C",
+    "name": "Kamal Quadir",
+    "designation": "Founder & Chief Executive Officer",
+    "organization": "bKash Limited",
+    "tier": "VIP_KEYNOTE",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:55:00Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Vegetarian",
+      "deviceFingerprint": "fp_kq_bkash_sec"
+    }
+  },
+  {
+    "token": "TC26-VIP-1009-1A6D",
+    "name": "Yasir Azman",
+    "designation": "Chief Executive Officer",
+    "organization": "Grameenphone Ltd",
+    "tier": "VIP_ALL_ACCESS",
+    "status": "CHECKED_IN",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T10:14:18.306Z",
+    "checkedInAt": "2026-10-23T10:14:18.306Z",
+    "gateId": "GATE-VIP-EXP-01",
+    "metadata": {
+      "seatZone": "Zone B - Telecom Leadership",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1010-6C8E",
+    "name": "Rajeev Sethi",
+    "designation": "Managing Director & CEO",
+    "organization": "Robi Axiata Ltd",
+    "tier": "VIP_ALL_ACCESS",
+    "status": "CHECKED_IN",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T10:31:19.397Z",
+    "checkedInAt": "2026-10-23T10:31:19.398Z",
+    "gateId": "GATE-VIP-EXP-01",
+    "metadata": {
+      "seatZone": "Zone B - Telecom Leadership",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1011-8F4A",
+    "name": "Shakib Al Hasan",
+    "designation": "Global Brand Ambassador",
+    "organization": "Toffee / Banglalink",
+    "tier": "VIP_MEDIA",
+    "status": "CHECKED_IN",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:20:00Z",
+    "checkedInAt": "2026-10-23T09:05:18Z",
+    "gateId": "GATE-VIP-TURNOUT-1",
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Athlete High-Protein",
+      "deviceFingerprint": "fp_sah_iphone_pro"
+    }
+  },
+  {
+    "token": "TC26-VIP-1012-3D9B",
+    "name": "Zunaid Ahmed Palak",
+    "designation": "Special Guest / ICT Patron",
+    "organization": "ICT Division Bangladesh",
+    "tier": "VIP_KEYNOTE",
+    "status": "CHECKED_IN",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T10:32:18.404Z",
+    "checkedInAt": "2026-10-23T10:32:18.404Z",
+    "gateId": "GATE-VIP-EXP-01",
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1013-5A2C",
+    "name": "Major General (Retd.) Md. Emdad Ul Bari",
+    "designation": "Chairman",
+    "organization": "BTRC",
+    "tier": "VIP_KEYNOTE",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T10:35:44.095Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Standard",
+      "deviceFingerprint": "test_fingerprint_safari_18"
+    }
+  },
+  {
+    "token": "TC26-VIP-1014-9E7D",
+    "name": "Redoan Rony",
+    "designation": "Chief Operating Officer",
+    "organization": "Chorki OTT",
+    "tier": "VIP_MEDIA",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:40:15Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone C - Media & OTT Innovators",
+      "dietary": "Standard",
+      "deviceFingerprint": "fp_rony_chorki_mbp"
+    }
+  },
+  {
+    "token": "TC26-VIP-1015-1B8F",
+    "name": "Zaved Akhtar",
+    "designation": "Chairman & Managing Director",
+    "organization": "Unilever Bangladesh Ltd",
+    "tier": "VIP_ALL_ACCESS",
+    "status": "CHECKED_IN",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T10:35:44.124Z",
+    "checkedInAt": "2026-10-23T10:35:44.124Z",
+    "gateId": "GATE-VIP-EXP-01",
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1016-4F2A",
+    "name": "Syed Tanvir Husain",
+    "designation": "Chief Human Resources Officer",
+    "organization": "Grameenphone Ltd",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Telecom Leadership",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1017-7E9D",
+    "name": "Shihab Ahmad",
+    "designation": "Chief Commercial Officer",
+    "organization": "Robi Axiata Ltd",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Telecom Leadership",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1018-2C6B",
+    "name": "Tanvir A. Mishuk",
+    "designation": "Managing Director",
+    "organization": "Nagad Ltd",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1019-8A1E",
+    "name": "Fahim Ahmed",
+    "designation": "Chief Executive Officer",
+    "organization": "Pathao",
+    "tier": "VIP_DELEGATE",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:48:30Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Standard",
+      "deviceFingerprint": "fp_fahim_pathao_app"
+    }
+  },
+  {
+    "token": "TC26-VIP-1020-6D4C",
+    "name": "Syed Nasim Manzur",
+    "designation": "Managing Director",
+    "organization": "Apex Footwear Ltd",
+    "tier": "VIP_ALL_ACCESS",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1021-3F8E",
+    "name": "Ayman Sadiq",
+    "designation": "Founder & CEO",
+    "organization": "10 Minute School",
+    "tier": "VIP_MEDIA",
+    "status": "CHECKED_IN",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:15:00Z",
+    "checkedInAt": "2026-10-23T09:02:11Z",
+    "gateId": "GATE-VIP-TURNOUT-1",
+    "metadata": {
+      "seatZone": "Zone C - Media & OTT Innovators",
+      "dietary": "Standard",
+      "deviceFingerprint": "fp_ayman_10ms_dev"
+    }
+  },
+  {
+    "token": "TC26-VIP-1022-9B5A",
+    "name": "Mehazabien Chowdhury",
+    "designation": "Lead OTT Actress & Toffee Creator",
+    "organization": "Media Production Guild",
+    "tier": "VIP_MEDIA",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:33:41Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone C - Media & OTT Innovators",
+      "dietary": "Gluten-Free",
+      "deviceFingerprint": "fp_mehz_ipad"
+    }
+  },
+  {
+    "token": "TC26-VIP-1023-1E7C",
+    "name": "Mostofa Sarwar Farooki",
+    "designation": "Acclaimed Film Director",
+    "organization": "Chabial Productions",
+    "tier": "VIP_MEDIA",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone C - Media & OTT Innovators",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1024-5D2B",
+    "name": "Nabila Rahman",
+    "designation": "Head of Marketing",
+    "organization": "Nestlé Bangladesh",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Vegetarian",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1025-7A9F",
+    "name": "Farhan Tanvir",
+    "designation": "Director of Enterprise Sales",
+    "organization": "Google Cloud South Asia",
+    "tier": "VIP_KEYNOTE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1026-4B8D",
+    "name": "Priyanka Sen",
+    "designation": "Strategic Partner Manager",
+    "organization": "Meta Platforms Inc.",
+    "tier": "VIP_DELEGATE",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:52:19Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Vegetarian",
+      "deviceFingerprint": "fp_psen_meta_m3"
+    }
+  },
+  {
+    "token": "TC26-VIP-1027-2E3C",
+    "name": "Dr. Muhammad Zafar Iqbal",
+    "designation": "Distinguished Science & Sci-Fi Author",
+    "organization": "Shahjalal University of Science & Tech",
+    "tier": "VIP_KEYNOTE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1028-6A7F",
+    "name": "Russell T. Ahmed",
+    "designation": "President",
+    "organization": "BASIS (Bangladesh Association of Software)",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1029-9D1B",
+    "name": "Shams Mahmud",
+    "designation": "President",
+    "organization": "DCCI (Dhaka Chamber of Commerce)",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1030-3C5E",
+    "name": "Afnan Chowdhury",
+    "designation": "Managing Director",
+    "organization": "Adcomm Limited",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone C - Media & OTT Innovators",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1031-8E2A",
+    "name": "Moutushi Kabir",
+    "designation": "Senior Director",
+    "organization": "BRAC Global Communications",
+    "tier": "VIP_DELEGATE",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:44:09Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Standard",
+      "deviceFingerprint": "fp_brac_mkabir"
+    }
+  },
+  {
+    "token": "TC26-VIP-1032-1F4D",
+    "name": "Asif Saleh",
+    "designation": "Executive Director",
+    "organization": "BRAC Bangladesh",
+    "tier": "VIP_ALL_ACCESS",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1033-5B7C",
+    "name": "Tahsina Rahman",
+    "designation": "Chief Brand Officer",
+    "organization": "Marico Bangladesh",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Vegetarian",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1034-7D9A",
+    "name": "Aman Ashraf Kabir",
+    "designation": "Managing Director",
+    "organization": "Bengal Meat Processing",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Halal",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1035-2A4F",
+    "name": "Nusrat Imrose Tisha",
+    "designation": "National Award-Winning Actress & Producer",
+    "organization": "Toffee Originals",
+    "tier": "VIP_MEDIA",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone C - Media & OTT Innovators",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1036-6E1D",
+    "name": "Tahsan Khan",
+    "designation": "Singer, Actor & Cultural Ambassador",
+    "organization": "Independent Artist",
+    "tier": "VIP_MEDIA",
+    "status": "CHECKED_IN",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:22:10Z",
+    "checkedInAt": "2026-10-23T09:18:30Z",
+    "gateId": "GATE-VIP-TURNOUT-1",
+    "metadata": {
+      "seatZone": "Zone C - Media & OTT Innovators",
+      "dietary": "Standard",
+      "deviceFingerprint": "fp_tahsan_iphone15"
+    }
+  },
+  {
+    "token": "TC26-VIP-1037-9C3E",
+    "name": "Shyam Sunder Sikder",
+    "designation": "Former Chairman",
+    "organization": "BTRC Advisory Board",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1038-4F8A",
+    "name": "Habibullah N. Karim",
+    "designation": "Founder & CEO",
+    "organization": "Technohaven Company Ltd",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1039-1D7B",
+    "name": "Rubana Huq",
+    "designation": "Vice Chancellor & Former BGMEA President",
+    "organization": "Asian University for Women",
+    "tier": "VIP_KEYNOTE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Vegetarian",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1040-7E5C",
+    "name": "Sonia Bashir Kabir",
+    "designation": "Founder & General Partner",
+    "organization": "SBK Tech Ventures",
+    "tier": "VIP_KEYNOTE",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:58:12Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Standard",
+      "deviceFingerprint": "fp_sbk_venture_ios"
+    }
+  },
+  {
+    "token": "TC26-VIP-1041-3A9D",
+    "name": "Syed Almas Kabir",
+    "designation": "Managing Director",
+    "organization": "MetroNet Bangladesh Ltd",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1042-8B2F",
+    "name": "Zaraif Hossain",
+    "designation": "Head of Digital Strategy",
+    "organization": "Transcom Group",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1043-5C6E",
+    "name": "Sabbir Hasan Nasir",
+    "designation": "Executive Director",
+    "organization": "ACI Logistics (Shwapno)",
+    "tier": "VIP_ALL_ACCESS",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1044-2F1A",
+    "name": "A. K. M. Fahim Mashroor",
+    "designation": "Founder",
+    "organization": "Bdjobs.com",
+    "tier": "VIP_DELEGATE",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:41:00Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Standard",
+      "deviceFingerprint": "fp_bdjobs_mashroor"
+    }
+  },
+  {
+    "token": "TC26-VIP-1045-6D8B",
+    "name": "Ejaj Ahmad",
+    "designation": "Founder & President",
+    "organization": "Bangladesh Youth Leadership Center (BYLC)",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Vegetarian",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1046-9E4C",
+    "name": "Waseem Alim",
+    "designation": "Founder & CEO",
+    "organization": "Chaldal Limited",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1047-1A3E",
+    "name": "Ashiqur Rahman",
+    "designation": "Film Director & VFX Supervisor",
+    "organization": "Actionverse Studios",
+    "tier": "VIP_MEDIA",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone C - Media & OTT Innovators",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1048-7B9D",
+    "name": "Amitabh Reza Chowdhury",
+    "designation": "Acclaimed Director & Founder",
+    "organization": "Half Stop Down",
+    "tier": "VIP_MEDIA",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:46:12Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone C - Media & OTT Innovators",
+      "dietary": "Standard",
+      "deviceFingerprint": "fp_amitabh_hsd"
+    }
+  },
+  {
+    "token": "TC26-VIP-1049-4C2F",
+    "name": "Piash Karim",
+    "designation": "Head of Marketing",
+    "organization": "Pran-RFL Group",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Halal",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1050-8D6A",
+    "name": "Tanvir Hossain",
+    "designation": "Head of Digital Products",
+    "organization": "Toffee Con 2026 Executive Team",
+    "tier": "VIP_ALL_ACCESS",
+    "status": "CHECKED_IN",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:10:00Z",
+    "checkedInAt": "2026-10-23T08:59:45Z",
+    "gateId": "GATE-VIP-TURNOUT-1",
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Standard",
+      "deviceFingerprint": "fp_thossain_toffee_core"
+    }
+  },
+  {
+    "token": "TC26-VIP-1051-5E8B",
+    "name": "Sadia Haque",
+    "designation": "Co-Founder & CEO",
+    "organization": "ShareTrip",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1052-2A7C",
+    "name": "Mohammad Ziaul Islam",
+    "designation": "Director of Enterprise Networks",
+    "organization": "Huawei Technologies Bangladesh",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Telecom Leadership",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1053-6B4D",
+    "name": "David Kim",
+    "designation": "VP of Streaming Engineering",
+    "organization": "AWS Media Solutions Asia",
+    "tier": "VIP_KEYNOTE",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:38:22Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Standard",
+      "deviceFingerprint": "fp_aws_dkim_mac"
+    }
+  },
+  {
+    "token": "TC26-VIP-1054-9C1E",
+    "name": "Nawshin Tabassum",
+    "designation": "Creative Producer",
+    "organization": "Adcomm / Ogilvy Bangladesh",
+    "tier": "VIP_MEDIA",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone C - Media & OTT Innovators",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1055-3D8F",
+    "name": "Asif Mahmood",
+    "designation": "Chief Technical Architect",
+    "organization": "Banglalink Digital Hub",
+    "tier": "VIP_ALL_ACCESS",
+    "status": "CHECKED_IN",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:12:00Z",
+    "checkedInAt": "2026-10-23T09:00:15Z",
+    "gateId": "GATE-VIP-TURNOUT-1",
+    "metadata": {
+      "seatZone": "Zone A - Executive Circle",
+      "dietary": "Standard",
+      "deviceFingerprint": "fp_bl_arch_m3"
+    }
+  },
+  {
+    "token": "TC26-VIP-1056-7E2A",
+    "name": "Nazmul Hassan",
+    "designation": "Executive Director",
+    "organization": "Beximco Communications (Akash DTH)",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Telecom Leadership",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1057-1F9B",
+    "name": "Fariha Alam",
+    "designation": "Head of Communications",
+    "organization": "Standard Chartered Bank",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Vegetarian",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1058-4A3C",
+    "name": "Zakiul Islam",
+    "designation": "Senior Director of Technology",
+    "organization": "Ericsson South Asia",
+    "tier": "VIP_DELEGATE",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Telecom Leadership",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1059-8B7D",
+    "name": "Tasnuva Anan",
+    "designation": "Broadcaster & Human Rights Advocate",
+    "organization": "Boishakhi TV",
+    "tier": "VIP_MEDIA",
+    "status": "INVITED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": null,
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone C - Media & OTT Innovators",
+      "dietary": "Standard",
+      "deviceFingerprint": null
+    }
+  },
+  {
+    "token": "TC26-VIP-1060-5C1E",
+    "name": "Kazi Monirul Kabir",
+    "designation": "Founder & Country Director",
+    "organization": "Spider Digital Innovations",
+    "tier": "VIP_DELEGATE",
+    "status": "CLAIMED",
+    "invitedAt": "2026-10-23T08:00:00Z",
+    "claimedAt": "2026-10-23T08:49:10Z",
+    "checkedInAt": null,
+    "gateId": null,
+    "metadata": {
+      "seatZone": "Zone B - Enterprise Partners",
+      "dietary": "Standard",
+      "deviceFingerprint": "fp_spider_monir"
+    }
+  }
+]

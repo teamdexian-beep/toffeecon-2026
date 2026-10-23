@@ -1062,6 +1062,183 @@
             text-align: center;
             margin-top: 16px;
             position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .offline-wallet-pass.accredited-gold {
+            background: linear-gradient(135deg, rgba(255, 184, 0, 0.12), rgba(18, 16, 28, 0.95));
+            border: 1.5px solid var(--gold);
+            box-shadow: 0 0 25px rgba(255, 184, 0, 0.25);
+        }
+
+        /* Gated Feature Shield for Unaccredited Visitors */
+        .gated-shield-card {
+            background: linear-gradient(135deg, rgba(255, 184, 0, 0.08), rgba(18, 16, 28, 0.95));
+            border: 1px solid rgba(255, 184, 0, 0.45);
+            border-radius: 18px;
+            padding: 24px 18px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .shield-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--gold);
+            background: rgba(255, 184, 0, 0.12);
+            border: 1px solid rgba(255, 184, 0, 0.35);
+            padding: 4px 10px;
+            border-radius: 9999px;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .shield-title {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+        }
+
+        .shield-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            max-width: 380px;
+            margin: 0 auto 16px;
+            line-height: 1.5;
+        }
+
+        /* Luxury Accreditation Celebration Modal */
+        .celebration-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9999999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .celebration-modal.active {
+            display: flex;
+        }
+
+        .celebration-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(5, 3, 12, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .celebration-card {
+            position: relative;
+            background: linear-gradient(135deg, rgba(22, 17, 36, 0.98), rgba(10, 8, 18, 0.98));
+            border: 1.5px solid rgba(255, 184, 0, 0.5);
+            border-radius: 24px;
+            padding: 32px 24px;
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 45px rgba(255, 184, 0, 0.25);
+            animation: modalPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .celebration-burst {
+            font-size: 3.5rem;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 0 25px rgba(255, 184, 0, 0.7));
+            animation: bounce 1.8s infinite alternate ease-in-out;
+        }
+
+        .celebration-tag {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            color: var(--gold);
+            background: rgba(255, 184, 0, 0.1);
+            border: 1px solid rgba(255, 184, 0, 0.35);
+            padding: 4px 12px;
+            border-radius: 9999px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .celebration-title {
+            font-family: var(--font-display);
+            font-size: 1.7rem;
+            font-weight: 900;
+            color: #FFFFFF;
+            margin-bottom: 14px;
+            letter-spacing: -0.3px;
+        }
+
+        .celebration-guest-box {
+            background: rgba(255, 184, 0, 0.06);
+            border: 1px solid rgba(255, 184, 0, 0.2);
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+        }
+
+        .celebration-guest-name {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #FFE082;
+            margin-bottom: 2px;
+        }
+
+        .celebration-guest-org {
+            font-size: 0.8rem;
+            color: #E2E8F0;
+        }
+
+        .celebration-token-box {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--neon-cyan);
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+        }
+
+        .celebration-copy {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+            margin-bottom: 22px;
+        }
+
+        .celebration-btn {
+            width: 100%;
+            min-height: 50px;
+            background: linear-gradient(135deg, var(--gold), var(--toffee-orange));
+            color: #07060E;
+            font-family: var(--font-main);
+            font-weight: 800;
+            font-size: 0.95rem;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(255, 184, 0, 0.4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.15s, filter 0.15s;
+        }
+
+        .celebration-btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
         }
 
         .qr-placeholder, #qrContainer {
@@ -1323,8 +1500,27 @@
                     <h2 class="poll-title" id="pollTitle">The Sonic Dilemma: Official Toffee Brand Sound</h2>
                 </div>
 
+                <!-- Gated Feature Shield for Unaccredited Visitors -->
+                <div class="gated-shield-card" id="voteGatedShield" style="display: none;">
+                    <div class="shield-badge">🛡️ VIP ACCESS RESTRICTED</div>
+                    <h3 class="shield-title">Accredited VIP Voting Only</h3>
+                    <p class="shield-desc">
+                        Present or claim your VIP pass to participate in live onstage voting and interactive keynote decisions.
+                    </p>
+                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn-live-action" onclick="promptPassClaim()" style="min-height: 44px; padding: 0 20px; font-size: 0.85rem;">
+                            <span>🎟️</span>
+                            <span>Claim VIP Pass</span>
+                        </button>
+                        <a href="/invite" class="btn-live-action secondary" style="min-height: 44px; padding: 0 16px; font-size: 0.85rem; text-decoration: none;">
+                            <span>🖨️</span>
+                            <span>View Invitation</span>
+                        </a>
+                    </div>
+                </div>
+
                 <!-- Dual Giant Buzzers -->
-                <div class="buzzer-grid">
+                <div class="buzzer-grid" id="buzzerGrid">
                     <button class="buzzer-btn red-team" id="buzzerRed" onclick="handleVoteClick('red')">
                         <div class="buzzer-ripple" id="rippleRed"></div>
                         <div class="buzzer-meta">
@@ -1873,6 +2069,23 @@
         }
 
         function handleVoteClick(option) {
+            // Guard: Accredited VIP Voting Only
+            if (!isUserAccredited()) {
+                if (navigator.vibrate) navigator.vibrate(50);
+                const shield = document.getElementById('voteGatedShield');
+                if (shield) {
+                    shield.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                const toast = document.getElementById('voteToast');
+                const toastText = document.getElementById('voteToastText');
+                if (toastText) toastText.innerText = 'ACCREDITED VIP VOTING ONLY 🛡️';
+                if (toast) {
+                    toast.classList.add('show');
+                    setTimeout(() => toast.classList.remove('show'), 2200);
+                }
+                return;
+            }
+
             // Instant Haptic Feedback (Dual vibration burst)
             if (navigator.vibrate) {
                 navigator.vibrate([40, 30, 40]);
@@ -1998,7 +2211,182 @@
             document.getElementById('boothDetailCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
-        // 6. Dynamic Attendee Media Locker & Offline Wallet Engine
+        // 6. Device Identity & Accreditation Feature Shield Engine
+        function getOrCreateDeviceId() {
+            let deviceId = localStorage.getItem('toffeecon_device_id');
+            if (!deviceId) {
+                deviceId = 'dev_' + Math.random().toString(36).substring(2, 12) + '_' + Date.now();
+                localStorage.setItem('toffeecon_device_id', deviceId);
+            }
+            return deviceId;
+        }
+
+        function isUserAccredited() {
+            try {
+                const stored = localStorage.getItem('toffeecon_attendee');
+                if (stored) {
+                    const attendee = JSON.parse(stored);
+                    return !!(attendee && (attendee.accredited || attendee.token || (attendee.tier && attendee.tier.includes('VIP')) || attendee.checkedIn));
+                }
+            } catch (e) {}
+            return false;
+        }
+
+        function initGatedFeatureShield() {
+            const accredited = isUserAccredited();
+            const voteShield = document.getElementById('voteGatedShield');
+            const buzzerGrid = document.getElementById('buzzerGrid');
+
+            if (voteShield && buzzerGrid) {
+                if (accredited) {
+                    voteShield.style.display = 'none';
+                    buzzerGrid.style.display = 'grid';
+                    buzzerGrid.style.opacity = '1';
+                    buzzerGrid.style.pointerEvents = 'auto';
+                } else {
+                    voteShield.style.display = 'block';
+                    buzzerGrid.style.display = 'grid';
+                    buzzerGrid.style.opacity = '0.35';
+                    buzzerGrid.style.pointerEvents = 'none';
+                }
+            }
+
+            // Update Offline Wallet Pass styling
+            const walletPass = document.getElementById('offlineWalletPass');
+            const qrContainer = document.getElementById('qrContainer');
+            const walletNotice = document.getElementById('walletTokenNotice');
+
+            if (walletPass && qrContainer && walletNotice) {
+                let attendee = null;
+                try {
+                    const stored = localStorage.getItem('toffeecon_attendee');
+                    if (stored) attendee = JSON.parse(stored);
+                } catch(e) {}
+
+                if (accredited && attendee) {
+                    walletPass.classList.add('accredited-gold');
+                    const token = attendee.token || attendee.id || attendee.passId || 'TC26-VIP-ACCREDITED';
+                    const claimUrl = `${window.location.origin}/claim?token=${encodeURIComponent(token)}`;
+                    qrContainer.innerHTML = `
+                        <div class="qr-scan-laser"></div>
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(claimUrl)}" alt="Accredited QR" style="width:100%;height:100%;object-fit:contain;border-radius:6px;display:block;">
+                    `;
+                    walletNotice.innerHTML = `SCAN AT GATE TURNSTILE · TOKEN: <b style="color:var(--gold);">${token}</b>`;
+                    const tag = walletPass.querySelector('.section-tag');
+                    if (tag) tag.innerHTML = `<span>🛡️</span> VIP ACCREDITED TURNSTILE PASS`;
+                } else {
+                    walletPass.classList.remove('accredited-gold');
+                    qrContainer.innerHTML = `
+                        <div class="qr-scan-laser"></div>
+                        <svg viewBox="0 0 100 100" fill="#07060E" style="width:100%;height:100%;">
+                            <rect x="0" y="0" width="30" height="30" />
+                            <rect x="5" y="5" width="20" height="20" fill="#fff" />
+                            <rect x="10" y="10" width="10" height="10" />
+                            <rect x="70" y="0" width="30" height="30" />
+                            <rect x="75" y="5" width="20" height="20" fill="#fff" />
+                            <rect x="80" y="10" width="10" height="10" />
+                            <rect x="0" y="70" width="30" height="30" />
+                            <rect x="5" y="75" width="20" height="20" fill="#fff" />
+                            <rect x="10" y="80" width="10" height="10" />
+                            <rect x="35" y="15" width="10" height="10" />
+                            <rect x="45" y="35" width="20" height="15" />
+                            <rect x="35" y="70" width="15" height="15" />
+                            <rect x="65" y="60" width="15" height="20" />
+                            <rect x="55" y="80" width="20" height="10" />
+                        </svg>
+                    `;
+                    walletNotice.innerText = 'No badge scanned yet — present your QR code at Gate 01.';
+                    const tag = walletPass.querySelector('.section-tag');
+                    if (tag) tag.innerHTML = `<span>🛡️</span> OFFLINE BADGE WALLET (AIR-GAPPED)`;
+                }
+            }
+        }
+
+        // Fast-Pass URL Token Claim & Ingress Hydration
+        async function checkAndClaimUrlToken() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            if (!token) return;
+
+            try {
+                const res = await fetch('/api/accreditation/claim', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token: token.trim(),
+                        deviceFingerprint: getOrCreateDeviceId()
+                    })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success && data.guest) {
+                        const g = data.guest;
+                        localStorage.setItem('toffeecon_attendee', JSON.stringify({
+                            token: g.token,
+                            id: g.token,
+                            passId: g.token,
+                            name: g.name,
+                            designation: g.designation,
+                            organization: g.organization,
+                            company: g.organization,
+                            tier: g.tier,
+                            role: g.tier === 'VIP_ALL_ACCESS' ? 'VIP ALL-ACCESS' : (g.tier || 'VIP ATTENDEE'),
+                            seatZone: (g.metadata && g.metadata.seatZone) || 'Zone A - Executive Circle',
+                            status: g.status,
+                            checkedIn: g.status === 'CHECKED_IN',
+                            accredited: true
+                        }));
+
+                        localStorage.setItem('tcon_saved_ticket', JSON.stringify({
+                            id: g.token,
+                            name: g.name,
+                            company: g.organization,
+                            role: g.tier,
+                            email: ''
+                        }));
+
+                        // Trigger Haptic Celebration Chime
+                        if (navigator.vibrate) navigator.vibrate([60, 40, 60, 40, 100]);
+
+                        // Populate celebration modal
+                        document.getElementById('celebrationName').innerText = g.name;
+                        document.getElementById('celebrationOrg').innerText = `${g.organization} · ${(g.metadata && g.metadata.seatZone) || 'Zone A - Executive Circle'}`;
+                        document.getElementById('celebrationToken').innerText = g.token;
+                        document.getElementById('claimCelebrationModal').classList.add('active');
+
+                        // Clean URL query string
+                        window.history.replaceState({}, document.title, window.location.pathname);
+
+                        // Re-initialize UI
+                        initLockerUI();
+                        initGatedFeatureShield();
+                        return;
+                    }
+                }
+
+                // If not OK or failed
+                document.getElementById('invalidTokenModal').classList.add('active');
+            } catch (err) {
+                console.warn('[Claim] Error verifying token:', err);
+                document.getElementById('invalidTokenModal').classList.add('active');
+            }
+        }
+
+        function closeCelebrationModal() {
+            document.getElementById('claimCelebrationModal').classList.remove('active');
+            switchTab('locker');
+        }
+
+        function closeInvalidTokenModal() {
+            document.getElementById('invalidTokenModal').classList.remove('active');
+        }
+
+        function promptPassClaim() {
+            window.location.href = '/invite';
+        }
+
+        // 7. Dynamic Attendee Media Locker & Offline Wallet Engine
         function initLockerUI() {
             let attendee = null;
             try {
@@ -2025,24 +2413,22 @@
                 if (customArtifacts) artifacts = artifacts.concat(JSON.parse(customArtifacts));
             } catch (e) {}
 
-            if (attendee) {
-                const isAccredited = attendee.checkedIn || attendee.id || attendee.passId;
+            if (attendee && (attendee.accredited || attendee.token || attendee.checkedIn || attendee.id)) {
+                const isAccredited = true;
                 if (nameEl) nameEl.innerText = attendee.name || 'Accredited Attendee';
                 if (passEl) {
-                    passEl.innerText = isAccredited
-                        ? `VIP PASS #${attendee.id || attendee.passId || 'TC-2026'} · ACCREDITED`
-                        : 'No badge scanned yet — present your QR code at Gate 01.';
+                    passEl.innerText = `VIP PASS #${attendee.token || attendee.id || attendee.passId || 'TC-2026'} · ACCREDITED`;
                 }
                 if (pillEl) {
-                    pillEl.innerText = attendee.role || 'ALL ACCESS';
+                    pillEl.innerText = attendee.role || (attendee.tier ? attendee.tier.replace(/_/g, ' ') : 'VIP ALL-ACCESS');
                     pillEl.style.color = 'var(--gold)';
                     pillEl.style.borderColor = 'rgba(255,184,0,0.3)';
                     pillEl.style.background = 'rgba(255,184,0,0.08)';
                 }
                 if (avatarEl) avatarEl.innerText = '👑';
                 if (walletNoticeEl) {
-                    const tokenId = attendee.id || attendee.passId || 'TC26-INGRESS';
-                    walletNoticeEl.innerHTML = `SCAN AT GATE TURNSTILE · TOKEN: <b style="color:#fff;">${tokenId}</b>`;
+                    const tokenId = attendee.token || attendee.id || attendee.passId || 'TC26-INGRESS';
+                    walletNoticeEl.innerHTML = `SCAN AT GATE TURNSTILE · TOKEN: <b style="color:var(--gold);">${tokenId}</b>`;
                 }
             } else {
                 // Pure unauthenticated public attendee
@@ -2089,9 +2475,60 @@
                 if (emptyEl) emptyEl.style.display = 'block';
                 if (containerEl) containerEl.style.display = 'none';
             }
+
+            initGatedFeatureShield();
         }
 
+        // Check for URL token on load and initialize UI
+        checkAndClaimUrlToken();
         initLockerUI();
+        initGatedFeatureShield();
+    </script>
+
+    <!-- Luxury Accreditation Celebration Modal -->
+    <div id="claimCelebrationModal" class="celebration-modal">
+        <div class="celebration-backdrop" onclick="closeCelebrationModal()"></div>
+        <div class="celebration-card">
+            <div class="celebration-burst">👑</div>
+            <div class="celebration-tag">VIP ACCREDITATION CONFIRMED</div>
+            <h2 class="celebration-title" id="celebrationTitle">VIP Pass Unlocked</h2>
+            <div class="celebration-guest-box">
+                <div class="celebration-guest-name" id="celebrationName">Sarah Ahmed</div>
+                <div class="celebration-guest-org" id="celebrationOrg">Banglalink / VEON · Zone A</div>
+            </div>
+            <div class="celebration-token-box" id="celebrationToken">TC26-VIP-1001-A9F2</div>
+            <p class="celebration-copy">
+                Welcome to ToffeeCon 2026. Your device is now authenticated for priority turnstile ingress, real-time keynote voting, and the AI Creative Locker.
+            </p>
+            <button class="celebration-btn" onclick="closeCelebrationModal()">
+                <span>⚡</span>
+                <span>Enter VIP Experience</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Invalid Accreditation Modal -->
+    <div id="invalidTokenModal" class="celebration-modal">
+        <div class="celebration-backdrop" onclick="closeInvalidTokenModal()"></div>
+        <div class="celebration-card" style="border-color: rgba(230, 0, 69, 0.5);">
+            <div class="celebration-burst" style="filter: drop-shadow(0 0 20px rgba(230,0,69,0.7));">⚠️</div>
+            <div class="celebration-tag" style="color: var(--toffee-red); border-color: rgba(230,0,69,0.3); background: rgba(230,0,69,0.08);">
+                AUTHENTICATION NOTICE
+            </div>
+            <h2 class="celebration-title" style="color:#FFF;">Invalid Accreditation Pass</h2>
+            <p class="celebration-copy" style="margin: 16px 0 24px;">
+                The accreditation pass token could not be verified or has expired. Please consult the VIP Concierge Desk at Gate 01.
+            </p>
+            <div style="display: flex; gap: 10px; width: 100%;">
+                <button class="celebration-btn" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color:#fff;" onclick="closeInvalidTokenModal()">
+                    Dismiss
+                </button>
+                <a href="/invite" class="celebration-btn" style="text-decoration:none; display:flex; align-items:center; justify-content:center;">
+                    View Invitation
+                </a>
+            </div>
+        </div>
+    </div>
     </script>
 
     <!-- Glassmorphic iOS / PWA Installation Modal -->

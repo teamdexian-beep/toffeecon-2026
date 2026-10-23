@@ -247,6 +247,30 @@ class EventStore {
         return this.state;
     }
 
+    addAuditLog(entry = {}) {
+        if (!this.state) this.init();
+        if (!this.state.auditLogs || !Array.isArray(this.state.auditLogs)) {
+            this.state.auditLogs = [];
+        }
+        const logEntry = {
+            id: entry.id || Date.now(),
+            timestamp: entry.timestamp || new Date().toISOString(),
+            ...entry
+        };
+        this.state.auditLogs.unshift(logEntry);
+        if (this.state.auditLogs.length > 100) {
+            this.state.auditLogs.pop();
+        }
+        this.scheduleSave();
+        return logEntry;
+    }
+
+    getAuditLogs(limit = 50) {
+        if (!this.state) this.init();
+        const logs = this.state.auditLogs || [];
+        return logs.slice(0, limit);
+    }
+
     update(mutatorFn) {
         if (!this.state) this.init();
         try {

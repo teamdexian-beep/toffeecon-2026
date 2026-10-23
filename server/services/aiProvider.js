@@ -1073,6 +1073,203 @@ Analyze this audition and output ONLY a valid JSON object:
 
         throw new Error('PiAPI task timeout after 60s');
     }
+
+    /**
+     * Classify VIP guest into one of three strategic archetypes
+     * @param {Object} guest
+     * @returns {'TELCO_OPERATOR'|'ENTERPRISE_BRAND'|'REGULATOR_DIGNITARY'}
+     */
+    classifyVIPPersona(guest = {}) {
+        const text = `${guest.organization || ''} ${guest.designation || ''} ${guest.tier || ''}`.toLowerCase();
+        
+        // 1. Regulator / ICT Dignitary
+        if (/btrc|ict division|ict ministry|ministry|telecom regulatory|post and telecommunication|government|secretary|director general|commissioner|minister|parliament|\bdg\b|state minister/i.test(text)) {
+            return 'REGULATOR_DIGNITARY';
+        }
+
+        // 2. Telco / Operator Executive
+        if (/banglalink|veon|grameenphone|robi|teletalk|ericsson|huawei|telecom|telco|carrier|network|spectrum|5g|6g|fiber|cellular|tower/i.test(text)) {
+            return 'TELCO_OPERATOR';
+        }
+
+        // 3. Enterprise / Brand / Advertiser / FMCG / Fintech
+        return 'ENTERPRISE_BRAND';
+    }
+
+    /**
+     * Deterministic VIP Executive Briefing Fallback Generator
+     * Tailors a 3-sentence high-impact briefing for venue ingress & VIP concierge
+     */
+    getDeterministicVIPBriefing(guest = {}) {
+        const persona = this.classifyVIPPersona(guest);
+        const name = guest.name || 'VIP Delegate';
+        const org = guest.organization || 'Esteemed Partner';
+        const designation = guest.designation || 'Executive';
+        const tier = guest.tier || 'VIP_ALL_ACCESS';
+        const seatZone = (guest.metadata && guest.metadata.seatZone) || 'Zone A - Executive Circle';
+
+        if (persona === 'TELCO_OPERATOR') {
+            return {
+                persona: 'TELCO_OPERATOR',
+                headline: '6G Edge Streaming & Autonomous Telco Grid Integration',
+                welcomeGreeting: `Welcome to ToffeeCon 2026, ${name}.`,
+                briefing: `Welcome to ToffeeCon 2026, ${name}. Today's Opening Keynote spotlights our next-generation 6G ultra-low latency CDN edge delivery matrix, engineered in synergy with Banglalink and VEON core infrastructure. We invite you to explore the AI network optimization showcase in Hall A to witness real-time bandwidth throttling and sub-10ms packet delivery across 70+ streaming channels.`,
+                recommendedSessions: [
+                    'Opening Keynote: Sovereign 6G Media Matrix',
+                    'Sub-10ms Telco Ingress & OTT Edge CDN Showcase',
+                    'Executive VIP Lounge & VEON Strategic Synergy Session'
+                ],
+                highlights: [
+                    '6G low-latency streaming architecture',
+                    'AI network optimization & bandwidth efficiency',
+                    'Opening Keynote VIP front-row seating'
+                ],
+                seatZone,
+                tier,
+                token: guest.token || null
+            };
+        }
+
+        if (persona === 'REGULATOR_DIGNITARY') {
+            return {
+                persona: 'REGULATOR_DIGNITARY',
+                headline: 'Smart Bangladesh 2041: Sovereign AI & Youth Tech Incubation',
+                welcomeGreeting: `Distinguished Guest ${name}, it is an honor to welcome you to ToffeeCon 2026.`,
+                briefing: `It is an honor to welcome you to ToffeeCon 2026, ${name}. This summit underscores our dedication to the Smart Bangladesh 2041 vision through locally trained sovereign AI models and zero-trust regulatory compliance. We look forward to your presence at the ICT Innovation Showcase, demonstrating our nationwide youth tech incubation labs and indigenous media infrastructure.`,
+                recommendedSessions: [
+                    'Smart Bangladesh 2041: Sovereign Media Infrastructure',
+                    'ICT Innovation Showcase & Youth Tech Incubation Labs',
+                    'Regulatory Round Table: Ethical AI Governance & OTT Compliance'
+                ],
+                highlights: [
+                    'Digital and Smart Bangladesh 2041 vision alignment',
+                    'Sovereign AI infrastructure & data residency',
+                    'Youth tech incubation and digital creative economy'
+                ],
+                seatZone,
+                tier,
+                token: guest.token || null
+            };
+        }
+
+        // Default: ENTERPRISE_BRAND
+        return {
+            persona: 'ENTERPRISE_BRAND',
+            headline: 'GenAI Content Commercialization & Creator Monetization',
+            welcomeGreeting: `Welcome to ToffeeCon 2026, ${name}.`,
+            briefing: `Welcome to ToffeeCon 2026, ${name}. We are thrilled to host ${org} at the B2B Pitch Hub, showcasing hyper-personalized sponsored brand integration powered by our new real-time ad-insertion engines. Visit the AI Creator Studio and Generative Dubbing Pavilions to see how automated multi-dialect localization drives 4.8x higher audience engagement and brand lift across Bangladesh.`,
+            recommendedSessions: [
+                'B2B Pitch Hub: Contextual Brand Injection & Real-Time Dynamic Ads',
+                'AI Creator Studio: Automated Multi-Dialect Dubbing Monetization',
+                'Enterprise Brand Lift & Media ROI Executive Keynote'
+            ],
+            highlights: [
+                'AI Creator Studio & real-time ad injection',
+                'Generative Dubbing monetization at scale',
+                'B2B Pitch Hub private meeting pods'
+            ],
+            seatZone,
+            tier,
+            token: guest.token || null
+        };
+    }
+
+    /**
+     * VIP Personalized AI Concierge Briefing Engine
+     * Combines Google Gemini API with sub-2.0s timeout and deterministic high-fidelity fallback.
+     * Guaranteed zero internal prompt leakage and clean sanitized JSON.
+     */
+    async generateVIPBriefing(guest = {}) {
+        const startTime = Date.now();
+        const deterministic = this.getDeterministicVIPBriefing(guest);
+
+        if (this.isGeminiAvailable()) {
+            const prompt = `You are the Executive AI VIP Concierge for ToffeeCon 2026 in Dhaka, Bangladesh.
+Craft a bespoke, prestigious 3-sentence VIP Executive Briefing for an incoming distinguished guest.
+
+Guest Profile:
+- Name: "${guest.name || 'VIP Delegate'}"
+- Designation: "${guest.designation || 'Executive'}"
+- Organization: "${guest.organization || 'VIP Organization'}"
+- Tier: "${guest.tier || 'VIP_ALL_ACCESS'}"
+- Persona Category: "${deterministic.persona}"
+
+Requirements:
+1. Exactly 3 sentences. Professional, welcoming, and executive tone.
+2. Focus on their domain:
+   - If TELCO_OPERATOR: highlight 6G low-latency streaming, AI network optimization, and the Opening Keynote.
+   - If ENTERPRISE_BRAND: highlight AI Creator Studio, Generative Dubbing monetization, and the B2B Pitch Hub.
+   - If REGULATOR_DIGNITARY: highlight Smart Bangladesh 2041 vision, sovereign AI infrastructure, and youth tech incubation.
+3. No buzzwords without substance. No markdown asterisks or quotes in the output.
+4. Output valid JSON only matching this schema:
+{
+  "headline": "<4-7 word executive headline>",
+  "welcomeGreeting": "<Formal greeting>",
+  "briefing": "<Exactly 3 polished sentences>",
+  "recommendedSessions": ["<Session 1>", "<Session 2>", "<Session 3>"],
+  "highlights": ["<Point 1>", "<Point 2>", "<Point 3>"]
+}`;
+
+            try {
+                // Strict 1800ms timeout for Gemini to satisfy sub-2.0s SLA
+                const result = await this.callGeminiJson(prompt, null, 1800);
+                if (result && result.briefing && typeof result.briefing === 'string' && result.briefing.length > 30) {
+                    return {
+                        success: true,
+                        token: guest.token || null,
+                        guestName: guest.name || 'VIP Delegate',
+                        organization: guest.organization || '',
+                        designation: guest.designation || '',
+                        tier: guest.tier || 'VIP_ALL_ACCESS',
+                        seatZone: deterministic.seatZone,
+                        persona: deterministic.persona,
+                        headline: result.headline || deterministic.headline,
+                        welcomeGreeting: result.welcomeGreeting || deterministic.welcomeGreeting,
+                        briefing: result.briefing.trim(),
+                        recommendedSessions: Array.isArray(result.recommendedSessions) && result.recommendedSessions.length > 0 
+                            ? result.recommendedSessions 
+                            : deterministic.recommendedSessions,
+                        highlights: Array.isArray(result.highlights) && result.highlights.length > 0 
+                            ? result.highlights 
+                            : deterministic.highlights,
+                        providerUsed: 'gemini_cloud_ai',
+                        source: 'gemini-3.8-flash',
+                        latencyMs: Date.now() - startTime,
+                        generatedAt: new Date().toISOString()
+                    };
+                }
+            } catch (err) {
+                console.warn(JSON.stringify({
+                    level: 'WARN',
+                    service: 'AIProvider',
+                    event: 'VIP_BRIEFING_AI_EXCEPTION',
+                    error: err.message,
+                    message: 'Falling back to deterministic concierge briefing.'
+                }));
+            }
+        }
+
+        // Return deterministic fallback
+        return {
+            success: true,
+            token: guest.token || null,
+            guestName: guest.name || 'VIP Delegate',
+            organization: guest.organization || '',
+            designation: guest.designation || '',
+            tier: guest.tier || 'VIP_ALL_ACCESS',
+            seatZone: deterministic.seatZone,
+            persona: deterministic.persona,
+            headline: deterministic.headline,
+            welcomeGreeting: deterministic.welcomeGreeting,
+            briefing: deterministic.briefing,
+            recommendedSessions: deterministic.recommendedSessions,
+            highlights: deterministic.highlights,
+            providerUsed: 'deterministic_vip_concierge',
+            source: 'deterministic_concierge_engine',
+            latencyMs: Date.now() - startTime,
+            generatedAt: new Date().toISOString()
+        };
+    }
 }
 
 module.exports = new AIProviderService();

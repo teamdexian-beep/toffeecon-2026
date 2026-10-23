@@ -1,0 +1,90 @@
+{
+  "title": "ToffeeCon 2026 VIP Accreditation Production Print Manifest",
+  "generatedAt": "2026-10-23T10:35:46.278Z",
+  "durationMs": 13,
+  "totalCount": 8,
+  "masterPrintHtml": "D:\\Toffeecon\\server\\data\\invitations\\invitations_master_print.html",
+  "outputDirectory": "D:\\Toffeecon\\server\\data\\invitations",
+  "cards": [
+    {
+      "token": "TC26-VIP-1066-54F1",
+      "name": "Dr. Tariqul Islam",
+      "designation": "VP of AI Research",
+      "organization": "Silicon Valley Labs",
+      "tier": "VIP_KEYNOTE",
+      "cardFilename": "pass_TC26-VIP-1066-54F1.html",
+      "cardFilePath": "D:\\Toffeecon\\server\\data\\invitations\\cards\\pass_TC26-VIP-1066-54F1.html",
+      "printableUrl": "/api/accreditation/invitations/cards/pass_TC26-VIP-1066-54F1.html"
+    },
+    {
+      "token": "TC26-VIP-1065-67B8",
+      "name": "Dr. Tariqul Islam",
+      "designation": "VP of AI Research",
+      "organization": "Silicon Valley Labs",
+      "tier": "VIP_KEYNOTE",
+      "cardFilename": "pass_TC26-VIP-1065-67B8.html",
+      "cardFilePath": "D:\\Toffeecon\\server\\data\\invitations\\cards\\pass_TC26-VIP-1065-67B8.html",
+      "printableUrl": "/api/accreditation/invitations/cards/pass_TC26-VIP-1065-67B8.html"
+    },
+    {
+      "token": "TC26-VIP-1064-EC3B",
+      "name": "Dr. Tariqul Islam",
+      "designation": "VP of AI Research",
+      "organization": "Silicon Valley Labs",
+      "tier": "VIP_KEYNOTE",
+      "cardFilename": "pass_TC26-VIP-1064-EC3B.html",
+      "cardFilePath": "D:\\Toffeecon\\server\\data\\invitations\\cards\\pass_TC26-VIP-1064-EC3B.html",
+      "printableUrl": "/api/accreditation/invitations/cards/pass_TC26-VIP-1064-EC3B.html"
+    },
+    {
+      "token": "TC26-VIP-1063-FE1C",
+      "name": "Dr. Tariqul Islam",
+      "designation": "VP of AI Research",
+      "organization": "Silicon Valley Labs",
+      "tier": "VIP_KEYNOTE",
+      "cardFilename": "pass_TC26-VIP-1063-FE1C.html",
+      "cardFilePath": "D:\\Toffeecon\\server\\data\\invitations\\cards\\pass_TC26-VIP-1063-FE1C.html",
+      "printableUrl": "/api/accreditation/invitations/cards/pass_TC26-VIP-1063-FE1C.html"
+    },
+    {
+      "token": "TC26-VIP-1062-F575",
+      "name": "Dr. Tariqul Islam",
+      "designation": "VP of AI Research",
+      "organization": "Silicon Valley Labs",
+      "tier": "VIP_KEYNOTE",
+      "cardFilename": "pass_TC26-VIP-1062-F575.html",
+      "cardFilePath": "D:\\Toffeecon\\server\\data\\invitations\\cards\\pass_TC26-VIP-1062-F575.html",
+      "printableUrl": "/api/accreditation/invitations/cards/pass_TC26-VIP-1062-F575.html"
+    },
+    {
+      "token": "TC26-VIP-1061-8EBB",
+      "name": "Dr. Tariqul Islam",
+      "designation": "VP of AI Research",
+      "organization": "Silicon Valley Labs",
+      "tier": "VIP_KEYNOTE",
+      "cardFilename": "pass_TC26-VIP-1061-8EBB.html",
+      "cardFilePath": "D:\\Toffeecon\\server\\data\\invitations\\cards\\pass_TC26-VIP-1061-8EBB.html",
+      "printableUrl": "/api/accreditation/invitations/cards/pass_TC26-VIP-1061-8EBB.html"
+    },
+    {
+      "token": "TC26-VIP-1001-A9F2",
+      "name": "Sarah Ahmed",
+      "designation": "Chief Digital Officer",
+      "organization": "Banglalink / VEON",
+      "tier": "VIP_ALL_ACCESS",
+      "cardFilename": "pass_TC26-VIP-1001-A9F2.html",
+      "cardFilePath": "D:\\Toffeecon\\server\\data\\invitations\\cards\\pass_TC26-VIP-1001-A9F2.html",
+      "printableUrl": "/api/accreditation/invitations/cards/pass_TC26-VIP-1001-A9F2.html"
+    },
+    {
+      "token": "TC26-VIP-1002-3B4C",
+      "name": "Kaan Terzioğlu",
+      "designation": "Group Chief Executive Officer",
+      "organization": "VEON Group",
+      "tier": "VIP_ALL_ACCESS",
+      "cardFilename": "pass_TC26-VIP-1002-3B4C.html",
+      "cardFilePath": "D:\\Toffeecon\\server\\data\\invitations\\cards\\pass_TC26-VIP-1002-3B4C.html",
+      "printableUrl": "/api/accreditation/invitations/cards/pass_TC26-VIP-1002-3B4C.html"
+    }
+  ]
+}
