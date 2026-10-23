@@ -494,27 +494,6 @@
                 <span style="font-family:'Space Mono'; font-size:0.8rem; color:var(--cyan);">TARGET: &lt; 2.0s</span>
             </h2>
 
-            <!-- Quick Virtual RFID / Keycard Tap Simulators -->
-            <div style="margin-bottom: 12px;">
-                <label style="font-family:'Space Mono'; font-size:0.75rem; color:var(--text-dim); display:block; margin-bottom:6px;">
-                    VIRTUAL RFID / NFC KEYCARD TAP:
-                </label>
-                <div class="rfid-quick-bar">
-                    <button type="button" class="btn-rfid-chip" onclick="simulateRfidTap('TCON-2001', 'Erik Aas (CEO)')">
-                        <span>💳</span> Erik Aas (CEO)
-                    </button>
-                    <button type="button" class="btn-rfid-chip" onclick="simulateRfidTap('TCON-4001', 'Ananya Roy (Unilever)')">
-                        <span>💳</span> Ananya Roy (Unilever)
-                    </button>
-                    <button type="button" class="btn-rfid-chip" onclick="simulateRfidTap('TCON-4002', 'Tanvir Hasan (bKash)')">
-                        <span>💳</span> Tanvir Hasan (bKash)
-                    </button>
-                    <button type="button" class="btn-rfid-chip" onclick="simulateRfidTap('TCON-4004', 'M. Haque (Daily Star)')">
-                        <span>💳</span> M. Haque (Press)
-                    </button>
-                </div>
-            </div>
-
             <!-- Feedback Indicator Box -->
             <div class="scan-box" id="feedbackBox">
                 <div style="font-size: 2.2rem; margin-bottom: 6px;" id="feedbackIcon">📷</div>
@@ -566,8 +545,8 @@
                     </div>
 
                     <div class="badge-body">
-                        <div class="badge-guest-name" id="badgeName">Taimur Rahman</div>
-                        <div class="badge-guest-company" id="badgeCompany">Banglalink · CCRO</div>
+                        <div class="badge-guest-name" id="badgeName">Awaiting Pass Scan...</div>
+                        <div class="badge-guest-company" id="badgeCompany">Gate Turnstile Active</div>
                         <div style="font-family:'Space Mono'; font-size:0.78rem; color:var(--text-dim); margin-top:6px;" id="badgeGateLocation">GATE: Gate 1 (VIP North)</div>
                     </div>
 
@@ -579,10 +558,10 @@
                     <div class="badge-footer">
                         <div>
                             <div style="font-family:'Space Mono'; font-size:0.75rem; color:var(--text-dim);">PASS ID</div>
-                            <div class="badge-id-text" id="badgeId">TCON-3089</div>
+                            <div class="badge-id-text" id="badgeId">TCON-____</div>
                         </div>
                         <div class="badge-qr-box">
-                            <img id="badgeQr" src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=https://toffeecon.live/programme?id=TCON-3089" width="75" height="75" alt="Badge QR">
+                            <img id="badgeQr" src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=TOFFEECON-GATE" width="75" height="75" alt="Badge QR">
                         </div>
                     </div>
                 </div>
@@ -596,12 +575,12 @@
                 <span style="font-family:'Space Mono'; font-size:0.8rem; color:var(--green);">REAL-TIME</span>
             </h2>
             <ul class="arrivals-list" id="arrivalsList">
-                <li class="arrival-card">
+                <li class="arrival-card" style="opacity:0.6;">
                     <div>
-                        <b>Taimur Rahman</b>
-                        <div style="font-family:'Space Mono'; font-size:0.75rem; color:var(--cyan);">TCON-3089 · Banglalink</div>
+                        <b>Awaiting Ingress</b>
+                        <div style="font-family:'Space Mono'; font-size:0.75rem; color:var(--text-dim);">Live scans stream here</div>
                     </div>
-                    <span style="font-family:'Space Mono'; font-size:0.75rem; color:var(--green);">VIP ✅</span>
+                    <span style="font-family:'Space Mono'; font-size:0.75rem; color:var(--cyan);">READY</span>
                 </li>
             </ul>
         </div>
@@ -864,7 +843,7 @@
         }
 
         // Initialize Barcode and Stats
-        renderBarcodeStrip('TCON-3089');
+        renderBarcodeStrip('GATE-01');
 
         fetch('/api/state').then(r => r.json()).then(d => {
             if (d && d.telemetry) {

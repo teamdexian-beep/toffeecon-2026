@@ -1495,72 +1495,34 @@
             </div>
 
             <!-- Attendee VIP Card -->
-            <div class="attendee-id-card">
+            <div class="attendee-id-card" id="attendeeIdCard">
                 <div style="display:flex; align-items:center; gap:12px;">
-                    <div class="attendee-avatar">👑</div>
+                    <div class="attendee-avatar" id="lockerAvatar">🎟️</div>
                     <div class="attendee-meta">
-                        <h3 id="lockerAttendeeName">Erik Aas</h3>
-                        <p id="lockerAttendeePass">VIP PASS #TC-8821 · ACCREDITED</p>
+                        <h3 id="lockerAttendeeName">Guest Attendee</h3>
+                        <p id="lockerAttendeePass">No badge scanned yet — present your QR code at Gate 01.</p>
                     </div>
                 </div>
-                <span class="status-pill" style="color:var(--gold); border-color:rgba(255,184,0,0.3); background:rgba(255,184,0,0.08);">
-                    ALL ACCESS
+                <span class="status-pill" id="lockerStatusPill" style="color:var(--text-muted); border-color:rgba(255,255,255,0.15); background:rgba(255,255,255,0.05);">
+                    PENDING INGRESS
                 </span>
             </div>
 
-            <!-- Media Cards Grid -->
-            <div class="locker-grid">
-                <!-- 1. AI Voice Dub Card -->
-                <div class="locker-card">
-                    <div class="locker-badge-type"><span>🎙️</span> AI VOICE CLONE ARTIFACT</div>
-                    <h3 class="locker-title">Bengali Sci-Fi Dub: Neo Dhaka</h3>
-                    <p class="locker-sub">Recorded at Booth 01 · Zero-Shot Voice Synthesis (00:24)</p>
-                    <div class="locker-actions">
-                        <a href="/api/media/sample_voice.mp3" download="ToffeeCon-AI-Dub.mp3" class="btn-locker-action primary-pill download bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white font-semibold shadow-md active:scale-95 transition-all">
-                            <span>📥</span>
-                            <span>Download MP3</span>
-                        </a>
-                        <a href="https://api.whatsapp.com/send?text=Check%20out%20my%20AI%20Voice%20Dub%20from%20ToffeeCon%202026!%20%23ToffeeCon2026" target="_blank" class="btn-locker-action secondary-glass whatsapp px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-white/90 text-xs font-medium backdrop-blur-sm transition-all">
-                            <span>💬</span>
-                            <span>Share</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- 2. AI Audition Headshot Card -->
-                <div class="locker-card">
-                    <div class="locker-badge-type" style="color:var(--neon-magenta);"><span>🎭</span> OTT CASTING AUDITION PASS</div>
-                    <h3 class="locker-title">Protagonist Screen Test</h3>
-                    <p class="locker-sub">Score: 98.4% Match · Genre: Cyberpunk Courier</p>
-                    <div class="locker-actions">
-                        <a href="/assets/toffeecon-hero-emblem.png" download="ToffeeCon-Audition-Pass.png" class="btn-locker-action primary-pill download bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white font-semibold shadow-md active:scale-95 transition-all">
-                            <span>📸</span>
-                            <span>Save Headshot</span>
-                        </a>
-                        <a href="https://api.whatsapp.com/send?text=I%20just%20auditioned%20for%20Toffee%20OTT%20at%20ToffeeCon%202026!%20Scored%2098.4%25%20%F0%9F%8E%AD" target="_blank" class="btn-locker-action secondary-glass whatsapp px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-white/90 text-xs font-medium backdrop-blur-sm transition-all">
-                            <span>💬</span>
-                            <span>Share</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- 3. ToffeeCon Wrapped Hologram -->
-                <div class="locker-card">
-                    <div class="locker-badge-type" style="color:var(--neon-cyan);"><span>📼</span> TOFFEECON WRAPPED CAPSULE</div>
-                    <h3 class="locker-title">Summit Experience Recap Badge</h3>
-                    <p class="locker-sub">6 Booths Visited · 14 Keynote Votes · 1 Sonic Trophy</p>
-                    <div class="locker-actions">
-                        <a href="/assets/toffeecon-logo.png" download="ToffeeCon-Wrapped-Card.png" class="btn-locker-action primary-pill download bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white font-semibold shadow-md active:scale-95 transition-all">
-                            <span>🏷️</span>
-                            <span>Download Badge</span>
-                        </a>
-                        <a href="https://api.whatsapp.com/send?text=My%20ToffeeCon%202026%20Wrapped%20Badge%20is%20unlocked!%20%F0%9F%8E%9F%EF%B8%8F%20%23ToffeeCon2026" target="_blank" class="btn-locker-action secondary-glass whatsapp px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-white/90 text-xs font-medium backdrop-blur-sm transition-all">
-                            <span>💬</span>
-                            <span>Share</span>
-                        </a>
-                    </div>
-                </div>
+            <!-- Empty State (Shown when no artifacts recorded) -->
+            <div class="locker-empty-state" id="lockerEmptyState">
+                <div class="empty-icon">🎙️</div>
+                <h3 class="empty-title">No studio artifacts recorded yet</h3>
+                <p class="empty-desc">
+                    Visit Booth 01 (Bangla Voice Studio) to generate your AI persona and unlock your exclusive summit reel.
+                </p>
+                <button class="btn-locker-action primary-pill download" onclick="switchTab('map')" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; margin:0 auto; padding:10px 24px;">
+                    <span>🗺️</span>
+                    <span>Locate Interactive Booths</span>
+                </button>
             </div>
+
+            <!-- Media Cards Grid (Populated dynamically when artifacts exist) -->
+            <div class="locker-grid" id="lockerMediaContainer" style="display: none;"></div>
 
             <!-- Offline Wallet QR Fallback (Guaranteed available offline via Service Worker) -->
             <div class="offline-wallet-pass" id="offlineWalletPass">
@@ -1589,8 +1551,8 @@
                         <rect x="55" y="80" width="20" height="10" />
                     </svg>
                 </div>
-                <p style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);">
-                    SCAN AT GATE TURNSTILE · TOKEN: <b style="color:#fff;">TC26-9810-VIP</b>
+                <p style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);" id="walletTokenNotice">
+                    No badge scanned yet — present your QR code at Gate 01.
                 </p>
             </div>
         </section>
@@ -2035,6 +1997,101 @@
             // Scroll card into view smoothly on mobile
             document.getElementById('boothDetailCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
+
+        // 6. Dynamic Attendee Media Locker & Offline Wallet Engine
+        function initLockerUI() {
+            let attendee = null;
+            try {
+                const stored = localStorage.getItem('toffeecon_attendee') || localStorage.getItem('tcon_saved_ticket');
+                if (stored) attendee = JSON.parse(stored);
+            } catch (e) {}
+
+            const nameEl = document.getElementById('lockerAttendeeName');
+            const passEl = document.getElementById('lockerAttendeePass');
+            const pillEl = document.getElementById('lockerStatusPill');
+            const avatarEl = document.getElementById('lockerAvatar');
+            const emptyEl = document.getElementById('lockerEmptyState');
+            const containerEl = document.getElementById('lockerMediaContainer');
+            const walletNoticeEl = document.getElementById('walletTokenNotice');
+
+            // Collect artifacts from localStorage if attendee generated any
+            let artifacts = [];
+            try {
+                const dubArtifact = localStorage.getItem('toffeecon_dub_artifact');
+                if (dubArtifact) artifacts.push(JSON.parse(dubArtifact));
+                const audArtifact = localStorage.getItem('toffeecon_audition_artifact');
+                if (audArtifact) artifacts.push(JSON.parse(audArtifact));
+                const customArtifacts = localStorage.getItem('toffeecon_artifacts');
+                if (customArtifacts) artifacts = artifacts.concat(JSON.parse(customArtifacts));
+            } catch (e) {}
+
+            if (attendee) {
+                const isAccredited = attendee.checkedIn || attendee.id || attendee.passId;
+                if (nameEl) nameEl.innerText = attendee.name || 'Accredited Attendee';
+                if (passEl) {
+                    passEl.innerText = isAccredited
+                        ? `VIP PASS #${attendee.id || attendee.passId || 'TC-2026'} · ACCREDITED`
+                        : 'No badge scanned yet — present your QR code at Gate 01.';
+                }
+                if (pillEl) {
+                    pillEl.innerText = attendee.role || 'ALL ACCESS';
+                    pillEl.style.color = 'var(--gold)';
+                    pillEl.style.borderColor = 'rgba(255,184,0,0.3)';
+                    pillEl.style.background = 'rgba(255,184,0,0.08)';
+                }
+                if (avatarEl) avatarEl.innerText = '👑';
+                if (walletNoticeEl) {
+                    const tokenId = attendee.id || attendee.passId || 'TC26-INGRESS';
+                    walletNoticeEl.innerHTML = `SCAN AT GATE TURNSTILE · TOKEN: <b style="color:#fff;">${tokenId}</b>`;
+                }
+            } else {
+                // Pure unauthenticated public attendee
+                if (nameEl) nameEl.innerText = 'Guest Attendee';
+                if (passEl) passEl.innerText = 'No badge scanned yet — present your QR code at Gate 01.';
+                if (pillEl) {
+                    pillEl.innerText = 'PENDING INGRESS';
+                    pillEl.style.color = 'var(--text-muted)';
+                    pillEl.style.borderColor = 'rgba(255,255,255,0.15)';
+                    pillEl.style.background = 'rgba(255,255,255,0.05)';
+                }
+                if (avatarEl) avatarEl.innerText = '🎟️';
+                if (walletNoticeEl) {
+                    walletNoticeEl.innerText = 'No badge scanned yet — present your QR code at Gate 01.';
+                }
+            }
+
+            // Render empty state or media artifacts
+            if (artifacts && artifacts.length > 0) {
+                if (emptyEl) emptyEl.style.display = 'none';
+                if (containerEl) {
+                    containerEl.style.display = 'flex';
+                    containerEl.innerHTML = artifacts.map(art => `
+                        <div class="locker-card">
+                            <div class="locker-badge-type" style="color:${art.tagColor || 'var(--toffee-orange)'};">
+                                <span>${art.icon || '🎙️'}</span> ${art.type || 'AI ARTIFACT'}
+                            </div>
+                            <h3 class="locker-title">${art.title || 'Studio Take'}</h3>
+                            <p class="locker-sub">${art.sub || 'Generated at Summit Booth'}</p>
+                            <div class="locker-actions">
+                                <a href="${art.downloadUrl || '#'}" download="${art.downloadName || 'ToffeeCon-Artifact'}" class="btn-locker-action primary-pill download bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white font-semibold shadow-md active:scale-95 transition-all">
+                                    <span>📥</span>
+                                    <span>Download</span>
+                                </a>
+                                <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(art.shareText || 'Check out my ToffeeCon artifact! #ToffeeCon2026')}" target="_blank" class="btn-locker-action secondary-glass whatsapp px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-white/90 text-xs font-medium backdrop-blur-sm transition-all">
+                                    <span>💬</span>
+                                    <span>Share</span>
+                                </a>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } else {
+                if (emptyEl) emptyEl.style.display = 'block';
+                if (containerEl) containerEl.style.display = 'none';
+            }
+        }
+
+        initLockerUI();
     </script>
 
     <!-- Glassmorphic iOS / PWA Installation Modal -->
