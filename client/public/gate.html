@@ -245,33 +245,7 @@
             cursor: pointer;
         }
 
-        .rfid-quick-bar {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
 
-        .btn-rfid-chip {
-            background: rgba(147, 51, 234, 0.12);
-            border: 1px solid rgba(147, 51, 234, 0.35);
-            color: #d8b4fe;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-rfid-chip:hover {
-            background: rgba(147, 51, 234, 0.25);
-            border-color: var(--purple);
-            transform: translateY(-1px);
-        }
 
         .velocity-badge {
             font-family: 'Space Mono', monospace;
@@ -652,19 +626,6 @@
             }
         }
 
-        // Simulate RFID / NFC Card Tap
-        function simulateRfidTap(ticketId, label) {
-            const box = document.getElementById('feedbackBox');
-            if (box) {
-                box.className = 'scan-box';
-                document.getElementById('feedbackIcon').innerText = '📡';
-                document.getElementById('feedbackTitle').innerText = 'NFC / RFID DETECTED';
-                document.getElementById('feedbackSub').innerText = `Reading credential: ${label}...`;
-            }
-            setTimeout(() => {
-                checkInTicket(ticketId);
-            }, 300);
-        }
 
         // Checkin Execution
         async function checkInTicket(ticketId) {
