@@ -1090,6 +1090,242 @@
             background: rgba(255, 0, 119, 0.15);
         }
 
+        /* ================= SCHEDULE MANAGER (DIRECTOR CONSOLE) ================= */
+        .schedule-director-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sch-beat-card {
+            background: #090615;
+            border: 1px solid var(--border-machined);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+
+        .sch-beat-card.type-program {
+            border-left: 4px solid #a855f7;
+        }
+        .sch-beat-card.type-keynote {
+            border-left: 4px solid #ec4899;
+        }
+        .sch-beat-card.type-partner {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .sch-beat-card.is-live {
+            border-color: var(--crimson);
+            background: rgba(239, 68, 68, 0.08);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.25) inset, 0 0 15px rgba(239, 68, 68, 0.2);
+        }
+
+        .sch-beat-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 150px;
+        }
+
+        .sch-beat-order {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            font-weight: 700;
+        }
+
+        .sch-beat-time {
+            font-family: var(--font-mono);
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--cyan);
+        }
+
+        .sch-type-badge {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+        .sch-type-badge.program {
+            background: rgba(168, 85, 247, 0.15);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            color: #d8b4fe;
+        }
+        .sch-type-badge.keynote {
+            background: rgba(236, 72, 153, 0.15);
+            border: 1px solid rgba(236, 72, 153, 0.4);
+            color: #f472b6;
+        }
+        .sch-type-badge.partner {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: #fcd34d;
+        }
+
+        .sch-beat-info {
+            flex: 1;
+        }
+        .sch-beat-title {
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+        .sch-beat-speaker {
+            font-size: 0.82rem;
+            color: var(--orange);
+            font-weight: 600;
+        }
+        .sch-beat-stage {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+
+        .sch-beat-status-pill {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .sch-beat-status-pill.upcoming {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #a5b4fc;
+        }
+        .sch-beat-status-pill.live {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.6);
+            color: #fca5a5;
+        }
+        .sch-beat-status-pill.completed {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #6ee7b7;
+        }
+
+        .sch-beat-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .btn-sch-toggle {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-sch-toggle:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+        .btn-sch-toggle.live-act {
+            border-color: rgba(239, 68, 68, 0.6);
+            color: #fca5a5;
+        }
+        .btn-sch-toggle.live-act:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+        .btn-sch-toggle.comp-act {
+            border-color: rgba(16, 185, 129, 0.5);
+            color: #6ee7b7;
+        }
+        .btn-sch-toggle.comp-act:hover {
+            background: rgba(16, 185, 129, 0.2);
+        }
+        .btn-sch-toggle.edit-act {
+            border-color: rgba(0, 240, 255, 0.4);
+            color: var(--cyan);
+        }
+        .btn-sch-toggle.edit-act:hover {
+            background: rgba(0, 240, 255, 0.15);
+        }
+
+        /* Glassmorphic Edit Drawer & Modals */
+        .sch-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(6, 4, 11, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .sch-modal-overlay.active {
+            display: flex;
+        }
+
+        .sch-modal-card {
+            background: rgba(18, 14, 34, 0.98);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            box-shadow: 0 0 50px rgba(168, 85, 247, 0.15), 0 20px 40px rgba(0, 0, 0, 0.8);
+            border-radius: 18px;
+            padding: 28px;
+            width: 580px;
+            max-width: 95vw;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+        }
+
+        .sch-form-row {
+            display: flex;
+            gap: 14px;
+        }
+        .sch-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+        .sch-form-label {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #b3a5d8;
+            text-transform: uppercase;
+        }
+        .sch-form-input, .sch-form-select, .sch-form-textarea {
+            background: #090615;
+            border: 1px solid var(--border-machined);
+            border-radius: 8px;
+            color: #fff;
+            padding: 10px 12px;
+            font-family: var(--font-sans);
+            font-size: 0.88rem;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+        .sch-form-input:focus, .sch-form-select:focus, .sch-form-textarea:focus {
+            border-color: var(--cyan);
+        }
+
         /* ================= DIRECTOR PIN GATEKEEPER MODAL ================= */
         #directorPinModal {
             position: fixed;
@@ -1393,6 +1629,9 @@
         </button>
         <button class="tab-btn" id="tab-diagnostics" onclick="switchModeTab('diagnostics')">
             <span>📊</span> <span>5. Diagnostics & Audit</span> <span class="tab-badge">TELEMETRY</span>
+        </button>
+        <button class="tab-btn" id="tab-schedule" onclick="switchModeTab('schedule')">
+            <span>📅</span> <span>6. Schedule Manager</span> <span class="tab-badge" id="scheduleTabBadge" style="background:rgba(168,85,247,0.2); color:#d8b4fe;">12 BEATS</span>
         </button>
     </nav>
 
@@ -1805,6 +2044,56 @@
                 </div>
             </div>
 
+            <!-- ================= TAB 6: SCHEDULE MANAGER ================= -->
+            <div class="tab-panel" id="panel-schedule">
+                <div class="bezel-panel">
+                    <div class="panel-head">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <h2>📅 12-BEAT SUMMIT RUN OF SHOW & SCHEDULE DIRECTOR</h2>
+                            <span class="sch-type-badge program" id="directorScheduleTotalBadge">12 BEATS</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span id="directorScheduleStatusBadge" style="font-family:var(--font-mono); font-size:0.75rem; color:var(--emerald);">● RUN OF SHOW SYNCED</span>
+                            <button class="btn-action outline" onclick="promptResetScheduleSeed()" style="border-color:rgba(239,68,68,0.5); color:#fca5a5; font-size:0.75rem; padding:6px 12px; gap:6px;">
+                                <span>🔄</span> <span>Reset Canonical Seed</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Telemetry Summary Cards -->
+                    <div class="diag-grid-cards" style="margin-bottom:20px;">
+                        <div class="diag-metric-card">
+                            <span class="diag-metric-lbl">ACTIVE RUNNING BEAT</span>
+                            <div class="diag-metric-val" id="schActiveBeatTitle" style="font-size:1.05rem; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Standby</div>
+                            <div style="font-size:0.68rem; color:var(--text-dim); margin-top:4px;" id="schActiveBeatDetails">No session currently marked LIVE</div>
+                        </div>
+
+                        <div class="diag-metric-card">
+                            <span class="diag-metric-lbl">SCHEDULE COMPOSITION</span>
+                            <div class="diag-metric-val" style="color:var(--cyan); font-size:1.1rem;" id="schCompositionVal">6 PROG · 3 KEY · 3 PART</div>
+                            <div style="font-size:0.68rem; color:var(--text-dim); margin-top:4px;">12 Beats Total · Day 01</div>
+                        </div>
+
+                        <div class="diag-metric-card">
+                            <span class="diag-metric-lbl">INGRESS & SYNC STATUS</span>
+                            <div class="diag-metric-val" style="color:var(--emerald); font-size:1.1rem;">LIVE WEBSOCKET</div>
+                            <div style="font-size:0.68rem; color:var(--text-dim); margin-top:4px;">Broadcasts to Landing, PWA, LED Wall</div>
+                        </div>
+
+                        <div class="diag-metric-card">
+                            <span class="diag-metric-lbl">SHOW PROGRESSION</span>
+                            <div class="diag-metric-val" id="schProgressVal" style="color:var(--amber); font-size:1.1rem;">0 / 12 Done</div>
+                            <div class="meter-track"><div class="meter-fill" id="meterSchProgress" style="width:0%; background:var(--emerald);"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Beats Management List -->
+                    <div class="schedule-director-grid" id="directorScheduleGrid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         </div>
@@ -1862,6 +2151,87 @@
         </aside>
 
     </main>
+
+    <!-- ================= SCHEDULE BEAT EDIT MODAL ================= -->
+    <div class="sch-modal-overlay" id="scheduleEditModal">
+        <div class="sch-modal-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px;">
+                <div style="font-family:var(--font-display); font-size:1.1rem; color:#fff; font-weight:700;">
+                    ✏️ Edit Schedule Beat <span id="editModalBeatId" style="font-family:var(--font-mono); font-size:0.8rem; color:var(--cyan);">[beat-01]</span>
+                </div>
+                <button type="button" onclick="closeScheduleEditModal()" style="background:none; border:none; color:var(--text-dim); font-size:1.2rem; cursor:pointer;">✕</button>
+            </div>
+
+            <form id="scheduleEditForm" onsubmit="saveScheduleBeat(event)" style="display:flex; flex-direction:column; gap:14px;">
+                <input type="hidden" id="editBeatId">
+
+                <div class="sch-form-row">
+                    <div class="sch-form-group">
+                        <label class="sch-form-label">Time String</label>
+                        <input type="text" class="sch-form-input" id="editBeatTime" placeholder="e.g. 7:04 PM" required>
+                    </div>
+                    <div class="sch-form-group">
+                        <label class="sch-form-label">Status</label>
+                        <select class="sch-form-select" id="editBeatStatus">
+                            <option value="UPCOMING">UPCOMING</option>
+                            <option value="LIVE">LIVE</option>
+                            <option value="COMPLETED">COMPLETED</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="sch-form-group">
+                    <label class="sch-form-label">Session Title</label>
+                    <input type="text" class="sch-form-input" id="editBeatTitle" placeholder="Session Title" required>
+                </div>
+
+                <div class="sch-form-row">
+                    <div class="sch-form-group">
+                        <label class="sch-form-label">Speaker Name</label>
+                        <input type="text" class="sch-form-input" id="editBeatSpeaker" placeholder="e.g. Taimur Rahman">
+                    </div>
+                    <div class="sch-form-group">
+                        <label class="sch-form-label">Designation / Role</label>
+                        <input type="text" class="sch-form-input" id="editBeatDesignation" placeholder="e.g. CCRO, Banglalink">
+                    </div>
+                </div>
+
+                <div class="sch-form-group">
+                    <label class="sch-form-label">Stage Location</label>
+                    <input type="text" class="sch-form-input" id="editBeatStage" placeholder="e.g. Main Arena Stage">
+                </div>
+
+                <div class="sch-form-group">
+                    <label class="sch-form-label">Details / Overview</label>
+                    <textarea class="sch-form-textarea" id="editBeatDetails" rows="2" placeholder="Session details and summary..."></textarea>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+                    <button type="button" class="btn-action outline" onclick="closeScheduleEditModal()" style="font-size:0.8rem;">Cancel</button>
+                    <button type="submit" class="btn-action magenta" id="btnSaveScheduleBeat" style="font-size:0.8rem;">
+                        💾 Save & Broadcast
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= RESET SCHEDULE CONFIRMATION MODAL ================= -->
+    <div class="sch-modal-overlay" id="scheduleResetConfirmModal">
+        <div class="sch-modal-card" style="width:460px; text-align:center; align-items:center;">
+            <div style="font-size:2.5rem; margin-bottom:4px;">⚠️</div>
+            <div style="font-family:var(--font-display); font-size:1.15rem; color:#fff; font-weight:700;">Reset Event Schedule to Canonical Seed?</div>
+            <p style="font-size:0.82rem; color:var(--text-dim); line-height:1.45; margin-top:6px;">
+                This action will restore all 12 beats back to the official default evening run of show. Any manual time adjustments or custom statuses will be reverted and broadcast to all connected attendee screens.
+            </p>
+            <div style="display:flex; gap:12px; margin-top:16px; width:100%;">
+                <button type="button" class="btn-action outline" onclick="closeResetConfirmModal()" style="flex:1; justify-content:center;">Cancel</button>
+                <button type="button" class="btn-action" onclick="executeResetScheduleSeed()" style="flex:1; justify-content:center; background:#ef4444; color:#fff; border-color:#dc2626;">
+                    🔄 Confirm Reset
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- ================= JAVASCRIPT CONTROLLER ================= -->
     <script>
@@ -2213,9 +2583,9 @@
         }
 
         // ==========================================
-        // 4. Tab Mode Switching & Key Shortcuts (Tabs 1-5)
+        // 4. Tab Mode Switching & Key Shortcuts (Tabs 1-6)
         // ==========================================
-        const TAB_NAMES = ['pgm', 'wall', 'battle', 'booths', 'diagnostics'];
+        const TAB_NAMES = ['pgm', 'wall', 'battle', 'booths', 'diagnostics', 'schedule'];
 
         function switchModeTab(tabName) {
             audioRelay.playClick();
@@ -2226,6 +2596,9 @@
             const panel = document.getElementById(`panel-${tabName}`);
             if (tabBtn) tabBtn.classList.add('active');
             if (panel) panel.classList.add('active');
+            if (tabName === 'schedule') {
+                loadDirectorSchedule();
+            }
         }
 
         window.addEventListener('keydown', (e) => {
@@ -2240,6 +2613,7 @@
                 if (e.key === '3') switchModeTab('battle');
                 if (e.key === '4') switchModeTab('booths');
                 if (e.key === '5') switchModeTab('diagnostics');
+                if (e.key === '6') switchModeTab('schedule');
             }
         });
 
@@ -2448,6 +2822,12 @@
                     updateMarathonLanes(msg.data);
                 } else if (msg.type === 'ATTENDEE_CHECKED_IN') {
                     appendCheckinTicker(msg.data.ticket);
+                } else if (msg.type === 'SCHEDULE_UPDATED') {
+                    if (msg.data && msg.data.schedule) {
+                        window.currentDirectorSchedule = msg.data.schedule;
+                        renderScheduleManager(msg.data.schedule);
+                        showToast('Schedule Sync: Run of show updated', '📅');
+                    }
                 } else if (msg.type === 'AUDIT_EVENT') {
                     if (msg.audit) prependAuditLog(msg.audit);
                 } else if (msg.type === 'BOOTH_UPDATE' || (msg.type === 'PROPOSAL_PRINTED')) {
@@ -2821,6 +3201,267 @@
                 } catch(e) {}
             }
         }
+
+        // ==========================================
+        // 9. Director Schedule Manager Controller
+        // ==========================================
+        window.currentDirectorSchedule = [];
+
+        function escapeHubHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        async function loadDirectorSchedule() {
+            try {
+                const res = await fetch('/api/schedule');
+                if (!res.ok) return;
+                const data = await res.json();
+                if (data && data.success && Array.isArray(data.schedule)) {
+                    window.currentDirectorSchedule = data.schedule;
+                    renderScheduleManager(data.schedule);
+                }
+            } catch (err) {
+                console.error('[Schedule Director] Load error:', err);
+            }
+        }
+
+        function renderScheduleManager(beats) {
+            const container = document.getElementById('directorScheduleGrid');
+            if (!container || !Array.isArray(beats)) return;
+
+            // Update Telemetry Cards
+            const activeBeat = beats.find(b => b.status === 'LIVE');
+            const activeTitleEl = document.getElementById('schActiveBeatTitle');
+            const activeDetailsEl = document.getElementById('schActiveBeatDetails');
+            if (activeTitleEl) {
+                activeTitleEl.innerText = activeBeat ? `${activeBeat.time} · ${activeBeat.title}` : 'Standby';
+                activeTitleEl.style.color = activeBeat ? 'var(--crimson)' : '#fff';
+            }
+            if (activeDetailsEl) {
+                activeDetailsEl.innerText = activeBeat ? (activeBeat.speaker ? `${activeBeat.speaker} (${activeBeat.stage})` : activeBeat.stage) : 'No session currently marked LIVE';
+            }
+
+            const completedCount = beats.filter(b => b.status === 'COMPLETED').length;
+            const progressValEl = document.getElementById('schProgressVal');
+            const meterFillEl = document.getElementById('meterSchProgress');
+            if (progressValEl) progressValEl.innerText = `${completedCount} / ${beats.length} Completed`;
+            if (meterFillEl) meterFillEl.style.width = `${Math.round((completedCount / beats.length) * 100)}%`;
+
+            const progCount = beats.filter(b => b.type === 'PROGRAM').length;
+            const keyCount = beats.filter(b => b.type === 'KEYNOTE').length;
+            const partCount = beats.filter(b => b.type === 'PARTNER').length;
+            const compEl = document.getElementById('schCompositionVal');
+            if (compEl) compEl.innerText = `${progCount} PROG · ${keyCount} KEY · ${partCount} PART`;
+
+            container.innerHTML = beats.map((beat, idx) => {
+                const typeLower = (beat.type || 'PROGRAM').toLowerCase();
+                const isLive = beat.status === 'LIVE';
+                const isCompleted = beat.status === 'COMPLETED';
+
+                let statusClass = 'upcoming';
+                let statusLabel = 'UPCOMING';
+                if (isLive) { statusClass = 'live'; statusLabel = '● LIVE'; }
+                else if (isCompleted) { statusClass = 'completed'; statusLabel = '✓ COMPLETED'; }
+
+                const speakerText = beat.speaker ? `${escapeHubHtml(beat.speaker)} ${beat.designation ? `(${escapeHubHtml(beat.designation)})` : ''}` : '';
+
+                return `
+                    <div class="sch-beat-card type-${typeLower} ${isLive ? 'is-live' : ''}" data-beat-id="${escapeHubHtml(beat.id)}">
+                        <div class="sch-beat-left">
+                            <span class="sch-beat-order">#${idx + 1}</span>
+                            <span class="sch-beat-time">${escapeHubHtml(beat.time)}</span>
+                            <span class="sch-type-badge ${typeLower}">${escapeHubHtml(beat.type || 'PROGRAM')}</span>
+                        </div>
+                        <div class="sch-beat-info">
+                            <div class="sch-beat-title">${escapeHubHtml(beat.title)}</div>
+                            ${speakerText ? `<div class="sch-beat-speaker">${speakerText}</div>` : ''}
+                            <div class="sch-beat-stage">📍 ${escapeHubHtml(beat.stage || 'Main Arena')} · ${escapeHubHtml(beat.details || '')}</div>
+                        </div>
+                        <div style="margin-right:12px;">
+                            <span class="sch-beat-status-pill ${statusClass}">${statusLabel}</span>
+                        </div>
+                        <div class="sch-beat-actions">
+                            ${!isLive ? `
+                                <button type="button" class="btn-sch-toggle live-act" onclick="toggleBeatStatus('${escapeHubHtml(beat.id)}', 'LIVE')" title="Mark session LIVE on Stage & PWA">
+                                    ● Go Live
+                                </button>
+                            ` : `
+                                <button type="button" class="btn-sch-toggle comp-act" onclick="toggleBeatStatus('${escapeHubHtml(beat.id)}', 'COMPLETED')" title="Conclude session and mark COMPLETED">
+                                    ✓ Complete
+                                </button>
+                            `}
+                            ${!isCompleted && !isLive ? `
+                                <button type="button" class="btn-sch-toggle comp-act" onclick="toggleBeatStatus('${escapeHubHtml(beat.id)}', 'COMPLETED')" title="Mark session COMPLETED">
+                                    ✓ Complete
+                                </button>
+                            ` : ''}
+                            ${isCompleted ? `
+                                <button type="button" class="btn-sch-toggle" onclick="toggleBeatStatus('${escapeHubHtml(beat.id)}', 'UPCOMING')" title="Reset status to UPCOMING">
+                                    ⏱ Reopen
+                                </button>
+                            ` : ''}
+                            <button type="button" class="btn-sch-toggle edit-act" onclick="openScheduleEditModal('${escapeHubHtml(beat.id)}')" title="Edit time, speaker, or details">
+                                ✏️ Edit
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function toggleBeatStatus(beatId, newStatus) {
+            audioRelay.playClick();
+            try {
+                const res = await fetch(`/api/schedule/${beatId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-director-auth': 'toffeecon-2026-secure'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`Beat ${beatId} status set to ${newStatus}`, newStatus === 'LIVE' ? '🔴' : '✅');
+                    if (data.schedule) {
+                        window.currentDirectorSchedule = data.schedule;
+                        renderScheduleManager(data.schedule);
+                    } else {
+                        loadDirectorSchedule();
+                    }
+                } else {
+                    showToast(`Update failed: ${data.error || 'Server error'}`, '⚠️');
+                }
+            } catch (err) {
+                showToast('Network error while updating beat status', '⚠️');
+            }
+        }
+
+        function openScheduleEditModal(beatId) {
+            audioRelay.playClick();
+            const beat = window.currentDirectorSchedule.find(b => b.id === beatId);
+            if (!beat) return;
+
+            document.getElementById('editBeatId').value = beat.id;
+            document.getElementById('editModalBeatId').innerText = `[${beat.id}]`;
+            document.getElementById('editBeatTime').value = beat.time || '';
+            document.getElementById('editBeatStatus').value = beat.status || 'UPCOMING';
+            document.getElementById('editBeatTitle').value = beat.title || '';
+            document.getElementById('editBeatSpeaker').value = beat.speaker || '';
+            document.getElementById('editBeatDesignation').value = beat.designation || '';
+            document.getElementById('editBeatStage').value = beat.stage || '';
+            document.getElementById('editBeatDetails').value = beat.details || '';
+
+            const modal = document.getElementById('scheduleEditModal');
+            if (modal) modal.classList.add('active');
+        }
+
+        function closeScheduleEditModal() {
+            audioRelay.playClick();
+            const modal = document.getElementById('scheduleEditModal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        async function saveScheduleBeat(e) {
+            e.preventDefault();
+            audioRelay.playClick();
+            const beatId = document.getElementById('editBeatId').value;
+            const time = document.getElementById('editBeatTime').value.trim();
+            const status = document.getElementById('editBeatStatus').value;
+            const title = document.getElementById('editBeatTitle').value.trim();
+            const speaker = document.getElementById('editBeatSpeaker').value.trim() || null;
+            const designation = document.getElementById('editBeatDesignation').value.trim() || null;
+            const stage = document.getElementById('editBeatStage').value.trim();
+            const details = document.getElementById('editBeatDetails').value.trim();
+
+            const saveBtn = document.getElementById('btnSaveScheduleBeat');
+            if (saveBtn) saveBtn.disabled = true;
+
+            try {
+                const res = await fetch(`/api/schedule/${beatId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-director-auth': 'toffeecon-2026-secure'
+                    },
+                    body: JSON.stringify({
+                        time,
+                        status,
+                        title,
+                        speaker,
+                        designation,
+                        stage,
+                        details
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    closeScheduleEditModal();
+                    showToast(`Beat ${beatId} updated & broadcast`, '💾');
+                    if (data.schedule) {
+                        window.currentDirectorSchedule = data.schedule;
+                        renderScheduleManager(data.schedule);
+                    } else {
+                        loadDirectorSchedule();
+                    }
+                } else {
+                    showToast(`Failed to update beat: ${data.error || 'Server error'}`, '⚠️');
+                }
+            } catch (err) {
+                showToast('Network error while saving beat', '⚠️');
+            } finally {
+                if (saveBtn) saveBtn.disabled = false;
+            }
+        }
+
+        function promptResetScheduleSeed() {
+            audioRelay.playClick();
+            const modal = document.getElementById('scheduleResetConfirmModal');
+            if (modal) modal.classList.add('active');
+        }
+
+        function closeResetConfirmModal() {
+            audioRelay.playClick();
+            const modal = document.getElementById('scheduleResetConfirmModal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        async function executeResetScheduleSeed() {
+            audioRelay.playClick();
+            closeResetConfirmModal();
+            try {
+                const res = await fetch('/api/schedule/reset', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-director-auth': 'toffeecon-2026-secure'
+                    }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Schedule reset to canonical 12-beat seed', '🔄');
+                    if (data.schedule) {
+                        window.currentDirectorSchedule = data.schedule;
+                        renderScheduleManager(data.schedule);
+                    } else {
+                        loadDirectorSchedule();
+                    }
+                } else {
+                    showToast(`Reset failed: ${data.error || 'Server error'}`, '⚠️');
+                }
+            } catch (err) {
+                showToast('Network error while resetting schedule', '⚠️');
+            }
+        }
+
+        // Initialize Director Schedule
+        loadDirectorSchedule();
     </script>
 </body>
 </html>

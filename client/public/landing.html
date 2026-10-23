@@ -385,6 +385,194 @@
             font-weight: 800;
         }
 
+        /* 12-Beat Schedule Grid */
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .schedule-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .schedule-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @keyframes liveBeaconPulse {
+            0%, 100% {
+                box-shadow: 0 0 16px rgba(255, 60, 60, 0.25), 0 8px 30px rgba(0, 0, 0, 0.4);
+                border-color: rgba(239, 68, 68, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 28px rgba(255, 60, 60, 0.5), 0 0 10px rgba(255, 0, 85, 0.3), 0 8px 30px rgba(0, 0, 0, 0.4);
+                border-color: rgba(255, 90, 90, 0.9);
+            }
+        }
+
+        .beat-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(12px);
+        }
+
+        .beat-card:hover {
+            transform: translateY(-4px);
+        }
+
+        /* Color-Coded Visual Hierarchy */
+        /* PROGRAM: Sleek Royal Purple */
+        .beat-card.type-program {
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(18, 14, 32, 0.85) 100%);
+        }
+        .beat-card.type-program .beat-badge {
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            background: rgba(168, 85, 247, 0.1);
+            color: #d8b4fe;
+        }
+
+        /* KEYNOTE: Vibrant Magenta/Crimson */
+        .beat-card.type-keynote {
+            border: 1px solid rgba(236, 72, 153, 0.4);
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(18, 14, 32, 0.85) 100%);
+        }
+        .beat-card.type-keynote .beat-badge {
+            border: 1px solid rgba(236, 72, 153, 0.4);
+            background: rgba(236, 72, 153, 0.1);
+            color: #f472b6;
+        }
+
+        /* PARTNER: Warm Toffee Gold */
+        .beat-card.type-partner {
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(18, 14, 32, 0.85) 100%);
+        }
+        .beat-card.type-partner .beat-badge {
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            background: rgba(245, 158, 11, 0.1);
+            color: #fcd34d;
+        }
+
+        /* Active LIVE Beat Halo */
+        .beat-card.is-live {
+            border: 2px solid #ef4444 !important;
+            box-shadow: 0 0 24px rgba(255, 60, 60, 0.35) !important;
+            animation: liveBeaconPulse 2.5s infinite;
+        }
+
+        .beat-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .beat-time {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--neon-cyan);
+            font-weight: 700;
+        }
+
+        .beat-badges-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .beat-badge {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding: 3px 8px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+        }
+
+        .beat-live-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.7);
+            color: #fca5a5;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 9999px;
+        }
+
+        .beat-live-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: pulseDot 1.4s ease-in-out infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.8); }
+        }
+
+        .beat-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+
+        .beat-speaker {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--toffee-orange);
+            margin-bottom: 2px;
+        }
+
+        .beat-designation {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.76rem;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+        }
+
+        .beat-details {
+            color: #c4c0d6;
+            font-size: 0.85rem;
+            line-height: 1.45;
+            margin-bottom: 16px;
+            flex-grow: 1;
+        }
+
+        .beat-stage {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.72rem;
+            color: #8b80aa;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 12px;
+            margin-top: auto;
+        }
+
         .keynote-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -929,39 +1117,187 @@
         </div>
     </div>
 
-    <!-- Keynote Agenda -->
+    <!-- 12-Beat Dynamic Schedule Agenda -->
     <section class="section" id="agenda">
         <div class="section-header">
             <div class="section-kicker">STAGE OF TOMORROW</div>
-            <h2 class="section-title">The Keynote Speakers</h2>
+            <h2 class="section-title">Official Summit Run of Show</h2>
+            <p style="color:var(--text-dim); margin-top:12px; font-size:1rem; max-width:680px; margin-left:auto; margin-right:auto;">
+                Live synchronized 12-beat evening timeline: Keynotes, exclusive content premieres, sports partnerships, and interactive finales.
+            </p>
         </div>
 
-        <div class="keynote-grid">
-            <div class="speaker-card">
-                <div class="speaker-time">7:04 PM · KEYNOTE 1</div>
-                <div class="speaker-name">Taimur Rahman</div>
-                <div class="speaker-role">CCRO, BANGLALINK</div>
-                <div class="speaker-topic">
-                    <b>"Welcome & The 7-Year Journey":</b> How Toffee redefined how millions of Bangladeshis gather around fragmented screens.
+        <div class="schedule-grid" id="landingScheduleGrid">
+            <!-- Beat 01 -->
+            <div class="beat-card type-program" data-beat-id="beat-01">
+                <div class="beat-top-bar">
+                    <span class="beat-time">6:00 PM</span>
+                    <div class="beat-badges-wrap">
+                        <span class="beat-badge">PROGRAM</span>
+                    </div>
                 </div>
+                <div class="beat-title">Arrival</div>
+                <div class="beat-details">Entry & buffer</div>
+                <div class="beat-stage">📍 Main Foyer & Gate 01</div>
             </div>
 
-            <div class="speaker-card">
-                <div class="speaker-time">7:39 PM · KEYNOTE 2</div>
-                <div class="speaker-name">Modasser Ahmed</div>
-                <div class="speaker-role">DY. DIRECTOR, TOFFEE</div>
-                <div class="speaker-topic">
-                    <b>"Platform & Technology":</b> Proving high-throughput infrastructure, concurrent live streaming, and self-serve ad tech at national scale.
+            <!-- Beat 02 -->
+            <div class="beat-card type-program" data-beat-id="beat-02">
+                <div class="beat-top-bar">
+                    <span class="beat-time">6:30 PM</span>
+                    <div class="beat-badges-wrap">
+                        <span class="beat-badge">PROGRAM</span>
+                    </div>
                 </div>
+                <div class="beat-title">Experiential Zones</div>
+                <div class="beat-details">Guided activities</div>
+                <div class="beat-stage">📍 Experiential Hall & Interactive Booths</div>
             </div>
 
-            <div class="speaker-card">
-                <div class="speaker-time">8:11 PM · KEYNOTE 3</div>
-                <div class="speaker-name">Johan Buse</div>
-                <div class="speaker-role">CHIEF EXECUTIVE OFFICER</div>
-                <div class="speaker-topic">
-                    <b>"The Future Vision":</b> Unveiling the 2033 roadmap, global content partnerships, and the live crowd participation finale (<a href="/vote" style="color:var(--neon-cyan); text-decoration:none;">Option 1: Sonic Dilemma</a> · <a href="/marathon" style="color:var(--neon-cyan); text-decoration:none;">Option 2: Memory Marathon</a> · <a href="/dashboard" style="color:var(--neon-cyan); text-decoration:none;">Option 3: Personal Dashboard</a> · <a href="/capsule" style="color:var(--neon-cyan); text-decoration:none;">Option 4: ToffeeCon Wrapped</a>).
+            <!-- Beat 03 -->
+            <div class="beat-card type-program" data-beat-id="beat-03">
+                <div class="beat-top-bar">
+                    <span class="beat-time">7:00 PM</span>
+                    <div class="beat-badges-wrap">
+                        <span class="beat-badge">PROGRAM</span>
+                    </div>
                 </div>
+                <div class="beat-title">Trailer</div>
+                <div class="beat-details">Guests seated</div>
+                <div class="beat-stage">📍 Main Arena & 3-Screen LED</div>
+            </div>
+
+            <!-- Beat 04 -->
+            <div class="beat-card type-keynote" data-beat-id="beat-04">
+                <div class="beat-top-bar">
+                    <span class="beat-time">7:04 PM</span>
+                    <div class="beat-badges-wrap">
+                        <span class="beat-badge">KEYNOTE</span>
+                    </div>
+                </div>
+                <div class="beat-title">Keynote 1: Welcome · 7-year journey</div>
+                <div class="beat-speaker">Taimur Rahman</div>
+                <div class="beat-designation">CCRO</div>
+                <div class="beat-details">Welcome and reflection on 7 years of streaming innovation</div>
+                <div class="beat-stage">📍 Main Arena Stage</div>
+            </div>
+
+            <!-- Beat 05 -->
+            <div class="beat-card type-partner" data-beat-id="beat-05">
+                <div class="beat-top-bar">
+                    <span class="beat-time">7:07 PM</span>
+                    <div class="beat-badges-wrap">
+                        <span class="beat-badge">PARTNER</span>
+                    </div>
+                </div>
+                <div class="beat-title">Content Partner</div>
+                <div class="beat-speaker">Content Partner Leads</div>
+                <div class="beat-designation">Premier Studios & Creator Guilds</div>
+                <div class="beat-details">Brief on-screen & on stage acknowledgement</div>
+                <div class="beat-stage">📍 Main Arena Stage</div>
+            </div>
+
+            <!-- Beat 06 -->
+            <div class="beat-card type-partner" data-beat-id="beat-06">
+                <div class="beat-top-bar">
+                    <span class="beat-time">7:35 PM</span>
+                    <div class="beat-badges-wrap">
+                        <span class="beat-badge">PARTNER</span>
+                    </div>
+                </div>
+                <div class="beat-title">BCB · BFF</div>
+                <div class="beat-speaker">BCB & BFF Leadership</div>
+                <div class="beat-designation">Bangladesh Cricket Board & Football Federation</div>
+                <div class="beat-details">Joint partner acknowledgement</div>
+                <div class="beat-stage">📍 Main Arena Stage</div>
+            </div>
+
+            <!-- Beat 07 -->
+            <div class="beat-card type-keynote" data-beat-id="beat-07">
+                <div class="beat-top-bar">
+                    <span class="beat-time">7:39 PM</span>
+                    <div class="beat-badges-wrap">
+                        <span class="beat-badge">KEYNOTE</span>
+                    </div>
+                </div>
+                <div class="beat-title">Keynote 2: Platform & tech</div>
+                <div class="beat-speaker">Modasser Ahmed</div>
+                <div class="beat-designation">Dy. Director</div>
+                <div class="beat-details">Platform scale, concurrency architecture & advertising engine</div>
+                <div class="beat-stage">📍 Main Arena Stage</div>
+            </div>
+
+            <!-- Beat 08 -->
+            <div class="beat-card type-partner" data-beat-id="beat-08">
+                <div class="beat-top-bar">
+                    <span class="beat-time">8:07 PM</span>
+                    <div class="beat-badges-wrap">
+                        <span class="beat-badge">PARTNER</span>
+                    </div>
+                </div>
+                <div class="beat-title">Martech · Tech Partner</div>
+                <div class="beat-speaker">Skanda</div>
+                <div class="beat-designation">CleverTap / Mixpanel</div>
+                <div class="beat-details">Clevertap/Mixpanel · Skanda</div>
+                <div class="beat-stage">📍 Main Arena Stage</div>
+            </div>
+
+            <!-- Beat 09 -->
+            <div class="beat-card type-keynote" data-beat-id="beat-09">
+                <div class="beat-top-bar">
+                    <span class="beat-time">8:11 PM</span>
+                    <div class="beat-badges-wrap">
+                        <span class="beat-badge">KEYNOTE</span>
+                    </div>
+                </div>
+                <div class="beat-title">Keynote 3: Future vision · Closing</div>
+                <div class="beat-speaker">Johan Buse</div>
+                <div class="beat-designation">CEO</div>
+                <div class="beat-details">2033 roadmap, next-gen devices & finale vision</div>
+                <div class="beat-stage">📍 Main Arena Stage</div>
+            </div>
+
+            <!-- Beat 10 -->
+            <div class="beat-card type-program" data-beat-id="beat-10">
+                <div class="beat-top-bar">
+                    <span class="beat-time">8:41 PM</span>
+                    <div class="beat-badges-wrap">
+                        <span class="beat-badge">PROGRAM</span>
+                    </div>
+                </div>
+                <div class="beat-title">Interactive Closing</div>
+                <div class="beat-speaker">Special Guest Artists</div>
+                <div class="beat-designation">Live Musical Ensemble</div>
+                <div class="beat-details">Live set</div>
+                <div class="beat-stage">📍 Main Arena Stage</div>
+            </div>
+
+            <!-- Beat 11 -->
+            <div class="beat-card type-program" data-beat-id="beat-11">
+                <div class="beat-top-bar">
+                    <span class="beat-time">8:56 PM</span>
+                    <div class="beat-badges-wrap">
+                        <span class="beat-badge">PROGRAM</span>
+                    </div>
+                </div>
+                <div class="beat-title">Press Time</div>
+                <div class="beat-speaker">Executive Panel</div>
+                <div class="beat-designation">Banglalink & Toffee Leadership</div>
+                <div class="beat-details">Media session</div>
+                <div class="beat-stage">📍 Press Gallery & Media Center</div>
+            </div>
+
+            <!-- Beat 12 -->
+            <div class="beat-card type-program" data-beat-id="beat-12">
+                <div class="beat-top-bar">
+                    <span class="beat-time">9:11 PM</span>
+                    <div class="beat-badges-wrap">
+                        <span class="beat-badge">PROGRAM</span>
+                    </div>
+                </div>
+                <div class="beat-title">Finger Food</div>
+                <div class="beat-details">Networking break and closing</div>
+                <div class="beat-stage">📍 VIP Lounge & Banquet Foyer</div>
             </div>
         </div>
     </section>
@@ -1323,6 +1659,63 @@
             }
         }
 
+        // Dynamic 12-Beat Schedule Engine
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderLandingSchedule(beats) {
+            const grid = document.getElementById('landingScheduleGrid');
+            if (!grid || !Array.isArray(beats) || beats.length === 0) return;
+
+            grid.innerHTML = beats.map(beat => {
+                const typeClass = (beat.type || 'PROGRAM').toLowerCase();
+                const isLive = beat.status === 'LIVE';
+                const speakerHtml = beat.speaker ? `<div class="beat-speaker">${escapeHtml(beat.speaker)}</div>` : '';
+                const desigHtml = beat.designation ? `<div class="beat-designation">${escapeHtml(beat.designation)}</div>` : '';
+                const detailsHtml = beat.details ? `<div class="beat-details">${escapeHtml(beat.details)}</div>` : '';
+                const stageHtml = beat.stage ? `<div class="beat-stage">📍 ${escapeHtml(beat.stage)}</div>` : '';
+                const livePillHtml = isLive ? `<div class="beat-live-pill"><span class="beat-live-dot"></span><span>LIVE</span></div>` : '';
+
+                return `
+                    <div class="beat-card type-${typeClass} ${isLive ? 'is-live' : ''}" data-beat-id="${escapeHtml(beat.id)}">
+                        <div class="beat-top-bar">
+                            <span class="beat-time">${escapeHtml(beat.time)}</span>
+                            <div class="beat-badges-wrap">
+                                ${livePillHtml}
+                                <span class="beat-badge">${escapeHtml(beat.type || 'PROGRAM')}</span>
+                            </div>
+                        </div>
+                        <div class="beat-title">${escapeHtml(beat.title)}</div>
+                        ${speakerHtml}
+                        ${desigHtml}
+                        ${detailsHtml}
+                        ${stageHtml}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function loadLandingSchedule() {
+            try {
+                const res = await fetch('/api/schedule');
+                if (!res.ok) return;
+                const data = await res.json();
+                if (data.success && Array.isArray(data.schedule) && data.schedule.length > 0) {
+                    renderLandingSchedule(data.schedule);
+                }
+            } catch (err) {
+                console.warn('[Schedule] Preserving pre-rendered canonical schedule fallback');
+            }
+        }
+        loadLandingSchedule();
+
         // Real-Time Dynamic WebSocket Binding
         const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
         let ws;
@@ -1331,6 +1724,14 @@
                 ws = new WebSocket(`${proto}//${location.host}`);
                 ws.onopen = () => {
                     ws.send(JSON.stringify({ type: 'SUBSCRIBE', room: 'landing' }));
+                };
+                ws.onmessage = (event) => {
+                    try {
+                        const msg = JSON.parse(event.data);
+                        if (msg.type === 'SCHEDULE_UPDATED' && msg.data && msg.data.schedule) {
+                            renderLandingSchedule(msg.data.schedule);
+                        }
+                    } catch(e) {}
                 };
                 ws.onclose = () => setTimeout(connectLandingWebSocket, 3000);
             } catch(e) {}

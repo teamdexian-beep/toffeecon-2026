@@ -76,6 +76,7 @@ const gateRoutes = require('./routes/gateRoutes')(eventStore, broadcast, rsvpsFi
 const boothRoutes = require('./routes/boothRoutes')(eventStore, broadcast, aiProvider);
 const systemRoutes = require('./routes/systemRoutes')(eventStore, broadcast, aiProvider, wss);
 const accreditationRoutes = require('./routes/accreditationRoutes')(eventStore, broadcast);
+const scheduleRoutes = require('./routes/scheduleRoutes')(eventStore, broadcast);
 
 app.use('/api/stage', stageRoutes);
 app.use('/api', voteRoutes);
@@ -83,6 +84,7 @@ app.use('/api', gateRoutes);
 app.use('/api/booth', boothRoutes);
 app.use('/api', systemRoutes);
 app.use('/api/accreditation', accreditationRoutes);
+app.use('/api/schedule', scheduleRoutes);
 
 // ==========================================
 // Page Routing (Single Clean Mappings)
@@ -106,7 +108,7 @@ function adminRouteGuard(redirectTarget = '/portal') {
 // Core Summit Surfaces
 app.get('/', (req, res) => res.sendFile(path.join(clientPublic, 'landing.html')));
 app.get('/hub', (req, res) => res.sendFile(path.join(clientPublic, 'hub.html')));
-app.get(['/admin', '/control'], adminRouteGuard('/portal'), (req, res) => {
+app.get(['/admin', '/control', '/admin.html', '/control.html'], adminRouteGuard('/portal'), (req, res) => {
     res.sendFile(path.join(clientPublic, 'hub.html'));
 });
 app.get('/stage', (req, res) => res.sendFile(path.join(clientPublic, 'stage.html')));

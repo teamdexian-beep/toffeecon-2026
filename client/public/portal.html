@@ -570,7 +570,89 @@
             display: flex;
             align-items: flex-start;
             gap: 14px;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        /* Color-Coded Schedule Hierarchy */
+        /* PROGRAM: Sleek Royal Purple */
+        .agenda-item.type-program {
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(18, 14, 32, 0.85) 100%);
+        }
+        .agenda-item.type-program .agenda-badge {
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            background: rgba(168, 85, 247, 0.1);
+            color: #d8b4fe;
+        }
+
+        /* KEYNOTE: Vibrant Magenta/Crimson */
+        .agenda-item.type-keynote {
+            border: 1px solid rgba(236, 72, 153, 0.4);
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(18, 14, 32, 0.85) 100%);
+        }
+        .agenda-item.type-keynote .agenda-badge {
+            border: 1px solid rgba(236, 72, 153, 0.4);
+            background: rgba(236, 72, 153, 0.1);
+            color: #f472b6;
+        }
+
+        /* PARTNER: Warm Toffee Gold */
+        .agenda-item.type-partner {
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(18, 14, 32, 0.85) 100%);
+        }
+        .agenda-item.type-partner .agenda-badge {
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            background: rgba(245, 158, 11, 0.1);
+            color: #fcd34d;
+        }
+
+        /* Active Broadcast Breathing Halo */
+        .agenda-item.is-live {
+            border: 2px solid #ef4444 !important;
+            box-shadow: 0 0 24px rgba(255, 60, 60, 0.35) !important;
+            animation: liveBeaconPulse 2.5s infinite;
+        }
+
+        .agenda-item-left {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 72px;
+        }
+
+        .agenda-badge {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 9999px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .agenda-live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.7);
+            color: #fca5a5;
+            font-family: var(--font-mono);
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 9999px;
+            margin-bottom: 6px;
+        }
+
+        .live-dot-pulse {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: pulseDot 1.4s ease-in-out infinite;
         }
 
         .agenda-item.active-session {
@@ -1438,48 +1520,185 @@
             </div>
 
             <!-- Summit Agenda Timeline -->
-            <div class="section-tag" style="margin-top: 24px;"><span>📅</span> OFFICIAL SUMMIT SCHEDULE</div>
-            <div class="agenda-list">
-                <div class="agenda-item">
-                    <div class="agenda-time">10:00 AM</div>
-                    <div class="agenda-info">
-                        <h4>Opening AV: The Genesis of Streaming</h4>
-                        <p>Main Arena · 3-Screen Immersive Panoramic Reveal</p>
+            <div class="section-tag" style="margin-top: 24px;"><span>📅</span> OFFICIAL SUMMIT SCHEDULE (12 BEATS)</div>
+            <div class="agenda-list" id="portalAgendaList">
+                <!-- Beat 01 -->
+                <div class="agenda-item type-program" data-beat-id="beat-01">
+                    <div class="agenda-item-left">
+                        <span class="agenda-time">6:00 PM</span>
+                        <span class="agenda-badge">PROGRAM</span>
+                    </div>
+                    <div class="agenda-info" style="flex:1;">
+                        <h4>Arrival</h4>
+                        <p style="margin-top:4px; font-size:0.78rem; color:#c4c0d6;">Entry & buffer</p>
+                        <div style="font-size:0.72rem; color:#8b80aa; font-family:var(--font-mono); margin-top:4px;">📍 Main Foyer & Gate 01</div>
                     </div>
                 </div>
-                <div class="agenda-item active-session">
-                    <div class="agenda-time">10:30 AM</div>
-                    <div class="agenda-info">
-                        <h4>Purple Dot Handoff & Keynote Address</h4>
-                        <p>Taimur Rahman & Erik Aas · Telephony meets 6G AI</p>
+
+                <!-- Beat 02 -->
+                <div class="agenda-item type-program" data-beat-id="beat-02">
+                    <div class="agenda-item-left">
+                        <span class="agenda-time">6:30 PM</span>
+                        <span class="agenda-badge">PROGRAM</span>
+                    </div>
+                    <div class="agenda-info" style="flex:1;">
+                        <h4>Experiential Zones</h4>
+                        <p style="margin-top:4px; font-size:0.78rem; color:#c4c0d6;">Guided activities</p>
+                        <div style="font-size:0.72rem; color:#8b80aa; font-family:var(--font-mono); margin-top:4px;">📍 Experiential Hall & Interactive Booths</div>
                     </div>
                 </div>
-                <div class="agenda-item">
-                    <div class="agenda-time">11:15 AM</div>
-                    <div class="agenda-info">
-                        <h4>The Sonic Dilemma: Brand Sound Clash</h4>
-                        <p>Audience Instant Haptic Buzzer Duel</p>
+
+                <!-- Beat 03 -->
+                <div class="agenda-item type-program" data-beat-id="beat-03">
+                    <div class="agenda-item-left">
+                        <span class="agenda-time">7:00 PM</span>
+                        <span class="agenda-badge">PROGRAM</span>
+                    </div>
+                    <div class="agenda-info" style="flex:1;">
+                        <h4>Trailer</h4>
+                        <p style="margin-top:4px; font-size:0.78rem; color:#c4c0d6;">Guests seated</p>
+                        <div style="font-size:0.72rem; color:#8b80aa; font-family:var(--font-mono); margin-top:4px;">📍 Main Arena & 3-Screen LED</div>
                     </div>
                 </div>
-                <div class="agenda-item">
-                    <div class="agenda-time">01:00 PM</div>
-                    <div class="agenda-info">
-                        <h4>Memory Marathon Grand Prix 🏁</h4>
-                        <p>Fastest Finger First · 60s Stadium Speed Run</p>
+
+                <!-- Beat 04 -->
+                <div class="agenda-item type-keynote" data-beat-id="beat-04">
+                    <div class="agenda-item-left">
+                        <span class="agenda-time">7:04 PM</span>
+                        <span class="agenda-badge">KEYNOTE</span>
+                    </div>
+                    <div class="agenda-info" style="flex:1;">
+                        <h4>Keynote 1: Welcome · 7-year journey</h4>
+                        <div style="font-weight:700; color:var(--toffee-orange); font-size:0.85rem; margin-top:2px;">
+                            Taimur Rahman <span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono); font-weight:400;">· CCRO</span>
+                        </div>
+                        <p style="margin-top:4px; font-size:0.78rem; color:#c4c0d6;">Welcome and reflection on 7 years of streaming innovation</p>
+                        <div style="font-size:0.72rem; color:#8b80aa; font-family:var(--font-mono); margin-top:4px;">📍 Main Arena Stage</div>
                     </div>
                 </div>
-                <div class="agenda-item">
-                    <div class="agenda-time">02:30 PM</div>
-                    <div class="agenda-info">
-                        <h4>Toffee OTT AI Casting Audition Showcase</h4>
-                        <p>Bengali Sci-Fi Protagonist Curated Screen Test</p>
+
+                <!-- Beat 05 -->
+                <div class="agenda-item type-partner" data-beat-id="beat-05">
+                    <div class="agenda-item-left">
+                        <span class="agenda-time">7:07 PM</span>
+                        <span class="agenda-badge">PARTNER</span>
+                    </div>
+                    <div class="agenda-info" style="flex:1;">
+                        <h4>Content Partner</h4>
+                        <div style="font-weight:700; color:var(--toffee-orange); font-size:0.85rem; margin-top:2px;">
+                            Content Partner Leads <span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono); font-weight:400;">· Premier Studios & Creator Guilds</span>
+                        </div>
+                        <p style="margin-top:4px; font-size:0.78rem; color:#c4c0d6;">Brief on-screen & on stage acknowledgement</p>
+                        <div style="font-size:0.72rem; color:#8b80aa; font-family:var(--font-mono); margin-top:4px;">📍 Main Arena Stage</div>
                     </div>
                 </div>
-                <div class="agenda-item">
-                    <div class="agenda-time">04:00 PM</div>
-                    <div class="agenda-info">
-                        <h4>ToffeeCon 2033 Time Capsule & Wrap</h4>
-                        <p>Digital Sealed Vault & Summit Recap Holograms</p>
+
+                <!-- Beat 06 -->
+                <div class="agenda-item type-partner" data-beat-id="beat-06">
+                    <div class="agenda-item-left">
+                        <span class="agenda-time">7:35 PM</span>
+                        <span class="agenda-badge">PARTNER</span>
+                    </div>
+                    <div class="agenda-info" style="flex:1;">
+                        <h4>BCB · BFF</h4>
+                        <div style="font-weight:700; color:var(--toffee-orange); font-size:0.85rem; margin-top:2px;">
+                            BCB & BFF Leadership <span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono); font-weight:400;">· Bangladesh Cricket Board & Football Federation</span>
+                        </div>
+                        <p style="margin-top:4px; font-size:0.78rem; color:#c4c0d6;">Joint partner acknowledgement</p>
+                        <div style="font-size:0.72rem; color:#8b80aa; font-family:var(--font-mono); margin-top:4px;">📍 Main Arena Stage</div>
+                    </div>
+                </div>
+
+                <!-- Beat 07 -->
+                <div class="agenda-item type-keynote" data-beat-id="beat-07">
+                    <div class="agenda-item-left">
+                        <span class="agenda-time">7:39 PM</span>
+                        <span class="agenda-badge">KEYNOTE</span>
+                    </div>
+                    <div class="agenda-info" style="flex:1;">
+                        <h4>Keynote 2: Platform & tech</h4>
+                        <div style="font-weight:700; color:var(--toffee-orange); font-size:0.85rem; margin-top:2px;">
+                            Modasser Ahmed <span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono); font-weight:400;">· Dy. Director</span>
+                        </div>
+                        <p style="margin-top:4px; font-size:0.78rem; color:#c4c0d6;">Platform scale, concurrency architecture & advertising engine</p>
+                        <div style="font-size:0.72rem; color:#8b80aa; font-family:var(--font-mono); margin-top:4px;">📍 Main Arena Stage</div>
+                    </div>
+                </div>
+
+                <!-- Beat 08 -->
+                <div class="agenda-item type-partner" data-beat-id="beat-08">
+                    <div class="agenda-item-left">
+                        <span class="agenda-time">8:07 PM</span>
+                        <span class="agenda-badge">PARTNER</span>
+                    </div>
+                    <div class="agenda-info" style="flex:1;">
+                        <h4>Martech · Tech Partner</h4>
+                        <div style="font-weight:700; color:var(--toffee-orange); font-size:0.85rem; margin-top:2px;">
+                            Skanda <span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono); font-weight:400;">· CleverTap / Mixpanel</span>
+                        </div>
+                        <p style="margin-top:4px; font-size:0.78rem; color:#c4c0d6;">Clevertap/Mixpanel · Skanda</p>
+                        <div style="font-size:0.72rem; color:#8b80aa; font-family:var(--font-mono); margin-top:4px;">📍 Main Arena Stage</div>
+                    </div>
+                </div>
+
+                <!-- Beat 09 -->
+                <div class="agenda-item type-keynote" data-beat-id="beat-09">
+                    <div class="agenda-item-left">
+                        <span class="agenda-time">8:11 PM</span>
+                        <span class="agenda-badge">KEYNOTE</span>
+                    </div>
+                    <div class="agenda-info" style="flex:1;">
+                        <h4>Keynote 3: Future vision · Closing</h4>
+                        <div style="font-weight:700; color:var(--toffee-orange); font-size:0.85rem; margin-top:2px;">
+                            Johan Buse <span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono); font-weight:400;">· CEO</span>
+                        </div>
+                        <p style="margin-top:4px; font-size:0.78rem; color:#c4c0d6;">2033 roadmap, next-gen devices & finale vision</p>
+                        <div style="font-size:0.72rem; color:#8b80aa; font-family:var(--font-mono); margin-top:4px;">📍 Main Arena Stage</div>
+                    </div>
+                </div>
+
+                <!-- Beat 10 -->
+                <div class="agenda-item type-program" data-beat-id="beat-10">
+                    <div class="agenda-item-left">
+                        <span class="agenda-time">8:41 PM</span>
+                        <span class="agenda-badge">PROGRAM</span>
+                    </div>
+                    <div class="agenda-info" style="flex:1;">
+                        <h4>Interactive Closing</h4>
+                        <div style="font-weight:700; color:var(--toffee-orange); font-size:0.85rem; margin-top:2px;">
+                            Special Guest Artists <span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono); font-weight:400;">· Live Musical Ensemble</span>
+                        </div>
+                        <p style="margin-top:4px; font-size:0.78rem; color:#c4c0d6;">Live set</p>
+                        <div style="font-size:0.72rem; color:#8b80aa; font-family:var(--font-mono); margin-top:4px;">📍 Main Arena Stage</div>
+                    </div>
+                </div>
+
+                <!-- Beat 11 -->
+                <div class="agenda-item type-program" data-beat-id="beat-11">
+                    <div class="agenda-item-left">
+                        <span class="agenda-time">8:56 PM</span>
+                        <span class="agenda-badge">PROGRAM</span>
+                    </div>
+                    <div class="agenda-info" style="flex:1;">
+                        <h4>Press Time</h4>
+                        <div style="font-weight:700; color:var(--toffee-orange); font-size:0.85rem; margin-top:2px;">
+                            Executive Panel <span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono); font-weight:400;">· Banglalink & Toffee Leadership</span>
+                        </div>
+                        <p style="margin-top:4px; font-size:0.78rem; color:#c4c0d6;">Media session</p>
+                        <div style="font-size:0.72rem; color:#8b80aa; font-family:var(--font-mono); margin-top:4px;">📍 Press Gallery & Media Center</div>
+                    </div>
+                </div>
+
+                <!-- Beat 12 -->
+                <div class="agenda-item type-program" data-beat-id="beat-12">
+                    <div class="agenda-item-left">
+                        <span class="agenda-time">9:11 PM</span>
+                        <span class="agenda-badge">PROGRAM</span>
+                    </div>
+                    <div class="agenda-info" style="flex:1;">
+                        <h4>Finger Food</h4>
+                        <p style="margin-top:4px; font-size:0.78rem; color:#c4c0d6;">Networking break and closing</p>
+                        <div style="font-size:0.72rem; color:#8b80aa; font-family:var(--font-mono); margin-top:4px;">📍 VIP Lounge & Banquet Foyer</div>
                     </div>
                 </div>
             </div>
@@ -1980,6 +2199,10 @@
                             if (msg.data.voting) updateVotingUI(msg.data.voting);
                         } else if (msg.type === 'VOTE_UPDATE' && msg.data) {
                             updateVotingUI(msg.data);
+                        } else if (msg.type === 'SCHEDULE_UPDATED') {
+                            if (msg.data && msg.data.schedule) {
+                                renderPortalSchedule(msg.data.schedule);
+                            }
                         }
                     } catch (err) {
                         console.error('[WS] Parse error:', err);
@@ -2014,6 +2237,78 @@
                 if (data.votingEngine) updateVotingUI(data.votingEngine);
             })
             .catch(() => {/* Offline service worker will serve fallback */});
+
+        // Dynamic 12-Beat Schedule Engine for PWA Stage Tab
+        function escapePortalHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderPortalSchedule(beats) {
+            const list = document.getElementById('portalAgendaList');
+            if (!list || !Array.isArray(beats) || beats.length === 0) return;
+
+            list.innerHTML = beats.map(beat => {
+                const typeClass = (beat.type || 'PROGRAM').toLowerCase();
+                const isLive = beat.status === 'LIVE';
+
+                const speakerHtml = beat.speaker ? `
+                    <div style="font-weight:700; color:var(--toffee-orange); font-size:0.85rem; margin-top:2px;">
+                        ${escapePortalHtml(beat.speaker)} ${beat.designation ? `<span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono); font-weight:400;">· ${escapePortalHtml(beat.designation)}</span>` : ''}
+                    </div>` : '';
+                const stageHtml = beat.stage ? `<div style="font-size:0.72rem; color:#8b80aa; font-family:var(--font-mono); margin-top:4px;">📍 ${escapePortalHtml(beat.stage)}</div>` : '';
+                const detailsHtml = beat.details ? `<p style="margin-top:4px; font-size:0.78rem; color:#c4c0d6;">${escapePortalHtml(beat.details)}</p>` : '';
+                const liveBadgeHtml = isLive ? `<div class="agenda-live-badge"><span class="live-dot-pulse"></span><span>● LIVE ON STAGE</span></div>` : '';
+
+                return `
+                    <div class="agenda-item type-${typeClass} ${isLive ? 'is-live active-session' : ''}" data-beat-id="${escapePortalHtml(beat.id)}">
+                        <div class="agenda-item-left">
+                            <span class="agenda-time">${escapePortalHtml(beat.time)}</span>
+                            <span class="agenda-badge">${escapePortalHtml(beat.type || 'PROGRAM')}</span>
+                        </div>
+                        <div class="agenda-info" style="flex:1;">
+                            ${liveBadgeHtml}
+                            <h4>${escapePortalHtml(beat.title)}</h4>
+                            ${speakerHtml}
+                            ${detailsHtml}
+                            ${stageHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // If an active LIVE beat is detected, dynamically hydrate top Active Keynote Card
+            const liveBeat = beats.find(b => b.status === 'LIVE');
+            if (liveBeat) {
+                const nameEl = document.getElementById('speakerName');
+                const roleEl = document.getElementById('speakerRole');
+                const topicEl = document.getElementById('speakerTopic');
+                const badgeEl = document.getElementById('keynoteStatusBadge');
+                if (nameEl) nameEl.innerText = liveBeat.speaker || liveBeat.title;
+                if (roleEl) roleEl.innerText = liveBeat.designation || liveBeat.stage;
+                if (topicEl) topicEl.innerText = `"${liveBeat.title} — ${liveBeat.details || ''}"`;
+                if (badgeEl) badgeEl.innerText = `NOW BROADCASTING // ${liveBeat.type}`;
+            }
+        }
+
+        async function loadPortalSchedule() {
+            try {
+                const res = await fetch('/api/schedule');
+                if (!res.ok) return;
+                const data = await res.json();
+                if (data && data.success && Array.isArray(data.schedule) && data.schedule.length > 0) {
+                    renderPortalSchedule(data.schedule);
+                }
+            } catch(err) {
+                console.warn('[PWA] Preserving pre-rendered canonical agenda schedule');
+            }
+        }
+        loadPortalSchedule();
 
         function updateStageSpeaker(speaker, scene) {
             if (!speaker) return;
