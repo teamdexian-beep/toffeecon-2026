@@ -580,6 +580,23 @@
             }
         }
 
+        @media (max-width: 768px) {
+            nav {
+                padding: 0 16px;
+                height: 56px;
+                min-height: 56px;
+            }
+            .nav-links {
+                display: none !important;
+            }
+            .nav-download-btn {
+                display: none !important;
+            }
+            .logo-tag {
+                display: none !important;
+            }
+        }
+
         /* Smart Branded PWA Download Button & Pulsing Glow */
         @keyframes pulseGlow {
             0%, 100% {
@@ -789,13 +806,13 @@
     <nav>
         <a href="/" class="brand-logo">
             <img src="/assets/toffeecon-logo.png" alt="ToffeeCon 2026" class="brand-logo-img">
-            <span class="logo-tag">SUMMIT 2026</span>
+            <span class="logo-tag">TOFFEECON '26</span>
         </a>
         <ul class="nav-links">
-            <li><a href="/portal" style="color: #FF0077; font-weight: 700;">Companion App 📱</a></li>
-            <li><a href="/stage" style="color: var(--neon-cyan); font-weight: 700;">Stage LED 🖥️</a></li>
-            <li><a href="#experiences">Floor Booths</a></li>
-            <li><a href="/invite" style="color: #A855F7;">VIP Greetings</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#agenda">Agenda</a></li>
+            <li><a href="#booths">Booths</a></li>
+            <li><a href="#venue">Venue</a></li>
         </ul>
         <div style="display:flex; align-items:center; gap:10px;">
             <button class="btn-download-app pwa-install-btn nav-download-btn" onclick="triggerPwaInstall()">📲 Download App</button>
@@ -950,7 +967,8 @@
     </section>
 
     <!-- Experiential Zones -->
-    <section class="section" id="experiences">
+    <section class="section" id="booths">
+        <a id="experiences"></a>
         <div class="section-header">
             <div class="section-kicker">IN-VENUE INSTALLATIONS</div>
             <h2 class="section-title">Step Inside The Technology</h2>
@@ -1075,10 +1093,34 @@
                 <p class="booth-desc">
                     Touchscreen casting booth where attendees audition for original Toffee OTT roles. Captures headshot and dialogue audio, performs AI facial analysis, and creates instant composite character posters with 1-tap WhatsApp sharing.
                 </p>
-                <div style="margin-top: 14px; display:flex; gap:12px; flex-wrap:wrap;">
+                <div style="margin-top: 14px;">
                     <a href="/audition" style="color:#FF6600; font-family:'Space Mono'; font-size:0.8rem; text-decoration:none; font-weight:700;">🎭 Audition Kiosk →</a>
-                    <a href="/casting" style="color:var(--neon-cyan); font-family:'Space Mono'; font-size:0.8rem; text-decoration:none;">📋 Curator Desk →</a>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Venue Section -->
+    <section class="section" id="venue">
+        <div class="section-header">
+            <div class="section-kicker">SUMMIT DESTINATION</div>
+            <h2 class="section-title">Venue & Logistics</h2>
+        </div>
+        <div style="background: var(--bg-card); border: 1px solid var(--border-purple); border-radius: 16px; padding: 28px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+            <div>
+                <div style="font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--toffee-orange); font-weight: 700; margin-bottom: 8px;">LOCATION</div>
+                <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 8px;">Bangabandhu International Conference Centre (BICC)</h3>
+                <p style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.6;">Agargaon, Sher-e-Bangla Nagar, Dhaka-1207, Bangladesh.<br>Hall of Fame & Grand Ballroom Exhibition Wings.</p>
+            </div>
+            <div>
+                <div style="font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--neon-cyan); font-weight: 700; margin-bottom: 8px;">DATE & TIME</div>
+                <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 8px;">28 November 2026</h3>
+                <p style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.6;">VIP Red Carpet & Ingress: 17:00 BST<br>Keynote & Experience Arena: 18:00 BST – Late</p>
+            </div>
+            <div>
+                <div style="font-family: 'Space Mono', monospace; font-size: 0.75rem; color: #10B981; font-weight: 700; margin-bottom: 8px;">SMART CHECK-IN</div>
+                <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 8px;">Gate Turnstile 01</h3>
+                <p style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.6;">Rapid optical QR badge scan. Install the ToffeeCon Companion PWA for instant contactless credential verification.</p>
             </div>
         </div>
     </section>
@@ -1261,6 +1303,14 @@
 
                 if (data.success) {
                     localStorage.setItem('tcon_saved_ticket', JSON.stringify(data.ticket));
+                    localStorage.setItem('toffeecon_attendee', JSON.stringify({
+                        name: data.ticket.name,
+                        id: data.ticket.id,
+                        passId: data.ticket.id,
+                        company: data.ticket.company,
+                        role: data.ticket.role,
+                        checkedIn: false
+                    }));
                     displayTicketView(data.ticket);
                 } else {
                     showToast('Accreditation failed: ' + (data.error || 'Please verify form fields'));

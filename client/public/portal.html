@@ -37,8 +37,8 @@
             --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             --font-mono: 'Space Mono', monospace;
             --font-display: 'Syne', sans-serif;
-            --nav-height: 68px;
-            --header-height: 64px;
+            --nav-height: calc(64px + max(12px, env(safe-area-inset-bottom, 12px)));
+            --header-height: 56px;
         }
 
         * {
@@ -76,12 +76,13 @@
             opacity: 0.6;
         }
 
-        /* Header / App Bar */
+        /* Header / App Bar (Standardized 56px height, no mobile collision) */
         .app-header {
             position: fixed;
             top: 0; left: 0; right: 0;
-            height: var(--header-height);
-            background: rgba(7, 6, 14, 0.92);
+            height: 56px;
+            min-height: 56px;
+            background: rgba(7, 6, 14, 0.94);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -90,59 +91,84 @@
             justify-content: space-between;
             padding: 0 16px;
             z-index: 50;
+            box-sizing: border-box;
         }
 
         .header-brand {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             text-decoration: none;
+            min-width: 0;
+            flex-shrink: 1;
         }
 
-        .header-logo {
-            height: 32px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        .brand-badge {
-            background: linear-gradient(135deg, var(--toffee-orange), var(--toffee-red));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .header-brand-title {
             font-family: var(--font-display);
             font-size: 1.05rem;
             font-weight: 800;
-            letter-spacing: 0.5px;
+            letter-spacing: -0.2px;
+            background: linear-gradient(135deg, var(--toffee-orange), var(--toffee-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+        }
+
+        .header-sub-title {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.45);
+            letter-spacing: 1px;
+            padding-left: 6px;
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            display: inline-block;
+        }
+
+        @media (max-width: 767px) {
+            .header-sub-title {
+                display: none !important;
+            }
+            .nav-download-btn {
+                display: none !important;
+            }
         }
 
         .header-actions {
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-shrink: 0;
         }
 
+        /* Compact glassmorphic pill badge */
         .status-pill {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            color: var(--success);
-            padding: 6px 10px;
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #34D399; /* emerald-400 */
+            padding: 4px 10px;
+            border-radius: 9999px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             font-family: var(--font-mono);
-            font-size: 0.7rem;
+            font-size: 11px;
             font-weight: 700;
-            min-height: 32px;
+            min-height: 28px;
+            flex-shrink: 0;
+            white-space: nowrap;
+            box-sizing: border-box;
         }
 
         .status-dot {
-            width: 7px;
-            height: 7px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            background: var(--success);
-            box-shadow: 0 0 8px var(--success);
-            animation: pulse-dot 2s infinite;
+            background: #34D399;
+            box-shadow: 0 0 8px #34D399;
+            animation: pulse-dot 1.8s infinite;
+            flex-shrink: 0;
         }
 
         @keyframes pulse-dot {
@@ -152,14 +178,14 @@
 
         .offline-badge {
             display: none;
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            color: #EF4444;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            color: #F87171;
         }
 
         .offline-badge .status-dot {
-            background: #EF4444;
-            box-shadow: 0 0 8px #EF4444;
+            background: #F87171;
+            box-shadow: 0 0 8px #F87171;
             animation: none;
         }
 
@@ -427,15 +453,28 @@
         /* ========================================================
            TAB 1: LIVE STAGE & AGENDA
            ======================================================== */
+        @keyframes liveBeaconPulse {
+            0%, 100% {
+                box-shadow: 0 0 16px rgba(255, 60, 60, 0.25), 0 8px 30px rgba(0, 0, 0, 0.4);
+                border-color: rgba(239, 68, 68, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 28px rgba(255, 60, 60, 0.5), 0 0 10px rgba(255, 0, 85, 0.3), 0 8px 30px rgba(0, 0, 0, 0.4);
+                border-color: rgba(255, 90, 90, 0.9);
+            }
+        }
+
         .keynote-card {
             background: linear-gradient(135deg, rgba(255, 102, 0, 0.12), rgba(230, 0, 69, 0.08)), var(--bg-card);
-            border: 1px solid rgba(255, 102, 0, 0.35);
+            border: 1px solid rgba(239, 68, 68, 0.6);
             border-radius: 18px;
             padding: 18px;
             margin-bottom: 20px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 20px rgba(255, 60, 60, 0.25);
+            animation: liveBeaconPulse 3s ease-in-out infinite;
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
         }
 
         .keynote-card::after {
@@ -886,6 +925,36 @@
             gap: 14px;
         }
 
+        .locker-empty-state {
+            background: var(--bg-card);
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 18px;
+            padding: 32px 20px;
+            text-align: center;
+            margin: 12px 0 20px;
+        }
+
+        .empty-icon {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 0 16px rgba(255, 102, 0, 0.4));
+        }
+
+        .empty-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+        }
+
+        .empty-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            max-width: 340px;
+            margin: 0 auto 20px;
+            line-height: 1.5;
+        }
+
         .locker-card {
             background: var(--bg-card);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -922,35 +991,69 @@
         .locker-actions {
             display: flex;
             gap: 10px;
+            align-items: center;
         }
 
         .btn-locker-action {
-            flex: 1;
-            min-height: 48px;
-            border-radius: 12px;
-            display: flex;
+            min-height: 44px;
+            border-radius: 9999px;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            font-size: 0.85rem;
-            font-weight: 700;
+            font-size: 0.82rem;
             text-decoration: none;
             cursor: pointer;
             border: none;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
         }
 
+        .btn-locker-action:active {
+            transform: scale(0.96);
+        }
+
+        /* Primary Action: Vibrant Toffee Brand Gradient Pill (amber-500 via orange-500 to rose-500) */
+        .btn-locker-action.primary-pill,
         .btn-locker-action.download {
-            background: linear-gradient(135deg, var(--toffee-orange), var(--toffee-red));
-            color: #fff;
-            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
+            flex: 1.35;
+            background: linear-gradient(135deg, #F59E0B 0%, #FF6600 50%, #F43F5E 100%);
+            color: #FFFFFF;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            padding: 8px 16px;
         }
 
+        .btn-locker-action.primary-pill:hover,
+        .btn-locker-action.download:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 6px 20px rgba(255, 102, 0, 0.45);
+        }
+
+        /* Secondary Action: Translucent Glassmorphic Button */
+        .btn-locker-action.secondary-glass,
         .btn-locker-action.whatsapp {
-            background: #25D366;
-            color: #fff;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.76rem;
+            font-weight: 500;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 8px 14px;
+            box-shadow: none;
         }
 
+        .btn-locker-action.secondary-glass:hover,
+        .btn-locker-action.whatsapp:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.25);
+            color: #FFFFFF;
+        }
+
+        /* Offline Turnstile Access Pass Optical Calibration */
         .offline-wallet-pass {
             background: #0D0B18;
             border: 2px dashed rgba(255, 102, 0, 0.35);
@@ -958,40 +1061,65 @@
             padding: 18px;
             text-align: center;
             margin-top: 16px;
+            position: relative;
         }
 
-        .qr-placeholder {
-            width: 140px;
-            height: 140px;
+        .qr-placeholder, #qrContainer {
+            width: 148px;
+            height: 148px;
             margin: 12px auto;
-            background: #fff;
-            padding: 8px;
-            border-radius: 12px;
+            background: #FFFFFF;
+            padding: 10px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+            box-sizing: border-box;
         }
 
-        .qr-placeholder svg {
+        .qr-placeholder svg, #qrContainer svg {
             width: 100%;
             height: 100%;
+            display: block;
+        }
+
+        /* Softened laser scanline (<= 25% opacity) preserving instant optical barcode scanner acquisition */
+        .qr-scan-laser {
+            position: absolute;
+            left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.5), transparent);
+            box-shadow: 0 0 6px rgba(0, 240, 255, 0.3);
+            opacity: 0.22;
+            animation: qrScanSweep 2.8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes qrScanSweep {
+            0%, 100% { top: 6%; opacity: 0.12; }
+            50% { top: 92%; opacity: 0.24; }
         }
 
         /* ========================================================
-           NATIVE BOTTOM NAVIGATION BAR (Touch targets >= 48px)
+           NATIVE BOTTOM NAVIGATION BAR (Safe-Area Inset + Touch >= 48px)
            ======================================================== */
-        .bottom-nav {
+        .bottom-nav, #bottomNav {
             position: fixed;
             bottom: 0; left: 0; right: 0;
-            height: var(--nav-height);
-            background: rgba(14, 11, 28, 0.94);
+            min-height: 64px;
+            height: auto;
+            background: rgba(14, 11, 28, 0.96);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            padding: 0 4px;
+            padding: 8px 4px max(12px, env(safe-area-inset-bottom, 12px));
             z-index: 50;
+            box-sizing: border-box;
         }
 
         .nav-tab-btn {
@@ -1051,19 +1179,32 @@
 <body>
     <div class="scanlines"></div>
 
-    <!-- PWA Top App Bar -->
-    <header class="app-header">
-        <a href="/portal" class="header-brand">
-            <img src="/assets/toffeecon-logo.png" alt="ToffeeCon" class="header-logo" onerror="this.style.display='none'">
-            <span class="brand-badge">TOFFEECON '26</span>
+    <!-- PWA Top App Bar (56px Clean Mobile Header, No Collisions) -->
+    <header class="app-header h-14 min-h-[56px] flex justify-between items-center px-4">
+        <a href="/portal" class="header-brand flex items-center gap-2">
+            <!-- Swirl SVG Logo -->
+            <svg class="header-swirl-icon" width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+                <defs>
+                    <linearGradient id="headerSwirlGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#FF6600"/>
+                        <stop offset="60%" stop-color="#FF0055"/>
+                        <stop offset="100%" stop-color="#9333EA"/>
+                    </linearGradient>
+                </defs>
+                <circle cx="16" cy="16" r="14" stroke="url(#headerSwirlGrad)" stroke-width="2.5" opacity="0.35"/>
+                <path d="M16 4C9.37 4 4 9.37 4 16C4 20.2 6.2 23.9 9.5 26.1C8.5 23.2 8.8 19.8 10.5 17.2C12.8 13.6 17.6 12.2 21.2 14.5C23.1 15.7 24.3 17.7 24.8 19.8C26.8 17.3 28 14.1 28 10.5C28 4 16 4Z" fill="url(#headerSwirlGrad)"/>
+                <circle cx="16" cy="16" r="3.5" fill="#00F0FF"/>
+            </svg>
+            <span class="header-brand-title font-extrabold tracking-tight">TOFFEECON</span>
+            <span class="header-sub-title text-xs font-mono text-white/50 tracking-widest pl-1.5 border-l border-white/20 hidden md:inline-block">'26</span>
         </a>
-        <div class="header-actions">
-            <button class="btn-download-app pwa-install-btn nav-download-btn" id="btnInstallPwa" onclick="triggerPwaInstall()">📲 Download App</button>
-            <div class="status-pill" id="liveStatusPill">
-                <span class="status-dot"></span>
-                <span id="liveStatusText">LIVE SYNC</span>
+        <div class="header-actions flex items-center gap-2 shrink-0 pr-1">
+            <button class="btn-download-app pwa-install-btn nav-download-btn hidden md:inline-flex" id="btnInstallPwa" onclick="triggerPwaInstall()">📲 Download App</button>
+            <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-[11px] font-mono text-emerald-400 shrink-0" id="liveStatusPill">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span id="liveStatusText">LIVE 6G SYNC</span>
             </div>
-            <div class="status-pill offline-badge" id="offlineStatusPill">
+            <div class="status-pill offline-badge shrink-0" id="offlineStatusPill">
                 <span class="status-dot"></span>
                 <span>OFFLINE WALLET</span>
             </div>
@@ -1075,7 +1216,8 @@
         <!-- ==========================================
              TAB 1: LIVE STAGE & AGENDA
              ========================================== -->
-        <section class="tab-panel active" id="tab-agenda">
+        <section class="tab-panel active" id="tab-agenda" data-view="view-stage">
+            <div id="view-stage" style="display:none;"></div>
             <div class="section-header">
                 <div class="section-tag"><span>⚡</span> ARENA KEYNOTE STAGE</div>
                 <h1 class="section-title">Live Stage & Agenda</h1>
@@ -1095,8 +1237,8 @@
                 </div>
             </div>
 
-            <!-- Active Keynote Card -->
-            <div class="keynote-card">
+            <!-- Active Keynote Card (Now Broadcasting Beacon Glow) -->
+            <div class="keynote-card broadcasting-beacon" id="activeKeynoteCard">
                 <div class="live-tag">
                     <span class="status-dot" style="background:#FF0055;"></span>
                     <span id="keynoteStatusBadge">NOW BROADCASTING</span>
@@ -1111,10 +1253,10 @@
                         <span>⚡</span>
                         <span>Cast Live Vote</span>
                     </button>
-                    <a href="/stage" class="btn-live-action secondary" target="_blank">
-                        <span>🖥️</span>
-                        <span>Arena LED</span>
-                    </a>
+                    <button class="btn-live-action secondary" onclick="document.querySelector('.agenda-list').scrollIntoView({behavior:'smooth'})">
+                        <span>📅</span>
+                        <span>Schedule</span>
+                    </button>
                 </div>
             </div>
 
@@ -1345,7 +1487,8 @@
         <!-- ==========================================
              TAB 4: ATTENDEE MEDIA LOCKER
              ========================================== -->
-        <section class="tab-panel" id="tab-locker">
+        <section class="tab-panel" id="tab-locker" data-view="view-locker">
+            <div id="view-locker" style="display:none;"></div>
             <div class="section-header">
                 <div class="section-tag"><span>🎒</span> PERSONAL CREATIVE VAULT</div>
                 <h1 class="section-title">My Media Locker</h1>
@@ -1373,11 +1516,11 @@
                     <h3 class="locker-title">Bengali Sci-Fi Dub: Neo Dhaka</h3>
                     <p class="locker-sub">Recorded at Booth 01 · Zero-Shot Voice Synthesis (00:24)</p>
                     <div class="locker-actions">
-                        <a href="/api/media/sample_voice.mp3" download="ToffeeCon-AI-Dub.mp3" class="btn-locker-action download">
+                        <a href="/api/media/sample_voice.mp3" download="ToffeeCon-AI-Dub.mp3" class="btn-locker-action primary-pill download bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white font-semibold shadow-md active:scale-95 transition-all">
                             <span>📥</span>
                             <span>Download MP3</span>
                         </a>
-                        <a href="https://api.whatsapp.com/send?text=Check%20out%20my%20AI%20Voice%20Dub%20from%20ToffeeCon%202026!%20%23ToffeeCon2026" target="_blank" class="btn-locker-action whatsapp">
+                        <a href="https://api.whatsapp.com/send?text=Check%20out%20my%20AI%20Voice%20Dub%20from%20ToffeeCon%202026!%20%23ToffeeCon2026" target="_blank" class="btn-locker-action secondary-glass whatsapp px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-white/90 text-xs font-medium backdrop-blur-sm transition-all">
                             <span>💬</span>
                             <span>Share</span>
                         </a>
@@ -1390,11 +1533,11 @@
                     <h3 class="locker-title">Protagonist Screen Test</h3>
                     <p class="locker-sub">Score: 98.4% Match · Genre: Cyberpunk Courier</p>
                     <div class="locker-actions">
-                        <a href="/assets/toffeecon-hero-emblem.png" download="ToffeeCon-Audition-Pass.png" class="btn-locker-action download">
+                        <a href="/assets/toffeecon-hero-emblem.png" download="ToffeeCon-Audition-Pass.png" class="btn-locker-action primary-pill download bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white font-semibold shadow-md active:scale-95 transition-all">
                             <span>📸</span>
                             <span>Save Headshot</span>
                         </a>
-                        <a href="https://api.whatsapp.com/send?text=I%20just%20auditioned%20for%20Toffee%20OTT%20at%20ToffeeCon%202026!%20Scored%2098.4%25%20%F0%9F%8E%AD" target="_blank" class="btn-locker-action whatsapp">
+                        <a href="https://api.whatsapp.com/send?text=I%20just%20auditioned%20for%20Toffee%20OTT%20at%20ToffeeCon%202026!%20Scored%2098.4%25%20%F0%9F%8E%AD" target="_blank" class="btn-locker-action secondary-glass whatsapp px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-white/90 text-xs font-medium backdrop-blur-sm transition-all">
                             <span>💬</span>
                             <span>Share</span>
                         </a>
@@ -1407,11 +1550,11 @@
                     <h3 class="locker-title">Summit Experience Recap Badge</h3>
                     <p class="locker-sub">6 Booths Visited · 14 Keynote Votes · 1 Sonic Trophy</p>
                     <div class="locker-actions">
-                        <a href="/assets/toffeecon-logo.png" download="ToffeeCon-Wrapped-Card.png" class="btn-locker-action download">
+                        <a href="/assets/toffeecon-logo.png" download="ToffeeCon-Wrapped-Card.png" class="btn-locker-action primary-pill download bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white font-semibold shadow-md active:scale-95 transition-all">
                             <span>🏷️</span>
                             <span>Download Badge</span>
                         </a>
-                        <a href="https://api.whatsapp.com/send?text=My%20ToffeeCon%202026%20Wrapped%20Badge%20is%20unlocked!%20%F0%9F%8E%9F%EF%B8%8F%20%23ToffeeCon2026" target="_blank" class="btn-locker-action whatsapp">
+                        <a href="https://api.whatsapp.com/send?text=My%20ToffeeCon%202026%20Wrapped%20Badge%20is%20unlocked!%20%F0%9F%8E%9F%EF%B8%8F%20%23ToffeeCon2026" target="_blank" class="btn-locker-action secondary-glass whatsapp px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-white/90 text-xs font-medium backdrop-blur-sm transition-all">
                             <span>💬</span>
                             <span>Share</span>
                         </a>
@@ -1420,11 +1563,12 @@
             </div>
 
             <!-- Offline Wallet QR Fallback (Guaranteed available offline via Service Worker) -->
-            <div class="offline-wallet-pass">
+            <div class="offline-wallet-pass" id="offlineWalletPass">
                 <div class="section-tag" style="justify-content:center; color:var(--success);">
                     <span>🛡️</span> OFFLINE BADGE WALLET (AIR-GAPPED)
                 </div>
-                <div class="qr-placeholder">
+                <div class="qr-placeholder" id="qrContainer">
+                    <div class="qr-scan-laser"></div>
                     <svg viewBox="0 0 100 100" fill="#07060E">
                         <rect x="0" y="0" width="30" height="30" />
                         <rect x="5" y="5" width="20" height="20" fill="#fff" />
@@ -1458,8 +1602,8 @@
         <span id="voteToastText">VOTE RECORDED INSTANTLY</span>
     </div>
 
-    <!-- Native Bottom Navigation Bar -->
-    <nav class="bottom-nav">
+    <!-- Native Bottom Navigation Bar (Bottom Dock with Safe-Area Inset) -->
+    <nav class="bottom-nav" id="bottomNav">
         <button class="nav-tab-btn active" id="btnTabAgenda" onclick="switchTab('agenda')">
             <div class="tab-indicator"></div>
             <span class="nav-tab-icon">📅</span>
@@ -1632,6 +1776,12 @@
         // 2. Tab Navigation
         const tabs = ['agenda', 'vote', 'map', 'locker'];
         function switchTab(tabId) {
+            // Normalize alias identifiers if passed from external buttons or query params
+            if (tabId === 'stage' || tabId === 'view-stage' || tabId === 'home') tabId = 'agenda';
+            if (tabId === 'buzzer' || tabId === 'view-vote') tabId = 'vote';
+            if (tabId === 'pass' || tabId === 'view-locker') tabId = 'locker';
+            if (tabId === 'view-map') tabId = 'map';
+
             // Tactile light haptic tick on navigation
             if (navigator.vibrate) navigator.vibrate(12);
 
